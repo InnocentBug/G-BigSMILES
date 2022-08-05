@@ -7,7 +7,5 @@
 bigSMILES extension to generation SMILES string ensembles.
 """
 
-from ._version import (  # noqa: E402, F401
-    version as __version__,
-    version_tuple,
-)
+from ._version import version as __version__  # noqa: E402, F401
+from ._version import version_tuple

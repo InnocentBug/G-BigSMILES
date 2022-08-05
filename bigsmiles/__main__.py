@@ -2,14 +2,16 @@
 # SPDX-License-Identifier: GPL-3
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
+
 """
 Definition of the main entry point for CLI smiles string generation.
 """
+import argparse
 import os
 import sys
-import argparse
 
 import bigsmiles
+
 
 def _print_license(args):
     license_text = "\nbigSMILES extension to generate ensembles of polymer smiles strings.\n\n"
@@ -29,8 +31,11 @@ def _print_license(args):
 
     print(license_text)
 
+
 SHORT_LICENSE_TEXT = "bigSMILES extension  Copyright (C) 2022  Ludwig Schneider\n\n"
-SHORT_LICENSE_TEXT += "This program comes with ABSOLUTELY NO WARRANTY; for details type 'license'.\n"
+SHORT_LICENSE_TEXT += (
+    "This program comes with ABSOLUTELY NO WARRANTY; for details type 'license'.\n"
+)
 SHORT_LICENSE_TEXT += "This is free software, and you are welcome to redistribute it\n"
 SHORT_LICENSE_TEXT += "under certain conditions; type `license' for details.\n"
 
