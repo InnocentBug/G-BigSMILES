@@ -3,12 +3,16 @@
 # See LICENSE for details
 
 from abc import ABC, abstractmethod
+
+import numpy as np
 from scipy.special import lambertw
+
 
 class Distribution(ABC):
     """
     Generic class to generate molecular weight numbers.
     """
+
     def __init__(self, raw_text, rng):
         """
         Initialize the generic distribution.
@@ -28,6 +32,7 @@ class Distribution(ABC):
     def draw_mw(self):
         pass
 
+
 class FlorySchulz(Distribution):
     """
     Flory-Schulz distribution of molecular weights for geometrically distributed chain lengths.
@@ -38,6 +43,7 @@ class FlorySchulz(Distribution):
 
     The textual representation of this distribution is: `flory_schulz(a)`
     """
+
     def __init__(self, raw_text, rng):
         """
         Initialization of Flory-Schulz distribution object.
@@ -54,12 +60,17 @@ class FlorySchulz(Distribution):
         super().__init__(raw_text, rng)
 
         if not raw_text.startswith("flory_schulz"):
-            raise RuntimeError("Attemp to initlize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'")
+            raise RuntimeError(
+                "Attemp to initlize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'"
+            )
 
-        self._a = float(eval(self._raw_text[len("flory_schulz"):]))
+        self._a = float(eval(self._raw_text[len("flory_schulz") :]))
 
     def draw_mw(self, k=0):
         def invert(a, y, k):
-            return (lambertw(-( (1-a)**(1/a) * (y-1) * np.log(1-a) )/a))/np.log(1-a) - 1/a
+            return (lambertw(-((1 - a) ** (1 / a) * (y - 1) * np.log(1 - a)) / a)) / np.log(
+                1 - a
+            ) - 1 / a
+
         y = self._rng.uniform(0, 1)
         return invert(self._a, y, k)

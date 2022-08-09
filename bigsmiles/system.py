@@ -4,10 +4,12 @@
 
 import numpy as np
 
+
 class System:
     """
     Entire system representation in extended bigSMILES.
     """
+
     def __init__(self, big_smiles_ext, seed=None):
         """
         Construction of an entire system (mixtures).
@@ -22,7 +24,7 @@ class System:
         """
         self._rng = np.random.default_generator(seed)
         self._stochastic = []
-        self._distribution []
+        self._distribution = []
 
     @property
     def n_objects(self):
