@@ -13,7 +13,7 @@ requires = [
 # ]
 
 [tool.setuptools_scm]
-write_to = "bigsmiles/_version.py"
+write_to = "bigsmiles_gen/_version.py"
 
 [tool.black]
 line-length = 100
