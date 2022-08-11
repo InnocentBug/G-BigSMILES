@@ -1,11 +1,5 @@
 [build-system]
-requires = [
-  "setuptools>=41.0",
-  "wheel>=0.33",
-  "setuptools_scm[toml]>=6.0",
-  "scipy",
-  "numpy",
-]
+requires = ["setuptools>=41.0", "wheel>=0.33", "setuptools_scm[toml]>=6.0"]
 
 # [tool.pytest.ini_options]
 # testpaths = [
