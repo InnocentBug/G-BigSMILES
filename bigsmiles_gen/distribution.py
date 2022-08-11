@@ -4,8 +4,8 @@
 
 from abc import ABC, abstractmethod
 
-import numpy as np
 from scipy import stats
+
 
 class Distribution(ABC):
     """
@@ -42,10 +42,12 @@ class FlorySchulz(Distribution):
 
     The textual representation of this distribution is: `flory_schulz(a)`
     """
+
     class flory_schulz_gen(stats.rv_discrete):
         "Flory Schulz distribution"
+
         def _pmf(self, k, a):
-            return a**2 * k * (1-a)**(k-1)
+            return a**2 * k * (1 - a) ** (k - 1)
 
     def __init__(self, raw_text, rng):
         """
