@@ -3,8 +3,6 @@ requires = [
   "setuptools>=41.0",
   "wheel>=0.33",
   "setuptools_scm[toml]>=6.0",
-  "scipy",
-  "numpy",
 ]
 
 # [tool.pytest.ini_options]

@@ -1,12 +1,7 @@
 name: CI
 
 on:
-  pull_request:
-    branches:
-      - main
-    paths-ignore:
-      - "**.md"
-  # Allows you to run this workflow manually from the Actions tab
+  # Allows you (and trunk) to run this workflow
   workflow_dispatch:
 
 jobs:
