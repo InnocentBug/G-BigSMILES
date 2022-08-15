@@ -4,6 +4,7 @@
 
 from abc import ABC, abstractmethod
 from ast import literal_eval as make_tuple
+
 from scipy import stats
 
 
