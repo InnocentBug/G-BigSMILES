@@ -3,6 +3,7 @@
 # See LICENSE for details
 
 from abc import ABC, abstractmethod
+from ast import literal_eval as make_tuple
 
 from scipy import stats
 
@@ -69,7 +70,7 @@ class FlorySchulz(Distribution):
                 f"Attemp to initlize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'"
             )
 
-        self._a = float(eval(self._raw_text[len("flory_schulz") :]))
+        self._a = float(make_tuple(self._raw_text[len("flory_schulz") :]))
         self._flory_schulz = self.flory_schulz_gen(name="Flory-Schulz")
 
     def draw_mw(self):
@@ -107,7 +108,7 @@ class Gauss(Distribution):
                 f"Attemp to initlize Gaussian distribution from text '{raw_text}' that does not start with 'gauss'"
             )
 
-        self._mu, self._sigma = eval(self._raw_text[len("gauss") :])
+        self._mu, self._sigma = make_tuple(self._raw_text[len("gauss") :])
         self._mu = float(self._mu)
         self._sigma = float(self._sigma)
 
