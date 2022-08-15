@@ -19,7 +19,7 @@ class Distribution(ABC):
         Arguments:
         ----------
         raw_text: str
-             Text represenation of the distribution.
+             Text represenation of the distribution. Example: `flory_schulz(0.01)`
 
         rng: numpy.random.Generator
              Numpy random number generator for the generation of numbers.
