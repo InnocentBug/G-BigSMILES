@@ -32,6 +32,10 @@ class Distribution(ABC):
     def draw_mw(self):
         pass
 
+    @abstractmethod
+    def __str__(self):
+        pass
+
 
 class FlorySchulz(Distribution):
     """
@@ -76,6 +80,9 @@ class FlorySchulz(Distribution):
     def draw_mw(self):
         return self._flory_schulz.rvs(self._a, random_state=self._rng)
 
+    def __str__(self):
+        return f"|flory_schulz({self._a})|"
+
 
 class Gauss(Distribution):
     """
@@ -117,3 +124,6 @@ class Gauss(Distribution):
         if mw < 0:
             mw = 0
         return mw
+
+    def __str__(self):
+        return f"|gauss({self._mu}, {self._sigma})|"

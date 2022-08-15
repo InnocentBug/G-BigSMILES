@@ -10,3 +10,5 @@ bigSMILES extension to generation SMILES string ensembles.
 from . import distribution
 from ._version import version as __version__  # noqa: E402, F401
 from ._version import version_tuple
+from .bond import BondDescriptor
+from .distribution import Distribution, FlorySchulz, Gauss

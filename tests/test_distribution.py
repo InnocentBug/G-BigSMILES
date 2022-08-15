@@ -30,6 +30,7 @@ def test_flory_schulz():
         assert np.abs((np.mean(data) - mean(a)) / mean(a)) < EPSILON
         assert np.abs((np.var(data) - variance(a)) / variance(a)) < EPSILON
         assert np.abs((stats.skew(data) - skew(a)) / skew(a)) < EPSILON
+        assert str(flory_schulz) == f"|flory_schulz({a})|"
 
 
 def test_gauss():
@@ -43,7 +44,7 @@ def test_gauss():
         return 0
 
     rng = np.random.default_rng()
-    for mu, sigma in [(100, 10), (200, 100), (500, 1), (600, 0)]:
+    for mu, sigma in [(100.0, 10.0), (200.0, 100.0), (500.0, 1.0), (600.0, 0.0)]:
         gauss = bigsmiles_gen.distribution.Gauss(f"gauss({mu}, {sigma})", rng)
 
         data = np.asarray([gauss.draw_mw() for i in range(NSTAT)])
@@ -51,3 +52,5 @@ def test_gauss():
         assert np.abs((np.mean(data) - mean(mu, sigma)) / mean(mu, sigma)) < EPSILON
         if sigma > 0:
             assert np.abs((np.var(data) - variance(mu, sigma)) / variance(mu, sigma)) < EPSILON
+
+        assert str(gauss) == f"|gauss({mu}, {sigma})|"
