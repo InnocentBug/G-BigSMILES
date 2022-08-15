@@ -7,8 +7,8 @@ from scipy import stats
 
 import bigsmiles_gen
 
-EPSILON = 0.1
-NSTAT = 10000
+EPSILON = 0.15
+NSTAT = 20000
 
 
 def test_flory_schulz():

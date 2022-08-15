@@ -46,7 +46,7 @@ class BondDescriptor:
         self.descriptor_id = int(descr_id)
 
         self.weight = 1.0
-        self.transistions = None
+        self.transitions = None
         if "|" in self._raw_text:
             if self._raw_text.count("|") != 2:
                 raise RuntimeError(f"Invalid number of '|' in bond descriptor {self._raw_text}")
@@ -64,10 +64,11 @@ class BondDescriptor:
     def __str__(self):
         string = self.preceding_characters
         string += f"[{self.descriptor}|"
-        if self.transitions:
-            for t in self.transitions:
-                string += f" {t}"
-        else:
+        if self.transitions is None:
             string += f"{self.weight}"
+        else:
+            for t in self.transitions:
+                string += f"{t} "
+            string = string[:-1]
         string += "|]"
         return string
