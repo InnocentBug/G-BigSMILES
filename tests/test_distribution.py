@@ -54,3 +54,8 @@ def test_gauss():
             assert np.abs((np.var(data) - variance(mu, sigma)) / variance(mu, sigma)) < EPSILON
 
         assert str(gauss) == f"|gauss({mu}, {sigma})|"
+
+
+if __name__ == "__main__":
+    test_flory_schulz()
+    test_gauss()

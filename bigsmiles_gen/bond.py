@@ -3,6 +3,7 @@
 # See LICENSE for details
 
 import numpy as np
+import rdkit.Chem.rdchem as rc
 
 
 class BondDescriptor:
@@ -10,7 +11,7 @@ class BondDescriptor:
     Bond descriptor of the bigSMILES notation.
     """
 
-    def __init__(self, big_smiles_ext, descr_id, preceding_characters):
+    def __init__(self, big_smiles_ext, descr_num, preceding_characters):
         """
         Construction of a bond descriptor.
 
@@ -19,7 +20,7 @@ class BondDescriptor:
         big_smiles_ext: str
            text representation of a bond descriptor. Example: `[$0]`
 
-        descr_id: int
+        descr_num: int
            Position of bond description in the line notation of the stoachstic object.
            Ensure that it starts with `0` and is strictly monotonic increasing during a stochastic object.
 
@@ -37,13 +38,17 @@ class BondDescriptor:
             )
         self.descriptor = self._raw_text[1]
 
-        id_end = -2
+        id_end = -1
         if "|" in self._raw_text:
             id_end = self._raw_text.find("|")
         id_str = self._raw_text[2:id_end]
-        self.descriptor += id_str.strip()
+        if "[" in id_str or "]" in id_str:
+            raise RuntimeError("Nested bond descriptors not supported.")
+        self.descriptor_id = ""
+        if len(id_str) > 0:
+            self.descriptor_id = int(id_str.strip())
 
-        self.descriptor_id = int(descr_id)
+        self.descriptor_num = int(descr_num)
 
         self.weight = 1.0
         self.transitions = None
@@ -60,10 +65,38 @@ class BondDescriptor:
                 self.weight = self.transitions.sum()
 
         self.preceding_characters = preceding_characters
+        self.bond_type = rc.BondType.SINGLE
+        if "=" in self.preceding_characters:
+            self.bond_type = rc.BondType.DOUBLE
+        if "#" in self.preceding_characters:
+            self.bond_type = rc.BondType.TRIPLE
+        if "$" in self.preceding_characters:
+            self.bond_type = rc.BondType.QUADRUPLE
+        if ":" in self.preceding_characters:
+            self.bond_type = rc.BondType.ONEANDAHALF
+
+        self.bond_stereo = rc.BondStereo.STEREOANY
+        if (
+            "@" in self.preceding_characters
+            or "/" in self.preceding_characters
+            or "\\" in self.preceding_characters
+        ):
+            raise RuntimeError("Stereochemistry not implemented yet.")
+
+    def is_compatible(self, other):
+        if self.descriptor_id != other.descriptor_id:
+            return False
+        if self.descriptor == "$" and other.descriptor == "$":
+            return True
+        if self.descriptor == "<" and other.descriptor == ">":
+            return True
+        if self.descriptor == ">" and other.descriptor == "<":
+            return True
+        return False
 
     def __str__(self):
         string = self.preceding_characters
-        string += f"[{self.descriptor}|"
+        string += f"[{self.descriptor}{self.descriptor_id}|"
         if self.transitions is None:
             string += f"{self.weight}"
         else:

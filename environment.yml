@@ -1,0 +1,6 @@
+name: elwood
+channels:
+  - conda-forge
+dependencies:
+  - setuptools
+  - rdkit >= 2022.3.1
