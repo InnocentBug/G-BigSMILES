@@ -36,6 +36,9 @@ class Distribution(ABC):
     def __str__(self):
         pass
 
+    def pure_big_smiles(self):
+        return ""
+
 
 class FlorySchulz(Distribution):
     """
