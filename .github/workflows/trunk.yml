@@ -31,9 +31,10 @@ jobs:
         run: |
           $CONDA/bin/conda env update --file environment.yml --name base
           $CONDA/bin/conda install pytest
+          $CONDA/bin/conda install pip
 
       - name: Install
-        run: pip install .
+        run: $CONDA/bin/conda/pip install .
 
       - name: Run tests
         run: |
