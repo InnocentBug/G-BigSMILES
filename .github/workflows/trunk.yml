@@ -34,7 +34,7 @@ jobs:
           $CONDA/bin/conda install pip
 
       - name: Install
-        run: $CONDA/bin/conda/pip install .
+        run: $CONDA/bin/pip install .
 
       - name: Run tests
         run: |
