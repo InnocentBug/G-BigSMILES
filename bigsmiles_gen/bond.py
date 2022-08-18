@@ -105,3 +105,6 @@ class BondDescriptor:
             string = string[:-1]
         string += "|]"
         return string
+
+    def pure_big_smiles(self):
+        return f"[{self.descriptor}{self.descriptor_id}]"
