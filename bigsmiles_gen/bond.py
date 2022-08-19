@@ -30,6 +30,18 @@ class BondDescriptor:
            If no further characters are provided, it is assumed to be a single bond without stereochemistry specification.
         """
         self._raw_text = big_smiles_ext
+
+        self.descriptor = ""
+        self.descriptor_id = ""
+        self.descriptor_num = int(descr_num)
+        self.weight = 1.0
+        self.transitions = None
+        self.preceding_characters = preceding_characters
+        self.bond_type = rc.BondType.UNSPECIFIED
+        self.bond_stereo = rc.BondStereo.STEREOANY
+        if self._raw_text == "[]":
+            return
+
         if self._raw_text[0] != "[" or self._raw_text[-1] != "]":
             raise RuntimeError(f"Bond descriptor {self._raw_text} does not start and end with []")
         if self._raw_text[1] not in ("$", "<", ">"):
@@ -85,6 +97,8 @@ class BondDescriptor:
 
     def is_compatible(self, other):
         if self.descriptor_id != other.descriptor_id:
+            return False
+        if self.descriptor == "" or other.descriptor == "":
             return False
         if self.descriptor == "$" and other.descriptor == "$":
             return True
