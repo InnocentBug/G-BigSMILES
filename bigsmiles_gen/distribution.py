@@ -2,13 +2,15 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from ast import literal_eval as make_tuple
 
 from scipy import stats
 
+from .core import BigSMILESbase
 
-class Distribution(ABC):
+
+class Distribution(BigSMILESbase):
     """
     Generic class to generate molecular weight numbers.
     """
@@ -30,10 +32,6 @@ class Distribution(ABC):
 
     @abstractmethod
     def draw_mw(self):
-        pass
-
-    @abstractmethod
-    def __str__(self):
         pass
 
     def pure_big_smiles(self):
@@ -86,6 +84,10 @@ class FlorySchulz(Distribution):
     def __str__(self):
         return f"|flory_schulz({self._a})|"
 
+    @property
+    def generatable(self):
+        return True
+
 
 class Gauss(Distribution):
     """
@@ -130,3 +132,7 @@ class Gauss(Distribution):
 
     def __str__(self):
         return f"|gauss({self._mu}, {self._sigma})|"
+
+    @property
+    def generatable(self):
+        return True

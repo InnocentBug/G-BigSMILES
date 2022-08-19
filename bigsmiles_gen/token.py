@@ -96,3 +96,10 @@ class SmilesToken:
 
     def pure_big_smiles(self):
         return self._construct_string(False)
+
+    @property
+    def generatable(self):
+        for bond in self.bond_descriptors:
+            if not bond.generatable:
+                return False
+        return True

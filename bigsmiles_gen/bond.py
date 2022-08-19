@@ -5,8 +5,10 @@
 import numpy as np
 import rdkit.Chem.rdchem as rc
 
+from .core import BigSMILESbase
 
-class BondDescriptor:
+
+class BondDescriptor(BigSMILESbase):
     """
     Bond descriptor of the bigSMILES notation.
     """
@@ -122,3 +124,7 @@ class BondDescriptor:
 
     def pure_big_smiles(self):
         return f"[{self.descriptor}{self.descriptor_id}]"
+
+    @property
+    def generatable(self):
+        return self.weight > 0
