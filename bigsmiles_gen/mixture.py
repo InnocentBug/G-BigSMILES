@@ -13,7 +13,7 @@ class Mixture(BigSMILESbase):
     Systems with one component are considered a mixture too.
     """
 
-    def __init__(self, raw_text, rng):
+    def __init__(self, raw_text):
         """
         Initialize the mixture description.
 
@@ -36,9 +36,10 @@ class Mixture(BigSMILESbase):
             if rel_mass < 0 or rel_mass > 100:
                 raise RuntimeError(f"Mixture relative mass invalid percent {self._raw_text}.")
             self._relative_mass = rel_mass
+            print(rel_mass, self._relative_mass)
         else:
             try:
-                abs_mass = float(self.raw_text.strip(".|"))
+                abs_mass = float(self._raw_text.strip(".|"))
             except ValueError:
                 warn(
                     f"Mixture descriptor {self._raw_text} does not specify a valid mixture, the system will not be generatable."
@@ -50,11 +51,11 @@ class Mixture(BigSMILESbase):
 
     @property
     def absolute_mass(self):
-        self._absolute_mass
+        return self._absolute_mass
 
     @property
     def relative_mass(self):
-        self._relative_mass
+        return self._relative_mass
 
     @property
     def system_mass(self):
@@ -64,17 +65,21 @@ class Mixture(BigSMILESbase):
     def system_mass(self, mass):
         if mass < 0:
             raise RuntimeError(f"Invalid negative total system mass {mass}.")
+        self._system_mass = mass
         if self._relative_mass is not None:
             self._absolute_mass = self._relative_mass / 100.0 * mass
+            return
+
         if self._absolute_mass is not None:
-            self._relative_mass = 100 * mass / self._absolute_mass
-        self._system_mass = mass
+            self._relative_mass = 100 * self._absolute_mass / mass
+            return
 
     def pure_big_smiles(self):
         return "."
 
     def __str__(self):
         if self.absolute_mass is None:
+            print(self.relative_mass)
             return f".|{self.relative_mass}%|"
         return f".|{self.absolute_mass}|"
 

@@ -4,6 +4,10 @@
 
 from abc import ABC, abstractmethod
 
+import numpy as np
+
+_GLOBAL_RNG = np.random.default_rng()
+
 
 class BigSMILESbase(ABC):
     @abstractmethod
@@ -14,7 +18,7 @@ class BigSMILESbase(ABC):
     def pure_big_smiles(self):
         pass
 
-    @abstractmethod
     @property
+    @abstractmethod
     def generatable(self):
         pass

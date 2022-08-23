@@ -7,7 +7,7 @@ from ast import literal_eval as make_tuple
 
 from scipy import stats
 
-from .core import BigSMILESbase
+from .core import _GLOBAL_RNG, BigSMILESbase
 
 
 class Distribution(BigSMILESbase):
@@ -15,7 +15,7 @@ class Distribution(BigSMILESbase):
     Generic class to generate molecular weight numbers.
     """
 
-    def __init__(self, raw_text, rng):
+    def __init__(self, raw_text, rng=None):
         """
         Initialize the generic distribution.
 
@@ -28,6 +28,8 @@ class Distribution(BigSMILESbase):
              Numpy random number generator for the generation of numbers.
         """
         self._raw_text = raw_text.strip("| \t\n")
+        if rng is None:
+            rng = _GLOBAL_RNG
         self._rng = rng
 
     @abstractmethod
@@ -55,7 +57,7 @@ class FlorySchulz(Distribution):
         def _pmf(self, k, a):
             return a**2 * k * (1 - a) ** (k - 1)
 
-    def __init__(self, raw_text, rng):
+    def __init__(self, raw_text, rng=None):
         """
         Initialization of Flory-Schulz distribution object.
 
@@ -100,7 +102,7 @@ class Gauss(Distribution):
     The textual representation of this distribution is: `gauss(\\mu, \\sigma)`
     """
 
-    def __init__(self, raw_text, rng):
+    def __init__(self, raw_text, rng=None):
         """
         Initialization of Gaussian distribution object.
 
