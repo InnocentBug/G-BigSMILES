@@ -5,6 +5,8 @@
 from warnings import warn
 
 from .bond import BondDescriptor
+from .distribution import get_distribution
+from .mixture import Mixture
 from .token import SmilesToken
 
 
@@ -118,10 +120,21 @@ class Stochastic:
         )
         self.bond_descriptors.append(right_terminal_token)
 
-        # end_text = self._raw_text[self._raw_text.find("}") :]
-        # self.mixture_defintion = None
+        end_text = self._raw_text[self._raw_text.find("}") :]
+        if end_text.find(".|") >= 0:
+            distribution_text = end_text[: end_text.find(".|")].strip()
+            mixture_text = end_text[end_text.find(".|") :].strip()
+        else:
+            distribution_text = end_text.strip()
+            mixture_text = ""
 
-        # mixtures and distribution
+        self.distribution = None
+        if len(distribution_text) > 1:
+            self.distribution = get_distribution(distribution_text)
+
+        self.mixture = None
+        if len(mixture_text) > 1:
+            self.mixture = Mixture(mixture_text)
 
     @property
     def generatable(self):
