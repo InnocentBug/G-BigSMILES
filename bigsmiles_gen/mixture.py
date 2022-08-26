@@ -77,11 +77,12 @@ class Mixture(BigSMILESbase):
     def pure_big_smiles(self):
         return "."
 
-    def __str__(self):
-        if self.absolute_mass is None:
-            print(self.relative_mass)
-            return f".|{self.relative_mass}%|"
-        return f".|{self.absolute_mass}|"
+    def generate_string(self, extension):
+        if extension:
+            if self.absolute_mass is None:
+                return f".|{self.relative_mass}%|"
+            return f".|{self.absolute_mass}|"
+        return "."
 
     @property
     def generatable(self):

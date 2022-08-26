@@ -45,6 +45,8 @@ def _adjust_weight(text, token_list):
     return True
 
 
+
+
 class Stochastic:
     """
     Stoachstic object parsing for extended bigSMILES.

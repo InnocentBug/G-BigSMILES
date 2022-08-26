@@ -19,7 +19,7 @@ def test_descriptors_str():
     for text, gen, ref, absm, relm in test_args:
         mix = bigsmiles_gen.Mixture(text)
         assert str(mix) == ref
-        assert mix.pure_big_smiles() == "."
+        assert mix.generate_string(False) == "."
         assert mix.generatable == gen
         mix.system_mass = TOTAL_MASS
         assert abs(mix.absolute_mass - absm) < 1e-3

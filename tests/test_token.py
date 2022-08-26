@@ -36,7 +36,7 @@ def test_token_str():
     for text, offset, big, ref, smi in test_args:
         token = bigsmiles_gen.SmilesToken(text, offset)
         assert ref == str(token)
-        assert big == token.pure_big_smiles()
+        assert big == token.generate_string(False)
         assert token.bond_descriptors[0].descriptor_num == offset
         assert token.strip_smiles == smi
 

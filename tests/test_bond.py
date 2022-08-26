@@ -21,8 +21,8 @@ def test_descriptors_str():
 
     for text, idx, char, ref, big in test_args:
         bond = bigsmiles_gen.BondDescriptor(text, idx, char)
-        assert str(bond) == char + ref
-        assert bond.pure_big_smiles() == big
+        assert str(bond) == ref
+        assert bond.generate_string(False) == big
 
 
 def test_descriptors_compatible():

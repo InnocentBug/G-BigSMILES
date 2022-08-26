@@ -10,12 +10,11 @@ _GLOBAL_RNG = np.random.default_rng()
 
 
 class BigSMILESbase(ABC):
-    @abstractmethod
     def __str__(self):
-        pass
+        return self.generate_string(True)
 
     @abstractmethod
-    def pure_big_smiles(self):
+    def generate_string(self, extension:bool):
         pass
 
     @property

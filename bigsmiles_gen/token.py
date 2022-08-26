@@ -2,10 +2,11 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+from .core import BigSMILESbase
 from .bond import BondDescriptor
 
 
-class SmilesToken:
+class SmilesToken(BigSMILESbase):
     """
     SMILES fragment including the bond descriptors, that make up the monomers and end groups.
     This also includes the weight of this particular monomer in the generation.
@@ -66,7 +67,7 @@ class SmilesToken:
                     f"Invalid weight {self.weight} not in [0,1] for bond descriptor {self._raw_text}"
                 )
 
-    def _construct_string(self, weight):
+    def generate_string(self, extension):
         string = ""
         if len(self.bond_descriptors) == 0:
             string = self.strip_smiles
@@ -75,27 +76,21 @@ class SmilesToken:
             for i in range(len(self.descriptor_pos) - 1):
                 start = self.descriptor_pos[i]
                 end = self.descriptor_pos[i + 1]
-                if weight:
+                if extension:
                     string += str(self.bond_descriptors[i])
                 else:
-                    string += self.bond_descriptors[i].pure_big_smiles()
+                    string += self.bond_descriptors[i].generate_string(False)
                 string += self.strip_smiles[start:end]
-            if weight:
+            if extension:
                 string += str(self.bond_descriptors[-1])
             else:
-                string += self.bond_descriptors[-1].pure_big_smiles()
+                string += self.bond_descriptors[-1].generate_string(False)
             string += self.strip_smiles[self.descriptor_pos[-1] :]
 
-        if weight and self.weight is not None:
+        if extension and self.weight is not None:
             string += f"|{self.weight}|"
 
         return string
-
-    def __str__(self):
-        return self._construct_string(True)
-
-    def pure_big_smiles(self):
-        return self._construct_string(False)
 
     @property
     def generatable(self):

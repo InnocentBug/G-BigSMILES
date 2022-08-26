@@ -45,10 +45,6 @@ class Distribution(BigSMILESbase):
         """
         pass
 
-    def pure_big_smiles(self):
-        return ""
-
-
 class FlorySchulz(Distribution):
     """
     Flory-Schulz distribution of molecular weights for geometrically distributed chain lengths.
@@ -91,8 +87,10 @@ class FlorySchulz(Distribution):
             rng = _GLOBAL_RNG
         return self._flory_schulz.rvs(self._a, random_state=rng)
 
-    def __str__(self):
-        return f"|flory_schulz({self._a})|"
+    def generate_string(self, extension):
+        if extension:
+            return f"|flory_schulz({self._a})|"
+        return ""
 
     @property
     def generatable(self):
@@ -139,8 +137,10 @@ class Gauss(Distribution):
             mw = 0
         return mw
 
-    def __str__(self):
-        return f"|gauss({self._mu}, {self._sigma})|"
+    def generate_string(self, extension):
+        if extension:
+            return f"|gauss({self._mu}, {self._sigma})|"
+        return ""
 
     @property
     def generatable(self):

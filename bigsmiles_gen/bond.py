@@ -110,20 +110,21 @@ class BondDescriptor(BigSMILESbase):
             return True
         return False
 
-    def __str__(self):
-        string = self.preceding_characters
-        string += f"[{self.descriptor}{self.descriptor_id}|"
-        if self.transitions is None:
-            string += f"{self.weight}"
-        else:
-            for t in self.transitions:
-                string += f"{t} "
-            string = string[:-1]
-        string += "|]"
-        return string
 
-    def pure_big_smiles(self):
-        return f"[{self.descriptor}{self.descriptor_id}]"
+    def generate_string(self, extension):
+        string = ""
+        string += f"[{self.descriptor}{self.descriptor_id}"
+        if extension:
+            string += "|"
+            if self.transitions is None:
+                string += f"{self.weight}"
+            else:
+                for t in self.transitions:
+                    string += f"{t} "
+                string = string[:-1]
+            string += "|"
+        string += "]"
+        return string
 
     @property
     def generatable(self):
