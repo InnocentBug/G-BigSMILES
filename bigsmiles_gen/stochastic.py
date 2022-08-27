@@ -4,6 +4,7 @@
 
 from warnings import warn
 
+from .core import BigSMILESbase
 from .bond import BondDescriptor
 from .distribution import get_distribution
 from .mixture import Mixture
@@ -39,15 +40,14 @@ def _adjust_weight(text, token_list):
                     token.weight = weight
                     total_weight += weight
                     break
-    if abs(total_weight - 1) < 1e-6:
-        warn("Stochastic object {text} has invalid total repeat unit weight.")
+    if abs(total_weight - 1) > 1e-6:
+        warn(f"Stochastic object {text} has invalid total repeat unit weight.")
         return False
     return True
 
 
 
-
-class Stochastic:
+class Stochastic(BigSMILESbase):
     """
     Stoachstic object parsing for extended bigSMILES.
 
@@ -79,9 +79,9 @@ class Stochastic:
                 f"Empty stochastic object {middle_text} that have only a single terminal bond descriptor are not supported."
             )
         # Left terminal bond descriptor.
-        if middle_text.find("]", 1):
+        if middle_text.find("]", 1) <= 0:
             raise RuntimeError(f"Unterminated left terminal bond descriptor in {middle_text}.")
-        bond_text = middle_text[middle_text.find("[") : middle_text.find("]", 1)]
+        bond_text = middle_text[middle_text.find("[") : middle_text.find("]", 1)+1]
         preceding_characters = middle_text[: middle_text.find("[")]
         self.bond_descriptors = []
         bond = BondDescriptor(bond_text, len(self.bond_descriptors), preceding_characters)
@@ -89,7 +89,7 @@ class Stochastic:
 
         # Right terminal bond descriptor
         i = middle_text.rfind("[")
-        right_bond_text = middle_text[i : middle_text.find("]", middle_text.rfind("["))]
+        right_bond_text = middle_text[i : middle_text.find("]", middle_text.rfind("["))+1]
         while i > 0 and middle_text[i] in r".-=#$:/\@":
             i -= 1
         right_preceding_char = middle_text[i : middle_text.find("[", i)]
@@ -98,7 +98,7 @@ class Stochastic:
             repeat_unit_text = middle_text[middle_text.find("]", 1) : middle_text.find(";")]
             end_group_text = middle_text[middle_text.find(";") : middle_text.rfind("[")]
         else:
-            repeat_unit_text = middle_text[middle_text.find("]", 1) : middle_text.rfind("[")]
+            repeat_unit_text = middle_text[middle_text.find("]", 1)+1 : middle_text.rfind("[")]
             end_group_text = ""
 
         self.repeat_tokens = []
@@ -112,9 +112,10 @@ class Stochastic:
         self.end_tokens = []
         for eg in end_group_text.split(","):
             eg = eg.strip()
-            token = SmilesToken(eg, len(self.bond_descriptors))
-            self.end_tokens.append(token)
-            self.bond_descriptors += token.bond_descriptors
+            if len(eg) > 0:
+                token = SmilesToken(eg, len(self.bond_descriptors))
+                self.end_tokens.append(token)
+                self.bond_descriptors += token.bond_descriptors
         self._generatable = _adjust_weight(end_group_text, self.repeat_tokens)
 
         right_terminal_token = BondDescriptor(
@@ -148,3 +149,23 @@ class Stochastic:
                 return False
 
         return self._generatable
+
+    def generate_string(self, extension):
+        string = "{"
+        string += self.bond_descriptors[0].generate_string(extension)
+        for token in self.repeat_tokens:
+            string += token.generate_string(extension)+", "
+        string = string[:-2]
+        if len(self.end_tokens) > 0:
+            string += "; "
+            for token in self.end_tokens:
+                string += token.generate_string(extension) + ", "
+            string = string[:-2]
+        string += self.bond_descriptors[-1].generate_string(extension)
+        string += "}"
+        if self.distribution:
+            string += self.distribution.generate_string(extension)
+        if self.mixture:
+            string += self.mixture.generate_string(extension)
+
+        return string
