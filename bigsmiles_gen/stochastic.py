@@ -95,8 +95,8 @@ class Stochastic(BigSMILESbase):
         right_preceding_char = middle_text[i : middle_text.find("[", i)]
 
         if ";" in middle_text:
-            repeat_unit_text = middle_text[middle_text.find("]", 1) : middle_text.find(";")]
-            end_group_text = middle_text[middle_text.find(";") : middle_text.rfind("[")]
+            repeat_unit_text = middle_text[middle_text.find("]", 1)+1 : middle_text.find(";")]
+            end_group_text = middle_text[middle_text.find(";")+1 : middle_text.rfind("[")]
         else:
             repeat_unit_text = middle_text[middle_text.find("]", 1)+1 : middle_text.rfind("[")]
             end_group_text = ""
@@ -104,9 +104,10 @@ class Stochastic(BigSMILESbase):
         self.repeat_tokens = []
         for ru in repeat_unit_text.split(","):
             ru = ru.strip()
-            token = SmilesToken(ru, len(self.bond_descriptors))
-            self.repeat_tokens.append(token)
-            self.bond_descriptors += token.bond_descriptors
+            if len(ru) > 0:
+                token = SmilesToken(ru, len(self.bond_descriptors))
+                self.repeat_tokens.append(token)
+                self.bond_descriptors += token.bond_descriptors
         self._generatable = _adjust_weight(repeat_unit_text, self.repeat_tokens)
 
         self.end_tokens = []
@@ -116,7 +117,7 @@ class Stochastic(BigSMILESbase):
                 token = SmilesToken(eg, len(self.bond_descriptors))
                 self.end_tokens.append(token)
                 self.bond_descriptors += token.bond_descriptors
-        self._generatable = _adjust_weight(end_group_text, self.repeat_tokens)
+        self._generatable = _adjust_weight(end_group_text, self.end_tokens)
 
         right_terminal_token = BondDescriptor(
             right_bond_text, len(self.bond_descriptors), right_preceding_char
@@ -168,4 +169,4 @@ class Stochastic(BigSMILESbase):
         if self.mixture:
             string += self.mixture.generate_string(extension)
 
-        return string
+        return string.strip()

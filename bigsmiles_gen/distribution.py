@@ -74,7 +74,7 @@ class FlorySchulz(Distribution):
         """
         super().__init__(raw_text)
 
-        if not raw_text.startswith("flory_schulz"):
+        if not self._raw_text.startswith("flory_schulz"):
             raise RuntimeError(
                 f"Attemp to initlize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'"
             )
