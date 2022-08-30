@@ -124,7 +124,7 @@ class BondDescriptor(BigSMILESbase):
                 string = string[:-1]
             string += "|"
         string += "]"
-        return string
+        return string.strip()
 
     @property
     def generatable(self):

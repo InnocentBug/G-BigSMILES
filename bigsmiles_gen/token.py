@@ -71,6 +71,8 @@ class SmilesToken(BigSMILESbase):
                     f"Invalid weight {self.weight} not in [0,1] for bond descriptor {self._raw_text}"
                 )
 
+        self.strip_smiles = self.strip_smiles.strip()
+
     def generate_string(self, extension):
         string = ""
         if len(self.bond_descriptors) == 0:
@@ -93,7 +95,7 @@ class SmilesToken(BigSMILESbase):
         if extension and self.weight is not None:
             string += f"|{self.weight}|"
 
-        return string
+        return string.strip()
 
     @property
     def generatable(self):
