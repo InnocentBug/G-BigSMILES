@@ -14,7 +14,7 @@ class BigSMILESbase(ABC):
         return self.generate_string(True)
 
     @abstractmethod
-    def generate_string(self, extension:bool):
+    def generate_string(self, extension: bool):
         pass
 
     @property

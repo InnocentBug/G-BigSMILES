@@ -2,8 +2,8 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-from .core import BigSMILESbase
 from .bond import BondDescriptor
+from .core import BigSMILESbase
 
 
 class SmilesToken(BigSMILESbase):
@@ -37,7 +37,7 @@ class SmilesToken(BigSMILESbase):
 
         i = 0
         while self._raw_text.find("[", i) >= 0 and i <= len(self._raw_text):
-            if self._raw_text[self._raw_text.find("[", i)+1] not in "$<>":
+            if self._raw_text[self._raw_text.find("[", i) + 1] not in "$<>":
                 self.strip_smiles += self._raw_text[i]
                 i += 1
                 continue

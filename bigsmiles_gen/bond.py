@@ -110,7 +110,6 @@ class BondDescriptor(BigSMILESbase):
             return True
         return False
 
-
     def generate_string(self, extension):
         string = ""
         string += f"[{self.descriptor}{self.descriptor_id}"

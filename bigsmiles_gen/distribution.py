@@ -45,6 +45,7 @@ class Distribution(BigSMILESbase):
         """
         pass
 
+
 class FlorySchulz(Distribution):
     """
     Flory-Schulz distribution of molecular weights for geometrically distributed chain lengths.

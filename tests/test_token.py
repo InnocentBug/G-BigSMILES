@@ -10,7 +10,6 @@ def test_token_str():
     test_args = [
         ("[$]CC(C#N)[$]", 0, "[$]CC(C#N)[$]", "[$]CC(C#N)[$]", "CC(C#N)"),
         ("[$]C[@H](C#N)[$]", 0, "[$]C[@H](C#N)[$]", "[$]C[@H](C#N)[$]", "C[@H](C#N)"),
-
         (
             "[$]CC(c1ccccc1)[$]",
             1,
@@ -25,7 +24,6 @@ def test_token_str():
             "[$][Si]CC(c1ccccc1)[$]",
             "[Si]CC(c1ccccc1)",
         ),
-
         (
             "[<|2.3|]C(=O)c1ccc(cc1)C(=O)[<|1.3|]|0.25|",
             5,
