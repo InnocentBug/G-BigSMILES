@@ -114,7 +114,7 @@ class BondDescriptor(BigSMILESbase):
     def generate_string(self, extension):
         string = ""
         string += f"[{self.descriptor}{self.descriptor_id}"
-        if extension:
+        if extension and self.weight != 1.0:
             string += "|"
             if self.transitions is None:
                 string += f"{self.weight}"

@@ -120,9 +120,9 @@ class Gauss(Distribution):
         """
         super().__init__(raw_text)
 
-        if not raw_text.startswith("gauss"):
+        if not self._raw_text.startswith("gauss"):
             raise RuntimeError(
-                f"Attemp to initlize Gaussian distribution from text '{raw_text}' that does not start with 'gauss'"
+                f"Attempt to initlize Gaussian distribution from text '{raw_text}' that does not start with 'gauss'"
             )
 
         self._mu, self._sigma = make_tuple(self._raw_text[len("gauss") :])

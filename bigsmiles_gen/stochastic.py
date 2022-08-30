@@ -123,7 +123,7 @@ class Stochastic(BigSMILESbase):
         )
         self.bond_descriptors.append(right_terminal_token)
 
-        end_text = self._raw_text[self._raw_text.find("}") :]
+        end_text = self._raw_text[self._raw_text.find("}")+1 :]
         if end_text.find(".|") >= 0:
             distribution_text = end_text[: end_text.find(".|")].strip()
             mixture_text = end_text[end_text.find(".|") :].strip()

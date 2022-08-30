@@ -37,6 +37,10 @@ class SmilesToken(BigSMILESbase):
 
         i = 0
         while self._raw_text.find("[", i) >= 0 and i <= len(self._raw_text):
+            if self._raw_text[self._raw_text.find("[", i)+1] not in "$<>":
+                self.strip_smiles += self._raw_text[i]
+                i += 1
+                continue
             self.strip_smiles += self._raw_text[i : self._raw_text.find("[", i)]
             i = self._raw_text.find("[", i)
             if self._raw_text.find("]", i) < 0:
@@ -86,7 +90,6 @@ class SmilesToken(BigSMILESbase):
             else:
                 string += self.bond_descriptors[-1].generate_string(False)
             string += self.strip_smiles[self.descriptor_pos[-1] :]
-
         if extension and self.weight is not None:
             string += f"|{self.weight}|"
 
