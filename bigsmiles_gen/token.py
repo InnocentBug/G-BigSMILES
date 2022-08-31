@@ -92,14 +92,14 @@ class SmilesToken(BigSMILESbase):
             else:
                 string += self.bond_descriptors[-1].generate_string(False)
             string += self.strip_smiles[self.descriptor_pos[-1] :]
-        if extension and self.weight is not None:
+        if extension and self.weight is not None and self.weight != 1.0:
             string += f"|{self.weight}|"
 
         return string.strip()
 
     @property
-    def generatable(self):
+    def generable(self):
         for bond in self.bond_descriptors:
-            if not bond.generatable:
+            if not bond.generable:
                 return False
         return True

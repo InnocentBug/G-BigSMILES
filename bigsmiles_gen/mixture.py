@@ -20,7 +20,7 @@ class Mixture(BigSMILESbase):
         Arguments:
         ----------
         raw_text: str
-             Text represenation of the distribution. Example: `.|1234.|` or `.|30%|`
+             Text representation of the distribution. Example: `.|1234.|` or `.|30%|`
         """
         self._raw_text = raw_text
 
@@ -41,7 +41,7 @@ class Mixture(BigSMILESbase):
                 abs_mass = float(self._raw_text.strip(".|"))
             except ValueError:
                 warn(
-                    f"Mixture descriptor {self._raw_text} does not specify a valid mixture, the system will not be generatable."
+                    f"Mixture descriptor {self._raw_text} does not specify a valid mixture, the system will not be generable."
                 )
             else:
                 if abs_mass < 0:
@@ -55,6 +55,14 @@ class Mixture(BigSMILESbase):
     @property
     def relative_mass(self):
         return self._relative_mass
+
+    @relative_mass.setter
+    def relative_mass(self, fraction):
+        if fraction < 0 or fraction > 100:
+            raise RuntimeError("Unable to set weight {fraction}. Invalid extra fraction.")
+        self._relative_mass = fraction
+        if self.absolute_mass:
+            self.system_mass = self.absolute_mass / (self.relative_mass / 100)
 
     @property
     def system_mass(self):
@@ -84,5 +92,5 @@ class Mixture(BigSMILESbase):
         return "."
 
     @property
-    def generatable(self):
+    def generable(self):
         return self.absolute_mass is not None

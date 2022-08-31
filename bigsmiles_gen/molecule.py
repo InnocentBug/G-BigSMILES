@@ -17,7 +17,7 @@ class Molecule(BigSMILESbase):
 
     def __init__(self, big_smiles_ext):
         """
-        Construction of a molecue to make up mixtures.
+        Construction of a molecule to make up mixtures.
 
         Arguments:
         ----------
@@ -53,7 +53,7 @@ class Molecule(BigSMILESbase):
             end_pos = stochastic_text.find("}") + 1
             if end_pos < 0:
                 raise RuntimeError(
-                    f"System {stochastic_text} contains an openining '{' for a stochastic object, but no closing '}'."
+                    f"System {stochastic_text} contains an opening '{' for a stochastic object, but no closing '}'."
                 )
             # Find distribution extension
             if stochastic_text[end_pos] == "|":
@@ -67,13 +67,13 @@ class Molecule(BigSMILESbase):
             self._elements.append(token)
 
     @property
-    def generatable(self):
+    def generable(self):
         if self.mixture is not None:
-            if not self.mixture.generatable:
+            if not self.mixture.generable:
                 return False
 
         for ele in self._elements:
-            if not ele.generatable:
+            if not ele.generable:
                 return False
 
         return True

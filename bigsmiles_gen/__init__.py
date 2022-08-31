@@ -16,4 +16,5 @@ from .distribution import Distribution, FlorySchulz, Gauss
 from .mixture import Mixture
 from .molecule import Molecule
 from .stochastic import Stochastic
+from .system import System
 from .token import SmilesToken

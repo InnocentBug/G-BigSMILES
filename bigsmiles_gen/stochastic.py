@@ -47,7 +47,7 @@ def _adjust_weight(text, token_list):
 
 class Stochastic(BigSMILESbase):
     """
-    Stoachstic object parsing for extended bigSMILES.
+    Stochastic object parsing for extended bigSMILES.
 
     ## Note: Empty stochastic objects, that only contain a single terminal bond descriptor are not supported.
     """
@@ -63,7 +63,7 @@ class Stochastic(BigSMILESbase):
         """
 
         self._raw_text = big_smiles_ext.strip()
-        self._generatable = True
+        self._generable = True
         if self._raw_text[0] != "{":
             raise RuntimeError(
                 "Stochastic object '" + self._raw_text + "' does not start with '{'."
@@ -106,7 +106,7 @@ class Stochastic(BigSMILESbase):
                 token = SmilesToken(ru, len(self.bond_descriptors))
                 self.repeat_tokens.append(token)
                 self.bond_descriptors += token.bond_descriptors
-        self._generatable = _adjust_weight(repeat_unit_text, self.repeat_tokens)
+        self._generable = _adjust_weight(repeat_unit_text, self.repeat_tokens)
 
         self.end_tokens = []
         for eg in end_group_text.split(","):
@@ -115,7 +115,7 @@ class Stochastic(BigSMILESbase):
                 token = SmilesToken(eg, len(self.bond_descriptors))
                 self.end_tokens.append(token)
                 self.bond_descriptors += token.bond_descriptors
-        self._generatable = _adjust_weight(end_group_text, self.end_tokens)
+        self._generable = _adjust_weight(end_group_text, self.end_tokens)
 
         right_terminal_token = BondDescriptor(
             right_bond_text, len(self.bond_descriptors), right_preceding_char
@@ -133,15 +133,15 @@ class Stochastic(BigSMILESbase):
             self.distribution = get_distribution(distribution_text)
 
     @property
-    def generatable(self):
+    def generable(self):
         for bond in self.bond_descriptors:
-            if not bond.generatable:
+            if not bond.generable:
                 return False
         for token in self.repeat_tokens + self.end_tokens:
-            if not token.generatable:
+            if not token.generable:
                 return False
 
-        return self._generatable
+        return self._generable
 
     def generate_string(self, extension):
         string = "{"

@@ -23,12 +23,12 @@ class BondDescriptor(BigSMILESbase):
            text representation of a bond descriptor. Example: `[$0]`
 
         descr_num: int
-           Position of bond description in the line notation of the stoachstic object.
+           Position of bond description in the line notation of the stochastic object.
            Ensure that it starts with `0` and is strictly monotonic increasing during a stochastic object.
 
         preceding_characters: str
            Characters preceding the bond descriptor, that is not an atom.
-           These characters are used to idendify the type of bond, any stereochemistry etc.
+           These characters are used to identify the type of bond, any stereochemistry etc.
            If no further characters are provided, it is assumed to be a single bond without stereochemistry specification.
         """
         self._raw_text = big_smiles_ext
@@ -126,5 +126,5 @@ class BondDescriptor(BigSMILESbase):
         return string.strip()
 
     @property
-    def generatable(self):
+    def generable(self):
         return self.weight > 0

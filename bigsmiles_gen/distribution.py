@@ -30,7 +30,7 @@ class Distribution(BigSMILESbase):
         Arguments:
         ----------
         raw_text: str
-             Text represenation of the distribution. Example: `flory_schulz(0.01)`
+             Text representation of the distribution. Example: `flory_schulz(0.01)`
         """
         self._raw_text = raw_text.strip("| \t\n")
 
@@ -70,14 +70,14 @@ class FlorySchulz(Distribution):
         Arguments:
         ----------
         raw_text: str
-             Text represenation of the distribution.
+             Text representation of the distribution.
              Has to start with `flory_schulz`.
         """
         super().__init__(raw_text)
 
         if not self._raw_text.startswith("flory_schulz"):
             raise RuntimeError(
-                f"Attemp to initlize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'"
+                f"Attempt to initialize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'"
             )
 
         self._a = float(make_tuple(self._raw_text[len("flory_schulz") :]))
@@ -94,7 +94,7 @@ class FlorySchulz(Distribution):
         return ""
 
     @property
-    def generatable(self):
+    def generable(self):
         return True
 
 
@@ -116,14 +116,14 @@ class Gauss(Distribution):
         Arguments:
         ----------
         raw_text: str
-             Text represenation of the distribution.
+             Text representation of the distribution.
              Has to start with `gauss`.
         """
         super().__init__(raw_text)
 
         if not self._raw_text.startswith("gauss"):
             raise RuntimeError(
-                f"Attempt to initlize Gaussian distribution from text '{raw_text}' that does not start with 'gauss'"
+                f"Attempt to initialize Gaussian distribution from text '{raw_text}' that does not start with 'gauss'"
             )
 
         self._mu, self._sigma = make_tuple(self._raw_text[len("gauss") :])
@@ -144,5 +144,5 @@ class Gauss(Distribution):
         return ""
 
     @property
-    def generatable(self):
+    def generable(self):
         return True

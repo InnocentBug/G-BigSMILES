@@ -19,5 +19,5 @@ class BigSMILESbase(ABC):
 
     @property
     @abstractmethod
-    def generatable(self):
+    def generable(self):
         pass
