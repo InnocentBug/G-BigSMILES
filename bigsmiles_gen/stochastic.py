@@ -7,7 +7,6 @@ from warnings import warn
 from .bond import BondDescriptor
 from .core import BigSMILESbase
 from .distribution import get_distribution
-from .mixture import Mixture
 from .token import SmilesToken
 
 
@@ -15,7 +14,7 @@ def _adjust_weight(text, token_list):
     if len(token_list) == 0:
         return True
     num_unspecified_weights = 0
-    total_weight = 0
+    total_weight = 0.0
     for token in token_list:
         if token.weight is not None:
             total_weight += token.weight
@@ -30,8 +29,8 @@ def _adjust_weight(text, token_list):
     if num_unspecified_weights == 1:
         for token in token_list:
             if token.weight is None:
-                weight = 1 - total_weight
-                if weight < 0 or weight > 1:
+                weight = 1.0 - total_weight
+                if weight < 0.0 or weight > 1.0:
                     warn(
                         "The missing weight of added to {repeat_unit_text} stochastic object is invalid. Check the weights of the smiles tokens."
                     )
@@ -40,7 +39,7 @@ def _adjust_weight(text, token_list):
                     token.weight = weight
                     total_weight += weight
                     break
-    if abs(total_weight - 1) > 1e-6:
+    if abs(total_weight - 1.0) > 1e-6:
         warn(f"Stochastic object {text} has invalid total repeat unit weight.")
         return False
     return True
@@ -126,18 +125,12 @@ class Stochastic(BigSMILESbase):
         end_text = self._raw_text[self._raw_text.find("}") + 1 :]
         if end_text.find(".|") >= 0:
             distribution_text = end_text[: end_text.find(".|")].strip()
-            mixture_text = end_text[end_text.find(".|") :].strip()
         else:
             distribution_text = end_text.strip()
-            mixture_text = ""
 
         self.distribution = None
         if len(distribution_text) > 1:
             self.distribution = get_distribution(distribution_text)
-
-        self.mixture = None
-        if len(mixture_text) > 1:
-            self.mixture = Mixture(mixture_text)
 
     @property
     def generatable(self):
@@ -165,7 +158,5 @@ class Stochastic(BigSMILESbase):
         string += "}"
         if self.distribution:
             string += self.distribution.generate_string(extension)
-        if self.mixture:
-            string += self.mixture.generate_string(extension)
 
         return string.strip()

@@ -14,5 +14,6 @@ from .bond import BondDescriptor
 from .core import _GLOBAL_RNG, BigSMILESbase
 from .distribution import Distribution, FlorySchulz, Gauss
 from .mixture import Mixture
+from .molecule import Molecule
 from .stochastic import Stochastic
 from .token import SmilesToken

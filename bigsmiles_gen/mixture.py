@@ -36,7 +36,6 @@ class Mixture(BigSMILESbase):
             if rel_mass < 0 or rel_mass > 100:
                 raise RuntimeError(f"Mixture relative mass invalid percent {self._raw_text}.")
             self._relative_mass = float(rel_mass)
-            print(rel_mass, self._relative_mass)
         else:
             try:
                 abs_mass = float(self._raw_text.strip(".|"))
