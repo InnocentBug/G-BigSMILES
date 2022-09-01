@@ -20,5 +20,5 @@ lint:
     - taplo@release-taplo-cli-0.6.8
 actions:
   enabled:
-    trunk-fmt-pre-commit
-    trunk-check-pre-push
+    - trunk-fmt-pre-commit
+    - trunk-check-pre-push
