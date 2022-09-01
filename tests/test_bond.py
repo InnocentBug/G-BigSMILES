@@ -8,20 +8,22 @@ import bigsmiles_gen
 def test_descriptors_str():
 
     test_args = [
-        ("[$0]", 0, "", "[$0|1.0|]", "[$0]"),
-        ("[<]", 0, "", "[<|1.0|]", "[<]"),
-        ("[>]", 1, "", "[>|1.0|]", "[>]"),
-        ("[$]", 0, "-", "[$|1.0|]", "[$]"),
-        ("[<]", 0, "#", "[<|1.0|]", "[<]"),
-        ("[>]", 1, "=", "[>|1.0|]", "[>]"),
+        ("[$0]", 0, "", "[$0]", "[$0]"),
+        ("[<]", 0, "", "[<]", "[<]"),
+        ("[]", 12, "", "[]", "[]"),
+        ("[>|2|]", 1, "", "[>|2.0|]", "[>]"),
+        ("[$|3|]", 0, "-", "[$|3.0|]", "[$]"),
+        ("[<]", 0, "#", "[<]", "[<]"),
+        ("[>]", 1, "=", "[>]", "[>]"),
         ("[$5| 2.|]", 34, "", "[$5|2.0|]", "[$5]"),
         ("[<| 21. 234. 2134. 64. 657.|]", 0, "#", "[<|21.0 234.0 2134.0 64.0 657.0|]", "[<]"),
     ]
 
     for text, idx, char, ref, big in test_args:
         bond = bigsmiles_gen.BondDescriptor(text, idx, char)
-        assert str(bond) == char + ref
-        assert bond.pure_big_smiles() == big
+        assert str(bond) == ref
+        assert bond.generate_string(False) == big
+        assert bond.generable
 
 
 def test_descriptors_compatible():

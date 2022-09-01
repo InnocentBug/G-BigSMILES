@@ -23,14 +23,15 @@ def test_flory_schulz():
 
     rng = np.random.default_rng()
     for a in [0.01, 0.05, 0.1, 0.3, 0.5]:
-        flory_schulz = bigsmiles_gen.distribution.FlorySchulz(f"flory_schulz({a})", rng)
+        flory_schulz = bigsmiles_gen.distribution.get_distribution(f"flory_schulz({a})")
 
-        data = np.asarray([flory_schulz.draw_mw() for i in range(NSTAT)])
+        data = np.asarray([flory_schulz.draw_mw(rng) for i in range(NSTAT)])
 
         assert np.abs((np.mean(data) - mean(a)) / mean(a)) < EPSILON
         assert np.abs((np.var(data) - variance(a)) / variance(a)) < EPSILON
         assert np.abs((stats.skew(data) - skew(a)) / skew(a)) < EPSILON
         assert str(flory_schulz) == f"|flory_schulz({a})|"
+        assert flory_schulz.generable
 
 
 def test_gauss():
@@ -45,15 +46,16 @@ def test_gauss():
 
     rng = np.random.default_rng()
     for mu, sigma in [(100.0, 10.0), (200.0, 100.0), (500.0, 1.0), (600.0, 0.0)]:
-        gauss = bigsmiles_gen.distribution.Gauss(f"gauss({mu}, {sigma})", rng)
+        gauss = bigsmiles_gen.distribution.get_distribution(f"gauss({mu}, {sigma})")
 
-        data = np.asarray([gauss.draw_mw() for i in range(NSTAT)])
+        data = np.asarray([gauss.draw_mw(rng) for i in range(NSTAT)])
 
         assert np.abs((np.mean(data) - mean(mu, sigma)) / mean(mu, sigma)) < EPSILON
         if sigma > 0:
             assert np.abs((np.var(data) - variance(mu, sigma)) / variance(mu, sigma)) < EPSILON
 
         assert str(gauss) == f"|gauss({mu}, {sigma})|"
+        assert gauss.generable
 
 
 if __name__ == "__main__":

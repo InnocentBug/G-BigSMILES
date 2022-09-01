@@ -5,8 +5,10 @@
 import numpy as np
 import rdkit.Chem.rdchem as rc
 
+from .core import BigSMILESbase
 
-class BondDescriptor:
+
+class BondDescriptor(BigSMILESbase):
     """
     Bond descriptor of the bigSMILES notation.
     """
@@ -21,15 +23,27 @@ class BondDescriptor:
            text representation of a bond descriptor. Example: `[$0]`
 
         descr_num: int
-           Position of bond description in the line notation of the stoachstic object.
+           Position of bond description in the line notation of the stochastic object.
            Ensure that it starts with `0` and is strictly monotonic increasing during a stochastic object.
 
         preceding_characters: str
            Characters preceding the bond descriptor, that is not an atom.
-           These characters are used to idendify the type of bond, any stereochemistry etc.
+           These characters are used to identify the type of bond, any stereochemistry etc.
            If no further characters are provided, it is assumed to be a single bond without stereochemistry specification.
         """
         self._raw_text = big_smiles_ext
+
+        self.descriptor = ""
+        self.descriptor_id = ""
+        self.descriptor_num = int(descr_num)
+        self.weight = 1.0
+        self.transitions = None
+        self.preceding_characters = preceding_characters
+        self.bond_type = rc.BondType.UNSPECIFIED
+        self.bond_stereo = rc.BondStereo.STEREOANY
+        if self._raw_text == "[]":
+            return
+
         if self._raw_text[0] != "[" or self._raw_text[-1] != "]":
             raise RuntimeError(f"Bond descriptor {self._raw_text} does not start and end with []")
         if self._raw_text[1] not in ("$", "<", ">"):
@@ -86,6 +100,8 @@ class BondDescriptor:
     def is_compatible(self, other):
         if self.descriptor_id != other.descriptor_id:
             return False
+        if self.descriptor == "" or other.descriptor == "":
+            return False
         if self.descriptor == "$" and other.descriptor == "$":
             return True
         if self.descriptor == "<" and other.descriptor == ">":
@@ -94,17 +110,21 @@ class BondDescriptor:
             return True
         return False
 
-    def __str__(self):
-        string = self.preceding_characters
-        string += f"[{self.descriptor}{self.descriptor_id}|"
-        if self.transitions is None:
-            string += f"{self.weight}"
-        else:
-            for t in self.transitions:
-                string += f"{t} "
-            string = string[:-1]
-        string += "|]"
-        return string
+    def generate_string(self, extension):
+        string = ""
+        string += f"[{self.descriptor}{self.descriptor_id}"
+        if extension and self.weight != 1.0:
+            string += "|"
+            if self.transitions is None:
+                string += f"{self.weight}"
+            else:
+                for t in self.transitions:
+                    string += f"{t} "
+                string = string[:-1]
+            string += "|"
+        string += "]"
+        return string.strip()
 
-    def pure_big_smiles(self):
-        return f"[{self.descriptor}{self.descriptor_id}]"
+    @property
+    def generable(self):
+        return self.weight > 0

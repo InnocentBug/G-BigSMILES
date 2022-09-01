@@ -3,9 +3,10 @@
 # See LICENSE for details
 
 from .bond import BondDescriptor
+from .core import BigSMILESbase
 
 
-class SmilesToken:
+class SmilesToken(BigSMILESbase):
     """
     SMILES fragment including the bond descriptors, that make up the monomers and end groups.
     This also includes the weight of this particular monomer in the generation.
@@ -36,6 +37,10 @@ class SmilesToken:
 
         i = 0
         while self._raw_text.find("[", i) >= 0 and i <= len(self._raw_text):
+            if self._raw_text[self._raw_text.find("[", i) + 1] not in "$<>":
+                self.strip_smiles += self._raw_text[i]
+                i += 1
+                continue
             self.strip_smiles += self._raw_text[i : self._raw_text.find("[", i)]
             i = self._raw_text.find("[", i)
             if self._raw_text.find("]", i) < 0:
@@ -66,7 +71,9 @@ class SmilesToken:
                     f"Invalid weight {self.weight} not in [0,1] for bond descriptor {self._raw_text}"
                 )
 
-    def _construct_string(self, weight):
+        self.strip_smiles = self.strip_smiles.strip()
+
+    def generate_string(self, extension):
         string = ""
         if len(self.bond_descriptors) == 0:
             string = self.strip_smiles
@@ -75,24 +82,24 @@ class SmilesToken:
             for i in range(len(self.descriptor_pos) - 1):
                 start = self.descriptor_pos[i]
                 end = self.descriptor_pos[i + 1]
-                if weight:
+                if extension:
                     string += str(self.bond_descriptors[i])
                 else:
-                    string += self.bond_descriptors[i].pure_big_smiles()
+                    string += self.bond_descriptors[i].generate_string(False)
                 string += self.strip_smiles[start:end]
-            if weight:
+            if extension:
                 string += str(self.bond_descriptors[-1])
             else:
-                string += self.bond_descriptors[-1].pure_big_smiles()
+                string += self.bond_descriptors[-1].generate_string(False)
             string += self.strip_smiles[self.descriptor_pos[-1] :]
-
-        if weight and self.weight is not None:
+        if extension and self.weight is not None and self.weight != 1.0:
             string += f"|{self.weight}|"
 
-        return string
+        return string.strip()
 
-    def __str__(self):
-        return self._construct_string(True)
-
-    def pure_big_smiles(self):
-        return self._construct_string(False)
+    @property
+    def generable(self):
+        for bond in self.bond_descriptors:
+            if not bond.generable:
+                return False
+        return True

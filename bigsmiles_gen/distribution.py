@@ -2,42 +2,48 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from ast import literal_eval as make_tuple
 
 from scipy import stats
 
+from .core import _GLOBAL_RNG, BigSMILESbase
 
-class Distribution(ABC):
+
+def get_distribution(distribution_text):
+    if "flory_schulz" in distribution_text:
+        return FlorySchulz(distribution_text)
+    if "gauss" in distribution_text:
+        return Gauss(distribution_text)
+    raise RuntimeError(f"Unknown distribution type {distribution_text}.")
+
+
+class Distribution(BigSMILESbase):
     """
     Generic class to generate molecular weight numbers.
     """
 
-    def __init__(self, raw_text, rng):
+    def __init__(self, raw_text):
         """
         Initialize the generic distribution.
 
         Arguments:
         ----------
         raw_text: str
-             Text represenation of the distribution. Example: `flory_schulz(0.01)`
+             Text representation of the distribution. Example: `flory_schulz(0.01)`
+        """
+        self._raw_text = raw_text.strip("| \t\n")
 
+    @abstractmethod
+    def draw_mw(self, rng=None):
+        """
+        Draw a sample from the molecular weight distribution.
+        Arguments:
+        ----------
         rng: numpy.random.Generator
              Numpy random number generator for the generation of numbers.
         """
-        self._raw_text = raw_text.strip("| \t\n")
-        self._rng = rng
-
-    @abstractmethod
-    def draw_mw(self):
         pass
-
-    @abstractmethod
-    def __str__(self):
-        pass
-
-    def pure_big_smiles(self):
-        return ""
 
 
 class FlorySchulz(Distribution):
@@ -57,34 +63,39 @@ class FlorySchulz(Distribution):
         def _pmf(self, k, a):
             return a**2 * k * (1 - a) ** (k - 1)
 
-    def __init__(self, raw_text, rng):
+    def __init__(self, raw_text):
         """
         Initialization of Flory-Schulz distribution object.
 
         Arguments:
         ----------
         raw_text: str
-             Text represenation of the distribution.
+             Text representation of the distribution.
              Has to start with `flory_schulz`.
-
-        rng: numpy.random.Generator
-             Numpy random number generator for the generation of numbers.
         """
-        super().__init__(raw_text, rng)
+        super().__init__(raw_text)
 
-        if not raw_text.startswith("flory_schulz"):
+        if not self._raw_text.startswith("flory_schulz"):
             raise RuntimeError(
-                f"Attemp to initlize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'"
+                f"Attempt to initialize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'"
             )
 
         self._a = float(make_tuple(self._raw_text[len("flory_schulz") :]))
         self._flory_schulz = self.flory_schulz_gen(name="Flory-Schulz")
 
-    def draw_mw(self):
-        return self._flory_schulz.rvs(self._a, random_state=self._rng)
+    def draw_mw(self, rng=None):
+        if rng is None:
+            rng = _GLOBAL_RNG
+        return self._flory_schulz.rvs(self._a, random_state=rng)
 
-    def __str__(self):
-        return f"|flory_schulz({self._a})|"
+    def generate_string(self, extension):
+        if extension:
+            return f"|flory_schulz({self._a})|"
+        return ""
+
+    @property
+    def generable(self):
+        return True
 
 
 class Gauss(Distribution):
@@ -98,35 +109,40 @@ class Gauss(Distribution):
     The textual representation of this distribution is: `gauss(\\mu, \\sigma)`
     """
 
-    def __init__(self, raw_text, rng):
+    def __init__(self, raw_text):
         """
         Initialization of Gaussian distribution object.
 
         Arguments:
         ----------
         raw_text: str
-             Text represenation of the distribution.
+             Text representation of the distribution.
              Has to start with `gauss`.
-
-        rng: numpy.random.Generator
-             Numpy random number generator for the generation of numbers.
         """
-        super().__init__(raw_text, rng)
+        super().__init__(raw_text)
 
-        if not raw_text.startswith("gauss"):
+        if not self._raw_text.startswith("gauss"):
             raise RuntimeError(
-                f"Attemp to initlize Gaussian distribution from text '{raw_text}' that does not start with 'gauss'"
+                f"Attempt to initialize Gaussian distribution from text '{raw_text}' that does not start with 'gauss'"
             )
 
         self._mu, self._sigma = make_tuple(self._raw_text[len("gauss") :])
         self._mu = float(self._mu)
         self._sigma = float(self._sigma)
 
-    def draw_mw(self):
-        mw = int(round(self._rng.normal(self._mu, self._sigma)))
+    def draw_mw(self, rng=None):
+        if rng is None:
+            rng = _GLOBAL_RNG
+        mw = int(round(rng.normal(self._mu, self._sigma)))
         if mw < 0:
             mw = 0
         return mw
 
-    def __str__(self):
-        return f"|gauss({self._mu}, {self._sigma})|"
+    def generate_string(self, extension):
+        if extension:
+            return f"|gauss({self._mu}, {self._sigma})|"
+        return ""
+
+    @property
+    def generable(self):
+        return True
