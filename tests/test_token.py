@@ -47,6 +47,7 @@ def test_token_str():
         assert big == token.generate_string(False)
         assert token.bond_descriptors[0].descriptor_num == offset
         assert token.strip_smiles == smi
+        assert token.generable
 
 
 if __name__ == "__main__":

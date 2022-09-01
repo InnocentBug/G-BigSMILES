@@ -8,12 +8,13 @@ cli:
   version: 0.17.0-beta
 lint:
   enabled:
+    - actionlint@1.6.17
     - cspell@6.8.1
-    - black@22.6.0
+    - black@22.8.0
     - flake8@5.0.4
     - git-diff-check@SYSTEM
-    - gitleaks@8.9.0
+    - gitleaks@8.11.2
     - isort@5.10.1
-    - markdownlint@0.32.1
+    - markdownlint@0.32.2
     - prettier@2.7.1
     - taplo@release-taplo-cli-0.6.8

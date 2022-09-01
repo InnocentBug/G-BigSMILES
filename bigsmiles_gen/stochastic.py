@@ -140,6 +140,10 @@ class Stochastic(BigSMILESbase):
         for token in self.repeat_tokens + self.end_tokens:
             if not token.generable:
                 return False
+        if self.distribution is None:
+            return False
+        if not self.distribution.generable:
+            return False
 
         return self._generable
 

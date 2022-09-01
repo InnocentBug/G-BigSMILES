@@ -31,6 +31,7 @@ def test_flory_schulz():
         assert np.abs((np.var(data) - variance(a)) / variance(a)) < EPSILON
         assert np.abs((stats.skew(data) - skew(a)) / skew(a)) < EPSILON
         assert str(flory_schulz) == f"|flory_schulz({a})|"
+        assert flory_schulz.generable
 
 
 def test_gauss():
@@ -54,6 +55,7 @@ def test_gauss():
             assert np.abs((np.var(data) - variance(mu, sigma)) / variance(mu, sigma)) < EPSILON
 
         assert str(gauss) == f"|gauss({mu}, {sigma})|"
+        assert gauss.generable
 
 
 if __name__ == "__main__":

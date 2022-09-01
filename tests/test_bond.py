@@ -23,6 +23,7 @@ def test_descriptors_str():
         bond = bigsmiles_gen.BondDescriptor(text, idx, char)
         assert str(bond) == ref
         assert bond.generate_string(False) == big
+        assert bond.generable
 
 
 def test_descriptors_compatible():
