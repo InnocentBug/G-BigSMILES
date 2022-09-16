@@ -23,6 +23,6 @@ actions:
     - trunk-fmt-pre-commit
     - trunk-check-pre-push
 merge:
-  required-statuses:
+  required_statuses:
     - Trunk Check
     - ci-tests
