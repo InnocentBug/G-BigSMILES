@@ -4,6 +4,8 @@ on:
   # Allows you (and trunk) to run this workflow
   workflow_dispatch:
 
+  create:
+
 jobs:
   trunk:
     runs-on: ubuntu-latest
