@@ -4,6 +4,10 @@ on:
   # Allows you (and trunk) to run this workflow
   workflow_dispatch:
 
+  create:
+    branches:
+      - trunk-merge/*
+
 jobs:
   trunk:
     runs-on: ubuntu-latest

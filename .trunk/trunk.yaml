@@ -22,3 +22,7 @@ actions:
   enabled:
     - trunk-fmt-pre-commit
     - trunk-check-pre-push
+merge:
+  required-statuses:
+    - Trunk Check
+    - ci-tests
