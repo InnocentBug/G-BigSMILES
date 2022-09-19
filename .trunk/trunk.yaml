@@ -25,3 +25,5 @@ actions:
 merge:
   required_statuses:
     - trunk
+    - ci-tests (ubuntu-20.04, 3.9)
+    - ci-tests (macos-latest, 3.9)
