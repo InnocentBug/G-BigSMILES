@@ -25,4 +25,3 @@ actions:
 merge:
   required_statuses:
     - trunk
-    - ci-tests**
