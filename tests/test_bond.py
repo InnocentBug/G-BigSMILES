@@ -7,6 +7,9 @@ import bigsmiles_gen
 
 def test_descriptors_str():
 
+    assert True
+    assert False
+
     test_args = [
         ("[$0]", 0, "", "[$0]", "[$0]"),
         ("[<]", 0, "", "[<]", "[<]"),
