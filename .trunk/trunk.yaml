@@ -1,23 +1,28 @@
 version: 0.1
+runtimes:
+  enabled:
+    - go@1.18.3
+    - node@16.14.2
+    - python@3.10.3
 plugins:
   sources:
     - id: trunk
       ref: v0.0.4
       uri: https://github.com/trunk-io/plugins
 cli:
-  version: 0.17.0-beta
+  version: 0.18.0-beta
 lint:
   enabled:
-    - actionlint@1.6.17
-    - cspell@6.8.1
+    - actionlint@1.6.19
+    - cspell@6.10.1
     - black@22.8.0
     - flake8@5.0.4
     - git-diff-check@SYSTEM
-    - gitleaks@8.11.2
+    - gitleaks@8.13.0
     - isort@5.10.1
     - markdownlint@0.32.2
     - prettier@2.7.1
-    - taplo@release-taplo-cli-0.6.8
+    - taplo@release-taplo-cli-0.7.0
 actions:
   enabled:
     - trunk-fmt-pre-commit
