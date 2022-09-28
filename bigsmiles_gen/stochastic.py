@@ -82,7 +82,7 @@ class Stochastic(BigSMILESbase):
         bond_text = middle_text[middle_text.find("[") : middle_text.find("]", 1) + 1]
         preceding_characters = middle_text[: middle_text.find("[")]
         self.bond_descriptors = []
-        bond = BondDescriptor(bond_text, len(self.bond_descriptors), preceding_characters)
+        bond = BondDescriptor(bond_text, len(self.bond_descriptors), preceding_characters, None)
         self.bond_descriptors.append(bond)
 
         # Right terminal bond descriptor
@@ -118,7 +118,7 @@ class Stochastic(BigSMILESbase):
         self._generable = _adjust_weight(end_group_text, self.end_tokens)
 
         right_terminal_token = BondDescriptor(
-            right_bond_text, len(self.bond_descriptors), right_preceding_char
+            right_bond_text, len(self.bond_descriptors), right_preceding_char, None
         )
         self.bond_descriptors.append(right_terminal_token)
 
