@@ -4,6 +4,7 @@
 
 import copy
 
+from .bond import _create_compatible_bond_text
 from .core import BigSMILESbase
 from .mixture import Mixture
 from .stochastic import Stochastic
@@ -46,9 +47,28 @@ class Molecule(BigSMILESbase):
 
         while stochastic_text.find("{") >= 0:
             pre_token = stochastic_text[: stochastic_text.find("{")].strip()
+            pre_stochastic = None
             if len(pre_token) > 0:
-                token = SmilesToken(pre_token, 0)
-                self._elements.append(token)
+                pre_stochastic = SmilesToken(pre_token, 0)
+                # Find the connecting terminal bond descriptor of previous element.
+                if len(self._elements) > 0:
+                    # Get expected terminal bond descriptor
+                    other_bd = self._elements[-1].bond_descriptors[-1]
+                    if len(pre_stochastic.bond_descriptors) > 0:
+                        found_compatible = False
+                        for bd in pre_stochastic.bond_descriptors[0]:
+                            if bd.is_compatible(other_bd):
+                                found_compatible = True
+                        if not found_compatible:
+                            raise RuntimeError(
+                                f"Token {pre_token} only has incompatible bond descriptors with previous element {str(self._elements[-1])}."
+                            )
+                    # Since this isn't standard, we add a bond descriptor here.
+                    else:
+                        bond_string = _create_compatible_bond_text(other_bd)
+                        pre_token = bond_string + pre_token
+                        pre_stochastic = SmilesToken(pre_token, 0)
+
             stochastic_text = stochastic_text[stochastic_text.find("{") :].strip()
             end_pos = stochastic_text.find("}") + 1
             if end_pos < 0:
@@ -58,12 +78,27 @@ class Molecule(BigSMILESbase):
             # Find distribution extension
             if stochastic_text[end_pos] == "|":
                 end_pos = stochastic_text.find("|", end_pos + 2) + 1
-            self._elements.append(Stochastic(stochastic_text[:end_pos]))
+            stochastic = Stochastic(stochastic_text[:end_pos])
+            if pre_stochastic:
+                min_expected_bond_descriptors = 2
+                if len(self._elements) == 0:
+                    min_expected_bond_descriptors = 1
+                if len(pre_stochastic.bond_descriptors) < min_expected_bond_descriptors:
+                    # Attach a compatible bond descriptor automatically
+                    other_bd = stochastic.bond_descriptors[0]
+                    bond_text = _create_compatible_bond_text(other_bd)
+                    pre_token += bond_text
+                    pre_stochastic = SmilesToken(pre_token, 0)
+                self._elements.append(pre_stochastic)
+            self._elements.append(stochastic)
 
             stochastic_text = stochastic_text[end_pos:].strip()
 
         if len(stochastic_text) > 0:
             token = SmilesToken(stochastic_text, 0)
+            if len(self._elements) > 0 and len(token.bond_descriptors) == 0:
+                bond_text = _create_compatible_bond_text(self._elements[-1].bond_descriptors[-1])
+                token = SmilesToken(bond_text + stochastic_text, 0)
             self._elements.append(token)
 
     @property

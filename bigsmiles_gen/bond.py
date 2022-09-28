@@ -8,6 +8,16 @@ import rdkit.Chem.rdchem as rc
 from .core import BigSMILESbase
 
 
+def _create_compatible_bond_text(bond):
+    compatible_symbol = "$"
+    if "<" in str(bond):
+        compatible_symbol = ">"
+    if ">" in str(bond):
+        compatible_symbol = "<"
+    bond_string = f"[{bond.preceding_characters}{compatible_symbol}{bond.descriptor_id}]"
+    return bond_string
+
+
 class BondDescriptor(BigSMILESbase):
     """
     Bond descriptor of the bigSMILES notation.

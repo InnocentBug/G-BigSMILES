@@ -103,7 +103,6 @@ class SmilesToken(BigSMILESbase):
         atom_to_bond = [0]
         bond_descriptors = []
         element_counter = 0
-        print(big_smiles_ext)
         while element_counter < len(elements):
             element = elements[element_counter]
             if isinstance(element, Atom):
