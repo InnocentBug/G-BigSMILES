@@ -2,9 +2,12 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+import warnings
+
 from .atom import Atom
 from .bond import BondDescriptor
-from .core import BigSMILESbase
+from .core import _GLOBAL_RNG, BigSMILESbase, choose_compatible_weight
+from .mol_gen import MolGen
 
 
 class SmilesToken(BigSMILESbase):
@@ -203,16 +206,19 @@ class SmilesToken(BigSMILESbase):
             if isinstance(element, str):
                 element_string += element
             if isinstance(element, Atom):
-                element_string += self.generate_string(False)
+                element_string += element.generate_string(False)
             if isinstance(element, BondDescriptor):
                 # Bond descriptors indicate a missing atom, so no connection between existing atoms
                 element_string += "."
             assert len(element_string) > 0
+
             string += element_string
         # Remove empty branches
         string = string.replace("(.)", "")
         # Remove no-bond before branch end
         string = string.replace(".)", ")")
+
+        string = string.strip(".")
         return string
 
     @property
@@ -221,3 +227,22 @@ class SmilesToken(BigSMILESbase):
             if not bond.generable:
                 return False
         return True
+
+    def generate(self, prefix=None, rng=_GLOBAL_RNG):
+        super().generate(prefix, rng)
+
+        my_mol = MolGen(self)
+        if prefix:
+            try:
+                my_idx = choose_compatible_weight(
+                    my_mol.bond_descriptors, prefix.bond_descriptors[0], rng
+                )
+            except ValueError as exc:
+                warnings.warn(
+                    f"Unable to connect token {str(self)} with prefix, since no compatible bond was found."
+                )
+                raise exc
+
+            my_mol = prefix.attach_other(0, my_mol, my_idx)
+
+        return my_mol

@@ -2,6 +2,8 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+from rdkit import Chem
+
 import bigsmiles_gen
 
 
@@ -9,7 +11,7 @@ def test_token_str():
 
     test_args = [
         ("[$]CC(C#N)[$]", 0, "[$]CC(C#N)[$]", "[$]CC(C#N)[$]", "CC(C#N)"),
-        ("[$]C[H](C#N)[$]", 0, "[$]C[H](C#N)[$]", "[$]C[H](C#N)[$]", "C[H](C#N)"),
+        ("[$]C([H])(C#N)[$]", 0, "[$]C([H])(C#N)[$]", "[$]C([H])(C#N)[$]", "C([H])(C#N)"),
         (
             "[$]CC(c1ccccc1)[$]",
             1,
@@ -43,12 +45,15 @@ def test_token_str():
 
     for text, offset, big, ref, smi in test_args:
         token = bigsmiles_gen.SmilesToken(text, offset)
-        print(ref)
-        print(str(token))
         assert ref == str(token)
         assert big == token.generate_string(False)
         assert token.bond_descriptors[0].descriptor_num == offset
         assert token.generable
+
+        if token.generable:
+            mol = token.generate()
+            smi = Chem.MolToSmiles(mol.mol)
+            print(smi, big)
 
 
 if __name__ == "__main__":

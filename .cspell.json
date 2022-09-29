@@ -12,6 +12,8 @@
     "STEREOANY",
     "ONEANDAHALF",
     "scipy",
-    "molweight"
+    "molweight",
+    "dtype",
+    "token"
   ]
 }
