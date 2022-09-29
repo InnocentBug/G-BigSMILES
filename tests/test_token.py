@@ -10,14 +10,14 @@ import bigsmiles_gen
 def test_token_str():
 
     test_args = [
-        ("[$]CC(C#N)[$]", 0, "[$]CC(C#N)[$]", "[$]CC(C#N)[$]", "CC(C#N)"),
+        ("[$]CC([$])C#N", 0, "[$]CC([$])C#N", "[$]CC([$])C#N", "CCC#N"),
         ("[$]C([H])(C#N)[$]", 0, "[$]C([H])(C#N)[$]", "[$]C([H])(C#N)[$]", "C([H])(C#N)"),
         (
-            "[$]CC(c1ccccc1)[$]",
+            "[$]CC(C[$])(c1ccccc1)",
             1,
-            "[$]CC(c1ccccc1)[$]",
-            "[$]CC(c1ccccc1)[$]",
-            "CC(c1ccccc1)",
+            "[$]CC(C[$])(c1ccccc1)",
+            "[$]CC(C[$])(c1ccccc1)",
+            "CC(C)(c1ccccc1)",
         ),
         (
             "[$][Si]CC(c1ccccc1)[$]",
