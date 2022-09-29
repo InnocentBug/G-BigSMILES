@@ -2,8 +2,6 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-import warnings
-
 from .atom import Atom
 from .bond import BondDescriptor
 from .core import _GLOBAL_RNG, BigSMILESbase, choose_compatible_weight
@@ -174,19 +172,6 @@ class SmilesToken(BigSMILESbase):
         self.atoms = atoms
         self.bond_descriptors = bond_descriptors
 
-        self.weight = None
-        weight_text = self.elements[-1]
-        if isinstance(weight_text, str) and weight_text.find("|") >= 0:
-            if len(weight_text[: weight_text.find("|")]) > 0:
-                self.elements[-1] = weight_text[: weight_text.find("|")]
-            else:
-                self.elements = self.elements[:-1]
-            self.weight = float(weight_text[weight_text.find("|") + 1 : -1])
-            if self.weight < 0 or self.weight > 1:
-                raise RuntimeError(
-                    f"Invalid weight {self.weight} not in [0,1] for Smiles token {self._raw_text}"
-                )
-
     def generate_string(self, extension):
         string = ""
         for element in self.elements:
@@ -194,9 +179,6 @@ class SmilesToken(BigSMILESbase):
                 string += element
             else:
                 string += element.generate_string(extension)
-        if extension and self.weight is not None and self.weight != 1.0:
-            string += f"|{self.weight}|"
-
         return string.strip()
 
     def generate_smiles_fragment(self):
@@ -233,15 +215,9 @@ class SmilesToken(BigSMILESbase):
 
         my_mol = MolGen(self)
         if prefix:
-            try:
-                my_idx = choose_compatible_weight(
-                    my_mol.bond_descriptors, prefix.bond_descriptors[0], rng
-                )
-            except ValueError as exc:
-                warnings.warn(
-                    f"Unable to connect token {str(self)} with prefix, since no compatible bond was found."
-                )
-                raise exc
+            my_idx = choose_compatible_weight(
+                my_mol.bond_descriptors, prefix.bond_descriptors[0], rng
+            )
 
             my_mol = prefix.attach_other(0, my_mol, my_idx)
 

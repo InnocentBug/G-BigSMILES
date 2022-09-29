@@ -53,7 +53,10 @@ class Molecule(BigSMILESbase):
                 # Find the connecting terminal bond descriptor of previous element.
                 if len(self._elements) > 0:
                     # Get expected terminal bond descriptor
-                    other_bd = self._elements[-1].bond_descriptors[-1]
+                    if isinstance(self._elements[-1], Stochastic):
+                        other_bd = self._elements[-1].right_terminal
+                    else:
+                        other_bd = self._elements[-1].bond_descriptors[-1]
                     if len(pre_stochastic.bond_descriptors) > 0:
                         found_compatible = False
                         for bd in pre_stochastic.bond_descriptors[0]:
@@ -85,7 +88,7 @@ class Molecule(BigSMILESbase):
                     min_expected_bond_descriptors = 1
                 if len(pre_stochastic.bond_descriptors) < min_expected_bond_descriptors:
                     # Attach a compatible bond descriptor automatically
-                    other_bd = stochastic.bond_descriptors[0]
+                    other_bd = stochastic.left_terminal
                     bond_text = _create_compatible_bond_text(other_bd)
                     pre_token += bond_text
                     pre_stochastic = SmilesToken(pre_token, 0)
@@ -97,7 +100,12 @@ class Molecule(BigSMILESbase):
         if len(stochastic_text) > 0:
             token = SmilesToken(stochastic_text, 0)
             if len(self._elements) > 0 and len(token.bond_descriptors) == 0:
-                bond_text = _create_compatible_bond_text(self._elements[-1].bond_descriptors[-1])
+                if isinstance(self._elements[-1], Stochastic):
+                    bond_text = _create_compatible_bond_text(self._elements[-1].right_terminal)
+                else:
+                    bond_text = _create_compatible_bond_text(
+                        self._elements[-1].bond_descriptors[-1]
+                    )
                 token = SmilesToken(bond_text + stochastic_text, 0)
             self._elements.append(token)
 

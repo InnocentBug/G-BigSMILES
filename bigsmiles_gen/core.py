@@ -3,6 +3,7 @@
 # See LICENSE for details
 
 from abc import ABC, abstractmethod
+from warnings import warn
 
 import numpy as np
 
@@ -38,7 +39,7 @@ class BigSMILESbase(ABC):
 def get_compatible_bond_descriptor_ids(bond_descriptors, bond):
     compatible_idx = []
     for i, other in enumerate(bond_descriptors):
-        if bond.is_compatible(other):
+        if bond is None or bond.is_compatible(other):
             compatible_idx.append(i)
     return np.asarray(compatible_idx, dtype=int)
 
@@ -51,4 +52,12 @@ def choose_compatible_weight(bond_descriptors, bond, rng):
     weights = np.asarray(weights)
     weights /= np.sum(weights)
 
-    return rng.choice(compatible_idx, p=weights)
+    try:
+        idx = rng.choice(compatible_idx, p=weights)
+    except ValueError as exc:
+        warn(
+            f"Cannot choose compatible bonds, available bonds {len(compatible_idx)}, sum of weights {np.sum(weights)}."
+        )
+        raise exc
+
+    return idx

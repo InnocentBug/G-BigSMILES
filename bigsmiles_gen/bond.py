@@ -14,7 +14,7 @@ def _create_compatible_bond_text(bond):
         compatible_symbol = ">"
     if ">" in str(bond):
         compatible_symbol = "<"
-    bond_string = f"[{bond.preceding_characters}{compatible_symbol}{bond.descriptor_id}]"
+    bond_string = f"{bond.preceding_characters}[{compatible_symbol}{bond.descriptor_id}]"
     return bond_string
 
 
@@ -56,6 +56,10 @@ class BondDescriptor(BigSMILESbase):
         self.bond_stereo = rc.BondStereo.STEREOANY
         if self._raw_text == "[]":
             return
+
+        if len(preceding_characters) == 0:
+            self.preceding_characters = self._raw_text[: self._raw_text.find("[")]
+            self._raw_text = self._raw_text[self._raw_text.find("[") :]
 
         self.atom_bonding_to = atom_bonding_to
         if self.atom_bonding_to is not None:

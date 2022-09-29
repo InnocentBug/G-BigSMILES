@@ -2,8 +2,6 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-from rdkit import Chem
-
 import bigsmiles_gen
 
 
@@ -11,29 +9,29 @@ def test_token_str():
 
     test_args = [
         ("[$]CC([$])C#N", 0, "[$]CC([$])C#N", "[$]CC([$])C#N", "CCC#N"),
-        ("[$]C([H])(C#N)[$]", 0, "[$]C([H])(C#N)[$]", "[$]C([H])(C#N)[$]", "C([H])(C#N)"),
+        ("[$]C([H])(C#N)[$]", 0, "[$]C([H])(C#N)[$]", "[$]C([H])(C#N)[$]", "CC#N"),
         (
             "[$]CC(C[$])(c1ccccc1)",
             1,
             "[$]CC(C[$])(c1ccccc1)",
             "[$]CC(C[$])(c1ccccc1)",
-            "CC(C)(c1ccccc1)",
+            "CC(C)c1ccccc1",
         ),
         (
             "[$][Si]CC(c1ccccc1)[$]",
             1,
             "[$][Si]CC(c1ccccc1)[$]",
             "[$][Si]CC(c1ccccc1)[$]",
-            "[Si]CC(c1ccccc1)",
+            "[Si]CCc1ccccc1",
         ),
         (
-            "[<|2.3|]C(=O)c1ccc(cc1)C(=O)[<|1.3|]|0.25|",
+            "[<|2.3|]C(=O)c1ccc(cc1)C(=O)[<|1.3|]",
             5,
             "[<]C(=O)c1ccc(cc1)C(=O)[<]",
-            "[<|2.3|]C(=O)c1ccc(cc1)C(=O)[<|1.3|]|0.25|",
-            "C(=O)c1ccc(cc1)C(=O)",
+            "[<|2.3|]C(=O)c1ccc(cc1)C(=O)[<|1.3|]",
+            "O=Cc1ccc(C=O)cc1",
         ),
-        ("[$]CC([$|0.5|])[$]", 3, "[$]CC([$])[$]", "[$]CC([$|0.5|])[$]", "CC()"),
+        ("[$]CC([$|0.5|])[$]", 3, "[$]CC([$])[$]", "[$]CC([$|0.5|])[$]", "CC"),
         # (
         #     "[<|234|]OCC{[<][>]OCC[<][>|123|]}O[<]|0.4|",
         #     2,
@@ -52,8 +50,7 @@ def test_token_str():
 
         if token.generable:
             mol = token.generate()
-            smi = Chem.MolToSmiles(mol.mol)
-            print(smi, big)
+            assert smi == mol.smiles
 
 
 if __name__ == "__main__":
