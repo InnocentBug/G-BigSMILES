@@ -5,6 +5,7 @@
 import copy
 
 from rdkit import Chem
+from rdkit.Chem import Descriptors as rdDescriptors
 
 
 class MolGen:
@@ -106,3 +107,7 @@ class MolGen:
         """
         mol = self.get_mol()
         return Chem.MolToSmiles(mol)
+
+    @property
+    def weight(self):
+        return rdDescriptors.HeavyAtomMolWt(self.mol)

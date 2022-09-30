@@ -5,7 +5,7 @@
 import copy
 from warnings import warn
 
-from .core import BigSMILESbase
+from .core import _GLOBAL_RNG, BigSMILESbase
 from .mixture import Mixture
 from .molecule import Molecule
 
@@ -129,3 +129,17 @@ class System(BigSMILESbase):
             string += mol.generate_string(extension)
 
         return string
+
+    def generate(self, prefix=None, rng=_GLOBAL_RNG):
+        assert self.generable
+
+        mols = []
+        for mol in self._molecules:
+            current_mass = 0
+            while current_mass < mol.mixture.absolute_mass:
+                mol_gen = mol.generate(rng=rng)
+                current_mass += mol_gen.weight
+                assert mol_gen.fully_generated
+                mols.append(mol_gen)
+
+        return mols

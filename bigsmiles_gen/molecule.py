@@ -132,8 +132,6 @@ class Molecule(BigSMILESbase):
     def generate(self, prefix=None, rng=_GLOBAL_RNG):
         my_mol = prefix
         for element in self._elements:
-            if my_mol:
-                print(my_mol.smiles)
             my_mol = element.generate(my_mol, rng)
 
         return my_mol
