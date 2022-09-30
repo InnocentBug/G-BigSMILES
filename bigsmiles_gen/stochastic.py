@@ -243,7 +243,7 @@ class Stochastic(BigSMILESbase):
                 terminal_bond_idx = choose_compatible_weight(
                     my_mol.bond_descriptors, invert_terminal, rng
                 )
-                terminal_bond = self.bond_descriptors[terminal_bond_idx]
+                terminal_bond = my_mol.bond_descriptors[terminal_bond_idx]
                 # Remove this bond descriptor from molecule temporarily
                 # such that it doesn't get reacted with end group.
                 del my_mol.bond_descriptors[terminal_bond_idx]
@@ -265,7 +265,7 @@ class Stochastic(BigSMILESbase):
 
             # Reinsert final terminal bond descriptor
             if terminal_bond:
-                my_mol.append(terminal_bond)
+                my_mol.bond_descriptors.append(terminal_bond)
 
             return my_mol
 

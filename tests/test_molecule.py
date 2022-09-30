@@ -2,6 +2,8 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+import numpy as np
+
 import bigsmiles_gen
 
 
@@ -39,11 +41,20 @@ def test_molecule():
         ),
     ]
 
+    rng = np.random.Generator(np.random.MT19937(42))
+    test = rng.uniform()
+    assert test == 0.5419938930062744
+
     for text, big, ref, gen in test_args:
+        print(text)
         mol = bigsmiles_gen.Molecule(text)
         assert str(mol) == ref
         assert mol.generate_string(False) == big
         assert mol.generable == gen
+
+        if mol.generable:
+            gen_mol = mol.generate(rng=rng)
+            print(gen_mol.smiles)
 
 
 if __name__ == "__main__":

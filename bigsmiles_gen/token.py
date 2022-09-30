@@ -7,6 +7,33 @@ from .bond import BondDescriptor
 from .core import _GLOBAL_RNG, BigSMILESbase, choose_compatible_weight
 from .mol_gen import MolGen
 
+_SMILES_DOUBLE_LETTER_ATOM = ("Cl", "Br")
+
+_SMILES_SINGLE_LETTER_ATOM = (
+    "B",
+    "C",
+    "N",
+    "O",
+    "P",
+    "S",
+    "F",
+    "I",
+    "c",
+    "n",
+    "s",
+    "p",
+    "o",
+)
+
+
+def _push_pop_atom_branch(string, atom_to_bond):
+    # Remember atoms before branch opening, to bind to correct atom
+    for _ in range(string.count("(")):
+        atom_to_bond.append(atom_to_bond[-1])
+    for _ in range(string.count(")")):
+        atom_to_bond.pop(-1)
+    return atom_to_bond
+
 
 class SmilesToken(BigSMILESbase):
     """
@@ -43,7 +70,7 @@ class SmilesToken(BigSMILESbase):
         sub_string = ""
         total_atom_number = 0
         while len(current_string) > 0:
-            if len(current_string) > 1 and current_string[:2] in ("Cl", "Br"):
+            if len(current_string) > 1 and current_string[:2] in _SMILES_DOUBLE_LETTER_ATOM:
                 atom = Atom(current_string[:2])
                 total_atom_number += 1
                 if len(sub_string) != 0:
@@ -53,21 +80,7 @@ class SmilesToken(BigSMILESbase):
                 current_string = current_string[2:]
                 continue
 
-            if current_string[0] in [
-                "B",
-                "C",
-                "N",
-                "O",
-                "P",
-                "S",
-                "F",
-                "I",
-                "c",
-                "n",
-                "s",
-                "p",
-                "o",
-            ]:
+            if current_string[0] in _SMILES_SINGLE_LETTER_ATOM:
                 atom = Atom(current_string[0])
                 total_atom_number += 1
                 if len(sub_string) != 0:
@@ -101,7 +114,7 @@ class SmilesToken(BigSMILESbase):
             elements.append(sub_string)
 
         atoms = []
-        atom_to_bond = [0]
+        atom_to_bond = [-1]
         bond_descriptors = []
         element_counter = 0
         while element_counter < len(elements):
@@ -110,13 +123,6 @@ class SmilesToken(BigSMILESbase):
                 atoms.append(element)
                 atom_to_bond[-1] += 1
             elif not isinstance(elements[element_counter], BondDescriptor):
-
-                # Remember atoms before branch opening, to bind to correct atom
-                for _ in range(element.count("(")):
-                    atom_to_bond.append(atom_to_bond[-1])
-                for _ in range(element.count(")")):
-                    atom_to_bond.pop(-1)
-
                 if "$" in element or "<" in element or ">" in element:
                     assert element.find("[") >= 0
                     assert element.find("]") > 0
@@ -124,16 +130,19 @@ class SmilesToken(BigSMILESbase):
                     elementA = element[: element.find("[")]
                     bond_text = element[element.find("[") : element.find("]") + 1]
                     elementB = element[element.find("]") + 1 :]
-                    atom_bonding_to = None
+                    atom_to_bond = _push_pop_atom_branch(elementA, atom_to_bond)
+
                     if "." not in elementA:
                         atom_bonding_to = atom_to_bond[-1]
+                        if atom_bonding_to < 0:
+                            atom_bonding_to = 0
                     else:
                         raise RuntimeError(
                             f"Token {big_smiles_ext} not implemented: bond descriptors with a . before them."
                         )
                     # Ensure that bigSMILES always only binds to one atom.
                     # BondDescriptor is first
-                    if len(atoms) != 0:
+                    if element_counter != 0:
                         # BondDescriptor is last
                         if element_counter != len(elements) - 1:
                             # Closing branch
@@ -143,7 +152,6 @@ class SmilesToken(BigSMILESbase):
                                     raise RuntimeError(
                                         f"Token {big_smiles_ext} appears to be invalid, as bond descriptors bond more than one atom."
                                     )
-
                     first_half = elements[:element_counter]
                     second_half = elements[element_counter + 1 :]
 
@@ -159,12 +167,11 @@ class SmilesToken(BigSMILESbase):
                     bond_descriptors.append(bond)
                     if len(elementB) > 0:
                         elements.append(elementB)
-                        # Since elementB is going to be processed again, push more elements
-                        for _ in range(elementB.count(")")):
-                            atom_to_bond.append(atom_to_bond[-1])
 
                     elements += second_half
                     element_counter += 1
+                else:
+                    atom_to_bond = _push_pop_atom_branch(element, atom_to_bond)
 
             element_counter += 1
 

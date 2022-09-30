@@ -32,13 +32,20 @@ def test_token_str():
             "O=Cc1ccc(C=O)cc1",
         ),
         ("[$]CC([$|0.5|])[$]", 3, "[$]CC([$])[$]", "[$]CC([$|0.5|])[$]", "CC"),
-        # (
-        #     "[<|234|]OCC{[<][>]OCC[<][>|123|]}O[<]|0.4|",
-        #     2,
-        #     "[<]OCC{[<][>]OCC[<][>]}O[<]",
-        #     "[<|234.0|]OCC{[<][>]OCC[<][>|123.0|]}O[<]|0.4|",
-        #     "OCC{OCC}O",
-        # ),
+        (
+            "CC([>])(C[<])C(=O)OCC(O)CSc1c(F)cccc1F",
+            4,
+            "CC([>])(C[<])C(=O)OCC(O)CSc1c(F)cccc1F",
+            "CC([>])(C[<])C(=O)OCC(O)CSc1c(F)cccc1F",
+            "CC(C)C(=O)OCC(O)CSc1c(F)cccc1F",
+        ),
+        (
+            "CC([>])([<])C(=O)OCC(O)CSc1c(F)cccc1F",
+            4,
+            "CC([>])([<])C(=O)OCC(O)CSc1c(F)cccc1F",
+            "CC([>])([<])C(=O)OCC(O)CSc1c(F)cccc1F",
+            "CCC(=O)OCC(O)CSc1c(F)cccc1F",
+        ),
     ]
 
     for text, offset, big, ref, smi in test_args:

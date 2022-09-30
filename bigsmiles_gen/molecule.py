@@ -5,7 +5,7 @@
 import copy
 
 from .bond import _create_compatible_bond_text
-from .core import BigSMILESbase
+from .core import _GLOBAL_RNG, BigSMILESbase
 from .mixture import Mixture
 from .stochastic import Stochastic
 from .token import SmilesToken
@@ -128,3 +128,12 @@ class Molecule(BigSMILESbase):
         if self.mixture:
             string += self.mixture.generate_string(extension)
         return string
+
+    def generate(self, prefix=None, rng=_GLOBAL_RNG):
+        my_mol = prefix
+        for element in self._elements:
+            if my_mol:
+                print(my_mol.smiles)
+            my_mol = element.generate(my_mol, rng)
+
+        return my_mol
