@@ -8,12 +8,22 @@ import rdkit.Chem.rdchem as rc
 from .core import BigSMILESbase
 
 
+def _create_compatible_bond_text(bond):
+    compatible_symbol = "$"
+    if "<" in str(bond):
+        compatible_symbol = ">"
+    if ">" in str(bond):
+        compatible_symbol = "<"
+    bond_string = f"{bond.preceding_characters}[{compatible_symbol}{bond.descriptor_id}]"
+    return bond_string
+
+
 class BondDescriptor(BigSMILESbase):
     """
     Bond descriptor of the bigSMILES notation.
     """
 
-    def __init__(self, big_smiles_ext, descr_num, preceding_characters):
+    def __init__(self, big_smiles_ext, descr_num, preceding_characters, atom_bonding_to):
         """
         Construction of a bond descriptor.
 
@@ -30,6 +40,9 @@ class BondDescriptor(BigSMILESbase):
            Characters preceding the bond descriptor, that is not an atom.
            These characters are used to identify the type of bond, any stereochemistry etc.
            If no further characters are provided, it is assumed to be a single bond without stereochemistry specification.
+
+        atom_bonding_to:
+           Index of the atom this bond descriptor is bonding to
         """
         self._raw_text = big_smiles_ext
 
@@ -43,6 +56,14 @@ class BondDescriptor(BigSMILESbase):
         self.bond_stereo = rc.BondStereo.STEREOANY
         if self._raw_text == "[]":
             return
+
+        if len(preceding_characters) == 0:
+            self.preceding_characters = self._raw_text[: self._raw_text.find("[")]
+            self._raw_text = self._raw_text[self._raw_text.find("[") :]
+
+        self.atom_bonding_to = atom_bonding_to
+        if self.atom_bonding_to is not None:
+            self.atom_bonding_to = int(self.atom_bonding_to)
 
         if self._raw_text[0] != "[" or self._raw_text[-1] != "]":
             raise RuntimeError(f"Bond descriptor {self._raw_text} does not start and end with []")
@@ -61,8 +82,6 @@ class BondDescriptor(BigSMILESbase):
         self.descriptor_id = ""
         if len(id_str) > 0:
             self.descriptor_id = int(id_str.strip())
-
-        self.descriptor_num = int(descr_num)
 
         self.weight = 1.0
         self.transitions = None
@@ -98,6 +117,8 @@ class BondDescriptor(BigSMILESbase):
             raise RuntimeError("Stereochemistry not implemented yet.")
 
     def is_compatible(self, other):
+        if self.bond_type != other.bond_type:
+            return False
         if self.descriptor_id != other.descriptor_id:
             return False
         if self.descriptor == "" or other.descriptor == "":

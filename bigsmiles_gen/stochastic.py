@@ -4,45 +4,13 @@
 
 from warnings import warn
 
-from .bond import BondDescriptor
-from .core import BigSMILESbase
+from rdkit.Chem import Descriptors as rdDescriptors
+
+from .bond import BondDescriptor, _create_compatible_bond_text
+from .core import _GLOBAL_RNG, BigSMILESbase, choose_compatible_weight
 from .distribution import get_distribution
+from .mol_gen import MolGen
 from .token import SmilesToken
-
-
-def _adjust_weight(text, token_list):
-    if len(token_list) == 0:
-        return True
-    num_unspecified_weights = 0
-    total_weight = 0.0
-    for token in token_list:
-        if token.weight is not None:
-            total_weight += token.weight
-        else:
-            num_unspecified_weights += 1
-    if num_unspecified_weights > 1:
-        warn(
-            f"Stochastic object {text} has too many missing weight of the tokens to be generative."
-        )
-        return False
-
-    if num_unspecified_weights == 1:
-        for token in token_list:
-            if token.weight is None:
-                weight = 1.0 - total_weight
-                if weight < 0.0 or weight > 1.0:
-                    warn(
-                        "The missing weight of added to {repeat_unit_text} stochastic object is invalid. Check the weights of the smiles tokens."
-                    )
-                    return False
-                else:
-                    token.weight = weight
-                    total_weight += weight
-                    break
-    if abs(total_weight - 1.0) > 1e-6:
-        warn(f"Stochastic object {text} has invalid total repeat unit weight.")
-        return False
-    return True
 
 
 class Stochastic(BigSMILESbase):
@@ -82,8 +50,8 @@ class Stochastic(BigSMILESbase):
         bond_text = middle_text[middle_text.find("[") : middle_text.find("]", 1) + 1]
         preceding_characters = middle_text[: middle_text.find("[")]
         self.bond_descriptors = []
-        bond = BondDescriptor(bond_text, len(self.bond_descriptors), preceding_characters)
-        self.bond_descriptors.append(bond)
+        bond = BondDescriptor(bond_text, len(self.bond_descriptors), preceding_characters, None)
+        self.left_terminal = bond
 
         # Right terminal bond descriptor
         i = middle_text.rfind("[")
@@ -100,27 +68,35 @@ class Stochastic(BigSMILESbase):
             end_group_text = ""
 
         self.repeat_tokens = []
+        self.repeat_bonds = []
+        self.repeat_bond_token_idx = []
         for ru in repeat_unit_text.split(","):
             ru = ru.strip()
             if len(ru) > 0:
                 token = SmilesToken(ru, len(self.bond_descriptors))
                 self.repeat_tokens.append(token)
                 self.bond_descriptors += token.bond_descriptors
-        self._generable = _adjust_weight(repeat_unit_text, self.repeat_tokens)
+                self.repeat_bonds += token.bond_descriptors
+                for _ in range(len(token.bond_descriptors)):
+                    self.repeat_bond_token_idx.append(len(self.repeat_tokens) - 1)
 
         self.end_tokens = []
+        self.end_bonds = []
+        self.end_bond_token_idx = []
         for eg in end_group_text.split(","):
             eg = eg.strip()
             if len(eg) > 0:
                 token = SmilesToken(eg, len(self.bond_descriptors))
                 self.end_tokens.append(token)
                 self.bond_descriptors += token.bond_descriptors
-        self._generable = _adjust_weight(end_group_text, self.end_tokens)
+                self.end_bonds += token.bond_descriptors
+                for _ in range(len(token.bond_descriptors)):
+                    self.end_bond_token_idx.append(len(self.end_tokens) - 1)
 
         right_terminal_token = BondDescriptor(
-            right_bond_text, len(self.bond_descriptors), right_preceding_char
+            right_bond_text, len(self.bond_descriptors), right_preceding_char, None
         )
-        self.bond_descriptors.append(right_terminal_token)
+        self.right_terminal = right_terminal_token
 
         end_text = self._raw_text[self._raw_text.find("}") + 1 :]
         if end_text.find(".|") >= 0:
@@ -131,6 +107,16 @@ class Stochastic(BigSMILESbase):
         self.distribution = None
         if len(distribution_text) > 1:
             self.distribution = get_distribution(distribution_text)
+        self._validate()
+
+    def _validate(self):
+        for bd in self.bond_descriptors:
+            if bd.transitions is not None and len(bd.transitions) != len(self.bond_descriptors):
+                raise RuntimeError(
+                    f"Invalid transition length in bond descriptor {len(bd.transitions)} but the stochastic element has only {len(self.bond_descriptors)} descriptors."
+                )
+
+        assert len(self.bond_descriptors) == len(self.end_bonds) + len(self.repeat_bonds)
 
     @property
     def generable(self):
@@ -149,7 +135,7 @@ class Stochastic(BigSMILESbase):
 
     def generate_string(self, extension):
         string = "{"
-        string += self.bond_descriptors[0].generate_string(extension)
+        string += self.left_terminal.generate_string(extension)
         for token in self.repeat_tokens:
             string += token.generate_string(extension) + ", "
         string = string[:-2]
@@ -158,9 +144,135 @@ class Stochastic(BigSMILESbase):
             for token in self.end_tokens:
                 string += token.generate_string(extension) + ", "
             string = string[:-2]
-        string += self.bond_descriptors[-1].generate_string(extension)
+        string += self.right_terminal.generate_string(extension)
         string += "}"
         if self.distribution:
             string += self.distribution.generate_string(extension)
 
         return string.strip()
+
+    def generate(self, prefix=None, rng=_GLOBAL_RNG):
+        def get_start():
+            my_mol = prefix
+            if my_mol is None:
+                # Ensure, that really no prefix is expected.
+                if str(self.left_terminal) != "[]":
+                    raise RuntimeError(
+                        "Generating stochastic object without prefix,"
+                        " but the first terminal bond descriptor is not '[]',"
+                        " so a prefix is expected."
+                    )
+                # Find a random end group to start
+                try:
+                    end_bond_idx = choose_compatible_weight(self.end_bonds, None, rng)
+                except ValueError as exc:
+                    warn("Unable to pick an end group bond to start generating.")
+                    raise exc
+                start_token = self.end_tokens[self.end_bond_token_idx[end_bond_idx]]
+                assert len(start_token.bond_descriptors) == 1
+                my_mol = MolGen(start_token)
+            else:
+                # Ensure prefix is compatible with terminal bond descriptor.
+                assert len(prefix.bond_descriptors) == 1
+                if not prefix.bond_descriptors[0].is_compatible(self.left_terminal):
+                    raise RuntimeError(
+                        "The open bond descriptor of the prefix is not compatible"
+                        " with the left terminal bond descriptor of the stochastic object."
+                    )
+            return my_mol
+
+        def generate_repeat_units(my_mol):
+            starting_mol_weight = rdDescriptors.HeavyAtomMolWt(my_mol.mol)
+            target_mol_weight = self.distribution.draw_mw(rng)
+            while (
+                rdDescriptors.HeavyAtomMolWt(my_mol.mol) - starting_mol_weight < target_mol_weight
+            ):
+                starting_bond_idx = choose_compatible_weight(my_mol.bond_descriptors, None, rng)
+                starting_bond = my_mol.bond_descriptors[starting_bond_idx]
+                connecting_bond_idx = choose_compatible_weight(
+                    self.repeat_bonds, starting_bond, rng
+                )
+
+                # Handle explicit transition probability
+                if starting_bond.transitions is not None:
+                    prob = starting_bond.transitions / starting_bond.weight
+                    connecting_bond_idx = rng.choice(range(len(prob)), p=prob)
+
+                # Find the new token and bond
+                if connecting_bond_idx < len(self.repeat_bonds):
+                    token = self.repeat_tokens[self.repeat_bond_token_idx[connecting_bond_idx]]
+                    connecting_bond = self.repeat_bonds[connecting_bond_idx]
+                else:  # In case of transition probabilities, we explicitly handle end tokens
+                    connecting_bond_idx -= len(self.repeat_bonds)
+                    connecting_bond = self.end_bonds[connecting_bond_idx]
+                    token = self.end_tokens[self.end_bond_token_idx[connecting_bond_idx]]
+
+                # Find the bond index in the new token
+                connecting_bond_idx = token.bond_descriptors.index(connecting_bond)
+                new_mol = MolGen(token)
+
+                my_mol = my_mol.attach_other(starting_bond_idx, new_mol, connecting_bond_idx)
+
+                # Prematurely end if no more open bonds available
+                if len(my_mol.bond_descriptors) == 0:
+                    warn(
+                        f"Premature end of generation of {str(self)} because no more open bond descriptors found."
+                    )
+                    break
+
+                # End prematurely if transitions set (bc they can instate end groups)
+                # and only one bond descriptor is present for the terminal end
+                if (
+                    starting_bond.transitions is not None
+                    and str(self.right_terminal) != "[]"
+                    and len(my_mol.bond_descriptors) == 1
+                ):
+                    warn(
+                        f"Premature end of generation of {str(self)} with transitions specified"
+                        " and only a single bond descriptor open for a required terminal."
+                    )
+                    break
+            return my_mol
+
+        def finalize_mol(my_mol):
+            terminal_bond = None
+            if str(self.right_terminal) != "[]":
+                # Invert compatibility
+                invert_text = _create_compatible_bond_text(self.right_terminal)
+                invert_terminal = BondDescriptor(invert_text, 0, "", None)
+                terminal_bond_idx = choose_compatible_weight(
+                    my_mol.bond_descriptors, invert_terminal, rng
+                )
+                terminal_bond = my_mol.bond_descriptors[terminal_bond_idx]
+                # Remove this bond descriptor from molecule temporarily
+                # such that it doesn't get reacted with end group.
+                del my_mol.bond_descriptors[terminal_bond_idx]
+
+            # stochastic generation complete, now starting end group termination
+            while len(my_mol.bond_descriptors) > 0:
+                starting_bond_idx = choose_compatible_weight(my_mol.bond_descriptors, None, rng)
+                starting_bond = my_mol.bond_descriptors[starting_bond_idx]
+                connecting_bond_idx = choose_compatible_weight(self.end_bonds, starting_bond, rng)
+
+                token = self.end_tokens[self.end_bond_token_idx[connecting_bond_idx]]
+                connecting_bond = self.end_bonds[connecting_bond_idx]
+
+                # Find the bond index in the new token
+                connecting_bond_idx = token.bond_descriptors.index(connecting_bond)
+                new_mol = MolGen(token)
+
+                my_mol = my_mol.attach_other(starting_bond_idx, new_mol, connecting_bond_idx)
+
+            # Reinsert final terminal bond descriptor
+            if terminal_bond:
+                my_mol.bond_descriptors.append(terminal_bond)
+
+            return my_mol
+
+        super().generate(prefix, rng)
+
+        my_mol = get_start()
+        my_mol = generate_repeat_units(my_mol)
+        my_mol = finalize_mol(my_mol)
+
+        return my_mol
