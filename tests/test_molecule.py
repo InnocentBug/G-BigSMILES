@@ -39,6 +39,12 @@ def test_molecule():
             "[H][>]{[<]CC([>])(C[<])C(=O)OCC(O)CSc1ccc(F)c(F)c1, CC([>])(C[<])C(=O)OCC(O)CSC(F)(F)F[>]}|gauss(1000.0, 45.0)|[<]CC[>]{[<][<]CC([>])c1ccccc1[>]}|flory_schulz(0.11)|[<]C(C)CC(c1ccccc1)c1ccccc1.|50000000.0|",
             "[H]CC(C)(CC(C)(CC(C)(CC(C)(C(=O)OCC(O)CSC(F)(F)F)C(C)C(Cc1ccccc1)C(C)CC(c1ccccc1)c1ccccc1)C(=O)OCC(O)CSc1ccc(F)c(F)c1)C(=O)OCC(O)CSc1ccc(F)c(F)c1)C(=O)OCC(O)CSC(F)(F)F",
         ),
+        (
+            "{[]CC([>])(C[<])C(=O)OCC(O)CSc1ccc(F)c(F)c1, CC([>])(C[<])C(=O)OCC(O)CSC(F)(F)F; [>][N][>]}|gauss(1000, 45)|{[<][<]CC([>])c1ccccc1; [>]N, [<][H][]}|flory_schulz(0.011)|.|5e7|",
+            "{[]CC([>])(C[<])C(=O)OCC(O)CSc1ccc(F)c(F)c1, CC([>])(C[<])C(=O)OCC(O)CSC(F)(F)F; [>][N][>]}{[<][<]CC([>])c1ccccc1; [>]N, [<][H][]}.",
+            "{[]CC([>])(C[<])C(=O)OCC(O)CSc1ccc(F)c(F)c1, CC([>])(C[<])C(=O)OCC(O)CSC(F)(F)F; [>][N][>]}|gauss(1000.0, 45.0)|{[<][<]CC([>])c1ccccc1; [>]N, [<][H][]}|flory_schulz(0.011)|.|50000000.0|",
+            "[H]C(Cc1ccccc1)C(Cc1ccccc1)C(C)(CC(C)(CC(C)(CC(C)(CC(C)(C[N])C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSc1ccc(F)c(F)c1)C(=O)OCC(O)CSC(F)(F)F",
+        ),
     ]
 
     rng = np.random.Generator(np.random.MT19937(42))
