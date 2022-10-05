@@ -30,16 +30,16 @@ def test_stochastic():
             None,
         ),
         (
-            "{[][$]C([$])C=O,[$]CC([$])CO;[$][H], [$]O[]}|flory_schulz(0.011)|",
+            "{[][$]C([$])C=O,[$]CC([$])CO;[$][H], [$]O[]}|flory_schulz(0.0011)|",
             "{[][$]C([$])C=O, [$]CC([$])CO; [$][H], [$]O[]}",
-            "{[][$]C([$])C=O, [$]CC([$])CO; [$][H], [$]O[]}|flory_schulz(0.011)|",
-            "OCCC(O)O",
+            "{[][$]C([$])C=O, [$]CC([$])CO; [$][H], [$]O[]}|flory_schulz(0.0011)|",
+            "[H]C(CO)CC(CO)CCC(CO)C(C=O)C(C=O)C(C=O)C(CO)CCC(O)CO",
         ),
         (
             "{[][$|3 4 5 6 0 8|]C([$|4.|])C=O,[$|6.|]CC([$|10.1|])CO;[$][H], [$]O[]}|flory_schulz(9e-4)|",
             "{[][$]C([$])C=O, [$]CC([$])CO; [$][H], [$]O[]}",
             "{[][$|3.0 4.0 5.0 6.0 0.0 8.0|]C([$|4.0|])C=O, [$|6.0|]CC([$|10.1|])CO; [$][H], [$]O[]}|flory_schulz(0.0009)|",
-            "O=CC(O)C(CCO)C(CCO)C(C=O)C(C=O)C(C=O)C(CCO)C(O)CCO",
+            "O=CC(O)C(CO)CCC(CO)C(C=O)C(C=O)C(C=O)C(CO)CCC(O)CO",
         ),
     ]
 

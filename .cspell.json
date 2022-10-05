@@ -16,6 +16,8 @@
     "dtype",
     "token",
     "(OCCC)",
-    "OCCC"
+    "OCCC",
+    "(COOC)",
+    "COOC"
   ]
 }

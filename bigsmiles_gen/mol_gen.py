@@ -73,6 +73,11 @@ class MolGen:
         for bd in other_bond_descriptors:
             bd.atom_bonding_to += current_atom_number
 
+        # print([atom.GetSymbol() for atom in self.mol.GetAtoms()],
+        #       [bd.atom_bonding_to for bd in self.bond_descriptors])
+        # print([atom.GetSymbol() for atom in other.mol.GetAtoms()],
+        #       [bd.atom_bonding_to - current_atom_number for bd in other_bond_descriptors])
+
         new_mol = Chem.CombineMols(self.mol, other.mol)
         new_mol = Chem.EditableMol(new_mol)
 

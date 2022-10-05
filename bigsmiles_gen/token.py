@@ -169,7 +169,6 @@ class SmilesToken(BigSMILESbase):
                         elements.append(elementB)
 
                     elements += second_half
-                    element_counter += 1
                 else:
                     atom_to_bond = _push_pop_atom_branch(element, atom_to_bond)
 

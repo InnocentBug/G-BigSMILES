@@ -189,6 +189,7 @@ class Stochastic(BigSMILESbase):
             ):
                 starting_bond_idx = choose_compatible_weight(my_mol.bond_descriptors, None, rng)
                 starting_bond = my_mol.bond_descriptors[starting_bond_idx]
+
                 connecting_bond_idx = choose_compatible_weight(
                     self.repeat_bonds, starting_bond, rng
                 )
