@@ -161,7 +161,10 @@ class SmilesToken(BigSMILESbase):
                         elements.append(elementA)
 
                     bond = BondDescriptor(
-                        bond_text, len(bond_descriptors) + bond_id_offset, elementA, atom_bonding_to
+                        bond_text,
+                        len(bond_descriptors) + bond_id_offset,
+                        elementA + elementB,
+                        atom_bonding_to,
                     )
                     elements.append(bond)
                     bond_descriptors.append(bond)
