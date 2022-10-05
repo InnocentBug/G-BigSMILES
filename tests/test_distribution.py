@@ -58,6 +58,30 @@ def test_gauss():
         assert gauss.generable
 
 
+def test_uniform():
+    def mean(low, high):
+        return 0.5 * (low + high)
+
+    def variance(low, high):
+        return 1 / 12.0 * (high - low) ** 2
+
+    def skew(low, high):
+        return 0
+
+    rng = np.random.default_rng()
+    for low, high in [(10, 100), (200, 1000), (50, 100), (0, 600)]:
+        uniform = bigsmiles_gen.distribution.get_distribution(f"uniform({low}, {high})")
+
+        data = np.asarray([uniform.draw_mw(rng) for i in range(NSTAT)])
+
+        assert np.abs((np.mean(data) - mean(low, high)) / mean(low, high)) < EPSILON
+        assert np.abs((np.var(data) - variance(low, high)) / variance(low, high)) < EPSILON
+
+        assert str(uniform) == f"|uniform({low}, {high})|"
+        assert uniform.generable
+
+
 if __name__ == "__main__":
     test_flory_schulz()
     test_gauss()
+    test_uniform()

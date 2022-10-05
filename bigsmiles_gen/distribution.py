@@ -15,6 +15,8 @@ def get_distribution(distribution_text):
         return FlorySchulz(distribution_text)
     if "gauss" in distribution_text:
         return Gauss(distribution_text)
+    if "uniform" in distribution_text:
+        return Uniform(distribution_text)
     raise RuntimeError(f"Unknown distribution type {distribution_text}.")
 
 
@@ -141,6 +143,50 @@ class Gauss(Distribution):
     def generate_string(self, extension):
         if extension:
             return f"|gauss({self._mu}, {self._sigma})|"
+        return ""
+
+    @property
+    def generable(self):
+        return True
+
+
+class Uniform(Distribution):
+    """
+    Uniform distribution of different lengths, usually useful for short chains.
+
+    The textual representation of this distribution is: `uniform(low, high)`
+    """
+
+    def __init__(self, raw_text):
+        """
+        Initialization of Uniform distribution object.
+
+        Arguments:
+        ----------
+        raw_text: str
+             Text representation of the distribution.
+             Has to start with `gauss`.
+        """
+        super().__init__(raw_text)
+
+        if not self._raw_text.startswith("uniform"):
+            raise RuntimeError(
+                f"Attempt to initialize Uniform distribution from text '{raw_text}' that does not start with 'uniform'"
+            )
+
+        self._low, self._high = make_tuple(self._raw_text[len("uniform") :])
+        self._low = int(self._low)
+        self._high = int(self._high)
+
+    def draw_mw(self, rng=None):
+        if rng is None:
+            rng = _GLOBAL_RNG
+        mw = int(rng.integers(self._low, self._high))
+        return mw
+
+    def generate_string(self, extension):
+        if extension:
+            return f"|uniform({self._low}, {self._high})|"
         return ""
 
     @property
