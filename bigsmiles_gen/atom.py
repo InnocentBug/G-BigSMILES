@@ -2,7 +2,7 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-from rdkit import Chem
+from rdkit import Chem, RDLogger
 
 from .core import BigSMILESbase
 
@@ -25,6 +25,9 @@ class Atom(BigSMILESbase):
 
         if len(text) == 1:
             text = text.upper()
+
+        lg = RDLogger.logger()
+        lg.setLevel(RDLogger.CRITICAL)
 
         mol = Chem.MolFromSmiles(text)
         if mol is None:
