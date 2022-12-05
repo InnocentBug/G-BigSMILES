@@ -174,7 +174,7 @@ class Stochastic(BigSMILESbase):
             else:
                 # Ensure prefix is compatible with terminal bond descriptor.
                 assert len(prefix.bond_descriptors) == 1
-                if not prefix.bond_descriptors[0].is_compatible(self.left_terminal):
+                if str(prefix.bond_descriptors[0]) != str(self.left_terminal):
                     raise RuntimeError(
                         "The open bond descriptor of the prefix is not compatible"
                         " with the left terminal bond descriptor of the stochastic object."
