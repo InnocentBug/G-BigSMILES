@@ -10,21 +10,22 @@ plugins:
       ref: v0.0.4
       uri: https://github.com/trunk-io/plugins
 cli:
-  version: 0.18.0-beta
+  version: 1.1.0
 lint:
   enabled:
-    - actionlint@1.6.19
-    - cspell@6.10.1
-    - black@22.8.0
-    - flake8@5.0.4
+    - actionlint@1.6.22
+    - cspell@6.16.0
+    - black@22.10.0
+    - flake8@6.0.0
     - git-diff-check@SYSTEM
-    - gitleaks@8.13.0
+    - gitleaks@8.15.2
     - isort@5.10.1
     - markdownlint@0.32.2
-    - prettier@2.7.1
-    - taplo@release-taplo-cli-0.7.0
+    - prettier@2.8.0
+    - taplo@0.8.0
 actions:
   enabled:
+    - trunk-upgrade-available
     - trunk-fmt-pre-commit
     - trunk-check-pre-push
 merge:
