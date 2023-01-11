@@ -1,6 +1,9 @@
 # bigSMILESgen
 
-Generator of SMILES string from bigSMILES with extension
+Generator of SMILES string from bigSMILES with extension.
+
+This code implements a parser ofr an extension of the original [bigSMILES notation](https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#the-bigsmiles-line-notation).
+The extension is designed to add details into the line notation that enable the generation of molecules from that specific ensemble.
 
 ## Installation
 
@@ -33,8 +36,13 @@ Should execute our automated test and succeed if the installation was successful
 The notation we introduce here has some limitations.
 Here we are listing the known limitations:
 
-- Uniqueness
+- Uniqueness: there is not necessarily a unique bigSMILES for a given system.
+- Crosslinking: stochastic connections that define a network (including rings) is not supported.
+- Compact notation: some might find this notation not compact enough.
 
 Further, the implementation of this syntax has limitations too. These are the known limitations of the implementation:
 
--
+- Rings: Defining large rings that include stochastic objects is not possible
+- Ladder polymers: not supported
+- Nested stochastic objects: bigSMILES does support nested objects, but they are not supported here.
+- Chemically valid tokens: Every token has to be chemically valid for molecule generation.
