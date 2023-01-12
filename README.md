@@ -122,13 +122,18 @@ Or a more complicated situation that covers for example a polymer and a solvent.
 system = bigsmiles_gen.System("C1CCOC1.|10%|{[][$]C([$])c1ccccc1; [$][H][]]}|gauss(400,20)|.|500|")
 ```
 
-We can still generate these systems as before, but now it returns a list of `MolGen` objects instead of a single `MolGen` object.
+We can still generate these systems as before, but now it returns a random `MolGen` from the ensemble.
 
 ```python
-generated_molecule_list = system.generate()
-assert isinstance(generated_molecule_list, list)
-for molgen in generated_molecule_list:
-   print(molgen.smiles)
+generated_molecule = system.generate()
+```
+
+If we want to generate the entire ensemble completely and collect generated molecules in a list, we can use the generator function of the system.
+
+```python
+generated_molecule_list = []
+for mol in system.generator:
+   print(mol.smiles)
 ```
 
 ### Details

@@ -141,6 +141,7 @@ class System(BigSMILESbase):
 
         return string
 
+    @property
     def generator(self, rng=_GLOBAL_RNG):
         assert self.generable
 
