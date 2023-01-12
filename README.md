@@ -131,23 +131,6 @@ for molgen in generated_molecule_list:
    print(molgen.smiles)
 ```
 
-[//]: # #### BondDescriptor
-
-[//]: # A `BondDescriptor` implements the parsing of a bond descriptor as described in bigSMILES.
-[//]: # In particular a bond descriptor has the following elements
-
-[//]: # `[` + `Symbol` + `ID` + `|` + `weights` +`|` +`]`
-
-[//]: # - `Symbol` can be `$`, `<`, or `>` indicating the type of bond connection.
-[//]: # - `ID` is an optional positive integer indicating the ID of the bond descriptor
-[//]: # - `|` is optional to describe the weight of this bond descriptor.
-[//]: # - if not used, everything between `|` and the `|` has to be omitted.
-[//]: # - `weights` can be a single positive float number of an array of positive float numbers separated by spaces.
-[//]: # - a single float number represents the weight of how likely this bond descriptor reacts in a molecule.
-[//]: # - if an array of float numbers is listed, the number of elements has to be equal to the number of bond descriptors in the stochastic it is a part of. Each of the numbers represents the weight this bond descriptor reacts with the bond descriptor it corresponds to. `Symbol` and `ID` take precedence over this weight.
-
-[//]: # The empty bond descriptor `[]` is special and only permitted in a terminal group of a stochastic object.
-
 ## Limitations
 
 The notation we introduce here has some limitations.
