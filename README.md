@@ -202,13 +202,13 @@ The generation of stochastic objects is implemented as follows:
    1. In case the selected bond descriptor has a list of weights: select the next bond descript from the repeat- or end-units according to the listed weights.
    1. In case of a single weight: select the next bond descriptor from the repeat unit (not end group) according to the weight of the bond descriptors.
 1. Generate the selected unit and react with the two selected bond descriptors.
-1. Repeat from 3 until no bond descriptors are open or the heavy atom molecular weight of the partially generated molecule is bigger or equal to the pre-determined heavyweight molecular weight of the stochastic object.
+1. Repeat until no bond descriptors are open or the heavy atom molecular weight of the partially generated molecule is bigger or equal to the pre-determined heavyweight molecular weight of the stochastic object.
 1. If the right terminal bond descriptor is not empty, select one matching open bond descriptor from the partially generated molecule to be left open.
 1. Close all other remaining open bond descriptors.
    1. Pick a random open bond descriptor according to its bond descriptor weight.
    1. Pick a matching bond descriptor from the end groups according to the weight of their bond descriptors.
    1. Add the end group to the generated molecule and react with the two bond descriptors.
-   1. Repeat from 8.1 until all open bond descriptors (except the one selected in 7) are closed.
+   1. Repeat until all open bond descriptors (except the one selected previously) are closed.
 
 #### Molecule object syntax
 
