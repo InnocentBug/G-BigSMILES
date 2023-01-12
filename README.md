@@ -131,6 +131,112 @@ for molgen in generated_molecule_list:
    print(molgen.smiles)
 ```
 
+### Details
+
+This section lists details about the notation as well as other python objects this package supports.
+
+#### BondDescriptor
+
+A `BondDescriptor` implements the parsing of a bond descriptor as described in bigSMILES.
+In particular, a bond descriptor has the following elements
+
+`[` + `Symbol` + `ID` + `|` + `weights` +`|` +`]`
+
+- `Symbol` can be `$`, `<`, or `>` indicating the type of bond connection.
+- `ID` is an optional positive integer indicating the ID of the bond descriptor
+- `|` is optional to describe the weight of this bond descriptor.
+- if not used, everything between the `|` and the `|` has to be omitted.
+- `weights` can be a single positive float number of an array of positive float numbers separated by spaces.
+- a single float number represents the weight of how likely this bond descriptor reacts in a molecule.
+- if an array of float numbers is listed, the number of elements has to be equal to the number of bond descriptors in the stochastic it is a part of. Each of the numbers represents the weight this bond descriptor reacts with the bond descriptor it corresponds to. `Symbol` and `ID` take precedence over this weight. The sum of all weights in the list plays the equivalent role of a single float number: weighting the bond descriptor for reactions.
+
+The weight functionality (single) can be used to weigh monomers in a stochastic object.
+This allows the specification of for example a 90%/10% representation of monomers in a molecule.
+
+The empty bond descriptor `[]` is special and only permitted in a terminal group of a stochastic object.
+Weights are part of the bigSMILES extension and can be omitted. If omitted it is assumed to be equivalent to `|1.0|`.
+
+#### Token
+
+A token describes a short smiles string that can contain fragments of SMILES strings as well as bond descriptors.
+Tokens have two functions, they serve as repeat and end units inside the stochastic object as well as prefixes, suffixes, and connectors surrounding stochastic objects.
+
+In standard bigSMILES, the prefix, suffix, and connectors token are not supposed to have bond descriptors.
+In this implementation, however, bond descriptors are supported and they are determined by the corresponding terminal bond descriptors.
+
+#### Distribution object
+
+A distribution object describes the stochastic molecular weight of a stochastic object.
+The syntax is that it follows immediately after a stochastic object and takes the following form:
+
+`|` + `name` + `(` + `parameter` + `,` + ... + `)` + `|`
+
+- `name` specifies the name of the distribution
+  ` and it is followed by the parameters (float) of the distribution
+
+Currently, there are 3 distributions implemented, Flory-Schulz, Gaussian, and uniform.
+For more details on the distributions, check them out in `distribution.py`.
+
+Distribution objects are part of the bigSMILES extension and can be omitted.
+
+#### Stochastic object syntax
+
+A stochastic is comprised of the following elements
+
+`{` + `terminal bond descriptor` + `repeat unit token` + `,` + ... `;` + `end group token` + ... `terminal bond descriptor` + `}` + `|` + `distribution text` + `|`
+
+- `terminal bond descriptors` can be empty `[]` but must not be empty if there is something in front (or after) the stochastic object
+- `repeat unit tokens` are tokens that usually contain 2 or more bond descriptors. (more than 2 for branching).
+  - you can list as many repeat units as necessary, separated by `,`
+- `end group tokens` are tokens with a single bond descriptor, usually terminating a branch.
+  - you can list as many end groups as necessary separated by `,`
+- the distribution text is explained above and may be omitted.
+
+The generation of stochastic objects is implemented as follows:
+
+1. Determine the heavy atom molecular weight of this stochastic molecule according to the specified distribution.
+   1. If a there is an existing molecule (i.e. prefix) is present select a bond descriptor that matches the open bond descriptor from the prefix according to the weight of all repeat units.
+   1. If there is no prefix, select a bond descriptor from the end group tokens according to the weight of bond descriptors of the end groups.
+1. Generate the molecule fraction of the selected token and add it to the generating molecule. In case of a prefix, react the prefix with the selected bond descriptor.
+1. In the partially generated molecule, select a random bond descriptor according to the weight of all open bond descriptors present.
+   1. In case the selected bond descriptor has a list of weights: select the next bond descript from the repeat- or end-units according to the listed weights.
+   1. In case of a single weight: select the next bond descriptor from the repeat unit (not end group) according to the weight of the bond descriptors.
+1. Generate the selected unit and react with the two selected bond descriptors.
+1. Repeat until no bond descriptors are open or the heavy atom molecular weight of the partially generated molecule is bigger or equal to the pre-determined heavyweight molecular weight of the stochastic object.
+1. If the right terminal bond descriptor is not empty, select one matching open bond descriptor from the partially generated molecule to be left open.
+1. Close all other remaining open bond descriptors.
+   1. Pick a random open bond descriptor according to its bond descriptor weight.
+   1. Pick a matching bond descriptor from the end groups according to the weight of their bond descriptors.
+   1. Add the end group to the generated molecule and react with the two bond descriptors.
+   1. Repeat until all open bond descriptors (except the one selected previously) are closed.
+
+#### Molecule object syntax
+
+The syntax for a molecule object is as follows:
+
+`prefix` + `stochastic object` + `connector` + ... + `stochastic object` + `suffix`
+
+Any of the elements can be omitted.
+And the molecule can contain as many stochastic objects as necessary that can optionally be connected by `connector tokens`.
+
+#### System object syntax
+
+A system defines an ensemble of molecules instead of just a single molecule from the ensemble.
+To determine the number of molecules the total molecular weight can be specified after a molecule.
+
+`molecule` + `.` + `|` + `mol_weight` + `|`
+
+where `mol_weight` is the total molecular weight of heavy atoms that of all molecules.
+
+A system can also contain more than just one molecule type, but suffixing multiple molecules in a string:
+
+`moleculeA` + `.` + `|` + `mol_weightA` + ``| + `moleculeB`+`.`+`|`+`mol_weightB`+`|` + ...
+
+In this case, a mixture of molecules is generated.
+In the case of mixtures, all but one of the `mol_weight` specifiers can be relatively specifying a percentage rather than molecular weight.
+In that case, `mol_weight` is a positive floating point literally smaller than 100 followed by `%`.
+Make sure that the number of specified percentages is below 100%.
+
 ## Limitations
 
 The notation we introduce here has some limitations.
@@ -139,6 +245,7 @@ Here we are listing the known limitations:
 - Uniqueness: there is not necessarily a unique bigSMILES for a given system.
 - Crosslinking: stochastic connections that define a network (including rings) are not supported.
 - Compact notation: some might find this notation not compact enough.
+- Time or spatial-dependent reaction kinetics. The describable reaction kinetics of this notation remains simple. Complicated situations cannot be represented.
 
 Further, the implementation of this syntax has limitations too. These are the known limitations of the implementation:
 
