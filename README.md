@@ -2,13 +2,13 @@
 
 Generator of SMILES string from bigSMILES with extension.
 
-This code implements a parser ofr an extension of the original [bigSMILES notation](https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#the-bigsmiles-line-notation).
+This code implements a parser for an extension of the original [bigSMILES notation](https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#the-bigsmiles-line-notation).
 The extension is designed to add details into the line notation that enable the generation of molecules from that specific ensemble.
-The syntax of the extension of bigSMILES can be removed if everything between `|` symbols and the `|` symbols are removed from the string.
+The syntax of the extension of bigSMILES can be removed if everything between the `|` symbols and the `|` symbols is removed from the string.
 
 ## Installation
 
-The package is a python only package, but it requires an rdkit installation.
+The package is python-only, but it requires a rdkit installation.
 The easiest way to install this dependency is via conda.
 We provide the `environments.yml` file to install the conda packages.
 
@@ -18,41 +18,135 @@ With the rdkit dependency requirement fulfilled, you can install this package vi
 pip install .
 ```
 
-Outside the installation directory you can test to import the installed package
+Outside the installation directory, you can test importing the installed package
 
 ```shell
 cd ~ && python -c "import bigsmiles_gen && cd -"
 ```
 
-For a more detailed test you can install and use `pytest`.
+For a more detailed test, you can install and use `pytest`.
 
 ```shell
 python -m pytest
 ```
 
 Should execute our automated test and succeed if the installation was successful.
-Examining the tests in `./test` can also help to get an overview of this packages capabilities.
+Examining the tests in `./test` can also help to get an overview of this package's capabilities.
 
-## Notation details and Examples
+## Notation of details and Examples
 
-In this section we discuss the user facing classes of this package, which part of the notation it implements and how it can be used.
+In this section, we discuss the user-facing classes of this package, which part of the notation it implements, and how it can be used.
 
-### BondDescriptor
+### User interface
 
-A `BondDescriptor` is implements the parsing of a bond descriptor as described in bigSMILES.
-In particular a bond descriptor has the following elements
+Four classes are directly facing the user.
+Here we describe the objects we usable examples, for more details on notation and features, check the more detailed sections later on.
 
-`[` + `Symbol` + `ID` + `|` + `weights` +`|` +`]`
+#### Stochastic object
 
-- `Symbol` can be `$`, `<`, or `>` indicating the type of bond connection.
-- `ID` is optional positive integer indicating the ID of the bond descriptor
-- `|` is optional to describe the weight of this bond descriptor.
-  - if not used, everything between `|` and the `|` has to be omitted.
-- `weights` can be a single positive float number of an array of positive float number separated by spaces.
-  - a single float number represents the weight of how likely this bond descriptor reacts in a molecule.
-  - if an array of float number is listed, the number of elements has to be equal to the number of bond descriptors in the stochastic it is a part of. Each of the numbers represents the weight this bond descriptor reacts with the bond descriptor it corresponds to. `Symbol` and `ID` take precedence of this weight.
+The `bigsmiles_gen.Stochastic` object takes as user input a single string of a bigSMILES stochastic object.
 
-The empty bond descriptor `[]` is special and only permitted in a terminal group of a stochastic object.
+```python
+stochastic = bigsmiles_gen.Stochastic("{[][$]C([$])C=O,[$]CC([$])CO;[$][H], [$]O[]}|flory_schulz(0.0011)|"}
+```
+
+Because this stochastic object defines its molecular weight distribution explicitly and both terminal bond descriptors are empty it can generate a full molecule.
+
+```python
+assert stochastic.generable
+```
+
+To generate this molecule we can call the `generate()` function.
+
+```python
+generated_molecule = stochastic.generate()
+```
+
+The resulting object is a wrapped `rdkit` molecule `MolGen`.
+
+#### MolGen object
+
+`bigsmiles_gen.MolGen` objects are the resulting molecules from the generation of bigSMILES strings.
+It can contain partially generated molecules and fully generated molecules.
+Only fully generated molecules are chemically meaningful, so we can ensure this:
+
+```python
+assert generated_molecule.fully_generated
+```
+
+For fully generated molecules we can obtain the underlying `rdkit.mol` object.
+
+```python
+mol = generated_molecule.get_mol()
+```
+
+This enables you to do all the operations with the generated molecule that `rdkit` offers.
+So calculating the SMILES string, various chemical properties, structure matching, and saving in various formats is possible.
+
+For convenience, we offer direct access to the molecular weight of all heavy atoms and the SMILES string.
+
+```python
+print(generated_molecule.weight)
+print(generated_molecule.smiles)
+```
+
+#### Molecule object
+
+The `bigsmiles_gen.Stochstic` object was only generable without prefixes and suffixes, so the `bigsmiles_gen.Molecule` object offers more flexibility.
+It allows the prefixes and suffixes to combine different stochastic objects.
+
+```python
+molecule = bigsmiles_gen.Molecule("NC{[$][$]C[$][$]}|uniform(12, 72)|COOC{[$][$]C[$][$]}|uniform(12, 72)|CO")
+```
+
+Similar to before we can ensure that this molecule is generable and subsequently generate the molecule.
+
+```python
+assert molecule.generable
+generated_molecule = molecule.generate()
+```
+
+#### System object
+
+If it is desired to generate not just a single molecule but a full ensemble system with one or more different types of molecules, this can be expressed with a `bigsmiles_gen.System` object.
+
+This can be a simple system with just a single molecule type, where only the total molecular weight is specified like this one:
+
+```python
+system = bigsmiles_gen.System("NC{[$][$]C[$][$]}|uniform(12, 72)|COOC{[$][$]C[$][$]}|uniform(12, 72)|CO.|1000|")
+```
+
+Or a more complicated situation that covers for example a polymer and a solvent.
+
+```python
+system = bigsmiles_gen.System("C1CCOC1.|10%|{[][$]C([$])c1ccccc1; [$][H][]]}|gauss(400,20)|.|500|")
+```
+
+We can still generate these systems as before, but now it returns a list of `MolGen` objects instead of a single `MolGen` object.
+
+```python
+generated_molecule_list = system.generate()
+assert isinstance(generated_molecule_list, list)
+for molgen in generated_molecule_list:
+   print(molgen.smiles)
+```
+
+[//]: # #### BondDescriptor
+
+[//]: # A `BondDescriptor` implements the parsing of a bond descriptor as described in bigSMILES.
+[//]: # In particular a bond descriptor has the following elements
+
+[//]: # `[` + `Symbol` + `ID` + `|` + `weights` +`|` +`]`
+
+[//]: # - `Symbol` can be `$`, `<`, or `>` indicating the type of bond connection.
+[//]: # - `ID` is an optional positive integer indicating the ID of the bond descriptor
+[//]: # - `|` is optional to describe the weight of this bond descriptor.
+[//]: # - if not used, everything between `|` and the `|` has to be omitted.
+[//]: # - `weights` can be a single positive float number of an array of positive float numbers separated by spaces.
+[//]: # - a single float number represents the weight of how likely this bond descriptor reacts in a molecule.
+[//]: # - if an array of float numbers is listed, the number of elements has to be equal to the number of bond descriptors in the stochastic it is a part of. Each of the numbers represents the weight this bond descriptor reacts with the bond descriptor it corresponds to. `Symbol` and `ID` take precedence over this weight.
+
+[//]: # The empty bond descriptor `[]` is special and only permitted in a terminal group of a stochastic object.
 
 ## Limitations
 
@@ -60,7 +154,7 @@ The notation we introduce here has some limitations.
 Here we are listing the known limitations:
 
 - Uniqueness: there is not necessarily a unique bigSMILES for a given system.
-- Crosslinking: stochastic connections that define a network (including rings) is not supported.
+- Crosslinking: stochastic connections that define a network (including rings) are not supported.
 - Compact notation: some might find this notation not compact enough.
 
 Further, the implementation of this syntax has limitations too. These are the known limitations of the implementation:
