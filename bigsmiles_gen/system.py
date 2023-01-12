@@ -5,6 +5,8 @@
 import copy
 from warnings import warn
 
+import numpy as np
+
 from .core import _GLOBAL_RNG, BigSMILESbase
 from .mixture import Mixture
 from .molecule import Molecule
@@ -66,7 +68,7 @@ def _estimate_system_molecular_weight(molecules, system_molweight):
         system_weight = estimated_weights[0]
     except IndexError:
         warn(
-            "The system cannot be generated, since the total system molecular weight cannot be estimated."
+            "The system cannot be fully generated, since the total system molecular weight cannot be estimated."
         )
         return False
     for mol in molecules:
@@ -123,6 +125,15 @@ class System(BigSMILESbase):
                 return False
         return True
 
+    @property
+    def system_mass(self):
+        assert self.generable
+        assert len(self._molecules) > 0
+        system_mass = self._molecules[0].mixture.system_mass
+        for mol in self._molecules:
+            assert (system_mass - mol.mixture.system_mass) < 1e-8
+        return system_mass
+
     def generate_string(self, extension):
         string = ""
         for mol in self._molecules:
@@ -130,16 +141,29 @@ class System(BigSMILESbase):
 
         return string
 
-    def generate(self, prefix=None, rng=_GLOBAL_RNG):
+    def generator(self, rng=_GLOBAL_RNG):
         assert self.generable
 
-        mols = []
-        for mol in self._molecules:
-            current_mass = 0
-            while current_mass < mol.mixture.absolute_mass:
-                mol_gen = mol.generate(rng=rng)
-                current_mass += mol_gen.weight
-                assert mol_gen.fully_generated
-                mols.append(mol_gen)
+        relative_fractions = [mol.mixture.relative_mass for mol in self._molecules]
+        generated_total_mass = 0
+        while generated_total_mass < self.system_mass:
+            mol_idx = rng.choice(
+                range(len(relative_fractions)), p=relative_fractions / np.sum(relative_fractions)
+            )
+            mol = self._molecules[mol_idx]
+            mol_gen = mol.generate(rng=rng)
+            generated_total_mass += mol_gen.weight
+            assert mol_gen.fully_generated
+            yield mol_gen
 
-        return mols
+    def generate(self, prefix=None, rng=_GLOBAL_RNG):
+
+        relative_fractions = [mol.mixture.relative_mass for mol in self._molecules]
+        mol_idx = rng.choice(
+            range(len(relative_fractions)), p=relative_fractions / np.sum(relative_fractions)
+        )
+        mol = self._molecules[mol_idx]
+        assert mol.generable
+        mol_gen = mol.generate(rng=rng)
+        assert mol_gen.fully_generated
+        return mol_gen
