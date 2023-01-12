@@ -39,7 +39,7 @@ class SmilesToken(BigSMILESbase):
     """
     SMILES fragment including the bond descriptors, that make up the monomers and end groups.
     This also includes the weight of this particular monomer in the generation.
-    Example:  '[$]CC(c1ccccc1)[$]|0.25|'
+    Example:  '[$]CC(c1ccccc1)[$]'
     """
 
     def __init__(self, big_smiles_ext, bond_id_offset):
