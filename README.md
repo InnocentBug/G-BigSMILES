@@ -194,30 +194,21 @@ A stochastic is comprised of the following elements
 
 The generation of stochastic objects is implemented as follows:
 
-//trunk-ignore-begin(markdownlint/MD029)
-
-0. Determine the heavy atom molecular weight of this stochastic molecule according to the specified distribution.
-
-1a) If a there is an existing molecule (i.e. prefix) is present select a bond descriptor that matches the open bond descriptor from the prefix according to the weight of all repeat units.
-1b) If there is no prefix, select a bond descriptor from the end group tokens according to the weight of bond descriptors of the end groups.
-
-2. Generate the molecule fraction of the selected token and add it to the generating molecule. In case of a prefix, react the prefix with the selected bond descriptor.
-3. In the partially generated molecule, select a random bond descriptor according to the weight of all open bond descriptors present.
-
-4a) In case the selected bond descriptor has a list of weights: select the next bond descript from the repeat- or end-units according to the listed weights.
-4b) In case of a single weight: select the next bond descriptor from the repeat unit (not end group) according to the weight of the bond descriptors.
-
-5. Generate the selected unit and react with the two selected bond descriptors.
-6. Repeat from 3 until no bond descriptors are open or the heavy atom molecular weight of the partially generated molecule is bigger or equal to the pre-determined heavyweight molecular weight of the stochastic object.
-7. If the right terminal bond descriptor is not empty, select one matching open bond descriptor from the partially generated molecule to be left open.
-8. Close all other remaining open bond descriptors.
-
-8.1) Pick a random open bond descriptor according to its bond descriptor weight.
-8.2) Pick a matching bond descriptor from the end groups according to the weight of their bond descriptors.
-8.3) Add the end group to the generated molecule and react with the two bond descriptors.
-8.4) Repeat from 8.1 until all open bond descriptors (except the one selected in 7) are closed.
-
-//trunk-ignore-end(markdownlint/MD029)
+1. Determine the heavy atom molecular weight of this stochastic molecule according to the specified distribution.
+   1. If a there is an existing molecule (i.e. prefix) is present select a bond descriptor that matches the open bond descriptor from the prefix according to the weight of all repeat units.
+   1. If there is no prefix, select a bond descriptor from the end group tokens according to the weight of bond descriptors of the end groups.
+1. Generate the molecule fraction of the selected token and add it to the generating molecule. In case of a prefix, react the prefix with the selected bond descriptor.
+1. In the partially generated molecule, select a random bond descriptor according to the weight of all open bond descriptors present.
+   1. In case the selected bond descriptor has a list of weights: select the next bond descript from the repeat- or end-units according to the listed weights.
+   1. In case of a single weight: select the next bond descriptor from the repeat unit (not end group) according to the weight of the bond descriptors.
+1. Generate the selected unit and react with the two selected bond descriptors.
+1. Repeat from 3 until no bond descriptors are open or the heavy atom molecular weight of the partially generated molecule is bigger or equal to the pre-determined heavyweight molecular weight of the stochastic object.
+1. If the right terminal bond descriptor is not empty, select one matching open bond descriptor from the partially generated molecule to be left open.
+1. Close all other remaining open bond descriptors.
+   1. Pick a random open bond descriptor according to its bond descriptor weight.
+   1. Pick a matching bond descriptor from the end groups according to the weight of their bond descriptors.
+   1. Add the end group to the generated molecule and react with the two bond descriptors.
+   1. Repeat from 8.1 until all open bond descriptors (except the one selected in 7) are closed.
 
 #### Molecule object syntax
 
