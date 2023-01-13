@@ -56,8 +56,6 @@ def test_molecule():
         if system.generable:
             for mol in system.generator:
                 print(mol.smiles)
-        else:
-            print(system.generate().smiles)
 
 
 if __name__ == "__main__":
