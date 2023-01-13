@@ -46,19 +46,16 @@ def test_molecule():
     ]
 
     for text, big, ref, gen in test_args:
-        mol = bigsmiles_gen.System(text)
-        print(str(mol))
+        system = bigsmiles_gen.System(text)
+        print(str(system))
         print(ref)
-        assert str(mol) == ref
-        assert mol.generate_string(False) == big
-        assert mol.generable == gen
-        if not mol.generable:
-            mol = bigsmiles_gen.System(text, 4000)
-            assert mol.generable
-            mol_list = mol.generate()
-        else:
-            mol_list = mol.generate()
-        print([mol.smiles for mol in mol_list])
+        assert str(system) == ref
+        assert system.generate_string(False) == big
+        assert system.generable == gen
+
+        if system.generable:
+            for mol in system.generator:
+                print(mol.smiles)
 
 
 if __name__ == "__main__":
