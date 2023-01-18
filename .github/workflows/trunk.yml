@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - trunk-merge/**
+  pull_request:
+    branches:
+      - main
 jobs:
   trunk:
     runs-on: ubuntu-latest
@@ -39,3 +42,22 @@ jobs:
       - name: Run tests
         run: |
           $CONDA/bin/pytest
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+      - name: Install python dependecies
+        run: |
+          sudo apt install jupyter-nbconvert
+          $CONDA/bin/conda env update --file environment.yml --name base
+          $CONDA/bin/conda install pytest
+          $CONDA/bin/conda install pip
+          $CONDA/bin/conda install ipython
+      - name: Install
+        run: $CONDA/bin/pip install .
+      - name: Generate script from jupyter
+        run: jupyter nbconvert --to python bigsmiles_gen.ipynb
+      - name: Run the script
+        run: $CONDA/bin/python bigsmiles_gen.py
