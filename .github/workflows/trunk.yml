@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - trunk-merge/**
+  pull_request:
+    branches:
+      - main
 jobs:
   trunk:
     runs-on: ubuntu-latest
@@ -47,7 +50,7 @@ jobs:
         uses: actions/setup-python@v3
       - name: Install python dependecies
         run: |
-          apt install jupyter-nbconvert
+          sudo apt install jupyter-nbconvert
           $CONDA/bin/conda env update --file environment.yml --name base
           $CONDA/bin/conda install pytest
           $CONDA/bin/conda install pip
