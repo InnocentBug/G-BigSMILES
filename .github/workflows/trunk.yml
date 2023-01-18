@@ -39,3 +39,25 @@ jobs:
       - name: Run tests
         run: |
           $CONDA/bin/pytest
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+      - name: Install python dependecies
+        run: |
+          $CONDA/bin/conda env update --file environment.yml --name base
+          $CONDA/bin/conda install pytest
+          $CONDA/bin/conda install pip
+      - name: Install
+        run: $CONDA/bin/pip install .
+      - uses: yaananth/run-notebook@v2
+        env:
+          RUNNER: ${{ toJson(runner) }}
+          SECRETS: ${{ toJson(secrets) }}
+          GITHUB: ${{ toJson(github) }}
+        with:
+          notebook: "bigsmiles_gen.ipynb"
+          isReport: False
+          poll: True
