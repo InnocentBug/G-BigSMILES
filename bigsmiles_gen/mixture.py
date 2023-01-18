@@ -93,4 +93,4 @@ class Mixture(BigSMILESbase):
 
     @property
     def generable(self):
-        return self.absolute_mass is not None
+        return True
