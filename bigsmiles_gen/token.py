@@ -121,7 +121,7 @@ class SmilesToken(BigSMILESbase):
             element = elements[element_counter]
             if isinstance(element, Atom):
                 atoms.append(element)
-                atom_to_bond[-1] += 1
+                atom_to_bond[-1] = len(atoms) - 1
             elif not isinstance(elements[element_counter], BondDescriptor):
                 if "$" in element or "<" in element or ">" in element:
                     assert element.find("[") >= 0
