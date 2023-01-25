@@ -18,6 +18,8 @@
     "(OCCC)",
     "OCCC",
     "(COOC)",
-    "COOC"
+    "COOC",
+    "networkx",
+    "RDKGEN"
   ]
 }
