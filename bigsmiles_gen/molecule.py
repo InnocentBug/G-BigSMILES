@@ -135,3 +135,10 @@ class Molecule(BigSMILESbase):
             my_mol = element.generate(my_mol, rng)
 
         return my_mol
+
+    @property
+    def residues(self):
+        residues = []
+        for element in self._elements:
+            residues += element.residues
+        return residues

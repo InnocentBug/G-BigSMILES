@@ -26,6 +26,10 @@ class BigSMILESbase(ABC):
     def generable(self):
         pass
 
+    @property
+    def residues(self):
+        return []
+
     def generate(self, prefix=None, rng=_GLOBAL_RNG):
         if not self.generable:
             raise RuntimeError("Attempt to generate a non-generable molecule.")

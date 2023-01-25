@@ -168,3 +168,10 @@ class System(BigSMILESbase):
         mol_gen = mol.generate(rng=rng)
         assert mol_gen.fully_generated
         return mol_gen
+
+    @property
+    def residues(self):
+        residues = []
+        for mol in self._molecules:
+            residues += mol.residues
+        return residues

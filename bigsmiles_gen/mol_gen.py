@@ -4,8 +4,12 @@
 
 import copy
 
+import networkx as nx
 from rdkit import Chem
 from rdkit.Chem import Descriptors as rdDescriptors
+from rdkit.Chem import rdFingerprintGenerator
+
+_RDKGEN = rdFingerprintGenerator.GetRDKitFPGenerator(fpSize=512)
 
 
 class MolGen:
@@ -27,6 +31,14 @@ class MolGen:
         if not token.generable:
             raise RuntimeError(f"Attempting to generate token {str(token)}, which isn't generable.")
         self.bond_descriptors = copy.deepcopy(token.bond_descriptors)
+        self.graph = nx.Graph()
+        assert len(token.residues) == 1
+        smiles = token.generate_smiles_fragment()
+        rdFP = _RDKGEN.GetFingerprint(Chem.MolFromSmiles(smiles))
+        self.graph.add_node(0, smiles=smiles, rdFP=rdFP)
+        for bd in self.bond_descriptors:
+            # Our graph has only 1 node and all BD are associated with that.
+            bd.node_idx = 0
         self.mol = Chem.MolFromSmiles(token.generate_smiles_fragment())
 
     @property
@@ -70,8 +82,10 @@ class MolGen:
                 f"Unable to attach mols, because bond descriptor {str(other_bond_descriptors[other_bond_idx])}"
                 " is incompatible with {str(self.bond_descriptors[self_bond_idx])}."
             )
+        self_graph_len = len(self.graph)
         for bd in other_bond_descriptors:
             bd.atom_bonding_to += current_atom_number
+            bd.node_idx += self_graph_len
 
         # print([atom.GetSymbol() for atom in self.mol.GetAtoms()],
         #       [bd.atom_bonding_to for bd in self.bond_descriptors])
@@ -86,14 +100,20 @@ class MolGen:
             other_bond_descriptors[other_bond_idx].atom_bonding_to,
             self.bond_descriptors[self_bond_idx].bond_type,
         )
+        self.graph = nx.disjoint_union(self.graph, other.graph)
+        self.graph.add_edge(
+            self.bond_descriptors[self_bond_idx].node_idx,
+            other_bond_descriptors[other_bond_idx].node_idx,
+            bond_type=self.bond_descriptors[self_bond_idx].bond_type,
+        )
 
         # Remove bond descriptors from list, as they have reacted now.
         del self.bond_descriptors[self_bond_idx]
         del other_bond_descriptors[other_bond_idx]
 
         self.bond_descriptors += other_bond_descriptors
-        self.mol = new_mol.GetMol()
 
+        self.mol = new_mol.GetMol()
         return self
 
     def get_mol(self):
@@ -116,3 +136,7 @@ class MolGen:
     @property
     def weight(self):
         return rdDescriptors.HeavyAtomMolWt(self.mol)
+
+    def add_graph_res(self, residues):
+        for n in self.graph:
+            self.graph.nodes[n]["res"] = residues.index(self.graph.nodes[n]["smiles"])

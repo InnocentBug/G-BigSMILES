@@ -61,6 +61,7 @@ def test_molecule():
 
     for text, big, ref, gen in test_args:
         mol = bigsmiles_gen.Molecule(text)
+        print(text, mol.residues)
         assert str(mol) == ref
         assert mol.generate_string(False) == big
         assert mol.generable == (gen is not None)

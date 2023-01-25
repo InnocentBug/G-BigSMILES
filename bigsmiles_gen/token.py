@@ -213,6 +213,10 @@ class SmilesToken(BigSMILESbase):
         return string
 
     @property
+    def residues(self):
+        return [self.generate_smiles_fragment()]
+
+    @property
     def generable(self):
         for bond in self.bond_descriptors:
             if not bond.generable:
