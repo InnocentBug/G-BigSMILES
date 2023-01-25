@@ -277,3 +277,12 @@ class Stochastic(BigSMILESbase):
         my_mol = finalize_mol(my_mol)
 
         return my_mol
+
+    @property
+    def residues(self):
+        residues = []
+        for token in self.repeat_tokens:
+            residues += token.residues
+        for token in self.end_tokens:
+            residues += token.residues
+        return residues
