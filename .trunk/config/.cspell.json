@@ -20,6 +20,8 @@
     "(COOC)",
     "COOC",
     "networkx",
-    "RDKGEN"
+    "RDKGEN",
+    "markdownlint",
+    "runtimes"
   ]
 }
