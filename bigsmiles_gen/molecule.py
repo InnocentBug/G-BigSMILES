@@ -142,3 +142,23 @@ class Molecule(BigSMILESbase):
         for element in self._elements:
             residues += element.residues
         return residues
+
+    def gen_mirror(self):
+        """
+        Generate a bigSMILES molecule, that is identical to the original,
+        but as if the the elements of the bigSMILES string would have been written in reverse.
+        """
+        if len(self._elements) < 2:
+            return None
+        mirror = copy.deepcopy(self)
+        mirror._raw_text = None
+        mirror._elements = list(reversed(mirror._elements))
+        for ele in mirror._elements:
+            ele._raw_text = None
+            if isinstance(ele, Stochastic):
+                # ele.bond_descriptors = list(reversed(ele.bond_descriptors))
+                tmp = ele.left_terminal
+                ele.left_terminal = ele.right_terminal
+                ele.right_terminal = tmp
+
+        return mirror

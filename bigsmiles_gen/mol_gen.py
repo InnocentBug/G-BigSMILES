@@ -65,8 +65,6 @@ class MolGen:
         """
 
         self.get_mol()
-        self.get_mol()
-
         if self_bond_idx >= len(self.bond_descriptors):
             raise RuntimeError(f"Invalid bond descriptor id {self_bond_idx} (self).")
         if other_bond_idx >= len(other.bond_descriptors):
