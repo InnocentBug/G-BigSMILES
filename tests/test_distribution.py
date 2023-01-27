@@ -25,6 +25,8 @@ def test_flory_schulz():
     for a in [0.01, 0.05, 0.1, 0.3, 0.5]:
         flory_schulz = bigsmiles_gen.distribution.get_distribution(f"flory_schulz({a})")
 
+        assert flory_schulz.prob_mw(flory_schulz.draw_mw(rng)) > 0
+
         data = np.asarray([flory_schulz.draw_mw(rng) for i in range(NSTAT)])
 
         assert np.abs((np.mean(data) - mean(a)) / mean(a)) < EPSILON
@@ -47,6 +49,8 @@ def test_gauss():
     rng = np.random.default_rng()
     for mu, sigma in [(100.0, 10.0), (200.0, 100.0), (500.0, 1.0), (600.0, 0.0)]:
         gauss = bigsmiles_gen.distribution.get_distribution(f"gauss({mu}, {sigma})")
+
+        assert gauss.prob_mw(gauss.draw_mw(rng)) > 0
 
         data = np.asarray([gauss.draw_mw(rng) for i in range(NSTAT)])
 
@@ -71,6 +75,8 @@ def test_uniform():
     rng = np.random.default_rng()
     for low, high in [(10, 100), (200, 1000), (50, 100), (0, 600)]:
         uniform = bigsmiles_gen.distribution.get_distribution(f"uniform({low}, {high})")
+
+        assert uniform.prob_mw(uniform.draw_mw(rng)) > 0
 
         data = np.asarray([uniform.draw_mw(rng) for i in range(NSTAT)])
 

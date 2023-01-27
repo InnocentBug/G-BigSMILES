@@ -5,6 +5,7 @@
 from abc import abstractmethod
 from ast import literal_eval as make_tuple
 
+import numpy as np
 from scipy import stats
 
 from .core import _GLOBAL_RNG, BigSMILESbase
@@ -44,6 +45,17 @@ class Distribution(BigSMILESbase):
         ----------
         rng: numpy.random.Generator
              Numpy random number generator for the generation of numbers.
+        """
+        pass
+
+    @abstractmethod
+    def prob_mw(self, mw: int):
+        """
+        Calculate the probability that this mw was from this distribution.
+        Arguments:
+        ----------
+        mw: int
+             Integer heavy atom molecular weight.
         """
         pass
 
@@ -99,6 +111,9 @@ class FlorySchulz(Distribution):
     def generable(self):
         return True
 
+    def prob_mw(self, mw: int):
+        return self._flory_schulz.pmf(mw, self._a)
+
 
 class Gauss(Distribution):
     """
@@ -149,6 +164,19 @@ class Gauss(Distribution):
     def generable(self):
         return True
 
+    def prob_mw(self, mw: int):
+        if mw < 0:
+            return 0
+        if abs(self._sigma) < 1e-12:
+            if abs(self._mu - mw) < 0.5:
+                return 1.0
+            return 0
+        return (
+            1
+            / (self._sigma * np.sqrt(2 * np.pi))
+            * np.exp(-0.5 * ((mw - self._mu) / self._sigma) ** 2)
+        )
+
 
 class Uniform(Distribution):
     """
@@ -192,3 +220,8 @@ class Uniform(Distribution):
     @property
     def generable(self):
         return True
+
+    def prob_mw(self, mw: int):
+        if mw < self._low or mw > self._high:
+            return 0.0
+        return 1 / (self._high - self._low)

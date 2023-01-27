@@ -137,6 +137,10 @@ class Molecule(BigSMILESbase):
         return my_mol
 
     @property
+    def elements(self):
+        return copy.deepcopy(self._elements)
+
+    @property
     def residues(self):
         residues = []
         for element in self._elements:
@@ -152,7 +156,7 @@ class Molecule(BigSMILESbase):
             return None
         mirror = copy.deepcopy(self)
         mirror._raw_text = None
-        mirror._elements = list(reversed(mirror._elements))
+        mirror._elements = list(reversed(mirror.elements))
         for ele in mirror._elements:
             ele._raw_text = None
             if isinstance(ele, Stochastic):

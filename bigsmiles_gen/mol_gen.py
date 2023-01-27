@@ -35,7 +35,7 @@ class MolGen:
         assert len(token.residues) == 1
         smiles = token.generate_smiles_fragment()
         rdFP = _RDKGEN.GetFingerprint(Chem.MolFromSmiles(smiles))
-        self.graph.add_node(0, smiles=smiles, rdFP=rdFP)
+        self.graph.add_node(0, smiles=smiles, big_smiles=str(token), rdFP=rdFP)
         for bd in self.bond_descriptors:
             # Our graph has only 1 node and all BD are associated with that.
             bd.node_idx = 0
