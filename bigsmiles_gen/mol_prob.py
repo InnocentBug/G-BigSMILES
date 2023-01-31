@@ -202,7 +202,7 @@ class OpenAtom:
 class PossibleMatch:
     def __init__(self, mol, big, substructure, token, initial_prob=1.0):
         self._big = big
-        self._Nelements = 0
+        self._Nelements = len(big.elements)
         self._active_element = 0
         self._mol = mol
         self._handled_atoms = set()
@@ -213,7 +213,7 @@ class PossibleMatch:
         params.removeHs = False
         pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
         pattern_mw = rdDescriptors.HeavyAtomMolWt(pattern)
-        self._element_weights = np.zeros(len(self._Nelements))
+        self._element_weights = np.zeros(self._Nelements)
         self._open_atoms = []
 
         possible_substructures = mol.GetSubstructMatches(pattern)
@@ -277,7 +277,7 @@ class PossibleMatch:
     def probability(self):
         if self.fully_explored and len(self._open_atoms) == 0:
             mol_weight_prob = 1.0
-            for i, element in self._big.elements:
+            for i, element in enumerate(self._big.elements):
                 if isinstance(element, Stochastic):
                     mol_weight_prob *= element.distribution.prob_mw(self._element_weights[i])
             return self._probability * mol_weight_prob
@@ -299,19 +299,19 @@ class PossibleMatch:
             new_full = []
             # If we couldn't add more, and we have a stochastic element, move to the next.
             if (
-                isinstance(match._big.elements[match.active_element], Stochastic)
-                and str(match._big.elements[match.active_element].right_terminal) != "[]"
+                isinstance(match._big.elements[match._active_element], Stochastic)
+                and str(match._big.elements[match._active_element].right_terminal) != "[]"
             ):
                 # But only move on if there is no other open bond.
                 if len(match._open_atoms) == 1:
                     # Ensure that the last open bond matches with expected terminal:
                     if match._open_atoms[0].bond_descriptors.generate_string(
                         False
-                    ) == match._big.elements[match.active_element].right_terminal.generate_string(
+                    ) == match._big.elements[match._active_element].right_terminal.generate_string(
                         False
                     ):
                         # Ok, now we just have to pop the stochastic element
-                        match.active_element += 1
+                        match._active_element += 1
                         # And now we can try to react this again on the next element active
                         new_open, new_full = react(match, atom)
             return new_full, new_full
@@ -353,6 +353,7 @@ class PossibleMatch:
             for substructure in match._mol.GetSubstructMatches(pattern):
                 open_atom_idx = id_open_atom(substructure, match._handled_atoms, atom.new_atom)
                 if open_atom_idx is not None:
+                    print("asdf", atom)
                     possible_bd = id_bond_descriptor(
                         open_atom_idx, atom.bond_descriptor, token.bond_descriptors
                     )
@@ -392,12 +393,12 @@ class PossibleMatch:
                 new_mol._element_weights[new_mol._active_element] += pattern_mw
                 token_mols.append((new_mol, token))
 
-            if isinstance(pm._elements[0], Stochastic):
+            if isinstance(pm._big.elements[pm._active_element], Stochastic):
                 for token in pm._big.elements[pm._active_element].repeat_tokens:
                     new_mol = pm.copy()
                     pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
                     pattern_mw = rdDescriptors.HeavyAtomMolWt(pattern)
-                    new_mol._element_weights[new_mol.active_element] += pattern_mw
+                    new_mol._element_weights[new_mol._active_element] += pattern_mw
                     token_mols.append((new_mol, token))
 
                 for token in pm._big.elements[pm._active_element].end_tokens:
