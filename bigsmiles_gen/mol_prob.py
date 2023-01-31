@@ -285,6 +285,7 @@ def get_prob(smiles, big_mol):
     full_matches = []
     while len(open_matches) > 0:
         match = open_matches.pop(-1)
+        print(match._handled_atoms, [str(oa) for oa in match._open_atoms])
         stochastic_pop = PossibleMatch.pop_stochastic_element(match.copy())
         if stochastic_pop is not None:
             open_matches.append(stochastic_pop)
