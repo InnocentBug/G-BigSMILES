@@ -25,6 +25,8 @@
     "runtimes",
     "substruct",
     "Nelements",
-    "reactable"
+    "reactable",
+    "Nmol",
+    "subs"
   ]
 }

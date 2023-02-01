@@ -113,7 +113,7 @@ class PossibleMatch:
             atom_found = self.is_atom_handled(atom)
             if atom_found:
                 raise RuntimeError(
-                    f"Attempting to add atom {atom} that from substructure {substructure} that is already present in handled substructure {subs}"
+                    f"Attempting to add atom {atom} that from substructure {substructure} that is already present in handled."
                 )
         self._handled_atoms.append(tuple(substructure))
 
