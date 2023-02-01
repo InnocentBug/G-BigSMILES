@@ -43,14 +43,24 @@ class OpenAtom:
     def __str__(self):
         return f"OpenAtom({self.handled_atom}, {self.new_atom}, {self.bond_descriptor})"
 
+    def __eq__(self, other):
+        if (
+            self.handled_atom == other.handled_atom
+            and self.new_atom == other.new_atom
+            and str(self.bond_descriptor) == str(other.bond_descriptor)
+        ):
+            return True
+        return False
+
 
 class PossibleMatch:
     def __init__(self, mol, big, substructure, token, initial_prob=1.0):
         self._big = big
         self._Nelements = len(big.elements)
+        self._Nmol_atoms = mol.GetNumAtoms()
         self._active_element = 0
         self._mol = mol
-        self._handled_atoms = set()
+        self._handled_atoms = []
         self._probability = 0
 
         # Verify that token and substructure match together
@@ -66,18 +76,52 @@ class PossibleMatch:
             open_atoms = self._find_open_atoms(substructure, token)
             self._add_new_open_atoms(open_atoms)
             self._probability = initial_prob
-            self._handled_atoms |= set(substructure)
+            self.add_handled_atoms(substructure)
             self._element_weights[self._active_element] += pattern_mw
 
         # Always pop SmilesToken, but not stochastic elements
         if isinstance(self._big.elements[self._active_element], SmilesToken):
             self._active_element += 1
 
+    def __eq__(self, other):
+        equal = True
+        if self._big != other._big:
+            return False
+        if self._active_element != other._active_element:
+            return False
+        if self._handled_atoms != other._handled_atoms:
+            return False
+        if self._open_atoms != other._open_atoms:
+            return False
+        if self._element_weights != self._element_weights:
+            return False
+        return equal
+
+    def is_atom_handled(self, atom_idx):
+        atom_found = False
+        for subs in self._handled_atoms:
+            if atom_idx in subs:
+                atom_found = True
+        return atom_found
+
+    def add_handled_atoms(self, substructure):
+        for atom in substructure:
+            if atom >= self._Nmol_atoms:
+                raise RuntimeError(
+                    f"Attempting to add invalid atom to handled: atom {atom}, substructure {substructure}, Nmol {self._Nmol_atoms}"
+                )
+            atom_found = self.is_atom_handled(atom)
+            if atom_found:
+                raise RuntimeError(
+                    f"Attempting to add atom {atom} that from substructure {substructure} that is already present in handled substructure {subs}"
+                )
+        self._handled_atoms.append(tuple(substructure))
+
     def _find_open_atoms(self, substructure, token):
         outside_bonds = []
         open_atoms = []
         for atom_idx in substructure:
-            if atom_idx in self._handled_atoms:
+            if self.is_atom_handled(atom_idx):
                 return []
             aoi = self._mol.GetAtomWithIdx(atom_idx)
             for bond in aoi.GetBonds():
@@ -101,7 +145,7 @@ class PossibleMatch:
             bd_idx = None
             for i in range(len(tmp_bd)):
                 if token_pos == tmp_bd[i].atom_bonding_to:
-                    if not bond[1] in self._handled_atoms:
+                    if not self.is_atom_handled(bond[1]):
                         open_atoms.append(OpenAtom(bond, tmp_bd[i]))
                     assert bd_idx is None
                     bd_idx = i
@@ -118,7 +162,10 @@ class PossibleMatch:
 
     @property
     def fully_explored(self):
-        return len(self._handled_atoms) == self._mol.GetNumAtoms()
+        N_atoms_handled = 0
+        for substructure in self._handled_atoms:
+            N_atoms_handled += len(substructure)
+        return N_atoms_handled == self._Nmol_atoms
 
     @property
     def probability(self):
@@ -144,7 +191,6 @@ class PossibleMatch:
         if match._active_element >= match._Nelements:
             return None
         active = match._big.elements[match._active_element]
-        # If we couldn't add more, and we have a stochastic element, move to the next.
         if isinstance(active, Stochastic) and str(active.right_terminal) != "[]":
             # But only move on if there is no other open bond.
             if len(match._open_atoms) == 1:
@@ -164,12 +210,12 @@ class PossibleMatch:
         self._open_atoms += new_open_atoms
 
     @staticmethod
-    def react_open(pm, atom=None):
+    def react_open(match):
         def react(match, token, atom):
-            def id_open_atom(substructure, handled_atoms, open_atom):
+            def id_open_atom(substructure, match, open_atom):
                 open_atom_idx = None
                 for idx, atom_idx in enumerate(substructure):
-                    if atom_idx in handled_atoms:
+                    if match.is_atom_handled(atom_idx):
                         return None
                     if atom_idx == open_atom:
                         open_atom_idx = idx
@@ -203,7 +249,7 @@ class PossibleMatch:
             pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
 
             for substructure in match._mol.GetSubstructMatches(pattern):
-                open_atom_idx = id_open_atom(substructure, match._handled_atoms, atom.new_atom)
+                open_atom_idx = id_open_atom(substructure, match, atom.new_atom)
                 if open_atom_idx is not None:
                     possible_bd = id_bond_descriptor(
                         open_atom_idx, atom.bond_descriptor, token.bond_descriptors
@@ -216,7 +262,7 @@ class PossibleMatch:
                             new_open_atoms = new_match._find_open_atoms(substructure, token)
                             new_match._add_new_open_atoms(new_open_atoms)
                             # Add the handled atoms to the match
-                            new_match._handled_atoms |= set(substructure)
+                            new_match.add_handled_atoms(substructure)
 
                             if new_match.fully_explored:
                                 new_full += [new_match]
@@ -224,21 +270,16 @@ class PossibleMatch:
                                 new_open += [new_match]
             return new_open, new_full
 
-        params = Chem.SmilesParserParams()
-        params.removeHs = False
-        new_open = []
-        new_full = []
-        if pm.fully_explored and atom is None:
-            new_full.append(pm)
-        elif pm._active_element < pm._Nelements:
-            if atom is None:
-                atom = pm.pop_open_atom()
-                if atom is None:
-                    return new_open, new_full
+        def handle_atom(match_input, atom_idx):
+            new_open = []
+            new_full = []
+            match = match_input.copy()
+            atom = match.pop_open_atom(i)
+            assert atom is not None
             token_mols = []
             # Let's find possible token that could be reactable
-            if isinstance(pm._big.elements[pm._active_element], SmilesToken):
-                new_mol = pm.copy()
+            if isinstance(match._big.elements[match._active_element], SmilesToken):
+                new_mol = match.copy()
                 token = new_mol._big.elements[new_mol._active_element]
                 pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
                 pattern_mw = rdDescriptors.HeavyAtomMolWt(pattern)
@@ -246,16 +287,16 @@ class PossibleMatch:
                 token_mols.append((new_mol, token))
                 new_mol._active_element += 1
 
-            if isinstance(pm._big.elements[pm._active_element], Stochastic):
-                for token in pm._big.elements[pm._active_element].repeat_tokens:
-                    new_mol = pm.copy()
+            if isinstance(match._big.elements[match._active_element], Stochastic):
+                for token in match._big.elements[match._active_element].repeat_tokens:
+                    new_mol = match.copy()
                     pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
                     pattern_mw = rdDescriptors.HeavyAtomMolWt(pattern)
                     new_mol._element_weights[new_mol._active_element] += pattern_mw
                     token_mols.append((new_mol, token))
 
-                for token in pm._big.elements[pm._active_element].end_tokens:
-                    new_mol = pm.copy()
+                for token in match._big.elements[match._active_element].end_tokens:
+                    new_mol = match.copy()
                     pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
                     # Note that end tokens do not increase the molecular weight (for generation purposes)
                     token_mols.append((new_mol, token))
@@ -265,6 +306,20 @@ class PossibleMatch:
                 react_new_open, react_new_full = react(mol, token, atom)
                 new_open += react_new_open
                 new_full += react_new_full
+
+            return new_open, new_full
+
+        params = Chem.SmilesParserParams()
+        params.removeHs = False
+        new_open = []
+        new_full = []
+        if match.fully_explored:
+            new_full.append(match)
+        elif match._active_element < match._Nelements:
+            for i in range(len(match._open_atoms)):
+                atom_open, atom_full = handle_atom(match, i)
+                new_open += atom_open
+                new_full += atom_full
         return new_open, new_full
 
 
@@ -278,23 +333,32 @@ def get_prob(smiles, big_mol):
         pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
         possible_substructures = mol.GetSubstructMatches(pattern)
         for substructure in possible_substructures:
-            pm = PossibleMatch(mol, big_mol, substructure, token, prob)
-            if pm.possible:
-                open_matches.append(pm)
+            match = PossibleMatch(mol, big_mol, substructure, token, prob)
+            if match.possible:
+                open_matches.append(match)
 
     full_matches = []
+    handled_matches = []
     while len(open_matches) > 0:
         match = open_matches.pop(-1)
-        print(match._handled_atoms, [str(oa) for oa in match._open_atoms])
         stochastic_pop = PossibleMatch.pop_stochastic_element(match.copy())
-        if stochastic_pop is not None:
+        if stochastic_pop is not None and stochastic_pop not in handled_matches:
             open_matches.append(stochastic_pop)
         new_open, new_full = match.react_open(match)
 
-        open_matches += new_open
+        # We consider this particular match as done, so are all fully handled matches
+        handled_matches.append(match)
+        handled_matches += new_full
         full_matches += new_full
+        for open_match in new_open:
+            if open_match.fully_explored:
+                full_matches += [open_match]
+            elif open_match not in handled_matches:
+                open_matches += [open_match]
 
-    probabilities = [pm.probability for pm in full_matches]
+        print("count", len(open_matches), len(full_matches))
+
+    probabilities = [match.probability for match in full_matches]
     probability = np.sum(probabilities)
     return probability, full_matches
 
