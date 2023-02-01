@@ -5,7 +5,6 @@
 from abc import abstractmethod
 from ast import literal_eval as make_tuple
 
-import numpy as np
 from scipy import stats
 
 from .core import _GLOBAL_RNG, BigSMILESbase
@@ -111,8 +110,8 @@ class FlorySchulz(Distribution):
     def generable(self):
         return True
 
-    def prob_mw(self, mw: int):
-        return self._flory_schulz.pmf(mw, self._a)
+    def prob_mw(self, mw):
+        return self._flory_schulz.pmf(int(mw), self._a)
 
 
 class Gauss(Distribution):
@@ -146,14 +145,10 @@ class Gauss(Distribution):
         self._mu, self._sigma = make_tuple(self._raw_text[len("gauss") :])
         self._mu = float(self._mu)
         self._sigma = float(self._sigma)
+        self._distribution = stats.norm(loc=self._mu, scale=self._sigma)
 
     def draw_mw(self, rng=None):
-        if rng is None:
-            rng = _GLOBAL_RNG
-        mw = int(round(rng.normal(self._mu, self._sigma)))
-        if mw < 0:
-            mw = 0
-        return mw
+        return self._distribution.rvs(random_state=rng)
 
     def generate_string(self, extension):
         if extension:
@@ -165,17 +160,9 @@ class Gauss(Distribution):
         return True
 
     def prob_mw(self, mw: int):
-        if mw < 0:
-            return 0
-        if abs(self._sigma) < 1e-12:
-            if abs(self._mu - mw) < 0.5:
-                return 1.0
-            return 0
-        return (
-            1
-            / (self._sigma * np.sqrt(2 * np.pi))
-            * np.exp(-0.5 * ((mw - self._mu) / self._sigma) ** 2)
-        )
+        if self._sigma < 1e-6 and abs(self._mu - mw) < 1e-6:
+            return 1.0
+        return self._distribution.pdf(mw)
 
 
 class Uniform(Distribution):
@@ -205,12 +192,12 @@ class Uniform(Distribution):
         self._low, self._high = make_tuple(self._raw_text[len("uniform") :])
         self._low = int(self._low)
         self._high = int(self._high)
+        self._distribution = stats.uniform(loc=self._low, scale=(self._high - self._low))
 
     def draw_mw(self, rng=None):
         if rng is None:
             rng = _GLOBAL_RNG
-        mw = int(rng.integers(self._low, self._high))
-        return mw
+        return self._distribution.rvs(random_state=rng)
 
     def generate_string(self, extension):
         if extension:
@@ -221,7 +208,5 @@ class Uniform(Distribution):
     def generable(self):
         return True
 
-    def prob_mw(self, mw: int):
-        if mw < self._low or mw > self._high:
-            return 0.0
-        return 1 / (self._high - self._low)
+    def prob_mw(self, mw):
+        return self._distribution.pdf(mw)

@@ -50,7 +50,8 @@ def test_gauss():
     for mu, sigma in [(100.0, 10.0), (200.0, 100.0), (500.0, 1.0), (600.0, 0.0)]:
         gauss = bigsmiles_gen.distribution.get_distribution(f"gauss({mu}, {sigma})")
 
-        assert gauss.prob_mw(gauss.draw_mw(rng)) > 0
+        example = gauss.draw_mw(rng)
+        assert gauss.prob_mw(example) > 0
 
         data = np.asarray([gauss.draw_mw(rng) for i in range(NSTAT)])
 
