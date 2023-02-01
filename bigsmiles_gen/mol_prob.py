@@ -61,7 +61,7 @@ class PossibleMatch:
         self._active_element = 0
         self._mol = mol
         self._handled_atoms = []
-        self._probability = 0
+        self._log_prob = -np.inf
 
         # Verify that token and substructure match together
         params = Chem.SmilesParserParams()
@@ -75,7 +75,7 @@ class PossibleMatch:
         if substructure in possible_substructures:
             open_atoms = self._find_open_atoms(substructure, token)
             self._add_new_open_atoms(open_atoms)
-            self._probability = initial_prob
+            self._log_prob = np.log(initial_prob)
             self.add_handled_atoms(substructure)
             self._element_weights[self._active_element] += pattern_mw
 
@@ -169,21 +169,28 @@ class PossibleMatch:
 
     @property
     def probability(self):
+        return np.exp(self.log_prob)
+
+    @property
+    def log_prob(self):
         if self.fully_explored and len(self._open_atoms) == 0:
-            mol_weight_prob = 1.0
+            mol_weight_log_prob = np.log(1.0)
             for i, element in enumerate(self._big.elements):
                 if isinstance(element, Stochastic):
-                    mol_weight_prob *= element.distribution.prob_mw(int(self._element_weights[i]))
-            return self._probability * mol_weight_prob
-        return 0
+                    mol_weight_log_prob += np.log(
+                        element.distribution.prob_mw(int(self._element_weights[i]))
+                    )
+            log_prob = self._log_prob + mol_weight_log_prob
+            return log_prob
+        return -np.inf
 
     @property
     def possible(self):
-        return self._probability > 0
+        return not np.isinf(self._log_prob)
 
     def copy(self, adjust_probability=1.0):
         new_object = copy.deepcopy(self)
-        new_object._probability *= adjust_probability
+        new_object._log_prob += np.log(adjust_probability)
         return new_object
 
     @staticmethod
@@ -355,8 +362,6 @@ def get_prob(smiles, big_mol):
                 full_matches += [open_match]
             elif open_match not in handled_matches:
                 open_matches += [open_match]
-
-        print("count", len(open_matches), len(full_matches))
 
     probabilities = [match.probability for match in full_matches]
     probability = np.sum(probabilities)
