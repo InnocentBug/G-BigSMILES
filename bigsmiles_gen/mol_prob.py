@@ -409,9 +409,6 @@ def get_ensemble_prob(smi: str, big_mol: Molecule):
         return 0
 
     big_mols = [big_mol]
-    big_mirror = big_mol.gen_mirror()
-    # if big_mirror is not None:
-    #     big_mols.append(big_mirror)
 
     matches = []
     probability = 0

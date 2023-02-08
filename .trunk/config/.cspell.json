@@ -27,6 +27,7 @@
     "Nelements",
     "reactable",
     "Nmol",
-    "subs"
+    "subs",
+    "radd"
   ]
 }
