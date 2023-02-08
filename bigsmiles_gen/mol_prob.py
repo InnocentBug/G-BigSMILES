@@ -34,6 +34,37 @@ def get_starting_tokens(smiles, big_mol):
     return start_fragments, start_probabilities
 
 
+class RememberAdd:
+    def __init__(self, value):
+        self._value = value
+        self._previous = 0.0
+
+    @property
+    def value(self):
+        return self._value
+
+    @property
+    def previous(self):
+        return self._previous
+
+    def __iadd__(self, other):
+        old_value = self._value
+        self._value += other
+        self._previous = old_value
+        return self
+
+    def __add__(self, other):
+        tmp = copy(self)
+        tmp += other
+        return tmp
+
+    def _radd__(self, other):
+        return self + other
+
+    def __eq__(self, other):
+        return self.value == other.value and self.previous == other.previous
+
+
 class OpenAtom:
     def __init__(self, bond, bond_descriptor):
         self.handled_atom = bond[0]
@@ -68,7 +99,7 @@ class PossibleMatch:
         params.removeHs = False
         pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
         pattern_mw = rdDescriptors.HeavyAtomMolWt(pattern)
-        self._element_weights = np.zeros(self._Nelements)
+        self._element_weights = [RememberAdd(0.0) for _ in range(self._Nelements)]
         self._open_atoms = []
 
         possible_substructures = mol.GetSubstructMatches(pattern)
@@ -178,7 +209,7 @@ class PossibleMatch:
             for i, element in enumerate(self._big.elements):
                 if isinstance(element, Stochastic):
                     mol_weight_log_prob += np.log(
-                        element.distribution.prob_mw(int(self._element_weights[i]))
+                        element.distribution.prob_mw(self._element_weights[i])
                     )
             log_prob = self._log_prob + mol_weight_log_prob
             return log_prob
@@ -283,10 +314,15 @@ class PossibleMatch:
             match = match_input.copy()
             atom = match.pop_open_atom(i)
             assert atom is not None
+            total_atom_weight = atom.bond_descriptor.weight
+            for remaining_atom in match._open_atoms:
+                total_atom_weight += remaining_atom.bond_descriptor.weight
+            atom_prob = atom.bond_descriptor.weight / total_atom_weight
+
             token_mols = []
             # Let's find possible token that could be reactable
             if isinstance(match._big.elements[match._active_element], SmilesToken):
-                new_mol = match.copy()
+                new_mol = match.copy(atom_prob)
                 token = new_mol._big.elements[new_mol._active_element]
                 pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
                 pattern_mw = rdDescriptors.HeavyAtomMolWt(pattern)
@@ -296,14 +332,14 @@ class PossibleMatch:
 
             if isinstance(match._big.elements[match._active_element], Stochastic):
                 for token in match._big.elements[match._active_element].repeat_tokens:
-                    new_mol = match.copy()
+                    new_mol = match.copy(atom_prob)
                     pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
                     pattern_mw = rdDescriptors.HeavyAtomMolWt(pattern)
                     new_mol._element_weights[new_mol._active_element] += pattern_mw
                     token_mols.append((new_mol, token))
 
                 for token in match._big.elements[match._active_element].end_tokens:
-                    new_mol = match.copy()
+                    new_mol = match.copy(atom_prob)
                     pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
                     # Note that end tokens do not increase the molecular weight (for generation purposes)
                     token_mols.append((new_mol, token))
@@ -374,8 +410,8 @@ def get_ensemble_prob(smi: str, big_mol: Molecule):
 
     big_mols = [big_mol]
     big_mirror = big_mol.gen_mirror()
-    if big_mirror is not None:
-        big_mols.append(big_mirror)
+    # if big_mirror is not None:
+    #     big_mols.append(big_mirror)
 
     matches = []
     probability = 0
