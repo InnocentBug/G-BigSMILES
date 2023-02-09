@@ -29,4 +29,8 @@ bigA = "CCO{[<][<]C(N)C[>][>]}|uniform(500, 600)|{[<][<]C(=O)C[>][>]}|uniform(50
 # bigA = "CCO"
 # test_prob(bigA)
 bigA = "{[][<]C(N)C[>]; [<][H], [>]CO []}|uniform(560, 600)|"
-test_prob(bigA)
+# test_prob(bigA)
+
+bigA = "{[] CC([$])=NCC[$]; [H][$][]}|uniform(500, 600)|"
+mol = bigsmiles_gen.Molecule(bigA)
+print(mol.generate())

@@ -19,6 +19,13 @@ def test_molecule():
             None,
         ),
         (
+            "{[] CC([$])=NCC[$]; [H][$][]}|uniform(500, 600)|",
+            "{[]CC([$])=NCC[$]; [H][$][]}",
+            "{[]CC([$])=NCC[$]; [H][$][]}|uniform(500, 600)|",
+            "[H]CCN=C(C)CCN=C(C)C(C)=NCCC(C)=NCCC(C)=NCCCCN=C(C)CCN=C(C)CCN=C(C)C(C)=NCC[H]",
+            None,
+        ),
+        (
             "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}|gauss(500, 10)|[<]CC.|60000|",
             "[H][>]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}[<]CC.",
             "[H][>]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}|gauss(500.0, 10.0)|[<]CC.|60000.0|",
@@ -77,8 +84,9 @@ def test_molecule():
         if mol.generable:
             gen_mol = mol.generate(rng=copy.deepcopy(rng))
             assert gen == gen_mol.smiles
-            mirror_gen = mol_mirror.generate(rng=copy.deepcopy(rng)).smiles
-            assert mirror_gen == mir_gen
+            if mir_gen:
+                mirror_gen = mol_mirror.generate(rng=copy.deepcopy(rng)).smiles
+                assert mirror_gen == mir_gen
 
 
 if __name__ == "__main__":

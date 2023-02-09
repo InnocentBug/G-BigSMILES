@@ -160,10 +160,20 @@ class SmilesToken(BigSMILESbase):
                     if len(elementA) > 0:
                         elements.append(elementA)
 
+                    preceding_characters = elementA
+                    if "(" in preceding_characters:
+                        preceding_characters = preceding_characters[
+                            preceding_characters.find("(") + 1 :
+                        ]
+                    if ")" in elementB:
+                        preceding_characters += elementB[: preceding_characters.find(")")]
+                    else:
+                        preceding_characters += elementB
+
                     bond = BondDescriptor(
                         bond_text,
                         len(bond_descriptors) + bond_id_offset,
-                        elementA + elementB,
+                        preceding_characters,
                         atom_bonding_to,
                     )
                     elements.append(bond)
