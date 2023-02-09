@@ -2,10 +2,11 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-from abc import abstractmethod
 from ast import literal_eval as make_tuple
 
 from scipy import stats
+
+import bigsmiles_gen
 
 from .core import _GLOBAL_RNG, BigSMILESbase
 
@@ -35,8 +36,8 @@ class Distribution(BigSMILESbase):
              Text representation of the distribution. Example: `flory_schulz(0.01)`
         """
         self._raw_text = raw_text.strip("| \t\n")
+        self._distribution = None
 
-    @abstractmethod
     def draw_mw(self, rng=None):
         """
         Draw a sample from the molecular weight distribution.
@@ -45,7 +46,28 @@ class Distribution(BigSMILESbase):
         rng: numpy.random.Generator
              Numpy random number generator for the generation of numbers.
         """
-        pass
+        if self._distribution is None:
+            raise NotImplementedError
+
+        if rng is None:
+            rng = _GLOBAL_RNG
+        return self._distribution.rvs(random_state=rng)
+
+    def prob_mw(self, mw):
+        """
+        Calculate the probability that this mw was from this distribution.
+        Arguments:
+        ----------
+        mw: float
+             Integer heavy atom molecular weight.
+        """
+        if self._distribution is None:
+            raise NotImplementedError
+
+        if isinstance(mw, bigsmiles_gen.mol_prob.RememberAdd):
+            return self._distribution.cdf(mw.value) - self._distribution.cdf(mw.previous)
+
+        return self._distribution.pdf(mw)
 
 
 class FlorySchulz(Distribution):
@@ -83,12 +105,7 @@ class FlorySchulz(Distribution):
             )
 
         self._a = float(make_tuple(self._raw_text[len("flory_schulz") :]))
-        self._flory_schulz = self.flory_schulz_gen(name="Flory-Schulz")
-
-    def draw_mw(self, rng=None):
-        if rng is None:
-            rng = _GLOBAL_RNG
-        return self._flory_schulz.rvs(self._a, random_state=rng)
+        self._distribution = self.flory_schulz_gen(name="Flory-Schulz")
 
     def generate_string(self, extension):
         if extension:
@@ -98,6 +115,18 @@ class FlorySchulz(Distribution):
     @property
     def generable(self):
         return True
+
+    def draw_mw(self, rng=None):
+        if rng is None:
+            rng = _GLOBAL_RNG
+        return self._distribution.rvs(a=self._a, random_state=rng)
+
+    def prob_mw(self, mw):
+        if isinstance(mw, bigsmiles_gen.mol_prob.RememberAdd):
+            return self._distribution.cdf(mw.value, a=self._a) - self._distribution.cdf(
+                mw.previous, a=self._a
+            )
+        return self._distribution.pmf(int(mw), a=self._a)
 
 
 class Gauss(Distribution):
@@ -131,14 +160,7 @@ class Gauss(Distribution):
         self._mu, self._sigma = make_tuple(self._raw_text[len("gauss") :])
         self._mu = float(self._mu)
         self._sigma = float(self._sigma)
-
-    def draw_mw(self, rng=None):
-        if rng is None:
-            rng = _GLOBAL_RNG
-        mw = int(round(rng.normal(self._mu, self._sigma)))
-        if mw < 0:
-            mw = 0
-        return mw
+        self._distribution = stats.norm(loc=self._mu, scale=self._sigma)
 
     def generate_string(self, extension):
         if extension:
@@ -148,6 +170,11 @@ class Gauss(Distribution):
     @property
     def generable(self):
         return True
+
+    def prob_mw(self, mw):
+        if self._sigma < 1e-6 and abs(self._mu - mw) < 1e-6:
+            return 1.0
+        return super().prob_mw(mw)
 
 
 class Uniform(Distribution):
@@ -177,12 +204,7 @@ class Uniform(Distribution):
         self._low, self._high = make_tuple(self._raw_text[len("uniform") :])
         self._low = int(self._low)
         self._high = int(self._high)
-
-    def draw_mw(self, rng=None):
-        if rng is None:
-            rng = _GLOBAL_RNG
-        mw = int(rng.integers(self._low, self._high))
-        return mw
+        self._distribution = stats.uniform(loc=self._low, scale=(self._high - self._low))
 
     def generate_string(self, extension):
         if extension:

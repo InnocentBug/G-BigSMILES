@@ -22,6 +22,12 @@
     "networkx",
     "RDKGEN",
     "markdownlint",
-    "runtimes"
+    "runtimes",
+    "substruct",
+    "Nelements",
+    "reactable",
+    "Nmol",
+    "subs",
+    "radd"
   ]
 }
