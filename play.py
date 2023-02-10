@@ -32,8 +32,9 @@ bigA = "{[][<]C(N)C[>]; [<][H], [>]CO []}|uniform(560, 600)|"
 # test_prob(bigA)
 
 bigA = "{[] CC([<])=NCC[>], [$2]CC(=O)C([<])CC[$2]; [F][>], CCO[<], [H][$2][]}|uniform(100, 150)|"
+bigA = "OCC{[$] [$]C(N)C[$], [$]CC(C(=O)C[$2])C[$], [$2]CCC[$2] ;[H][$], [Si][$2] [$]}|gauss(500, 10)|CCN"
 mol = bigsmiles_gen.Molecule(bigA)
-for i in range(10):
+for i in range(100):
     smi = mol.generate().smiles
     print(smi)
-    print(bigsmiles_gen.mol_prob.get_ensemble_prob(smi, mol)[0])
+    # print(bigsmiles_gen.mol_prob.get_ensemble_prob(smi, mol)[0])
