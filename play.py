@@ -31,6 +31,9 @@ bigA = "CCO{[<][<]C(N)C[>][>]}|uniform(500, 600)|{[<][<]C(=O)C[>][>]}|uniform(50
 bigA = "{[][<]C(N)C[>]; [<][H], [>]CO []}|uniform(560, 600)|"
 # test_prob(bigA)
 
-bigA = "{[] CC([$])=NCC[$]; [H][$][]}|uniform(500, 600)|"
+bigA = "{[] CC([<])=NCC[>], [$2]CC(=O)C([<])CC[$2]; [F][>], CCO[<], [H][$2][]}|uniform(100, 150)|"
 mol = bigsmiles_gen.Molecule(bigA)
-print(mol.generate())
+for i in range(10):
+    smi = mol.generate().smiles
+    print(smi)
+    print(bigsmiles_gen.mol_prob.get_ensemble_prob(smi, mol)[0])
