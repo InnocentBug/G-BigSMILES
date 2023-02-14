@@ -76,9 +76,10 @@ class MolGen:
         if not other_bond_descriptors[other_bond_idx].is_compatible(
             self.bond_descriptors[self_bond_idx]
         ):
+            print(self.bond_descriptors)
             raise RuntimeError(
                 f"Unable to attach mols, because bond descriptor {str(other_bond_descriptors[other_bond_idx])}"
-                " is incompatible with {str(self.bond_descriptors[self_bond_idx])}."
+                f" is incompatible with {str(self.bond_descriptors[self_bond_idx])}."
             )
         self_graph_len = len(self.graph)
         for bd in other_bond_descriptors:
