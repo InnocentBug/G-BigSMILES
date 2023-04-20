@@ -180,6 +180,7 @@ class PossibleMatch:
                         open_atoms.append(OpenAtom(bond, tmp_bd[i]))
                     assert bd_idx is None
                     bd_idx = i
+                    break
             if bd_idx is None:
                 return []
             del tmp_bd[bd_idx]

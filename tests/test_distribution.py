@@ -11,6 +11,9 @@ EPSILON = 0.15
 NSTAT = 20000
 
 
+import matplotlib.pyplot as plt
+
+
 def test_flory_schulz():
     def mean(a):
         return 2 / a - 1
@@ -88,7 +91,38 @@ def test_uniform():
         assert uniform.generable
 
 
+def test_schulz_zimm():
+    def mean(a):
+        return 2 / a - 1
+
+    def variance(a):
+        return (2 - 2 * a) / a**2
+
+    def skew(a):
+        return (2 - a) / np.sqrt(2 - 2 * a)
+
+    rng = np.random.default_rng()
+    for Mw in [11.3e3, 20e3]:
+        Mn = Mw / 1.5
+        schulz_zimm = bigsmiles_gen.distribution.get_distribution(f"schulz_zimm({Mw}, {Mn})")
+
+        # data = np.asarray([schulz_zimm.draw_mw(rng) for i in range(NSTAT)])
+
+        # print(Mw, Mn, np.mean(data))
+
+        x = np.linspace(1e3, 40e3, 1000)
+        plt.plot(x, schulz_zimm._distribution.pdf(x, z=schulz_zimm._z, Mn=schulz_zimm._Mn))
+        plt.show()
+
+        # assert np.abs((np.mean(data) - mean(a)) / mean(a)) < EPSILON
+        # assert np.abs((np.var(data) - variance(a)) / variance(a)) < EPSILON
+        # assert np.abs((stats.skew(data) - skew(a)) / skew(a)) < EPSILON
+        # assert str(flory_schulz) == f"|flory_schulz({a})|"
+        # assert flory_schulz.generable
+
+
 if __name__ == "__main__":
-    test_flory_schulz()
-    test_gauss()
-    test_uniform()
+    # test_flory_schulz()
+    # test_gauss()
+    # test_uniform()
+    test_schulz_zimm()

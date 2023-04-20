@@ -4,6 +4,7 @@
 
 from ast import literal_eval as make_tuple
 
+import numpy as np
 from scipy import stats
 
 import bigsmiles_gen
@@ -18,6 +19,8 @@ def get_distribution(distribution_text):
         return Gauss(distribution_text)
     if "uniform" in distribution_text:
         return Uniform(distribution_text)
+    if "schulz_zimm" in distribution_text:
+        return SchulzZimm(distribution_text)
     raise RuntimeError(f"Unknown distribution type {distribution_text}.")
 
 
@@ -127,6 +130,75 @@ class FlorySchulz(Distribution):
                 mw.previous, a=self._a
             )
         return self._distribution.pmf(int(mw), a=self._a)
+
+
+class SchulzZimm(Distribution):
+    """
+    Schulz-Zimm distribution of molecular weights for geometrically distributed chain lengths.
+
+    :math:`P_{M_w,M_n}(M) = z^{z+1}/\\Gamma(z+1) M^{z-1}/M_n^z \\exp(-zM/M_n)`
+    :math:`z(M_w, M_n) = M_n/(M_w-M_n)`
+
+    where :math:`\\Gamma` is the Gamma function, and :math:`M_w` weight-average molecular weight and `M_n` is the number average molecular weight.
+        P. C. Hiemenz, T. P. Lodge, Polymer Chemistry, CRC Press, Boca Raton, FL 2007.
+
+    The textual representation of this distribution is: `schulz_zimm(Mw, Mn)`
+    """
+
+    class schulz_zimm_gen(stats.rv_continuous):
+        "Flory Schulz distribution"
+
+        def _pdf(self, M, z, Mn):
+            return z ** (z + 1) / stats.gamma.rvs(z + 1) * M ** (z - 1) / Mn * np.exp(-z * M / Mn)
+
+    def __init__(self, raw_text):
+        """
+        Initialization of Schulz-Zimm distribution object.
+
+        Arguments:
+        ----------
+        raw_text: str
+             Text representation of the distribution.
+             Has to start with `schulz_zimm`.
+        """
+        super().__init__(raw_text)
+
+        if not self._raw_text.startswith("schulz_zimm"):
+            raise RuntimeError(
+                f"Attempt to initialize Schulz-Zimm distribution from text '{raw_text}' that does not start with 'schulz_zimm'"
+            )
+
+        self._Mw, self._Mn = make_tuple(self._raw_text[len("schulz_zimm") :])
+        self._Mw = float(self._Mw)
+        self._Mn = float(self._Mn)
+        self._z = self._Mn / (self._Mw - self._Mn)
+        print(self._Mw / self._Mn, (self._z + 1) / self._z, self._z, self._Mw)
+        self._distribution = self.schulz_zimm_gen(name="Schulz-Zimm")
+
+    def generate_string(self, extension):
+        if extension:
+            return f"|schulz_zimm({self._Mw, self._Mn})|"
+        return ""
+
+    @property
+    def generable(self):
+        return True
+
+    def draw_mw(self, rng=None):
+        if rng is None:
+            rng = _GLOBAL_RNG
+        return self._distribution.rvs(z=self._z, Mn=self._Mn, random_state=rng)
+
+    def prob_mw(self, mw):
+        if isinstance(mw, bigsmiles_gen.mol_prob.RememberAdd):
+            return self._distribution.cdf(
+                mw.value, z=self._z, Mn=self._Mn
+            ) - self._distribution.cdf(mw.previous, z=self._z, Mn=self._Mn)
+        return self._distribution.pmf(
+            int(mw),
+            z=self._z,
+            Mn=self._Mn,
+        )
 
 
 class Gauss(Distribution):
