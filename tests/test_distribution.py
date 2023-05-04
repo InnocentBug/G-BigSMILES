@@ -8,10 +8,7 @@ from scipy import stats
 import bigsmiles_gen
 
 EPSILON = 0.15
-NSTAT = 20000
-
-
-import matplotlib.pyplot as plt
+NSTAT = 2000
 
 
 def test_flory_schulz():
@@ -92,33 +89,31 @@ def test_uniform():
 
 
 def test_schulz_zimm():
-    def mean(a):
-        return 2 / a - 1
+    def mean(Mn, z):
+        return Mn
 
-    def variance(a):
-        return (2 - 2 * a) / a**2
-
-    def skew(a):
-        return (2 - a) / np.sqrt(2 - 2 * a)
+    def variance(Mn, z):
+        return Mn**2 / z
 
     rng = np.random.default_rng()
-    for Mw in [11.3e3, 20e3]:
+    for Mw in [11.3e3]:
         Mn = Mw / 1.5
         schulz_zimm = bigsmiles_gen.distribution.get_distribution(f"schulz_zimm({Mw}, {Mn})")
+        z = schulz_zimm._z
 
-        # data = np.asarray([schulz_zimm.draw_mw(rng) for i in range(NSTAT)])
+        data = []
+        for i in range(NSTAT):
+            data.append(schulz_zimm.draw_mw(rng))
+        data = np.asarray(data)
 
-        # print(Mw, Mn, np.mean(data))
+        # x = np.linspace(1e3, 40e3, 1000).astype(int)
+        # plt.plot(x, schulz_zimm._distribution.pmf(x, z=schulz_zimm._z, Mn=schulz_zimm._Mn))
+        # plt.show()
 
-        x = np.linspace(1e3, 40e3, 1000)
-        plt.plot(x, schulz_zimm._distribution.pdf(x, z=schulz_zimm._z, Mn=schulz_zimm._Mn))
-        plt.show()
-
-        # assert np.abs((np.mean(data) - mean(a)) / mean(a)) < EPSILON
-        # assert np.abs((np.var(data) - variance(a)) / variance(a)) < EPSILON
-        # assert np.abs((stats.skew(data) - skew(a)) / skew(a)) < EPSILON
-        # assert str(flory_schulz) == f"|flory_schulz({a})|"
-        # assert flory_schulz.generable
+        assert np.abs((np.mean(data) - mean(Mn, z)) / mean(Mn, z)) < EPSILON
+        assert np.abs((np.var(data) - variance(Mn, z)) / variance(Mn, z)) < EPSILON
+        assert str(schulz_zimm) == f"|schulz_zimm({Mw}, {Mn})|"
+        assert schulz_zimm.generable
 
 
 if __name__ == "__main__":

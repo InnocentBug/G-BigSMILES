@@ -18,6 +18,12 @@ def test_stochastic():
             "[H]CC(C)(CC(C)(CC(C)(CC(C)(CC(C)(CC([H])(C)C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSc1c(F)cccc1F)C(=O)OCC(O)CSc1c(F)cccc1F)C(=O)OCC(O)CSc1c(F)cccc1F)C(=O)OCC(O)CSC(F)(F)F",
         ),
         (
+            "{[]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)cccc1F, CC([>])(C[<])C(=O)OCC(O)CSC(F)(F)F; [>][H], [<][H][]}|schulz_zimm(4500, 3500)|",
+            "{[]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)cccc1F, CC([>])(C[<])C(=O)OCC(O)CSC(F)(F)F; [>][H], [<][H][]}",
+            "{[]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)cccc1F, CC([>])(C[<])C(=O)OCC(O)CSC(F)(F)F; [>][H], [<][H][]}|schulz_zimm(4500.0, 3500.0)|",
+            "[H]CC(C)(CC(C)(CC(C)(CC(C)(CC([H])(C)C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSc1c(F)cccc1F)C(=O)OCC(O)CSc1c(F)cccc1F)C(=O)OCC(O)CSc1c(F)cccc1F",
+        ),
+        (
             "{[$][$1]C([$1])C=O,[$1]CC([$1])CO;[$1][H], [$1]O[$]}",
             "{[$][$1]C([$1])C=O, [$1]CC([$1])CO; [$1][H], [$1]O[$]}",
             "{[$][$1]C([$1])C=O, [$1]CC([$1])CO; [$1][H], [$1]O[$]}",

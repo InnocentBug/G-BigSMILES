@@ -5,7 +5,7 @@
 from ast import literal_eval as make_tuple
 
 import numpy as np
-from scipy import stats
+from scipy import special, stats
 
 import bigsmiles_gen
 
@@ -145,11 +145,13 @@ class SchulzZimm(Distribution):
     The textual representation of this distribution is: `schulz_zimm(Mw, Mn)`
     """
 
-    class schulz_zimm_gen(stats.rv_continuous):
+    class schulz_zimm_gen(stats.rv_discrete):
         "Flory Schulz distribution"
 
-        def _pdf(self, M, z, Mn):
-            return z ** (z + 1) / stats.gamma.rvs(z + 1) * M ** (z - 1) / Mn * np.exp(-z * M / Mn)
+        def _pmf(self, M, z, Mn):
+            return (
+                z ** (z + 1) / special.gamma(z + 1) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn)
+            )
 
     def __init__(self, raw_text):
         """
@@ -172,12 +174,11 @@ class SchulzZimm(Distribution):
         self._Mw = float(self._Mw)
         self._Mn = float(self._Mn)
         self._z = self._Mn / (self._Mw - self._Mn)
-        print(self._Mw / self._Mn, (self._z + 1) / self._z, self._z, self._Mw)
         self._distribution = self.schulz_zimm_gen(name="Schulz-Zimm")
 
     def generate_string(self, extension):
         if extension:
-            return f"|schulz_zimm({self._Mw, self._Mn})|"
+            return f"|schulz_zimm{self._Mw, self._Mn}|"
         return ""
 
     @property
