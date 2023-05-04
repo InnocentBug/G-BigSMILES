@@ -30,6 +30,11 @@
     "subs",
     "radd",
     "NCCC",
-    "NCCCCN"
+    "NCCCCN",
+    "Zimm",
+    "Hiemenz",
+    "Raton",
+    "linspace",
+    "astype"
   ]
 }
