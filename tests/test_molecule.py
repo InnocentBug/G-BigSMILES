@@ -67,6 +67,13 @@ def test_molecule():
             "[H]C(CC(C)(CC(C)(CC(C)(CC(C)(C[N])C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSc1ccc(F)c(F)c1)C(=O)OCC(O)CSc1ccc(F)c(F)c1)c1ccccc1",
             "[H]C(CC(C)(CC(C)(CC(C)(CC(C)(C[N])C(=O)OCC(O)CSC(F)(F)F)C(=O)OCC(O)CSc1ccc(F)c(F)c1)C(=O)OCC(O)CSc1ccc(F)c(F)c1)C(=O)OCC(O)CSc1ccc(F)c(F)c1)c1ccccc1",
         ),
+        (
+            "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|flory_schulz(5e-3)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(500, 450)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F",
+            "OC[>]{[>][<]CC[>], [<]C(N[>])C[>]; [<][H], [<]C[<]}[<]COOC[<]{[<][<]COC[>], [<]C(ON)C[>][>]}{[<][<]COCOC[>], [<]CONOC[>][>]}[>]F",
+            "OC[>]{[>][<]CC[>], [<|0.5|]C(N[>|0.1 0.0 0.0 0.0 0.0 0.0 0.0|])C[>]; [<][H], [<]C[<]}|flory_schulz(0.005)|[<]COOC[<]{[<][<]COC[>], [<]C(ON)C[>][>]}|schulz_zimm(500.0, 450.0)|{[<][<]COCOC[>], [<]CONOC[>][>]}|schulz_zimm(1700.0, 1500.0)|[>]F",
+            "[H]CCCCNC(CO)CCCC(CC(CC(CCCCCC(CC)NC)NC)NCCC(CCCCCC)NC)NCOOCCOCCC(COCCOCCC(COCCC(CC(COCCC(CONOCCONOCCONOCCOCOCCONOCCOCOCCONOCCONOCCOCOCCOCOCCOCOCCOCOCCOCOCCONOCCONOCF)ON)ON)ON)ON)ON",
+            "[H]NC(CCCCCCCC)CC(CCCCCCCCCO)NCOOCCC(COCCC(COCCC(CC(COCCC(CC(COCCOCCC(COCCOCOCCOCOCCONOCCONOCCOCOCCONOCCOCOCCONOCCOCOCCONOCCOCOCCOCOCCONOCCOCOCCONOCCONOCCONOCCOCOCCONOCCONOCCONOCCONOCCONOCCONOCF)ON)ON)ON)ON)ON)ON)ON",
+        ),
     ]
 
     rng = np.random.Generator(np.random.MT19937(42))
@@ -87,6 +94,7 @@ def test_molecule():
             if mir_gen:
                 mirror_gen = mol_mirror.generate(rng=copy.deepcopy(rng)).smiles
                 assert mirror_gen == mir_gen
+            graph = mol.gen_reaction_graph()
 
 
 if __name__ == "__main__":

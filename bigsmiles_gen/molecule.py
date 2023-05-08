@@ -4,6 +4,9 @@
 
 import copy
 
+import networkx as nx
+import numpy as np
+
 from .bond import _create_compatible_bond_text
 from .core import _GLOBAL_RNG, BigSMILESbase
 from .mixture import Mixture
@@ -166,3 +169,154 @@ class Molecule(BigSMILESbase):
                 ele.right_terminal = tmp
 
         return mirror
+
+    def gen_reaction_graph(self):
+        def validate_graph(graph):
+            for node in graph:
+                weight = 0
+                prob = 0
+                term_prob = 0
+                trans_prob = 0
+                edges = graph.edges(node)
+                for edge in edges:
+                    edge_data = graph.get_edge_data(*edge)
+                    weight += edge_data.get("weight", 0)
+                    prob += edge_data.get("prob", 0)
+                    term_prob += edge_data.get("term_prob", 0)
+                    trans_prob += edge_data.get("trans_prob", 0)
+            assert abs(weight - 1) < 1e-6 or abs(weight) < 1e-6
+            assert abs(prob - 1) < 1e-6 or abs(prob) < 1e-6
+            assert abs(term_prob - 1) < 1e-6 or abs(term_prob) < 1e-6
+            assert abs(trans_prob - 1) < 1e-6 or abs(trans_prob) < 1e-6
+
+        # Add primary nodes
+        residues = {}
+        for element in self._elements:
+            if isinstance(element, SmilesToken):
+                residues[element] = element
+            elif isinstance(element, Stochastic):
+                for res in element.repeat_tokens + element.end_tokens:
+                    residues[res] = element
+            else:
+                raise RuntimeError("Unexpected element of type {type(element)} {element}.")
+
+        G = nx.DiGraph(big_smiles=str(self))
+        bond_descriptors = {}
+        # Add all nodes and edges from residues to BondDescriptor
+        for res in residues:
+            G.add_node(res, smiles=res.residues[0])
+            total_weight = 0
+            for bd in res.bond_descriptors:
+                bond_descriptors[bd] = res
+                G.add_node(bd, atom=bd.atom_bonding_to)
+                total_weight += bd.weight
+            for bd in res.bond_descriptors:
+                if bd.weight > 0:
+                    G.add_edge(res, bd, weight=bd.weight / total_weight)
+
+        # Add missing transistion edges generation edges
+        for graph_bd in bond_descriptors:
+            element = residues[bond_descriptors[graph_bd]]
+
+            # Add regular weights for listed bd
+            if graph_bd.transitions is not None:
+                prob = graph_bd.transitions / graph_bd.weight
+                for i, p in enumerate(prob):
+                    other_bd = element.bond_descriptors[i]
+                    if p > 0:
+                        G.add_edge(graph_bd, other_bd, prob=p)
+            elif isinstance(element, Stochastic):  # Non-transistion edges
+                repeat_weight = 0
+                end_weight = 0
+                for element_bd in element.bond_descriptors:
+                    if graph_bd.is_compatible(element_bd):
+                        if bond_descriptors[element_bd] in element.repeat_tokens:
+                            repeat_weight += element_bd.weight
+                        if bond_descriptors[element_bd] in element.end_tokens:
+                            end_weight += element_bd.weight
+
+                for element_bd in element.bond_descriptors:
+                    if graph_bd.is_compatible(element_bd) and element_bd.weight > 0:
+                        if bond_descriptors[element_bd] in element.repeat_tokens:
+                            G.add_edge(graph_bd, element_bd, prob=element_bd.weight / repeat_weight)
+                        if bond_descriptors[element_bd] in element.end_tokens:
+                            G.add_edge(
+                                graph_bd, element_bd, term_prob=element_bd.weight / end_weight
+                            )
+
+        # Add transisitions between elements
+        for graph_bd in bond_descriptors:
+            res = bond_descriptors[graph_bd]
+            element_id = -1
+            for i, element in enumerate(self._elements):
+                if res == element:
+                    element_id = i
+                    break
+                if isinstance(element, Stochastic):
+                    if res in element.repeat_tokens + element.end_tokens:
+                        element_id = i
+                        break
+            if element_id < len(self._elements) - 1:
+                element = self._elements[element_id]
+                next_element = self._elements[element_id + 1]
+
+                # Smiles token to smiles token
+                if isinstance(element, SmilesToken) and isinstance(next_element, SmilesToken):
+                    for other_bd in next_element.bond_descriptors:
+                        if graph_bd.is_compatible(other_bd):
+                            G.add_edge(graph_bd, other_bd, trans_prob=1.0)
+
+                if isinstance(element, SmilesToken) and isinstance(next_element, Stochastic):
+                    total_weight = 0
+                    for other_bd in next_element.bond_descriptors:
+                        if (
+                            graph_bd.is_compatible(other_bd)
+                            and other_bd.is_compatible(next_element.left_terminal)
+                            and bond_descriptors[other_bd] in next_element.repeat_tokens
+                        ):
+                            total_weight += other_bd.weight
+                    for other_bd in next_element.bond_descriptors:
+                        if (
+                            graph_bd.is_compatible(other_bd)
+                            and other_bd.is_compatible(next_element.left_terminal)
+                            and bond_descriptors[other_bd] in next_element.repeat_tokens
+                        ):
+                            G.add_edge(
+                                graph_bd, other_bd, trans_prob=other_bd.weight / total_weight
+                            )
+
+                if isinstance(element, Stochastic) and isinstance(next_element, SmilesToken):
+                    total_weight = 0
+                    for other_bd in next_element.bond_descriptors:
+                        if (
+                            graph_bd.is_compatible(other_bd)
+                            and graph_bd.is_compatible(element.right_terminal)
+                            and bond_descriptors[graph_bd] in element.repeat_tokens
+                        ):
+                            G.add_edge(graph_bd, other_bd, trans_prob=1.0)
+
+                if isinstance(element, Stochastic) and isinstance(next_element, Stochastic):
+                    total_weight = 0
+                    for other_bd in next_element.bond_descriptors:
+                        if (
+                            graph_bd.is_compatible(other_bd)
+                            and other_bd.is_compatible(next_element.left_terminal)
+                            and bond_descriptors[other_bd] in next_element.repeat_tokens
+                            and graph_bd.is_compatible(element.right_terminal)
+                            and bond_descriptors[graph_bd] in element.repeat_tokens
+                        ):
+                            total_weight += other_bd.weight
+                    for other_bd in next_element.bond_descriptors:
+                        if (
+                            graph_bd.is_compatible(other_bd)
+                            and other_bd.is_compatible(next_element.left_terminal)
+                            and bond_descriptors[other_bd] in next_element.repeat_tokens
+                            and graph_bd.is_compatible(element.right_terminal)
+                            and bond_descriptors[graph_bd] in element.repeat_tokens
+                        ):
+                            G.add_edge(
+                                graph_bd, other_bd, trans_prob=other_bd.weight / total_weight
+                            )
+
+        validate_graph(G)
+        return G
