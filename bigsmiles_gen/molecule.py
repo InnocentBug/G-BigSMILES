@@ -5,7 +5,6 @@
 import copy
 
 import networkx as nx
-import numpy as np
 
 from .bond import _create_compatible_bond_text
 from .core import _GLOBAL_RNG, BigSMILESbase
@@ -214,7 +213,7 @@ class Molecule(BigSMILESbase):
                 if bd.weight > 0:
                     G.add_edge(res, bd, weight=bd.weight / total_weight)
 
-        # Add missing transistion edges generation edges
+        # Add missing transition edges generation edges
         for graph_bd in bond_descriptors:
             element = residues[bond_descriptors[graph_bd]]
 
@@ -225,7 +224,7 @@ class Molecule(BigSMILESbase):
                     other_bd = element.bond_descriptors[i]
                     if p > 0:
                         G.add_edge(graph_bd, other_bd, prob=p)
-            elif isinstance(element, Stochastic):  # Non-transistion edges
+            elif isinstance(element, Stochastic):  # Non-transition edges
                 repeat_weight = 0
                 end_weight = 0
                 for element_bd in element.bond_descriptors:
@@ -244,7 +243,7 @@ class Molecule(BigSMILESbase):
                                 graph_bd, element_bd, term_prob=element_bd.weight / end_weight
                             )
 
-        # Add transisitions between elements
+        # Add transitions between elements
         for graph_bd in bond_descriptors:
             res = bond_descriptors[graph_bd]
             element_id = -1

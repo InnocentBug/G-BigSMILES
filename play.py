@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
-import matplotlib.pyplot as plt
-import networkx as nx
+# import matplotlib.pyplot as plt
 import numpy as np
-import pydot
-from IPython.display import SVG
+
+# import pydot
 from rdkit import Chem
-from rdkit.Chem import rdDepictor
-from rdkit.Chem.Draw import IPythonConsole, rdMolDraw2D
+from rdkit.Chem.Draw import rdMolDraw2D
 
 import bigsmiles_gen
 
@@ -56,7 +54,7 @@ drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
 drawer.DrawMolecule(mc)
 drawer.FinishDrawing()
 svg = drawer.GetDrawingText()
-with open(f"molPlay.svg", "w") as filehandle:
+with open("molPlay.svg", "w") as filehandle:
     filehandle.write(svg)
 
 print(mol.generate_string(True))
@@ -70,7 +68,7 @@ def graph_dot(graph):
             dot_str += (
                 f"\"{hash(node)}\" [label=\"{graph.nodes[node]['smiles']}\", color=orange];\n"
             )
-        except:
+        except KeyError:
             dot_str += f"\"{hash(node)}\" [label=\"{node.generate_string(False)} {graph.nodes[node]['atom']}\", color=green];\n"
 
     name_map = {"term_prob": "pt", "trans_prob": "pa", "weight": "w", "prob": "p"}

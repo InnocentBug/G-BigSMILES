@@ -94,7 +94,7 @@ def test_molecule():
             if mir_gen:
                 mirror_gen = mol_mirror.generate(rng=copy.deepcopy(rng)).smiles
                 assert mirror_gen == mir_gen
-            graph = mol.gen_reaction_graph()
+            mol.gen_reaction_graph()
 
 
 if __name__ == "__main__":
