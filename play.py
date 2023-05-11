@@ -44,7 +44,7 @@ bigA = "OC{[<] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0|])C[>]; [<][H] [>]}|schulz_zi
 
 bigA = "[H]{[<] [<]CC([>])c1ccccc1 [>]}|schulz_zimm(2000, 1800)|{[<] [<]CC([>])(C)C(=O)OC [>]}|schulz_zimm(1000, 900)|[H]"
 
-bigA = "[H]{[<] [<|2|]CC([>|2|])c1ccccc1, [<]CC([>])(C)C(=O)OC [>]}|schulz_zimm(3000, 1850)|[H]"
+# bigA = "[H]{[<] [<|2|]CC([>|2|])c1ccccc1, [<]CC([>])(C)C(=O)OC [>]}|schulz_zimm(3000, 1850)|[H]"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
