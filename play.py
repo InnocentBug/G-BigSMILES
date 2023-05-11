@@ -42,7 +42,10 @@ bigA = "OCC{[$] [$]C(N)C[$], [$]CC(C(=O)C[$2])C[$], [$2]CCC[$2] ;[H][$], [Si][$2
 bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(750, 600)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(200, 150)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(170, 150)|F"
 bigA = "OC{[<] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0|])C[>]; [<][H] [>]}|schulz_zimm(750, 600)|C=O.|5000|"
 
-bigA = "[H]{[<] [<]CC([>])c1ccccc1 [>]}|schulz_zimm(2000, 1800)|{[<] [<]CC([>])(C)C(=O)OC [>]}|schulz_zimm(2000, 1800)|[H]"
+bigA = "[H]{[<] [<]CC([>])c1ccccc1 [>]}|schulz_zimm(1000, 800)|{[<] [<]CC([>])(C)C(=O)OC [>]}|schulz_zimm(1000, 800)|[H]"
+
+bigA = "[H]{[<] [<]CC([>])c1ccccc1, [<]CC([>])(C)C(=O)OC [>]}|schulz_zimm(2000, 1800)|[H]"
+
 
 mol = bigsmiles_gen.Molecule(bigA)
 mol_gen = mol.generate()
