@@ -80,7 +80,7 @@ def reaction_graph_to_dot_string(graph, bigsmiles=None):
         else:
             dot_str += f'"{hash(node)}" [label="{node.generate_string(False)}", fillcolor=lightblue, style=filled];\n'
 
-    name_map = {"term_prob": "t(stochastic)", "trans_prob": "t(suffix)", "weight": "w", "prob": "p"}
+    name_map = {"term_prob": "t(stochastic)", "trans_prob": "t(suffix)", "weight": "w", "prob": "r"}
     for edge in graph.edges():
         edge_data = graph.get_edge_data(*edge)
         for name in name_map:
