@@ -183,7 +183,7 @@ class Molecule(BigSMILESbase):
                     prob += edge_data.get("prob", 0)
                     term_prob += edge_data.get("term_prob", 0)
                     trans_prob += edge_data.get("trans_prob", 0)
-            assert abs(weight - 1) < 1e-6 or abs(weight) < 1e-6
+            # assert abs(weight - 1) < 1e-6 or abs(weight) < 1e-6
             assert abs(prob - 1) < 1e-6 or abs(prob) < 1e-6
             assert abs(term_prob - 1) < 1e-6 or abs(term_prob) < 1e-6
             assert abs(trans_prob - 1) < 1e-6 or abs(trans_prob) < 1e-6
@@ -209,6 +209,7 @@ class Molecule(BigSMILESbase):
                 bond_descriptors[bd] = res
                 G.add_node(bd, atom=bd.atom_bonding_to)
                 total_weight += bd.weight
+            total_weight = 1
             for bd in res.bond_descriptors:
                 if bd.weight > 0:
                     G.add_edge(res, bd, weight=bd.weight / total_weight)
@@ -274,6 +275,7 @@ class Molecule(BigSMILESbase):
                             and bond_descriptors[other_bd] in next_element.repeat_tokens
                         ):
                             total_weight += other_bd.weight
+                    # total_weight = 1
                     for other_bd in next_element.bond_descriptors:
                         if (
                             graph_bd.is_compatible(other_bd)
@@ -285,7 +287,6 @@ class Molecule(BigSMILESbase):
                             )
 
                 if isinstance(element, Stochastic) and isinstance(next_element, SmilesToken):
-                    total_weight = 0
                     for other_bd in next_element.bond_descriptors:
                         if (
                             graph_bd.is_compatible(other_bd)
@@ -305,6 +306,7 @@ class Molecule(BigSMILESbase):
                             and bond_descriptors[graph_bd] in element.repeat_tokens
                         ):
                             total_weight += other_bd.weight
+                    # total_weight = 1
                     for other_bd in next_element.bond_descriptors:
                         if (
                             graph_bd.is_compatible(other_bd)

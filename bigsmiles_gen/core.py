@@ -65,3 +65,35 @@ def choose_compatible_weight(bond_descriptors, bond, rng):
         raise exc
 
     return idx
+
+
+def reaction_graph_to_dot_string(graph, bigsmiles=None):
+    from .bond import BondDescriptor
+
+    dot_str = "strict digraph { \n"
+    if bigsmiles:
+        dot_str += f'label="{str(bigsmiles)}"\n'
+    for node in graph.nodes():
+
+        if isinstance(node, BondDescriptor):
+            dot_str += f"\"{hash(node)}\" [label=\"{node.generate_string(False)} {graph.nodes[node]['atom']}\", fillcolor=lightgreen, style=filled];\n"
+        else:
+            dot_str += f'"{hash(node)}" [label="{node.generate_string(False)}", fillcolor=lightblue, style=filled];\n'
+
+    name_map = {"term_prob": "t(stochastic)", "trans_prob": "t(suffix)", "weight": "w", "prob": "r"}
+    for edge in graph.edges():
+        edge_data = graph.get_edge_data(*edge)
+        for name in name_map:
+            if name in edge_data:
+                value = edge_data[name]
+                edge_label = f"{name_map[name]} = {np.round(value ,2)}"
+        if "w" in edge_label:
+            dot_str += (
+                f'{hash(edge[0])} -> {hash(edge[1])} [label="{edge_label}", arrowhead=none];\n'
+            )
+        else:
+            dot_str += f'{hash(edge[0])} -> {hash(edge[1])} [label="{edge_label}"];\n'
+
+    dot_str += "}\n"
+
+    return dot_str
