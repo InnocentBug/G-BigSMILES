@@ -27,7 +27,7 @@ def test_flory_schulz():
 
         assert flory_schulz.prob_mw(flory_schulz.draw_mw(rng)) > 0
 
-        data = np.asarray([flory_schulz.draw_mw(rng) for i in range(NSTAT)])
+        data = np.asarray([flory_schulz.draw_mw(rng) for i in range(2 * NSTAT)])
 
         assert np.abs((np.mean(data) - mean(a)) / mean(a)) < EPSILON
         assert np.abs((np.var(data) - variance(a)) / variance(a)) < EPSILON
