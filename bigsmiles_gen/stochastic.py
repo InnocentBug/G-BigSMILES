@@ -221,18 +221,19 @@ class Stochastic(BigSMILESbase):
                     )
                     break
 
-                # End prematurely if transitions set (bc they can instate end groups)
-                # and only one bond descriptor is present for the terminal end
-                if (
-                    starting_bond.transitions is not None
-                    and str(self.right_terminal) != "[]"
-                    and len(my_mol.bond_descriptors) == 1
-                ):
-                    warn(
-                        f"Premature end of generation of {str(self)} with transitions specified"
-                        " and only a single bond descriptor open for a required terminal."
-                    )
-                    break
+                # # End prematurely if transitions set (bc they can instate end groups)
+                # # and only one bond descriptor is present for the terminal end
+                # if (
+                #     starting_bond.transitions is not None
+                #     and str(self.right_terminal) != "[]"
+                #     and len(my_mol.bond_descriptors) == 1
+                # ):
+                #     warn(
+                #         f"Premature end of generation of {str(self)} with transitions specified"
+                #         " and only a single bond descriptor open for a required terminal."
+                #     )
+                #     break
+
             return my_mol
 
         def finalize_mol(my_mol):
