@@ -204,15 +204,13 @@ class Molecule(BigSMILESbase):
         # Add all nodes and edges from residues to BondDescriptor
         for res in residues:
             G.add_node(res, smiles=res.residues[0])
-            total_weight = 0
             for bd in res.bond_descriptors:
                 bond_descriptors[bd] = res
-                G.add_node(bd, atom=bd.atom_bonding_to)
-                total_weight += bd.weight
-            total_weight = 1
+                G.add_node(bd, weight=bd.weight)
+
             for bd in res.bond_descriptors:
                 if bd.weight > 0:
-                    G.add_edge(res, bd, weight=bd.weight / total_weight)
+                    G.add_edge(res, bd, atom=bd.atom_bonding_to)
 
         # Add missing transition edges generation edges
         for graph_bd in bond_descriptors:
