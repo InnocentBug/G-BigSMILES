@@ -116,6 +116,59 @@ def test_schulz_zimm():
         assert schulz_zimm.generable
 
 
+def test_log_normal():
+    def mean(M, D):
+        return M
+
+    rng = np.random.default_rng()
+    for M, D in [
+        (11.3e3, 1.1),
+        (5.3e3, 1.5),
+        (20.3e3, 2.0),
+    ]:
+
+        log_normal = bigsmiles_gen.distribution.get_distribution(f"log_normal({M}, {D})")
+
+        data = []
+        for i in range(NSTAT):
+            d = log_normal.draw_mw(rng)
+            data.append(d)
+        data = np.asarray(data)
+
+        # import matplotlib.pyplot as plt
+        # x = np.linspace(1e3, 40e3, 1000)
+        # plt.plot(x, log_normal._distribution.pdf(x, M=log_normal._M, D=log_normal._D))
+        # plt.show()
+
+        assert np.abs((np.mean(data) - mean(M, D))) / mean(M, D) < EPSILON
+        assert str(log_normal) == f"|log_normal({M}, {D})|"
+        assert log_normal.generable
+
+
+def test_poisson():
+    def mean(M):
+        return M
+
+    def variance(M):
+        return M
+
+    rng = np.random.default_rng()
+    for M in [11.3e3, 5.3e3, 20.3e3]:
+
+        poisson = bigsmiles_gen.distribution.get_distribution(f"poisson({M})")
+
+        data = []
+        for i in range(NSTAT):
+            d = poisson.draw_mw(rng)
+            data.append(d)
+        data = np.asarray(data)
+
+        assert np.abs((np.mean(data) - mean(M))) / mean(M) < EPSILON
+        assert np.abs((np.var(data) - variance(M))) / variance(M) < EPSILON
+        assert str(poisson) == f"|poisson({M})|"
+        assert poisson.generable
+
+
 if __name__ == "__main__":
     # test_flory_schulz()
     # test_gauss()

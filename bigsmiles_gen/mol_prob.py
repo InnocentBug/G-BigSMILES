@@ -269,7 +269,7 @@ class PossibleMatch:
                 return found_bd
 
             def get_reaction_prob(open_bond, bd, token):
-                if open_bond.transitions:
+                if open_bond.transitions is not None:
                     reaction_prob = open_bond.transitions[bd.descriptor_num]
                     reaction_prob /= open_bond.weight
                 else:

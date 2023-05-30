@@ -21,6 +21,10 @@ def get_distribution(distribution_text):
         return Uniform(distribution_text)
     if "schulz_zimm" in distribution_text:
         return SchulzZimm(distribution_text)
+    if "log_normal" in distribution_text:
+        return LogNormal(distribution_text)
+    if "poisson" in distribution_text:
+        return Poisson(distribution_text)
     raise RuntimeError(f"Unknown distribution type {distribution_text}.")
 
 
@@ -287,3 +291,116 @@ class Uniform(Distribution):
     @property
     def generable(self):
         return True
+
+
+class LogNormal(Distribution):
+    """
+    LogNormal distribution of molecular weights for narrowly distributed chain lengths.
+
+    :math:`\\mathrm{PDF}(m_{w,i}) =\\frac{1}{m_{w,i}\\sqrt{2\\pi \\ln(\\text{\\DH})}} \\exp\\left(-\\frac{\\left(\\ln\\left(\\frac{m_{w,i}}{M_n}\\right)+\\frac{\\text{\\DH}}{2}\\right)^2}{2\\sigma^2}\\right)`
+
+    where :math:`\\text{\\DH}` is the poly dispersity, and and :math:`M_n` is the number average molecular weight.
+           Walsh, D. J.; Wade, M. A.; Rogers, S. A.; Guironnet, D. Challenges of Size-Exclusion Chromatography for the Analysis of Bottlebrush Polymers. Macromolecules 2020, 53, 8610–8620.
+
+    The textual representation of this distribution is: `log_normal(Mn, D)`
+    """
+
+    class log_normal_gen(stats.rv_continuous):
+        "Log-Normal distribution"
+
+        def _pdf(self, m, M, D):
+            prefactor = 1 / (m * np.sqrt(2 * np.pi * np.log(D)))
+            value = prefactor * np.exp(-((np.log(m / M) + np.log(D) / 2) ** 2) / (2 * np.log(D)))
+            return value
+
+        def _get_support(self, M, D):
+            return (0, np.inf)
+
+    def __init__(self, raw_text):
+        """
+        Initialization of LogNormal distribution object.
+
+        Arguments:
+        ----------
+        raw_text: str
+             Text representation of the distribution.
+             Has to start with `log_normal`.
+        """
+        super().__init__(raw_text)
+
+        if not self._raw_text.startswith("log_normal"):
+            raise RuntimeError(
+                f"Attempt to initialize LogNormal distribution from text '{raw_text}' that does not start with 'log_normal'"
+            )
+
+        self._M, self._D = make_tuple(self._raw_text[len("log_normal") :])
+        self._M = float(self._M)
+        self._D = float(self._D)
+
+        self._distribution = self.log_normal_gen(name="Log-Normal")
+
+    def generate_string(self, extension):
+        if extension:
+            return f"|log_normal({self._M}, {self._D})|"
+        return ""
+
+    @property
+    def generable(self):
+        return True
+
+    def draw_mw(self, rng=None):
+        if rng is None:
+            rng = _GLOBAL_RNG
+        return self._distribution.rvs(M=self._M, D=self._D, random_state=rng)
+
+    def prob_mw(self, mw):
+        if isinstance(mw, bigsmiles_gen.mol_prob.RememberAdd):
+            return self._distribution.cdf(mw.value, M=self._M, D=self._D) - self._distribution.cdf(
+                mw.previous, M=self._M, D=self._D
+            )
+
+        return self._distribution.pdf(mw, M=self._M, D=self._D)
+
+
+class Poisson(Distribution):
+    """
+    Poisson distribution of molecular weights for chain lengths.
+    Flory, P. J. Molecular size distribution in ethylene oxide polymers. Journal of the American chemical society 1940, 62, 1561–1565.
+
+    The textual representation of this distribution is: `poisson(N)`
+    """
+
+    def __init__(self, raw_text):
+        """
+        Initialization of Poisson distribution object.
+
+        Arguments:
+        ----------
+        raw_text: str
+             Text representation of the distribution.
+             Has to start with `poisson`.
+        """
+        super().__init__(raw_text)
+
+        if not self._raw_text.startswith("poisson"):
+            raise RuntimeError(
+                f"Attempt to initialize Poisson distribution from text '{raw_text}' that does not start with 'poisson'"
+            )
+
+        self._N = float(self._raw_text[len("poisson") + 1 : -1])
+        self._distribution = stats.poisson(mu=self._N)
+
+    def generate_string(self, extension):
+        if extension:
+            return f"|poisson({self._N})|"
+        return ""
+
+    @property
+    def generable(self):
+        return True
+
+    def prob_mw(self, mw):
+        try:
+            return super().prob_mw(mw)
+        except AttributeError:
+            return self._distribution.pmf(int(mw))

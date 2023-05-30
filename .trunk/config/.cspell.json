@@ -46,6 +46,13 @@
     "COCCOCOCCOCOCCONOCCONOCCOCOCCONOCCOCOCCONOCCOCOCCONOCCOCOCCOCOCCONOCCOCOCCONOCCONOCCONOCCOCOCCONOCCONOCCONOCCONOCCONOCCONOCF",
     "CCCCNC",
     "COCCC",
-    "lightgreen"
+    "lightgreen",
+    "matplotlib",
+    "pyplot",
+    "prefactor",
+    "Bottlebrush",
+    "Guironnet",
+    "dispersity",
+    "mathrm"
   ]
 }
