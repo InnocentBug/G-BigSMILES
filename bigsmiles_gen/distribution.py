@@ -23,6 +23,8 @@ def get_distribution(distribution_text):
         return SchulzZimm(distribution_text)
     if "log_normal" in distribution_text:
         return LogNormal(distribution_text)
+    if "poisson" in distribution_text:
+        return Poisson(distribution_text)
     raise RuntimeError(f"Unknown distribution type {distribution_text}.")
 
 
@@ -360,4 +362,45 @@ class LogNormal(Distribution):
         return self._distribution.pdf(mw, M=self._M, D=self._D)
 
 
-# Flory, P. J. Molecular size distribution in ethylene oxide polymers. Journal of the American chemical society 1940, 62, 1561–1565.
+class Poisson(Distribution):
+    """
+    Poisson distribution of molecular weights for chain lengths.
+    Flory, P. J. Molecular size distribution in ethylene oxide polymers. Journal of the American chemical society 1940, 62, 1561–1565.
+
+    The textual representation of this distribution is: `poisson(N)`
+    """
+
+    def __init__(self, raw_text):
+        """
+        Initialization of Poisson distribution object.
+
+        Arguments:
+        ----------
+        raw_text: str
+             Text representation of the distribution.
+             Has to start with `poisson`.
+        """
+        super().__init__(raw_text)
+
+        if not self._raw_text.startswith("poisson"):
+            raise RuntimeError(
+                f"Attempt to initialize Poisson distribution from text '{raw_text}' that does not start with 'poisson'"
+            )
+
+        self._N = float(self._raw_text[len("poisson") + 1 : -1])
+        self._distribution = stats.poisson(mu=self._N)
+
+    def generate_string(self, extension):
+        if extension:
+            return f"|poisson({self._N})|"
+        return ""
+
+    @property
+    def generable(self):
+        return True
+
+    def prob_mw(self, mw):
+        try:
+            return super().prob_mw(mw)
+        except AttributeError:
+            return self._distribution.pmf(int(mw))

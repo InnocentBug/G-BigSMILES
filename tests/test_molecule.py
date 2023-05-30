@@ -78,7 +78,9 @@ def test_molecule():
             "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|flory_schulz(5e-3)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(500, 450)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|log_normal(1700, 1.2)|F",
             "OC[>]{[>][<]CC[>], [<]C(N[>])C[>]; [<][H], [<]C[<]}[<]COOC[<]{[<][<]COC[>], [<]C(ON)C[>][>]}{[<][<]COCOC[>], [<]CONOC[>][>]}[>]F",
             "OC[>]{[>][<]CC[>], [<|0.5|]C(N[>|0.1 0.0 0.0 0.0 0.0 0.0 0.0|])C[>]; [<][H], [<]C[<]}|flory_schulz(0.005)|[<]COOC[<]{[<][<]COC[>], [<]C(ON)C[>][>]}|schulz_zimm(500.0, 450.0)|{[<][<]COCOC[>], [<]CONOC[>][>]}|log_normal(1700.0, 1.2)|[>]F",
+            # trunk-ignore(cspell/error)
             "[H]CCCCNC(CO)CCCC(CC(CC(CCCCCC(CC)NC)NC)NCCC(CCCCCC)NC)NCOOCCOCCC(COCCOCCC(COCCC(CC(COCCC(CONOCCONOCCONOCCOCOCCONOCCOCOCCONOCCONOCCOCOCCOCOCCOCOCCOCOCCOCOCCONOCCONOCCOCOCF)ON)ON)ON)ON)ON",
+            # trunk-ignore(cspell/error)
             "[H]NC(CCCCCCCC)CC(CCCCCCCCCO)NCOOCCC(COCCC(COCCC(CC(COCCC(CC(COCCOCCOCOCCONOCCOCOCCOCOCCONOCCONOCCOCOCCONOCCOCOCCONOCCOCOCCONOCCOCOCCOCOCCONOCCOCOCCONOCCONOCCONOCCOCOCCONOCCONOCCONOCCONOCCONOCCONOCF)ON)ON)ON)ON)ON)ON",
         ),
     ]

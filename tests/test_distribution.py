@@ -145,6 +145,30 @@ def test_log_normal():
         assert log_normal.generable
 
 
+def test_poisson():
+    def mean(M):
+        return M
+
+    def variance(M):
+        return M
+
+    rng = np.random.default_rng()
+    for M in [11.3e3, 5.3e3, 20.3e3]:
+
+        poisson = bigsmiles_gen.distribution.get_distribution(f"poisson({M})")
+
+        data = []
+        for i in range(NSTAT):
+            d = poisson.draw_mw(rng)
+            data.append(d)
+        data = np.asarray(data)
+
+        assert np.abs((np.mean(data) - mean(M))) / mean(M) < EPSILON
+        assert np.abs((np.var(data) - variance(M))) / variance(M) < EPSILON
+        assert str(poisson) == f"|poisson({M})|"
+        assert poisson.generable
+
+
 if __name__ == "__main__":
     # test_flory_schulz()
     # test_gauss()
