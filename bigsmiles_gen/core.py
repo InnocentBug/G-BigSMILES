@@ -92,7 +92,7 @@ def reaction_graph_to_dot_string(graph, bigsmiles=None):
             if name in edge_data:
                 value = edge_data[name]
                 edge_label = f"{name_map[name]} = {np.round(value ,2)}"
-        if "w" in edge_label:
+        if "atom" in edge_label:
             dot_str += (
                 f'{hash(edge[0])} -> {hash(edge[1])} [label="{edge_label}", arrowhead=none];\n'
             )

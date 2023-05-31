@@ -203,7 +203,11 @@ class Molecule(BigSMILESbase):
         bond_descriptors = {}
         # Add all nodes and edges from residues to BondDescriptor
         for res in residues:
-            G.add_node(res, smiles=res.residues[0])
+            try:  # Add the mol weight distribution if available
+                G.add_node(res, smiles=str(res), distribution=residues[res].distribution)
+            except AttributeError:
+                G.add_node(res, smiles=str(res))
+
             for bd in res.bond_descriptors:
                 bond_descriptors[bd] = res
                 G.add_node(bd, weight=bd.weight)
