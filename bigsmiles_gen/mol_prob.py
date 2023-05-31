@@ -9,7 +9,7 @@ from .stochastic import Stochastic
 from .token import SmilesToken
 
 
-def get_starting_tokens(smiles, big_mol):
+def get_starting_tokens(big_mol):
     start_element = big_mol.elements[0]
     start_fragments = []
     start_probabilities = []
@@ -287,6 +287,7 @@ class PossibleMatch:
             new_full = []
             pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
 
+            print("asdf")
             for substructure in match._mol.GetSubstructMatches(pattern):
                 open_atom_idx = id_open_atom(substructure, match, atom.new_atom)
                 if open_atom_idx is not None:
@@ -369,10 +370,10 @@ class PossibleMatch:
 
 def get_prob(smiles, big_mol):
     params = Chem.SmilesParserParams()
-    params.removeHs = False
+    params.removeHs = True
     mol = Chem.MolFromSmiles(smiles, params)
     open_matches = []
-    starting_token, starting_prob = get_starting_tokens(smiles, big_mol)
+    starting_token, starting_prob = get_starting_tokens(big_mol)
     for token, prob in zip(starting_token, starting_prob):
         pattern = Chem.MolFromSmiles(token.generate_smiles_fragment(), params.removeHs)
         possible_substructures = mol.GetSubstructMatches(pattern)

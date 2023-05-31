@@ -29,6 +29,13 @@ def test_prob(bigA):
     print(matches)
 
 
+def gen_calc_prob(big):
+    mol = bigsmiles_gen.Molecule(big)
+    mol_gen = mol.generate()
+    calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
+    print(mol_gen.smiles, calc_prob)
+
+
 bigA = "{[][<]C(N)C[>]; [<][H][>]}|uniform(500, 600)|{[<][<]C(=O)C[>]; [>][H][]}|uniform(500, 600)|"
 bigA = "CCO{[<][<]C(N)C[>][>]}|uniform(500, 600)|{[<][<]C(=O)C[>][>]}|uniform(500, 600)|CCN"
 # test_mirror(bigA)
@@ -44,28 +51,35 @@ bigA = "OC{[<] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0|])C[>]; [<][H] [>]}|schulz_zi
 
 bigA = "CCC(C){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(2000, 1800)|{[>][<]CC([>])C(=O)OC[<]}|schulz_zimm(1000, 900)|[H]"
 bigA = "CCC(C){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(2000, 1800)|{[>][<]CC([>])C(=O)OC [<]}|schulz_zimm(1000, 900)|"
-bigA = "CCC(C){[>][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC [<]}|schulz_zimm(3000, 1850)|"
+bigA = "CCC(C){[>][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC [<]}|schulz_zimm(3000, 1850)|[H]"
 
-mol = bigsmiles_gen.Molecule(bigA)
-mol_gen = mol.generate()
-print(mol_gen.smiles)
-molSize = (450, 150)
-mc = Chem.Mol(mol_gen.mol.ToBinary())
-drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
-drawer.DrawMolecule(mc)
-drawer.FinishDrawing()
-svg = drawer.GetDrawingText()
-with open("molPlay.svg", "w") as filehandle:
-    filehandle.write(svg)
-calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
-print(calc_prob)
+bigA = "F{[<] [>]CC[<] [>]}|uniform(0, 20)|[H]"
+gen_calc_prob(bigA)
+print("ASD")
+bigA = "F{[<] [<]CC[>] [>]}|uniform(0, 20)|[H]"
+gen_calc_prob(bigA)
 
-print(mol.generate_string(True))
-graph = mol.gen_reaction_graph()
-graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
 
-with open("graph.dot", "w") as filehandle:
-    filehandle.write(graph_dot)
+# mol = bigsmiles_gen.Molecule(bigA)
+# mol_gen = mol.generate()
+# print(mol_gen.smiles)
+# molSize = (450, 150)
+# mc = Chem.Mol(mol_gen.mol.ToBinary())
+# drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
+# drawer.DrawMolecule(mc)
+# drawer.FinishDrawing()
+# svg = drawer.GetDrawingText()
+# with open("molPlay.svg", "w") as filehandle:
+#     filehandle.write(svg)
+# calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
+# print(calc_prob)
+
+# print(mol.generate_string(True))
+# graph = mol.gen_reaction_graph()
+# graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
+
+# with open("graph.dot", "w") as filehandle:
+#     filehandle.write(graph_dot)
 
 
 # for i in range(100):
