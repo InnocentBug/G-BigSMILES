@@ -53,6 +53,13 @@
     "Bottlebrush",
     "Guironnet",
     "dispersity",
-    "mathrm"
+    "mathrm",
+    "conda",
+    "CONDA",
+    "pytest",
+    "nbconvert",
+    "ipython",
+    "pydot",
+    "ipynb"
   ]
 }
