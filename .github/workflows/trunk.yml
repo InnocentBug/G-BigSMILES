@@ -30,7 +30,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install python dependecies
+      - name: Install python dependencies
         run: |
           $CONDA/bin/conda env update --file environment.yml --name base
           $CONDA/bin/conda install pytest
@@ -48,7 +48,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v3
-      - name: Install python dependecies
+      - name: Install python dependencies
         run: |
           sudo apt install jupyter-nbconvert
           $CONDA/bin/conda env update --file environment.yml --name base
@@ -62,3 +62,7 @@ jobs:
         run: jupyter nbconvert --to python bigsmiles_gen.ipynb
       - name: Run the script
         run: $CONDA/bin/python bigsmiles_gen.py
+      - name: Generate SI script from jupyter
+        run: jupyter nbconvert --to python SI.ipynb
+      - name: Run the script
+        run: $CONDA/bin/python SI.py
