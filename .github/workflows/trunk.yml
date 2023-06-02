@@ -50,12 +50,12 @@ jobs:
         uses: actions/setup-python@v3
       - name: Install python dependencies
         run: |
-          sudo apt install jupyter-nbconvert
+          sudo apt install jupyter-nbconvert graphviz
           $CONDA/bin/conda env update --file environment.yml --name base
           $CONDA/bin/conda install pytest
           $CONDA/bin/conda install pip
           $CONDA/bin/conda install ipython
-          $CONDA/bin/pip install pydot
+          $CONDA/bin/conda install -c conda-forge pydot
       - name: Install
         run: $CONDA/bin/pip install .
       - name: Generate script from jupyter
