@@ -60,6 +60,7 @@
     "nbconvert",
     "ipython",
     "pydot",
-    "ipynb"
+    "ipynb",
+    "graphviz"
   ]
 }

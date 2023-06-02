@@ -50,7 +50,7 @@ jobs:
         uses: actions/setup-python@v3
       - name: Install python dependencies
         run: |
-          sudo apt install jupyter-nbconvert
+          sudo apt install jupyter-nbconvert graphviz
           $CONDA/bin/conda env update --file environment.yml --name base
           $CONDA/bin/conda install pytest
           $CONDA/bin/conda install pip
