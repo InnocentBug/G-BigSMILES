@@ -55,7 +55,7 @@ jobs:
           $CONDA/bin/conda install pytest
           $CONDA/bin/conda install pip
           $CONDA/bin/conda install ipython
-          $CONDA/bin/conda -c conda-forge install pydot
+          $CONDA/bin/conda install -c conda-forge pydot
       - name: Install
         run: $CONDA/bin/pip install .
       - name: Generate script from jupyter
