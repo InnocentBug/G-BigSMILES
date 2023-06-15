@@ -65,18 +65,18 @@ bigA += "CFC{[$] [$]C(CC[<])C[$2|0|], [>]CC[<]; [>]O [$2]}|schulz_zimm(200,150)|
 
 
 mol = bigsmiles_gen.Molecule(bigA)
-# mol_gen = mol.generate()
-# print(mol_gen.smiles)
-# molSize = (450, 150)
-# mc = Chem.Mol(mol_gen.mol.ToBinary())
-# drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
-# drawer.DrawMolecule(mc)
-# drawer.FinishDrawing()
-# svg = drawer.GetDrawingText()
-# with open("molPlay.svg", "w") as filehandle:
-#     filehandle.write(svg)
-# calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
-# print(calc_prob)
+mol_gen = mol.generate()
+print(mol_gen.smiles)
+molSize = (450, 150)
+mc = Chem.Mol(mol_gen.mol.ToBinary())
+drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
+drawer.DrawMolecule(mc)
+drawer.FinishDrawing()
+svg = drawer.GetDrawingText()
+with open("molPlay.svg", "w") as filehandle:
+    filehandle.write(svg)
+calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
+print(calc_prob)
 
 print(mol.generate_string(True))
 graph = mol.gen_reaction_graph()
