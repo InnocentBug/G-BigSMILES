@@ -18,7 +18,7 @@ jupyter:
 
 The following section provides specific examples of generative BigSMILES to demonstrate how various polymer ensembles might be created. This is an interactive Jupyter notebook that generates visual representations of polymeric ensembles automatically using the [reference implementation](https://github.com/InnocentBug/bigSMILESgen) of generative BigSMILES. Visual representations of polymers can become complex for long-chain molecules, hence we typically restrict ourselves to a manageable length.
 
-# Preliminary Code for Visualization
+## Preliminary Code for Visualization
 
 This section includes Python code that converts generative BigSMILES into visual representations suitable for a Jupyter notebook. While not essential for understanding the main text, it can serve as a reference for how to use the reference implementation.
 
@@ -84,7 +84,7 @@ def draw_generation_graph(molecule_string):
     return render_svg(graph_svg)
 ```
 
-# Case Study: PS and PMMA
+## Case Study: PS and PMMA
 
 Polystyrene (PS) and polymethyl methacrylate (PMMA) are two well-known and widely studied polymers. We'll use them as examples to demonstrate different concepts of how generative BigSMILES can be employed to create various ensembles.
 

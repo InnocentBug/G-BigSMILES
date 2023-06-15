@@ -13,6 +13,8 @@ jupyter:
     name: python3
 ---
 
+# Examples of how to use generative BigSMILES
+
 ```python
 import numpy as np
 from rdkit import Chem
@@ -81,7 +83,7 @@ def render_graph(mol_gen, residues):
     return plt.show()
 ```
 
-#### Helper function to generate and visualize bigSMILES strings
+## Helper function to generate and visualize bigSMILES strings
 
 ```python
 from bigsmiles_gen import System, mol_prob, Molecule
@@ -117,7 +119,7 @@ def big_smiles_graph(string):
     return render_graph(mol, ext.residues)
 ```
 
-# Polyesters
+## Polyesters
 
 ## Di-Carboxyl Acids with 2-5 middle C total Mw 500
 
@@ -191,7 +193,7 @@ big_smiles_gen(big)
 big_smiles_gen(big)
 ```
 
-# Polyamides
+## Polyamides
 
 ## Di-Carboxylic Acids
 
@@ -257,7 +259,7 @@ big_smiles_gen(big)
 big_smiles_gen(big)
 ```
 
-# New! Polyolefins, because a '=' remains
+## New! Polyolefins, because a '=' remains
 
 ## CH2=CH-(CH2)nCH3 where n varies from 1 to 5
 
@@ -355,7 +357,7 @@ big_smiles_graph(big)
 big_smiles_graph(big)
 ```
 
-# Example stochastic polymer
+## Example stochastic polymer
 
 ```python
 big = "F{[<] [<|3|]CC[>|3|],[<]C([>])c1ccccc1, [<|0.5|]CCC(C[>|0.1|])CC[>|0.5|]; [<]COC, [>][H] [>]}|uniform(500,1000)|CN{[$][$]CC[$][$]}|uniform(400,500)|[H]"
@@ -402,7 +404,7 @@ big_smiles_graph(big)
 big_smiles_graph(big)
 ```
 
-# Motifs
+## Motifs
 
 ```python
 render_svg(moltosvg(Chem.MolFromSmiles("NC")))
