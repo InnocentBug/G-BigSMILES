@@ -28,6 +28,9 @@ lint:
       paths:
         - bigsmiles_gen.md
         - SI.md
+    - linters: [cspell]
+      paths:
+        - tests/test_molecule.py
 actions:
   enabled:
     - trunk-announce
