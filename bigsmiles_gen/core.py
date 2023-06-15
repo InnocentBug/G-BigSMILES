@@ -54,6 +54,10 @@ def choose_compatible_weight(bond_descriptors, bond, rng):
     for i in compatible_idx:
         weights.append(bond_descriptors[i].weight)
     weights = np.asarray(weights)
+    # Trick to allow 0 weights for special situations.
+    if len(compatible_idx) > 0 and np.all(weights == weights[0]):
+        return rng.choice(compatible_idx)
+
     weights /= np.sum(weights)
 
     try:

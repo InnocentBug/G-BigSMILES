@@ -278,6 +278,8 @@ class Molecule(BigSMILESbase):
                         ):
                             total_weight += other_bd.weight
                     # total_weight = 1
+                    if total_weight >= 0 and total_weight < 1e-16:
+                        total_weight = 1
                     for other_bd in next_element.bond_descriptors:
                         if (
                             graph_bd.is_compatible(other_bd)
@@ -309,6 +311,8 @@ class Molecule(BigSMILESbase):
                         ):
                             total_weight += other_bd.weight
                     # total_weight = 1
+                    if total_weight >= 0 and total_weight < 1e-16:
+                        total_weight = 1
                     for other_bd in next_element.bond_descriptors:
                         if (
                             graph_bd.is_compatible(other_bd)
