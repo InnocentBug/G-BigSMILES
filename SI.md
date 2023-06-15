@@ -14,6 +14,8 @@ jupyter:
     name: python3
 ---
 
+# Supporting Information
+
 The following section provides specific examples of generative BigSMILES to demonstrate how various polymer ensembles might be created. This is an interactive Jupyter notebook that generates visual representations of polymeric ensembles automatically using the [reference implementation](https://github.com/InnocentBug/bigSMILESgen) of generative BigSMILES. Visual representations of polymers can become complex for long-chain molecules, hence we typically restrict ourselves to a manageable length.
 
 # Preliminary Code for Visualization
@@ -86,11 +88,8 @@ def draw_generation_graph(molecule_string):
 
 Polystyrene (PS) and polymethyl methacrylate (PMMA) are two well-known and widely studied polymers. We'll use them as examples to demonstrate different concepts of how generative BigSMILES can be employed to create various ensembles.
 
-To begin with, let's consider the standard BigSMILES notation for PS and PMMA repeat units.
-
-```
-CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1[<], [>][<]CC([>])C(=O)OC [<]}[Br]
-```
+To begin with, let's consider the standard BigSMILES notation for PS and PMMA repeat units:
+`CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1[<], [>][<]CC([>])C(=O)OC [<]}[Br]`
 
 In common terms, this represents the random copolymer PS-r-PMMA. Technically, this BigSMILES notation covers all subsequent examples, and we'll show how generative BigSMILES can be used to distinguish between different polymer ensembles.
 
@@ -100,9 +99,7 @@ Our first step is to specify the molecular weight distribution. We'll use the Sc
 
 ```python
 # Define a generative bigSMILES string representing an ensemble of molecules
-generative_bigSMILES = (
-    "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br]"
-)
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br]"
 ```
 
 ```python
@@ -125,9 +122,7 @@ We can alter the composition of PS and PMMA by assigning different weights to th
 
 ```python
 # Define a generative bigSMILES string with weighted bond descriptors
-generative_bigSMILES = (
-    "CCOC(=O)C(C)(C){[>][<|8|]CC([>|8|])c1ccccc1, [<|2|]CC([>|2|])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br]"
-)
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<|8|]CC([>|8|])c1ccccc1, [<|2|]CC([>|2|])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br]"
 ```
 
 ```python
