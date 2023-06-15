@@ -6,7 +6,7 @@ jupyter:
     text_representation:
       extension: .md
       format_name: markdown
-      format_version: "1.3"
+      format_version: '1.3'
       jupytext_version: 1.13.6
   kernelspec:
     display_name: Python 3 (ipykernel)
@@ -437,6 +437,10 @@ To ensure smooth generation with generative BigSMILES, we need to make a few mod
 This approach allows for the independent control of the molecular weight of each arm.
 
 ```python
+generative_bigSMILES = "C{[$] [$]C(CC[<])C[$2|0|], [>]CC[<]; [>][H] [$2]}|uniform(100,101)|"
+generative_bigSMILES += "C{[$] [$]C(CC[<])C[$2|0|], [>]CC[<]; [>]O [$2]}|schulz_zimm(200,150)|"
+generative_bigSMILES += "C{[$] [$|0|]C(CC[<])C[$|0|], [>]CC[<]; [>]C(=O) [$]}|gauss(300,30)|[Br]"
+
 draw_molecule(generative_bigSMILES)
 ```
 
