@@ -50,19 +50,19 @@ jobs:
         uses: actions/setup-python@v3
       - name: Install python dependencies
         run: |
-          sudo apt install jupyter-nbconvert graphviz
           $CONDA/bin/conda env update --file environment.yml --name base
           $CONDA/bin/conda install pytest
           $CONDA/bin/conda install pip
           $CONDA/bin/conda install ipython
+          $CONDA/bin/conda install jupytext
           $CONDA/bin/conda install -c conda-forge pydot
       - name: Install
         run: $CONDA/bin/pip install .
       - name: Generate script from jupyter
-        run: jupyter nbconvert --to python bigsmiles_gen.md
+        run: jupytext --to py bigsmiles_gen.md
       - name: Run the script
         run: $CONDA/bin/python bigsmiles_gen.py
       - name: Generate SI script from jupyter
-        run: jupyter nbconvert --to python SI.md
+        run: jupytext --to py SI.md
       - name: Run the script
         run: $CONDA/bin/python SI.py
