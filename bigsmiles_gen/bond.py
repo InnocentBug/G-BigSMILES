@@ -148,4 +148,4 @@ class BondDescriptor(BigSMILESbase):
 
     @property
     def generable(self):
-        return self.weight > 0
+        return self.weight >= 0
