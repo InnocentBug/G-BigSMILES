@@ -78,10 +78,13 @@ def draw_molecule(molecule_string):
 def draw_generation_graph(molecule_string):
     bigSMILESmol = Molecule(molecule_string)
     graph = bigSMILESmol.gen_reaction_graph()
-    graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, bigSMILESmol)
-    pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
-    graph_svg = pydot_graph.create_svg()
-    return render_svg(graph_svg)
+    try: # Does not work with some pydot implementations and new python version, ignore errors then
+        graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, bigSMILESmol)
+        pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
+        graph_svg = pydot_graph.create_svg()
+        return render_svg(graph_svg)
+    except AttributeError:
+        return None
 ```
 
 ## Case Study: PS and PMMA
