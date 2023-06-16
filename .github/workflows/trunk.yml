@@ -59,7 +59,7 @@ jobs:
       - name: Install
         run: $CONDA/bin/pip install .
       - name: Generate script from jupyter
-        run: jupytext --to py bigsmiles_gen.md
+        run: $CONDA/bin/jupytext --to py bigsmiles_gen.md
       - name: Run the script
         run: $CONDA/bin/python bigsmiles_gen.py
       - name: Generate SI script from jupyter
