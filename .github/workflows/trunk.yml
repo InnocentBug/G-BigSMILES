@@ -54,7 +54,7 @@ jobs:
           $CONDA/bin/conda install pytest
           $CONDA/bin/conda install pip
           $CONDA/bin/conda install ipython
-          $CONDA/bin/conda install jupytext
+          $CONDA/bin/python -m pip install jupytext
           $CONDA/bin/conda install -c conda-forge pydot
       - name: Install
         run: $CONDA/bin/pip install .
