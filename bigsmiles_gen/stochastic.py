@@ -2,6 +2,7 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+import copy
 from warnings import warn
 
 from rdkit.Chem import Descriptors as rdDescriptors
@@ -174,19 +175,17 @@ class Stochastic(BigSMILESbase):
             else:
                 # Ensure prefix is compatible with terminal bond descriptor.
                 assert len(prefix.bond_descriptors) == 1
-                if str(prefix.bond_descriptors[0]) != str(self.left_terminal):
+                if prefix.bond_descriptors[0].generate_string(
+                    False
+                ) != self.left_terminal.generate_string(False):
                     raise RuntimeError(
                         "The open bond descriptor of the prefix is not compatible"
                         " with the left terminal bond descriptor of the stochastic object."
                     )
             return my_mol
 
-        def generate_repeat_units(my_mol):
-            starting_mol_weight = rdDescriptors.HeavyAtomMolWt(my_mol.mol)
-            target_mol_weight = self.distribution.draw_mw(rng)
-            while (
-                rdDescriptors.HeavyAtomMolWt(my_mol.mol) - starting_mol_weight < target_mol_weight
-            ):
+        def generate_repeat_units_and_finalize(my_mol):
+            def add_repeat_unit(my_mol):
                 starting_bond_idx = choose_compatible_weight(my_mol.bond_descriptors, None, rng)
                 starting_bond = my_mol.bond_descriptors[starting_bond_idx]
 
@@ -214,15 +213,21 @@ class Stochastic(BigSMILESbase):
 
                 my_mol = my_mol.attach_other(starting_bond_idx, new_mol, connecting_bond_idx)
 
+                return my_mol
+
+            starting_mol_weight = rdDescriptors.HeavyAtomMolWt(my_mol.mol)
+            target_mol_weight = self.distribution.draw_mw(rng)
+            while True:
+                my_mol = add_repeat_unit(my_mol)
                 # Prematurely end if no more open bonds available
                 if len(my_mol.bond_descriptors) == 0:
                     warn(
                         f"Premature end of generation of {str(self)} because no more open bond descriptors found."
                     )
+                    finalized_my_mol = my_mol
                     break
-
-                # # End prematurely if transitions set (bc they can instate end groups)
-                # # and only one bond descriptor is present for the terminal end
+                # End prematurely if transitions set (bc they can instate end groups)
+                # and only one bond descriptor is present for the terminal end
                 # if (
                 #     starting_bond.transitions is not None
                 #     and str(self.right_terminal) != "[]"
@@ -232,9 +237,17 @@ class Stochastic(BigSMILESbase):
                 #         f"Premature end of generation of {str(self)} with transitions specified"
                 #         " and only a single bond descriptor open for a required terminal."
                 #     )
+                #     finalized_my_mol = my_mol
                 #     break
 
-            return my_mol
+                finalized_my_mol = finalize_mol(copy.deepcopy(my_mol))
+                if (
+                    rdDescriptors.HeavyAtomMolWt(my_mol.mol) - starting_mol_weight
+                    > target_mol_weight
+                ):
+                    break
+
+            return finalized_my_mol
 
         def finalize_mol(my_mol):
             terminal_bond = None
@@ -274,8 +287,7 @@ class Stochastic(BigSMILESbase):
         super().generate(prefix, rng)
 
         my_mol = get_start()
-        my_mol = generate_repeat_units(my_mol)
-        my_mol = finalize_mol(my_mol)
+        my_mol = generate_repeat_units_and_finalize(my_mol)
 
         return my_mol
 

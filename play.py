@@ -59,6 +59,10 @@ bigA = "CCC(C){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1000, 900)|{[>][<]CC([>])C(
 # bigA = "F{[<] [<]CC[>] [>]}|uniform(0, 20)|[H]"
 # gen_calc_prob(bigA)
 
+bigA = "C{[$2|.5|] [$2|2|]C(CC[<|3|])C[$|0|], [>|4|]CC[<|5|]; [>|6|][H] [$|7|]}|uniform(100,101)|"
+bigA += "CFC{[$] [$]C(CC[<])C[$2|0|], [>]CC[<]; [>]O [$2]}|schulz_zimm(200,150)|"
+# bigA += "C{[$] [$|0|]C(CC[<])C[$|0|], [>]CC[<]; [>]C(=O) [$]}|gauss(300,30)|[Br]"
+
 
 mol = bigsmiles_gen.Molecule(bigA)
 mol_gen = mol.generate()

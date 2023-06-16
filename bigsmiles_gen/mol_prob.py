@@ -318,7 +318,10 @@ class PossibleMatch:
             total_atom_weight = atom.bond_descriptor.weight
             for remaining_atom in match._open_atoms:
                 total_atom_weight += remaining_atom.bond_descriptor.weight
-            atom_prob = atom.bond_descriptor.weight / total_atom_weight
+            if total_atom_weight > 0:
+                atom_prob = atom.bond_descriptor.weight / total_atom_weight
+            else:
+                atom_prob = 1.0
 
             token_mols = []
             # Let's find possible token that could be reactable

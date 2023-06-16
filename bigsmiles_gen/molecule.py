@@ -92,6 +92,7 @@ class Molecule(BigSMILESbase):
                     # Attach a compatible bond descriptor automatically
                     other_bd = stochastic.left_terminal
                     bond_text = _create_compatible_bond_text(other_bd)
+                    bond_text = bond_text[:-1] + "|0|]"
                     pre_token += bond_text
                     pre_stochastic = SmilesToken(pre_token, 0)
                 self._elements.append(pre_stochastic)
@@ -213,7 +214,7 @@ class Molecule(BigSMILESbase):
                 G.add_node(bd, weight=bd.weight)
 
             for bd in res.bond_descriptors:
-                if bd.weight > 0:
+                if bd.weight >= 0:
                     G.add_edge(res, bd, atom=bd.atom_bonding_to)
 
         # Add missing transition edges generation edges
@@ -225,7 +226,7 @@ class Molecule(BigSMILESbase):
                 prob = graph_bd.transitions / graph_bd.weight
                 for i, p in enumerate(prob):
                     other_bd = element.bond_descriptors[i]
-                    if p > 0:
+                    if p >= 0:
                         G.add_edge(graph_bd, other_bd, prob=p)
             elif isinstance(element, Stochastic):  # Non-transition edges
                 repeat_weight = 0
@@ -278,6 +279,8 @@ class Molecule(BigSMILESbase):
                         ):
                             total_weight += other_bd.weight
                     # total_weight = 1
+                    if total_weight >= 0 and total_weight < 1e-16:
+                        total_weight = 1
                     for other_bd in next_element.bond_descriptors:
                         if (
                             graph_bd.is_compatible(other_bd)
@@ -294,6 +297,7 @@ class Molecule(BigSMILESbase):
                             graph_bd.is_compatible(other_bd)
                             and graph_bd.is_compatible(element.right_terminal)
                             and bond_descriptors[graph_bd] in element.repeat_tokens
+                            and other_bd.weight > 0
                         ):
                             G.add_edge(graph_bd, other_bd, trans_prob=1.0)
 
@@ -309,6 +313,8 @@ class Molecule(BigSMILESbase):
                         ):
                             total_weight += other_bd.weight
                     # total_weight = 1
+                    if total_weight >= 0 and total_weight < 1e-16:
+                        total_weight = 1
                     for other_bd in next_element.bond_descriptors:
                         if (
                             graph_bd.is_compatible(other_bd)
