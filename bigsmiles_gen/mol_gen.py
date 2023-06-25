@@ -34,12 +34,15 @@ class MolGen:
         self.graph = nx.Graph()
         assert len(token.residues) == 1
         smiles = token.generate_smiles_fragment()
-        rdFP = _RDKGEN.GetFingerprint(Chem.MolFromSmiles(smiles))
+        params = Chem.SmilesParserParams()
+        params.removeHs = True
+        mol = Chem.MolFromSmiles(smiles, params.removeHs)
+        rdFP = _RDKGEN.GetFingerprint(mol)
         self.graph.add_node(0, smiles=smiles, big_smiles=str(token), rdFP=rdFP)
         for bd in self.bond_descriptors:
             # Our graph has only 1 node and all BD are associated with that.
             bd.node_idx = 0
-        self.mol = Chem.MolFromSmiles(token.generate_smiles_fragment())
+        self._mol = mol
 
     @property
     def fully_generated(self):
@@ -70,7 +73,7 @@ class MolGen:
         if other_bond_idx >= len(other.bond_descriptors):
             raise RuntimeError(f"Invalid bond descriptor id {other_bond_idx} (other).")
 
-        current_atom_number = len(self.mol.GetAtoms())
+        current_atom_number = len(self._mol.GetAtoms())
         other_bond_descriptors = copy.deepcopy(other.bond_descriptors)
 
         if not other_bond_descriptors[other_bond_idx].is_compatible(
@@ -86,12 +89,12 @@ class MolGen:
             bd.atom_bonding_to += current_atom_number
             bd.node_idx += self_graph_len
 
-        # print([atom.GetSymbol() for atom in self.mol.GetAtoms()],
+        # print([atom.GetSymbol() for atom in self._mol.GetAtoms()],
         #       [bd.atom_bonding_to for bd in self.bond_descriptors])
-        # print([atom.GetSymbol() for atom in other.mol.GetAtoms()],
+        # print([atom.GetSymbol() for atom in other._mol.GetAtoms()],
         #       [bd.atom_bonding_to - current_atom_number for bd in other_bond_descriptors])
 
-        new_mol = Chem.CombineMols(self.mol, other.mol)
+        new_mol = Chem.CombineMols(self._mol, other._mol)
         new_mol = Chem.EditableMol(new_mol)
 
         new_mol.AddBond(
@@ -112,7 +115,7 @@ class MolGen:
 
         self.bond_descriptors += other_bond_descriptors
 
-        self.mol = new_mol.GetMol()
+        self._mol = new_mol.GetMol()
         return self
 
     def get_mol(self):
@@ -120,7 +123,7 @@ class MolGen:
         Obtain a sanitized copy of the generated (so far) generated molecule.
         """
 
-        mol = copy.deepcopy(self.mol)
+        mol = copy.deepcopy(self._mol)
         Chem.SanitizeMol(mol)
         return mol
 
@@ -134,7 +137,7 @@ class MolGen:
 
     @property
     def weight(self):
-        return rdDescriptors.HeavyAtomMolWt(self.mol)
+        return rdDescriptors.HeavyAtomMolWt(self._mol)
 
     def add_graph_res(self, residues):
         for n in self.graph:
