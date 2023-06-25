@@ -215,7 +215,7 @@ class Stochastic(BigSMILESbase):
 
                 return my_mol
 
-            starting_mol_weight = rdDescriptors.HeavyAtomMolWt(my_mol.mol)
+            starting_mol_weight = rdDescriptors.HeavyAtomMolWt(my_mol.get_mol())
             target_mol_weight = self.distribution.draw_mw(rng)
             while True:
                 my_mol = add_repeat_unit(my_mol)
@@ -242,7 +242,7 @@ class Stochastic(BigSMILESbase):
 
                 finalized_my_mol = finalize_mol(copy.deepcopy(my_mol))
                 if (
-                    rdDescriptors.HeavyAtomMolWt(my_mol.mol) - starting_mol_weight
+                    rdDescriptors.HeavyAtomMolWt(my_mol.get_mol()) - starting_mol_weight
                     > target_mol_weight
                 ):
                     break
