@@ -67,7 +67,7 @@ class MolGen:
            Index of the BondDescriptor in the other molecule, that is going to bind.
         """
 
-        self.get_mol()
+        self.mol
         if self_bond_idx >= len(self.bond_descriptors):
             raise RuntimeError(f"Invalid bond descriptor id {self_bond_idx} (self).")
         if other_bond_idx >= len(other.bond_descriptors):
@@ -118,7 +118,8 @@ class MolGen:
         self._mol = new_mol.GetMol()
         return self
 
-    def get_mol(self):
+    @property
+    def mol(self):
         """
         Obtain a sanitized copy of the generated (so far) generated molecule.
         """
@@ -132,7 +133,7 @@ class MolGen:
         """
         Get SMILES of the (so far) generated molecule.
         """
-        mol = self.get_mol()
+        mol = self.mol
         return Chem.MolToSmiles(mol)
 
     @property

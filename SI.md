@@ -72,7 +72,7 @@ def draw_molecule(molecule_string):
     # Try it as a system first
     bigSMILESmol = System(molecule_string)
     mol = bigSMILESmol.generate(rng=rng)
-    return render_svg(moltosvg(mol.get_mol()))
+    return render_svg(moltosvg(mol.mol))
 
 
 def draw_generation_graph(molecule_string):
