@@ -77,7 +77,7 @@ assert generated_molecule.fully_generated
 For fully generated molecules we can obtain the underlying `rdkit.mol` object.
 
 ```python
-mol = generated_molecule.get_mol()
+mol = generated_molecule.mol
 ```
 
 This enables you to do all the operations with the generated molecule that `rdkit` offers.

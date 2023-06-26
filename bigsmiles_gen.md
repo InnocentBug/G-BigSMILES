@@ -102,7 +102,7 @@ def big_smiles_gen(string):
     print(mol.smiles)
     # print(mol_prob.get_ensemble_prob(mol.smiles, ext)[0])
 
-    return render_svg(moltosvg(mol.get_mol()))
+    return render_svg(moltosvg(mol.mol))
 
 
 def big_smiles_graph(string):
