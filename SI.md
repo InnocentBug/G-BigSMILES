@@ -7,7 +7,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.13.6
+      jupytext_version: 1.14.5
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -451,6 +451,7 @@ draw_molecule(generative_bigSMILES)
 draw_generation_graph(generative_bigSMILES)
 ```
 
+<!-- #region -->
 ## Ring Polymer
 
 A stochastic ring polymer can be represented in BigSMILES using connection notation `1` across a stochastic object, like so: `C1{[>][<]CCO[>][<]}CO1`. Here, the first carbon atom and the last oxygen atom complete the ring with a covalent bond, each labeled with `1`.
@@ -459,13 +460,13 @@ This can be replicated in generative BigSMILES: `C1{[>][<]CCO[>][<]}|poisson(100
 
 _Note_: The reasoning behind this lack of support is that every SMILES token must be a valid SMILES string for a molecule. Neither the prefix `C1` nor the suffix `CO1` are valid SMILES strings for molecule generation.
 
-@Dylan, would you like to add your implementation that can handle this situation?
 
 ## Hyper-Branched Polymer: Poly-Ethylene
 
 The BigSMILES for branched poly-ethylene can be defined as: `C{[$][$]CC([$])[$],[$]CC[$]; [$][H][$]}[H]`.
 
 Generative BigSMILES provides more control. Firstly, a molecular weight distribution, Flory-Schulz in this case, is added:
+<!-- #endregion -->
 
 ```python
 generative_bigSMILES = "C{[$][$]CC(CC[$])(CC[$]),[$]CC[$]; [$][H][$]}|flory_schulz(1e-3)|[H]"
