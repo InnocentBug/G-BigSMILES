@@ -487,3 +487,19 @@ draw_generation_graph(generative_bigSMILES)
 ## Excluding Internal Loops: Low-Density Polyethylene
 
 Low-density polyethylene can form loops during synthesis. That is, high branching can lead to rings within a single molecule. However, Generative BigSMILES currently doesn't support this. Like cross-linked networks, we believe that spatial considerations should be incorporated into molecule generation, a function beyond the capacity of line notations. In the future, we might consider an extension to the Generative BigSMILES notation to cover this situation. For now, if a polymer ensemble is more restrictively defined with Generative BigSMILES, molecules with loops are always excluded.
+
+Atactic PP
+	C{[>][<]CC(C)[>][<]}[H]|poisson(30)|
+Isotactic PP
+	C{[>][<]C[C@H](C)[>][<]}[H]|poisson(30)|
+Syndiotactic PP
+	C{[>1] [<1][>2], [<1][>3], [<2] C[C@H](C) [>3], [<3] C[C@@H](C) [>2], [<2][>4], [<3][>4], [<4]} [H] |poisson(30)|
+Stereo-enriched PP
+	C{[>] [<|3|] C[C@H](C) [>|3|], [<] C[C@@H](C) [>][<]} [H] |poisson(30)|
+Treat like a copolymerization
+
+To address brad’s page 14 comment on termination by coupling
+Radical polymerization with recombination (coupling)
+	N#C(C)(C){[$][$]CC(C(=O)OC)[$][$]}{[$][$]CC(C(=O)OC)[$][$]}N#C(C)(C)
+Radical polymerization with disproportionation
+	N#C(C)(C){[$][$]CC(C(=O)OC)[$][$]} . N#C(C)(C){[$][$]CC(C(=O)OC)[$][$]}C=C(C(=O)OC)
