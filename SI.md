@@ -7,7 +7,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.14.5
+      jupytext_version: 1.13.6
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -49,7 +49,7 @@ def render_svg(svg):
     return SVG(svg_string)
 
 
-def moltosvg(mol, molSize=(450, 150), kekulize=True):
+def moltosvg(mol, molSize=(450, 150), kekulize=False):
     """Generate a SVG stick representation of molecule."""
     mc = Chem.Mol(mol.ToBinary())
     if kekulize:
@@ -294,6 +294,132 @@ The enhanced notation, strongly recommended for mixtures, leads to the same mole
 
 This applies universally to mixtures such as polymers in solution, even though we're showcasing a mixture of two homopolymers here.
 
+
+
+## Tacticity
+
+Describing the tacticity of polymers can be crucial for there properties. Here we walk through a few examples to explore the options with generative BigSMILES.
+
+### Atactic poly(propylene) (PP)
+
+For the atactic polymers, we don't need to specify tacticity explictly.
+
+```python
+generative_bigSMILES = "C{[>][<]CC(C)[>][<]}|poisson(900)|[H]"
+draw_molecule(generative_bigSMILES)
+```
+
+### Isotactic PP
+
+For isotactic PP, we only can explictly define the tacticity in the repeating monomer like this:
+
+
+```python
+generative_bigSMILES = "C{[>][<]C[C@H](C)[>][<]}|poisson(900)|[H]"
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+### Syndiotactic PP
+
+For syndiotactic PP, we define two different types of repeat units, each with a different tacticity.
+After that, we use the same technique as with PS-PMMA to achieve alternating repetition of the repeat units.
+
+
+
+```python
+generative_bigSMILES = "C{[>][<|0 0 0 1|]C[C@H](C)[>|0 0 1 0|], [<|0 1 0 0|]C[C@@H](C)[>|1 0 0 0|] [<]}|poisson(900)|[H]"
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+### Stereo enriched PP
+
+If we want to have an atactic PP, but one of the stereo chemistries is enriched, we use the same approach as before.
+But instead of excluding specific transitions, we just enrich the weight of the bond descriptors of the monomer we want to enrich.
+Here we increase the weight  of the `C[C@H](C)` monomer by 3.
+
+```python
+generative_bigSMILES = "C{[>][<|3|]C[C@H](C)[>|3|], [<]C[C@@H](C)[>] [<]}|poisson(900)|[H]"
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+<!-- #region -->
+## Radical polymerization with recombination (coupling)
+
+
+For a polymer that undergoes radical synthesis, recombination might happen.
+To describe a polymer that undergoes such a recombination, the best way to describe this, is with two blocks of stoachstic objects.
+The first one describes the regular synthesis, but it followed by a second block that is the same but in reverse.
+It has to be reverse, because during synthesis both half are synthesized first before they combine at the active center.
+
+An example might look like this:
+    
+<!-- #endregion -->
+
+```python
+generative_bigSMILES = "N#CC(C)(C){[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|{[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|C(C)(C)C#N"
+draw_molecule(generative_bigSMILES)
+```
+
+Notice, how we assign the same molecular weight distribution to both halves. Also, you can see that the prefix of the first, is the suffix of the second block but in reverse.
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+For a realistic ensemble, we would have both, recombined polymers, and not recombined polymers.
+This is best described as a mixture of both types, the recombined and the non-recombined one.
+We use the mixture notation of generative BigSMILES to achive this. This also allows us to specify the ratio between recombined and non-recombined polymers. For demonstration purposes, I am using a 2:1 ratio here.
+
+```python
+# Non-recombined polymer
+generative_bigSMILES = "N#CC(C)(C){[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|[H]"
+# Add the mixture componenent and specify to the total molecular of non-recombined polymers
+generative_bigSMILES += ".|1e4|"
+# Add the recombined polymer
+generative_bigSMILES += "N#CC(C)(C){[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|{[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|C(C)(C)C#N"
+# Add the mixture notation, with half the molecular weight of this type of polymers
+generative_bigSMILES += ".|5e3|"
+print(generative_bigSMILES)
+```
+
+```python
+# Now upon generation of multiple molecules, some are recombined (bigger and two `N#C` end groups) and some are the non-recombined polymers with a hydrogen end group
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+
 ## Homopolymer: AA, BB Nylon 6,6
 
 Nylon 6,6 constitutes two alternating repeat units in an AA,BB sequence. This can be effectively represented in BigSMILES using directed bond descriptors `[<], [>]`. Here's the corresponding representation:
@@ -488,18 +614,6 @@ draw_generation_graph(generative_bigSMILES)
 
 Low-density polyethylene can form loops during synthesis. That is, high branching can lead to rings within a single molecule. However, Generative BigSMILES currently doesn't support this. Like cross-linked networks, we believe that spatial considerations should be incorporated into molecule generation, a function beyond the capacity of line notations. In the future, we might consider an extension to the Generative BigSMILES notation to cover this situation. For now, if a polymer ensemble is more restrictively defined with Generative BigSMILES, molecules with loops are always excluded.
 
-Atactic PP
-	C{[>][<]CC(C)[>][<]}[H]|poisson(30)|
-Isotactic PP
-	C{[>][<]C[C@H](C)[>][<]}[H]|poisson(30)|
-Syndiotactic PP
-	C{[>1] [<1][>2], [<1][>3], [<2] C[C@H](C) [>3], [<3] C[C@@H](C) [>2], [<2][>4], [<3][>4], [<4]} [H] |poisson(30)|
-Stereo-enriched PP
-	C{[>] [<|3|] C[C@H](C) [>|3|], [<] C[C@@H](C) [>][<]} [H] |poisson(30)|
-Treat like a copolymerization
+```python
 
-To address brad’s page 14 comment on termination by coupling
-Radical polymerization with recombination (coupling)
-	N#C(C)(C){[$][$]CC(C(=O)OC)[$][$]}{[$][$]CC(C(=O)OC)[$][$]}N#C(C)(C)
-Radical polymerization with disproportionation
-	N#C(C)(C){[$][$]CC(C(=O)OC)[$][$]} . N#C(C)(C){[$][$]CC(C(=O)OC)[$][$]}C=C(C(=O)OC)
+```
