@@ -7,7 +7,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.14.5
+      jupytext_version: 1.13.6
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -49,7 +49,7 @@ def render_svg(svg):
     return SVG(svg_string)
 
 
-def moltosvg(mol, molSize=(450, 150), kekulize=True):
+def moltosvg(mol, molSize=(450, 150), kekulize=False):
     """Generate a SVG stick representation of molecule."""
     mc = Chem.Mol(mol.ToBinary())
     if kekulize:
@@ -294,6 +294,118 @@ The enhanced notation, strongly recommended for mixtures, leads to the same mole
 
 This applies universally to mixtures such as polymers in solution, even though we're showcasing a mixture of two homopolymers here.
 
+
+## Polymer Tacticity with Generative BigSMILES
+
+Polymer tacticity is an essential aspect that significantly influences their properties. We'll delve into some examples to understand this concept better using generative BigSMILES notation.
+
+### Atactic Polypropylene (PP)
+
+For atactic polymers, there is no need to explicitly mention tacticity.
+
+```python
+generative_bigSMILES = "C{[>][<]CC(C)[>][<]}|poisson(900)|[H]"
+draw_molecule(generative_bigSMILES)
+```
+
+### Isotactic PP
+
+To define isotactic PP, we have to explicitly mention the tacticity within the repeating monomer unit as shown:
+
+```python
+generative_bigSMILES = "C{[>][<]C[C@H](C)[>][<]}|poisson(900)|[H]"
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+### Syndiotactic PP
+
+In the case of syndiotactic PP, we establish two distinct repeat units, each with a unique tacticity. Then, we utilize the same method as with PS-PMMA to achieve alternating repetition of the repeat units.
+
+```python
+generative_bigSMILES = "C{[>][<|0 0 0 1|]C[C@H](C)[>|0 0 1 0|], [<|0 1 0 0|]C[C@@H](C)[>|1 0 0 0|] [<]}|poisson(900)|[H]"
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+### Stereo Enriched PP
+
+To create an atactic PP, but with enrichment of one of the stereochemistries, we utilize a similar approach as before. Instead of excluding specific transitions, we merely enhance the weight of the bond descriptors of the monomer we aim to enrich. In this example, the weight of the `C[C@H](C)` monomer is increased by 3.
+
+```python
+generative_bigSMILES = "C{[>][<|3|]C[C@H](C)[>|3|], [<]C[C@@H](C)[>] [<]}|poisson(900)|[H]"
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+
+## Radical Polymerization with Recombination (Coupling)
+
+During radical synthesis, a polymer might undergo a recombination process. To describe such a phenomenon, we typically use two blocks of stochastic objects. The first block represents the standard synthesis, while the second one, which is the reverse of the first, follows it. The reason it must be reversed is due to the synthesis process: both halves are synthesized first and then combined at the active center.
+
+Consider the following example:
+
+
+```python
+generative_bigSMILES = "N#CC(C)(C){[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|{[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|C(C)(C)C#N"
+draw_molecule(generative_bigSMILES)
+```
+
+In this example, we assign the same molecular weight distribution to both halves. Moreover, note how the prefix of the first block is the reverse of the suffix of the second block.
+
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+A realistic ensemble would comprise both recombined and non-recombined polymers. To depict this, we describe it as a mixture of both types, utilizing the mixture notation of generative BigSMILES. This approach also enables us to specify the ratio between the recombined and non-recombined polymers. For illustration, we'll use a 2:1 ratio here.
+
+
+```python
+# Non-recombined polymer
+generative_bigSMILES = "N#CC(C)(C){[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|[H]"
+# Add the mixture component and specify the total molecular weight of non-recombined polymers
+generative_bigSMILES += ".|1e4|"
+# Add the recombined polymer
+generative_bigSMILES += "N#CC(C)(C){[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|{[$][$]CC(C(=O)OC)[$][$]}|poisson(1000)|C(C)(C)C#N"
+# Add the mixture notation, with half the molecular weight of this type of polymers
+generative_bigSMILES += ".|5e3|"
+print(generative_bigSMILES)
+```
+
+```python
+# Upon generating multiple molecules, we find some are recombined (larger with two `N#C` end groups), while others are non-recombined polymers with a hydrogen end group
+draw_molecule(generative_bigSMILES)
+```
+
+We can repeat the `draw_molecule(generative_bigSMILES)` command to visualize different instances of polymer generation:
+
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
 ## Homopolymer: AA, BB Nylon 6,6
 
 Nylon 6,6 constitutes two alternating repeat units in an AA,BB sequence. This can be effectively represented in BigSMILES using directed bond descriptors `[<], [>]`. Here's the corresponding representation:
@@ -301,6 +413,7 @@ Nylon 6,6 constitutes two alternating repeat units in an AA,BB sequence. This ca
 `{[][<]C(=O)CCCCC(=O)[<],[>]NCCCCCCN[>];[>]O, [<][H][]}`
 
 The same applies for generative BigSMILES. Once we incorporate a molecular weight distribution for step-growth polymerization, it enables the generation of realistic polymers.
+
 
 ```python
 generative_bigSMILES = "{[][<]C(=O)CCCCC(=O)[<],[>]NCCCCCCN[>]; [<][H], [>]O []}|flory_schulz(4e-3)|"
@@ -332,6 +445,7 @@ In BigSMILES, polyamide can be described as follows: `[H]O{[>][<]C(=O)CCCCC(=O)[
 A direct translation into generative BigSMILES isn't feasible here, since a stochastic generation could end with an A group. This situation could result in a missing corresponding end group to terminate the generation. Instead, we can define two possible end groups, with one adding a B unit prior to termination.
 
 `[H]O{[>][<]C(=O)CCCCC(=O)[<],[>]NCCCCCCN[>]; [<][H], [>]NCCCCCCN[H] []}`
+
 
 ```python
 generative_bigSMILES = "O{[>][<]C(=O)CCCCC(=O)[<],[>]NCCCCCCN[>]; [<][H], [>]NCCCCCCN[H] []}|flory_schulz(1e-3)|"
@@ -385,6 +499,7 @@ Now, we just need to add a molecular weight distribution. This distribution enco
 
 `[H]{[$] [$]C(C[<])(C[<])(C[<]), [>]CC[<]; [>][H] []}|gauss(600, 150)|`
 
+
 ```python
 generative_bigSMILES = "[H]{[$] [$]C(C[<])(C[<])(C[<]), [>]CC[<]; [>][H] []}|gauss(600, 150)|"
 ```
@@ -405,12 +520,14 @@ In the case where the arms are not of equal length, we can describe this similar
 
 Here we utilize the third attachment point to affix a separate arm with a unique chemistry `[>2]OCO[<2]` and a unique end group for it `[>2]O`. It is noteworthy that it isn't necessary to have separate chemistries here, just different bond descriptors suffice.
 
+
 ```python
 generative_bigSMILES = "[H]{[$][$]C(C[<])(C[<])(C[<2]), [>]CC[<], [>2]OCO[<2]; [>][H], [>2]O []}|gauss(600, 150)|"
 draw_molecule(generative_bigSMILES)
 ```
 
 Next, we can assign different weights to this special arm, making it shorter or longer relative to the other arms. Here we increase the weight from the default `|1|` to `|2|`, thus making it twice as likely to grow the second arm.
+
 
 ```python
 generative_bigSMILES = "[H]{[$] [$]C(C[<])(C[<])(C[<2|2|]), [>]CC[<], [>2|2|]OCO[<2|2|]; [>][H], [>2]O []}|gauss(800, 200)|"
@@ -439,11 +556,11 @@ To ensure smooth generation with generative BigSMILES, we need to make a few mod
 
 This approach allows for the independent control of the molecular weight of each arm.
 
+
 ```python
 generative_bigSMILES = "C{[$] [$]C(CC[<])C[$2|0|], [>]CC[<]; [>][H] [$2]}|uniform(100,101)|"
 generative_bigSMILES += "C{[$] [$]C(CC[<])C[$2|0|], [>]CC[<]; [>]O [$2]}|schulz_zimm(200,150)|"
 generative_bigSMILES += "C{[$] [$|0|]C(CC[<])C[$|0|], [>]CC[<]; [>]C(=O) [$]}|gauss(300,30)|[Br]"
-
 draw_molecule(generative_bigSMILES)
 ```
 
@@ -487,3 +604,7 @@ draw_generation_graph(generative_bigSMILES)
 ## Excluding Internal Loops: Low-Density Polyethylene
 
 Low-density polyethylene can form loops during synthesis. That is, high branching can lead to rings within a single molecule. However, Generative BigSMILES currently doesn't support this. Like cross-linked networks, we believe that spatial considerations should be incorporated into molecule generation, a function beyond the capacity of line notations. In the future, we might consider an extension to the Generative BigSMILES notation to cover this situation. For now, if a polymer ensemble is more restrictively defined with Generative BigSMILES, molecules with loops are always excluded.
+
+```python
+
+```
