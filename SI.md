@@ -605,17 +605,15 @@ draw_generation_graph(generative_bigSMILES)
 
 Low-density polyethylene can form loops during synthesis. That is, high branching can lead to rings within a single molecule. However, Generative BigSMILES currently doesn't support this. Like cross-linked networks, we believe that spatial considerations should be incorporated into molecule generation, a function beyond the capacity of line notations. In the future, we might consider an extension to the Generative BigSMILES notation to cover this situation. For now, if a polymer ensemble is more restrictively defined with Generative BigSMILES, molecules with loops are always excluded.
 
-
+<!-- #region -->
 # Bond Descriptor ID for Reaction probabilities
 
 The advanced notation allows for a reaction probability to be specified between each of the bond descriptors.
     This is how the ID and weights are assigned:
 
-<!-- #raw -->
-Bond Descriptor ID:                   1         2    3     4     5                  6         
-       G-BigSMILES: N#CC(C)(C){[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poisson(900)|Br
-        Weight IDs:                                                1 2 3 4 5 6
-<!-- #endraw -->
+
+![bond_descriptor_ids.png](attachment:bond_descriptor_ids.png)
+<!-- #endregion -->
 
 So in this bottle brush scenario, we have a zero weight for the bond descriptors: `1: [<|3|]`, `2:[$]`, `3: [$]`, and `5: [<|0 0 0 1 0 2|]`.
 A weight of `1` for the 4th bond descriptor `[>]` and a weight of 2 for the bond descriptor of the end group `6: [>]`.
