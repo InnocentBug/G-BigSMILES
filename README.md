@@ -1,4 +1,8 @@
-# bigSMILESgen
+# Generative BigSMILES: (G-BigSMILES)
+
+[![CI](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/ci.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/ci.yml)
+[![notebooks](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/notebook.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/notebook.yml)
+[![trunk.io](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/trunk.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/trunk.yml)
 
 Generator of SMILES string from bigSMILES with extension.
 
