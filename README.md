@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/ci.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/ci.yml)
 [![notebooks](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/notebook.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/notebook.yml)
+[![CI Coverage](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/coverage.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/coverage.yml)
 [![trunk.io](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/trunk.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/trunk.yml)
 
 Generator of SMILES string from bigSMILES with extension.
