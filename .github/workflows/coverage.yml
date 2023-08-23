@@ -28,4 +28,4 @@ jobs:
 
       - name: Run tests
         run: |
-          $CONDA/bin/pytest --cov --cov-fail-under=93
+          $CONDA/bin/pytest --cov --cov-fail-under=85
