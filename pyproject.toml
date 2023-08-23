@@ -11,3 +11,15 @@ write_to = "bigsmiles_gen/_version.py"
 
 [tool.black]
 line-length = 100
+
+[tool.coverage.run]
+omit = [
+  "*/__init__.py",
+  "path_to_exclude/*",
+  "tests/*",
+  "*/_pytest/*",
+  "*/more_itertools/*",
+  "*/pluggy/*",
+  "*/py/*",
+  "*/six.py",
+]

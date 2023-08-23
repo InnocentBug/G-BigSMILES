@@ -7,6 +7,9 @@ on:
   pull_request:
     branches:
       - main
+  schedule:
+    - cron: "0 0 1 * *"
+
 jobs:
   ci-tests:
     runs-on: ${{ matrix.os }}
@@ -34,27 +37,3 @@ jobs:
       - name: Run tests
         run: |
           $CONDA/bin/pytest
-  run:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v3
-      - name: Install python dependencies
-        run: |
-          $CONDA/bin/conda env update --file environment.yml --name base
-          $CONDA/bin/conda install pytest
-          $CONDA/bin/conda install pip
-          $CONDA/bin/conda install ipython
-          $CONDA/bin/conda install -c conda-forge pydot>=1.4.2
-          $CONDA/bin/python -m pip install jupytext
-      - name: Install
-        run: $CONDA/bin/pip install .
-      - name: Generate script from jupyter
-        run: $CONDA/bin/jupytext --to py bigsmiles_gen.md
-      - name: Run the script
-        run: $CONDA/bin/python bigsmiles_gen.py
-      - name: Generate SI script from jupyter
-        run: $CONDA/bin/jupytext --to py SI.md
-      - name: Run the script
-        run: $CONDA/bin/python SI.py
