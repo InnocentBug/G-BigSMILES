@@ -1,0 +1,31 @@
+name: CI Coverage
+
+on:
+  push:
+    branches:
+      - trunk-merge/**
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 1 * *"
+
+jobs:
+  ci-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+      - name: Install python dependencies
+        run: |
+          $CONDA/bin/conda env update --file environment.yml --name base
+          $CONDA/bin/conda install pytest pytest-cov
+          $CONDA/bin/conda install pip
+
+      - name: Install
+        run: $CONDA/bin/pip install .
+
+      - name: Run tests
+        run: |
+          $CONDA/bin/pytest --cov --cov-fail-under=85
