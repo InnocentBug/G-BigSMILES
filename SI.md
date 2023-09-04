@@ -7,7 +7,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.14.5
+      jupytext_version: 1.13.6
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -606,7 +606,7 @@ draw_generation_graph(generative_bigSMILES)
 Low-density polyethylene can form loops during synthesis. That is, high branching can lead to rings within a single molecule. However, Generative BigSMILES currently doesn't support this. Like cross-linked networks, we believe that spatial considerations should be incorporated into molecule generation, a function beyond the capacity of line notations. In the future, we might consider an extension to the Generative BigSMILES notation to cover this situation. For now, if a polymer ensemble is more restrictively defined with Generative BigSMILES, molecules with loops are always excluded.
 
 <!-- #region -->
-# Bond Descriptor ID for Reaction probabilities
+## Bond Descriptor ID for Reaction probabilities
 
 The advanced notation allows for a reaction probability to be specified between each of the bond descriptors.
     This is how the ID and weights are assigned:
