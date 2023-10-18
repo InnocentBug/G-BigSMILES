@@ -27,7 +27,6 @@ lint:
   ignore:
     - linters: [prettier]
       paths:
-        - bigsmiles_gen.md
         - SI.md
     - linters: [cspell]
       paths:
