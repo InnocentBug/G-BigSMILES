@@ -18,22 +18,20 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Conda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        auto-update-conda: true
-        activate-environment: bigsmiles
-
-    - name: Create and Activate Conda Environment
-      run: |
-        conda env create -f environment.yml
-        conda activate bigsmiles
-        
-    - name: Run Jupytext
-      shell: bash -l {0}
-      run: |
-        jupytext --to py SI.ipynb
-      - name: Run the script
-        run: python SI.py
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          activate-environment: bigsmiles
+      - name: Create and Activate Conda Environment
+        run: |
+          conda env create -f environment.yml
+          conda activate bigsmiles
+          - name: Run Jupytext
+            shell: bash -l {0}
+          run: |
+            jupytext --to py SI.ipynb
+            - name: Run the script
+              run: python SI.py

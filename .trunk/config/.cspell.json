@@ -98,6 +98,8 @@
     "NCCCCCCN",
     "endgroups",
     "endregion",
-    "Crosslinking"
+    "Crosslinking",
+    "miniconda",
+    "pydotplus"
   ]
 }

@@ -7,7 +7,7 @@ dependencies:
   - rdkit >= 2022.3.1
   - pydot >= 1.4.2
   - pytest >= 6.2.5
-  - ipython 
+  - ipython
   - jupytext >= 1.13.6
   - pip >= 22.0.2
   - pip:
