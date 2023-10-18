@@ -14,26 +14,19 @@ jobs:
   ci-tests:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-latest]
-        python-version: [3.9]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-        uses: actions/setup-python@v2
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install python dependencies
+          auto-update-conda: true
+          environment-file: environment.yml
+          activate-environment: bigsmiles
+      - name: Run Pytest
+        shell: bash -l {0}
         run: |
-          $CONDA/bin/conda env update --file environment.yml --name base
-          $CONDA/bin/conda install pytest
-          $CONDA/bin/conda install pip
-
-      - name: Install
-        run: $CONDA/bin/pip install .
-
-      - name: Run tests
-        run: |
-          $CONDA/bin/pytest
+          pip install .
+          python -m pytest

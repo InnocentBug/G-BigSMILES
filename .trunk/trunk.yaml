@@ -27,7 +27,6 @@ lint:
   ignore:
     - linters: [prettier]
       paths:
-        - bigsmiles_gen.md
         - SI.md
     - linters: [cspell]
       paths:
@@ -42,7 +41,10 @@ actions:
 merge:
   required_statuses:
     - trunk
-    - ci-tests (ubuntu-20.04, 3.9)
-    - ci-tests (macos-latest, 3.9)
-    - notebook
+    - ci-tests (ubuntu-latest)
+    - ci-tests (windows-latest)
+    - ci-tests (macos-latest)
+    - notebook (ubuntu-latest)
+    - notebook (windows-latest)
+    - notebook (macos-latest)
     - ci-coverage
