@@ -30,5 +30,4 @@ jobs:
         shell: bash -l {0}
         run: |
           jupytext --to py SI.ipynb
-          - name: Run the script
-            run: python SI.py
+          python SI.py
