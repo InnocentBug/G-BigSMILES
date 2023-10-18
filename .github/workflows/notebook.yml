@@ -29,5 +29,6 @@ jobs:
       - name: Run Jupytext
         shell: bash -l {0}
         run: |
+          pip install .
           jupytext --to py SI.ipynb
           python SI.py
