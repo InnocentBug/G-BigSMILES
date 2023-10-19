@@ -9,6 +9,8 @@ dependencies:
   - pytest >= 6.2.5
   - ipython
   - jupytext >= 1.13.6
+  - notebook >= 6.4.8
+  - nb_conda_kernels
   - pip >= 22.0.2
   - pip:
       - pydotplus

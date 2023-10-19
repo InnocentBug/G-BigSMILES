@@ -7,7 +7,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.13.6
+      jupytext_version: 1.15.2
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -102,7 +102,7 @@ Our first step is to specify the molecular weight distribution. We'll use the Sc
 
 ```python
 # Define a generative bigSMILES string representing an ensemble of molecules
-generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br]"
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br].|5e5|"
 ```
 
 ```python
@@ -117,15 +117,62 @@ To better understand the composition of our ensemble, let's visualize its genera
 draw_generation_graph(generative_bigSMILES)
 ```
 
-As we can see from both the molecule and its generative graph, Polystyrene (PS) and Poly(methyl methacrylate) (PMMA) are present in equal proportions in this ensemble. Our next step will be to adjust this composition using the bond descriptor weights.
+In the observed molecule, Polystyrene (PS) and Poly(methyl methacrylate) (PMMA) seem to be equally distributed. This is anticipated since we use default values, assigning equal weights to all bond descriptors. To validate this observation, we compute the precise ratio across an ensemble of molecules.
 
-## Creating a PS-r-PMMA ensemble with an 80:20 ratio
+```python
+import rdkit
+from rdkit.Chem import rdMolDescriptors as rdDescriptors
+from IPython.display import clear_output
 
-We can alter the composition of PS and PMMA by assigning different weights to the bond descriptors.
+# Just a little helper function to show the progress interactively
+def update_progress(progress):
+    bar_length = 20
+    block = int(round(bar_length * progress))
+    clear_output(wait = True)
+    text = "Progress: [{0}] {1:.1f}%".format( "#" * block + "-" * (bar_length - block), progress * 100)
+    print(text)
+
+def count_PS_PMMA_monomers(gen_mol):
+    # Since the =O is unique to the PMMA and head group we can count the '=' in the smiles string to determine the number of PMMA.
+    n_PMMA = gen_mol.smiles.count("=")
+    # subtract the head group double bond
+    n_PMMA -= 1
+
+    # Only PS has exactly one aromatic ring, so we can determine the number of PS monomers
+    n_PS = rdDescriptors.CalcNumAromaticCarbocycles(gen_mol.mol)
+
+    return n_PMMA, n_PS
+
+# Use a full ensemble system determine the ration of PS to PMMA
+system = bigsmiles_gen.System(generative_bigSMILES)
+total_PMMA = 0
+total_PS = 0
+total_weight = 0
+# Iterate the molecules of a full system
+for gen_mol in system.generator:
+    n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
+    total_PMMA += n_PMMA
+    total_PS += n_PS
+    total_weight += gen_mol.weight
+    update_progress(total_weight/system.system_mass)
+
+ratio = total_PMMA/(total_PS + total_PMMA)
+expected_ratio = 0.5
+print(ratio, expected_ratio)
+# For automated tests we raise an exception for unexpected deviations
+if np.abs(expected_ratio - ratio) > 0.02:
+    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 2%: {(ratio, expected_ratio)}")
+```
+
+We've confirmed an equal ratio between the two monomers in the entire ensemble. Our subsequent task is to modify this composition using bond descriptor weights.
+
+## Adjusting the PS to PMMA Ratio to 80:20
+
+By assigning varied weights to the bond descriptors, we can change the composition of PS and PMMA.
 
 ```python
 # Define a generative bigSMILES string with weighted bond descriptors
-generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<|8|]CC([>|8|])c1ccccc1, [<|2|]CC([>|2|])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br]"
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<|8|]CC([>|8|])c1ccccc1, [<|2|]CC([>|2|])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br].|5e5|"
 ```
 
 ```python
@@ -140,6 +187,31 @@ The changes are noticeable, with PS now being the majority monomer and PMMA redu
 draw_generation_graph(generative_bigSMILES)
 ```
 
+```python
+# Use a full ensemble system determine the ration of PS to PMMA
+system = bigsmiles_gen.System(generative_bigSMILES)
+total_PMMA = 0
+total_PS = 0
+total_weight = 0
+# Iterate the molecules of a full system
+for gen_mol in system.generator:
+    n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
+    total_PMMA += n_PMMA
+    total_PS += n_PS
+    total_weight += gen_mol.weight
+    update_progress(total_weight/system.system_mass)
+
+ratio = total_PMMA/(total_PS+total_PMMA)
+expected_ratio = 0.2
+print(ratio, expected_ratio)
+# For automated tests we raise an exception for unexpected deviations
+if np.abs(expected_ratio - ratio) > 0.02:
+    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 2%: {(ratio, expected_ratio)}")
+```
+
+This confirms that we have achieved the desired monomer composition in the ensemble.
+
+
 ## Modifying PS-r-PMMA blockiness to 70% with a 50:50 ratio
 
 In the previous example, we adjusted the ratio of PS to PMMA but didn't specify the blockiness, or the likelihood that a given monomer is followed by the same type. By using list weight notation in our generative bigSMILES string, we can set the transition probabilities for PS to PS and PMMA to PMMA.
@@ -148,7 +220,7 @@ For instance, let's set the transition probability for both PS -> PS and PMMA ->
 
 ```python
 # Define a generative bigSMILES string with adjusted blockiness
-generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<|0 7 0 3|]CC([>|7 0 3 0|])c1ccccc1, [<|0 3 0 7|]CC([>|3 0 7 0|])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br]"
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<|0 7 0 3|]CC([>|7 0 3 0|])c1ccccc1, [<|0 3 0 7|]CC([>|3 0 7 0|])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br].|5e5|"
 ```
 
 ```python
@@ -161,17 +233,39 @@ draw_molecule(generative_bigSMILES)
 draw_generation_graph(generative_bigSMILES)
 ```
 
-From the generative graph, you can see how the transition probabilities now favor remaining within the same block rather than switching to a new one.
+```python
+# Use a full ensemble system determine the ration of PS to PMMA
+system = bigsmiles_gen.System(generative_bigSMILES)
+total_PMMA = 0
+total_PS = 0
+total_weight = 0
+# Iterate the molecules of a full system
+for gen_mol in system.generator:
+    n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
+    total_PMMA += n_PMMA
+    total_PS += n_PS
+    total_weight += gen_mol.weight
+    update_progress(total_weight/system.system_mass)
 
-## PS-r-PMMA with 70% blockiness for PS and 20% for PMMA
+ratio = total_PMMA/(total_PS + total_PMMA)
+expected_ratio = 0.5
+print(ratio, expected_ratio)
+# For automated tests we raise an exception for unexpected deviations
+if np.abs(expected_ratio - ratio) > 0.02:
+    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 2%: {(ratio, expected_ratio)}")
+```
 
-In the previous example, the transition probability into the other block was 30% for both blocks, resulting in a balanced ratio of 50% between the two monomers. However, we can exert more control over the composition by varying the blockiness of the different blocks.
+This demonstrates that, despite altering blockiness, we can consistently control the monomer composition as intended. The generative graph illustrates how transition probabilities now lean more towards staying within the same block than switching.
 
-In this case, we will maintain the 70% blockiness for Polystyrene (PS) but reduce the blockiness of Poly(methyl methacrylate) (PMMA) to 20%.
+## Adjusting Blockiness: 70% for PS and 20% for PMMA
+
+In our prior example, both blocks had a 30% transition probability into the other block, leading to an even 50% monomer ratio. By modifying the blockiness levels, we can further refine this composition.
+
+For this iteration, we'll retain a 70% blockiness for Polystyrene (PS) and decrease the blockiness of Poly(methyl methacrylate) (PMMA) to 20%.
 
 ```python
 # Define a generative bigSMILES string with varied blockiness
-generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<|0 7 0 3|]CC([>|7 0 3 0|])c1ccccc1, [<|0 8 0 2|]CC([>|8 0 2 0|])C(=O)OC [<]}|schulz_zimm(2500, 2400)|[Br]"
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<|0 7 0 3|]CC([>|7 0 3 0|])c1ccccc1, [<|0 8 0 2|]CC([>|8 0 2 0|])C(=O)OC [<]}|schulz_zimm(2500, 2400)|[Br].|5e5|"
 ```
 
 ```python
@@ -184,7 +278,7 @@ In the generated molecule, you can see that PS remains blocky, but it is now int
 The generative graph should also accurately represent these transition probabilities.
 
 ```python
-# Draw the generative graph for the modified ensemble
+# Draw the generative graph for the blockier ensemble
 draw_generation_graph(generative_bigSMILES)
 ```
 
@@ -619,3 +713,128 @@ So in this bottle brush scenario, we have a zero weight for the bond descriptors
 A weight of `1` for the 4th bond descriptor `[>]` and a weight of 2 for the bond descriptor of the end group `6: [>]`.
 
 Note how terminal bond descriptors do not have an ID and IDs for bond descriptors are always only assigned within one stochastic object.
+
+
+## Validating Molecular Weight
+
+In prior sections, we focused on single molecule examples. Now, we'll ensure that the properties of entire ensembles are also consistent with our expectations. Our starting point is the targeted molecular weight of stochastic entities.
+
+We begin by crafting a function to analyze and visualize the distribution of G-BigSMILES strings. Remember, we're considering full ensembles in this context, necessitating the `bigsmiles_gen.System` specification along with a molecular weight descriptor. While we showcase the Gaussian distribution for its appealing linear characteristics, the approach—aside from merging two stochastic entities—remains unchanged. Other distributions undergo separate unit testing.
+
+*Note:* Creating complete ensembles significantly extends the execution time compared to single molecule generation. Anticipate each test to span several minutes.
+
+```python
+import matplotlib.pyplot as plt
+
+from IPython.display import clear_output
+
+# Just a little helper function to show the progress interactively
+def update_progress(progress):
+    bar_length = 20
+
+    block = int(round(bar_length * progress))
+    clear_output(wait = True)
+    text = "Progress: [{0}] {1:.1f}%".format( "#" * block + "-" * (bar_length - block), progress * 100)
+    print(text)
+
+
+def plot_distribution(bigsmiles, expected_mu, expected_sigma, bins=25):
+    # Generate the ensemble of molecules
+    bigsmiles_system = bigsmiles_gen.System(bigsmiles)
+    generated_weights = []
+    total_weight = 0
+    for gen_mol in bigsmiles_system.generator:
+        mol_weight = gen_mol.weight
+        generated_weights += [mol_weight]
+        total_weight += mol_weight
+        update_progress(total_weight/bigsmiles_system.system_mass)
+
+
+    hist, bin_edges = np.histogram(generated_weights, bins=bins, density=True)
+    mw = bin_edges[:-1] + (bin_edges[1]-bin_edges[0])/2
+
+    # Generate the expected mw distribution data
+    def gaussian(x, mu, sigma):
+        return 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-1/2* (x-mu)**2/sigma**2)
+    expected = gaussian(mw, expected_mu, expected_sigma)
+
+    # Plot the result
+    fig, ax = plt.subplots()
+    ax.set_xlabel("Mw")
+    ax.set_ylabel("p(Mw)")
+
+    ax.plot(mw, expected, label="expected distribution")
+    ax.plot(mw, hist, label="generated distribution")
+    ax.legend(loc="best")
+
+    plt.show(fig)
+    plt.close(fig)
+
+    # Return the mean squared difference between the expected and actual distribution distributions
+    return np.sqrt(np.mean((expected-hist)**2)) * expected_mu
+```
+
+### Simple Linear Polymer
+
+```python
+mu = 5e3
+sigma = 1e3
+generative_bigSMILES = "[H]{[>] [<]CC([>])c1ccccc1 [<]}|gauss("+str(mu)+", "+str(sigma)+")|[H].|1e7|"
+normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
+# Let's make sure our expectations are fulfilled (important for automated tests)
+if normalized_deviation > 0.5:
+    raise RuntimeError(f"The actual distribution deviates from the expected distribution {normalized_deviation}")
+```
+
+The produced ensemble closely aligns with the anticipated distribution.
+
+### Bottlebrush Structure
+
+```python
+mu = 5e3
+sigma = 1e3
+generative_bigSMILES = "N#CC(C)(C){[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|gauss("+str(mu)+", "+str(sigma)+")|[Br].|4e6|"
+normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
+# Let's make sure our expectations are fulfilled (important for automated tests)
+if normalized_deviation > 0.5:
+    raise RuntimeError(f"The actual distribution deviates from the expected distribution {normalized_deviation}")
+```
+
+For this intricate scenario with numerous end groups, the resulting distribution aligns closely with the anticipated one, as foreseen. We utilize a smaller ensemble in this instance due to its elevated computational demand, leading to increased fluctuations.
+
+### Diblock Copolymer: PS-PMMA
+
+Given the linearity of the Gaussian distribution, the combined molecular weight of the two blocks is Gaussian-distributed. Both the mean and variance are sums of their respective blocks' mean and variance.
+
+```python
+mu_ps = 2e3
+mu_pmma = 3e3
+sigma_ps = 1e3
+sigma_pmma = 2e3
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1 [<]}|gauss("+str(mu_ps)+", "+str(sigma_pmma)+")|{[>][<]CC([>])C(=O)OC[<]}|gauss("+str(mu_pmma)+", "+str(sigma_pmma)+")|[Br].|1e7|"
+
+normalized_deviation = plot_distribution(generative_bigSMILES, mu_ps+mu_pmma, sigma_ps+sigma_pmma)
+# Let's make sure our expectations are fulfilled (important for automated tests)
+if normalized_deviation > 0.5:
+    raise RuntimeError(f"The actual distribution deviates from the expected distribution {normalized_deviation}")
+```
+
+Owing to its linear nature, the total molecular weight distribution of the diblock copolymer adheres to the expected distribution derived from combining the molecular weights of the individual blocks.
+
+### Limitation: Self-Terminating Generation
+
+Using list weights, one can dictate a premature termination of generation by assigning a non-zero probability to an end group. In such instances, the resultant molecular weight distribution might not align with the specified distribution in the string. This discrepancy is a recognized limitation, and this example serves as a cautionary note for users.
+
+In our demonstration, there's a 1 in 40 probability that the polymer generation halts prematurely.
+
+```python
+mu = 5e3
+sigma = 1e3
+generative_bigSMILES = "[H]{[>] [<]CC([>|40 0 1|])c1ccccc1 ; [<][H] []}|gauss("+str(mu)+", "+str(sigma)+")|.|1e6|"
+normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
+# Let's make sure our expectations are fulfilled (important for automated tests)
+if normalized_deviation < 0.5:
+    raise RuntimeError(f"We expect the distributions to clearly deviate, which is not the case. {normalized_deviation}")
+```
+
+Upon juxtaposing the distributions, a noticeable divergence is evident. The molecular weight distribution that's generated skews significantly towards lower molecular weights. This is anticipated since the generation can halt prematurely. While the resultant distribution bears resemblance to a geometric distribution, it isn't a precise match. The inherent Gaussian distribution can also interrupt the generation. Consequently, we detect a peak in higher molecular weights, proximate to the expected mean of the Gaussian distribution.
