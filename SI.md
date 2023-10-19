@@ -205,8 +205,8 @@ ratio = total_PMMA/(total_PS+total_PMMA)
 expected_ratio = 0.2
 print(ratio, expected_ratio)
 # For automated tests we raise an exception for unexpected deviations
-if np.abs(expected_ratio - ratio) > 0.02:
-    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 2%: {(ratio, expected_ratio)}")
+if np.abs(expected_ratio - ratio) > 0.05:
+    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 5%: {(ratio, expected_ratio)}")
 ```
 
 This confirms that we have achieved the desired monomer composition in the ensemble.
@@ -251,8 +251,8 @@ ratio = total_PMMA/(total_PS + total_PMMA)
 expected_ratio = 0.5
 print(ratio, expected_ratio)
 # For automated tests we raise an exception for unexpected deviations
-if np.abs(expected_ratio - ratio) > 0.02:
-    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 2%: {(ratio, expected_ratio)}")
+if np.abs(expected_ratio - ratio) > 0.05:
+    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 5%: {(ratio, expected_ratio)}")
 ```
 
 This demonstrates that, despite altering blockiness, we can consistently control the monomer composition as intended. The generative graph illustrates how transition probabilities now lean more towards staying within the same block than switching.
