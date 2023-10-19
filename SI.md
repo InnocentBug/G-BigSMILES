@@ -767,7 +767,7 @@ def plot_distribution(bigsmiles, expected_mu, expected_sigma, bins=25):
     ax.plot(mw, hist, label="generated distribution")
     ax.legend(loc="best")
 
-    plt.show(fig)
+    plt.show()
     plt.close(fig)
 
     # Return the mean squared difference between the expected and actual distribution distributions
