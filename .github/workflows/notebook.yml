@@ -12,7 +12,7 @@ on:
     - cron: "0 0 1 * *"
 
 env:
-  TESTING_ENV: True
+  TESTING_ENV: "True"
 
 jobs:
   notebook:

@@ -78,13 +78,11 @@ def draw_molecule(molecule_string):
 def draw_generation_graph(molecule_string):
     bigSMILESmol = Molecule(molecule_string)
     graph = bigSMILESmol.gen_reaction_graph()
-    try: # Does not work with some pydot implementations and new python version, ignore errors then
-        graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, bigSMILESmol)
-        pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
-        graph_svg = pydot_graph.create_svg()
-        return render_svg(graph_svg)
-    except AttributeError:
-        return None
+    graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, bigSMILESmol)
+    pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
+    graph_svg = pydot_graph.create_svg()
+    render_svg(graph_svg)
+
 ```
 
 ## Case Study: PS and PMMA
@@ -124,8 +122,12 @@ import rdkit
 from rdkit.Chem import rdMolDescriptors as rdDescriptors
 from IPython.display import clear_output
 import os
-TESTING_ENV = eval(os.environ.get("TESTING_ENV", "False"))
+TESTING_ENV_str = os.environ.get("TESTING_ENV", "False")
 
+if TESTING_ENV_str in ("true", "True", "ON"):
+    TESTING_ENV=True
+if TESTING_ENV_str in ("false", "False", "OFF"):
+    TESTING_ENV=False
 
 # Just a little helper function to show the progress interactively
 def update_progress(progress):
@@ -159,8 +161,9 @@ for gen_mol in system.generator:
     total_PS += n_PS
     total_weight += gen_mol.weight
     update_progress(total_weight/system.system_mass)
-
+    
 ratio = total_PMMA/(total_PS + total_PMMA)
+print(ratio, total_PMMA, total_PS)
 expected_ratio = 0.5
 print(ratio, expected_ratio)
 # For automated tests we raise an exception for unexpected deviations
@@ -207,7 +210,6 @@ for gen_mol in system.generator:
 
 ratio = total_PMMA/(total_PS+total_PMMA)
 expected_ratio = 0.2
-print(ratio, expected_ratio)
 # For automated tests we raise an exception for unexpected deviations
 if np.abs(expected_ratio - ratio) > 0.05:
     raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 5%: {(ratio, expected_ratio)}")
