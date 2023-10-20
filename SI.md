@@ -386,7 +386,7 @@ to describe a mixture of homopolymers remains inadvisable. Instead, use the mixt
 
 ```python
 # Define a generative bigSMILES string for a more explicit mixture of PS and PMMA homopolymers
-generative_bigSMILES = "CC(C){[>][<]CC([>])c1ccccc1 [<]}|schulz_zimm(700, 600)|[Br].|5000|CC(C){[>][<]CC([>])C(=O)OC[<]}|schulz_zimm(700, 600)|[Br].|66%|"
+generative_bigSMILES = "CC(C){[>][<]CC([>])c1ccccc1 [<]}|schulz_zimm(700, 600)|[Br].|5000|CC(C){[>][<]CC([>])C(=O)OC[<]}|schulz_zimm(700, 600)|[Br].|1500|"
 ```
 
 ```python
