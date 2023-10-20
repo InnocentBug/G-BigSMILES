@@ -13,9 +13,17 @@ The syntax of the extension of bigSMILES can be removed if everything between th
 
 ## Installation
 
+The following instructions are designed to be independent of the operating system, but are tested for debian-linux systems only.
+You may have to slightly adjust the procedure for a differing operating system.
+
 The package is python-only, but it requires a rdkit installation.
 The easiest way to install this dependency is via conda.
-We provide the `environments.yml` file to install the conda packages.
+We provide the `environment.yml` file to install the conda packages.
+
+```shell
+conda env create -f environment.yml
+conda activate bigsmiles
+```
 
 With the rdkit dependency requirement fulfilled, you can install this package via pip.
 
@@ -37,6 +45,19 @@ python -m pytest
 
 Should execute our automated test and succeed if the installation was successful.
 Examining the tests in `./test` can also help to get an overview of this package's capabilities.
+
+### Running the Jupyter Notebook SI.ipynb
+
+Follow the above described steps (the pytest step can be omitted).
+Then start the jupyter notebook server from inside the conda environment:
+
+```shell
+jupyter-notebook SI.ipynb
+```
+
+The shell should either print out instructions of how to connect to the notebook with your browser or open it the browser automatically.
+
+Note that the jupyter notebook is designed to be execute from the top, without skipping entries.
 
 ## Notation of details and Examples
 

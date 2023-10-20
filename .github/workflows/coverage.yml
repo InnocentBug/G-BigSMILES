@@ -17,15 +17,14 @@ jobs:
       - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v3
-      - name: Install python dependencies
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment.yml
+          activate-environment: bigsmiles
+      - name: Run Pytest
+        shell: bash -l {0}
         run: |
-          $CONDA/bin/conda env update --file environment.yml --name base
-          $CONDA/bin/conda install pytest pytest-cov
-          $CONDA/bin/conda install pip
-
-      - name: Install
-        run: $CONDA/bin/pip install .
-
-      - name: Run tests
-        run: |
-          $CONDA/bin/pytest --cov --cov-fail-under=85
+          pip install .
+          pytest --cov --cov-fail-under=85

@@ -100,6 +100,9 @@
     "endregion",
     "Crosslinking",
     "miniconda",
-    "pydotplus"
+    "pydotplus",
+    "Carbocycles",
+    "xlabel",
+    "ylabel"
   ]
 }
