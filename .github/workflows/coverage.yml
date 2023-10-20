@@ -25,4 +25,6 @@ jobs:
           activate-environment: bigsmiles
       - name: Run Pytest
         shell: bash -l {0}
-        run: pytest --cov --cov-fail-under=85
+        run: |
+          pip install .
+          pytest --cov --cov-fail-under=85
