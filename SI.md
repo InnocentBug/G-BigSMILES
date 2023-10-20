@@ -123,6 +123,9 @@ In the observed molecule, Polystyrene (PS) and Poly(methyl methacrylate) (PMMA) 
 import rdkit
 from rdkit.Chem import rdMolDescriptors as rdDescriptors
 from IPython.display import clear_output
+import os
+TESTING_ENV = eval(os.environ.get("TESTING_ENV", "False"))
+
 
 # Just a little helper function to show the progress interactively
 def update_progress(progress):
@@ -130,7 +133,8 @@ def update_progress(progress):
     block = int(round(bar_length * progress))
     clear_output(wait = True)
     text = "Progress: [{0}] {1:.1f}%".format( "#" * block + "-" * (bar_length - block), progress * 100)
-    print(text)
+    if not TESTING_ENV:
+        print(text)
 
 def count_PS_PMMA_monomers(gen_mol):
     # Since the =O is unique to the PMMA and head group we can count the '=' in the smiles string to determine the number of PMMA.
@@ -779,7 +783,7 @@ def plot_distribution(bigsmiles, expected_mu, expected_sigma, bins=25):
 ```python
 mu = 5e3
 sigma = 1e3
-generative_bigSMILES = "[H]{[>] [<]CC([>])c1ccccc1 [<]}|gauss("+str(mu)+", "+str(sigma)+")|[H].|1e7|"
+generative_bigSMILES = "[H]{[>] [<]CC([>])c1ccccc1 [<]}|gauss("+str(mu)+", "+str(sigma)+")|[H].|1e6|"
 normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
 # Let's make sure our expectations are fulfilled (important for automated tests)
 if normalized_deviation > 0.5:
@@ -793,7 +797,7 @@ The produced ensemble closely aligns with the anticipated distribution.
 ```python
 mu = 5e3
 sigma = 1e3
-generative_bigSMILES = "N#CC(C)(C){[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|gauss("+str(mu)+", "+str(sigma)+")|[Br].|4e6|"
+generative_bigSMILES = "N#CC(C)(C){[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|gauss("+str(mu)+", "+str(sigma)+")|[Br].|1e6|"
 normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
 # Let's make sure our expectations are fulfilled (important for automated tests)
 if normalized_deviation > 0.5:
@@ -811,7 +815,7 @@ mu_ps = 2e3
 mu_pmma = 3e3
 sigma_ps = 1e3
 sigma_pmma = 2e3
-generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1 [<]}|gauss("+str(mu_ps)+", "+str(sigma_pmma)+")|{[>][<]CC([>])C(=O)OC[<]}|gauss("+str(mu_pmma)+", "+str(sigma_pmma)+")|[Br].|1e7|"
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1 [<]}|gauss("+str(mu_ps)+", "+str(sigma_pmma)+")|{[>][<]CC([>])C(=O)OC[<]}|gauss("+str(mu_pmma)+", "+str(sigma_pmma)+")|[Br].|1e6|"
 
 normalized_deviation = plot_distribution(generative_bigSMILES, mu_ps+mu_pmma, sigma_ps+sigma_pmma)
 # Let's make sure our expectations are fulfilled (important for automated tests)
