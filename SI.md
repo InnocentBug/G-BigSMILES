@@ -133,11 +133,11 @@ if TESTING_ENV_str in ("false", "False", "OFF"):
 def update_progress(progress):
     bar_length = 20
     block = int(round(bar_length * progress))
-    clear_output(wait = True)
-    text = "Progress: [{0}] {1:.1f}%".format( "#" * block + "-" * (bar_length - block), progress * 100)
     if not TESTING_ENV:
+        clear_output(wait = True)
+        text = "Progress: [{0}] {1:.1f}%".format( "#" * block + "-" * (bar_length - block), progress * 100)
         print(text)
-
+    
 def count_PS_PMMA_monomers(gen_mol):
     # Since the =O is unique to the PMMA and head group we can count the '=' in the smiles string to determine the number of PMMA.
     n_PMMA = gen_mol.smiles.count("=")
