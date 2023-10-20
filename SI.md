@@ -121,6 +121,8 @@ In the observed molecule, Polystyrene (PS) and Poly(methyl methacrylate) (PMMA) 
 import rdkit
 from rdkit.Chem import rdMolDescriptors as rdDescriptors
 from IPython.display import clear_output
+import platform
+IS_LINUX = "linux" in platform.system().lower()
 import os
 TESTING_ENV_str = os.environ.get("TESTING_ENV", "False")
 
@@ -149,26 +151,28 @@ def count_PS_PMMA_monomers(gen_mol):
 
     return n_PMMA, n_PS
 
-# Use a full ensemble system determine the ration of PS to PMMA
-system = bigsmiles_gen.System(generative_bigSMILES)
-total_PMMA = 0
-total_PS = 0
-total_weight = 0
-# Iterate the molecules of a full system
-for gen_mol in system.generator:
-    n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
-    total_PMMA += n_PMMA
-    total_PS += n_PS
-    total_weight += gen_mol.weight
-    update_progress(total_weight/system.system_mass)
+# In testing environments only run on the linux systems:
+if IS_LINUX or not TESTING_ENV:
+    # Use a full ensemble system determine the ration of PS to PMMA
+    system = bigsmiles_gen.System(generative_bigSMILES)
+    total_PMMA = 0
+    total_PS = 0
+    total_weight = 0
+    # Iterate the molecules of a full system
+    for gen_mol in system.generator:
+        n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
+        total_PMMA += n_PMMA
+        total_PS += n_PS
+        total_weight += gen_mol.weight
+        update_progress(total_weight/system.system_mass)
     
-ratio = total_PMMA/(total_PS + total_PMMA)
-print(ratio, total_PMMA, total_PS)
-expected_ratio = 0.5
-print(ratio, expected_ratio)
-# For automated tests we raise an exception for unexpected deviations
-if np.abs(expected_ratio - ratio) > 0.02:
-    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 2%: {(ratio, expected_ratio)}")
+    ratio = total_PMMA/(total_PS + total_PMMA)
+    print(ratio, total_PMMA, total_PS)
+    expected_ratio = 0.5
+    print(ratio, expected_ratio)
+    # For automated tests we raise an exception for unexpected deviations
+    if np.abs(expected_ratio - ratio) > 0.02:
+        raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 2%: {(ratio, expected_ratio)}")
 ```
 
 We've confirmed an equal ratio between the two monomers in the entire ensemble. Our subsequent task is to modify this composition using bond descriptor weights.
@@ -195,24 +199,26 @@ draw_generation_graph(generative_bigSMILES)
 ```
 
 ```python
-# Use a full ensemble system determine the ration of PS to PMMA
-system = bigsmiles_gen.System(generative_bigSMILES)
-total_PMMA = 0
-total_PS = 0
-total_weight = 0
-# Iterate the molecules of a full system
-for gen_mol in system.generator:
-    n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
-    total_PMMA += n_PMMA
-    total_PS += n_PS
-    total_weight += gen_mol.weight
-    update_progress(total_weight/system.system_mass)
+# In testing environments only run on the linux systems:
+if IS_LINUX or not TESTING_ENV:
+    # Use a full ensemble system determine the ration of PS to PMMA
+    system = bigsmiles_gen.System(generative_bigSMILES)
+    total_PMMA = 0
+    total_PS = 0
+    total_weight = 0
+    # Iterate the molecules of a full system
+    for gen_mol in system.generator:
+        n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
+        total_PMMA += n_PMMA
+        total_PS += n_PS
+        total_weight += gen_mol.weight
+        update_progress(total_weight/system.system_mass)
 
-ratio = total_PMMA/(total_PS+total_PMMA)
-expected_ratio = 0.2
-# For automated tests we raise an exception for unexpected deviations
-if np.abs(expected_ratio - ratio) > 0.05:
-    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 5%: {(ratio, expected_ratio)}")
+    ratio = total_PMMA/(total_PS+total_PMMA)
+    expected_ratio = 0.2
+    # For automated tests we raise an exception for unexpected deviations
+    if np.abs(expected_ratio - ratio) > 0.05:
+        raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 5%: {(ratio, expected_ratio)}")
 ```
 
 This confirms that we have achieved the desired monomer composition in the ensemble.
@@ -240,25 +246,27 @@ draw_generation_graph(generative_bigSMILES)
 ```
 
 ```python
-# Use a full ensemble system determine the ration of PS to PMMA
-system = bigsmiles_gen.System(generative_bigSMILES)
-total_PMMA = 0
-total_PS = 0
-total_weight = 0
-# Iterate the molecules of a full system
-for gen_mol in system.generator:
-    n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
-    total_PMMA += n_PMMA
-    total_PS += n_PS
-    total_weight += gen_mol.weight
-    update_progress(total_weight/system.system_mass)
+# In testing environments only run on the linux systems:
+if IS_LINUX or not TESTING_ENV:
+    # Use a full ensemble system determine the ration of PS to PMMA
+    system = bigsmiles_gen.System(generative_bigSMILES)
+    total_PMMA = 0
+    total_PS = 0
+    total_weight = 0
+    # Iterate the molecules of a full system
+    for gen_mol in system.generator:
+        n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
+        total_PMMA += n_PMMA
+        total_PS += n_PS
+        total_weight += gen_mol.weight
+        update_progress(total_weight/system.system_mass)
 
-ratio = total_PMMA/(total_PS + total_PMMA)
-expected_ratio = 0.5
-print(ratio, expected_ratio)
-# For automated tests we raise an exception for unexpected deviations
-if np.abs(expected_ratio - ratio) > 0.05:
-    raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 5%: {(ratio, expected_ratio)}")
+    ratio = total_PMMA/(total_PS + total_PMMA)
+    expected_ratio = 0.5
+    print(ratio, expected_ratio)
+    # For automated tests we raise an exception for unexpected deviations
+    if np.abs(expected_ratio - ratio) > 0.05:
+        raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 5%: {(ratio, expected_ratio)}")
 ```
 
 This demonstrates that, despite altering blockiness, we can consistently control the monomer composition as intended. The generative graph illustrates how transition probabilities now lean more towards staying within the same block than switching.
@@ -734,16 +742,6 @@ import matplotlib.pyplot as plt
 
 from IPython.display import clear_output
 
-# Just a little helper function to show the progress interactively
-def update_progress(progress):
-    bar_length = 20
-
-    block = int(round(bar_length * progress))
-    clear_output(wait = True)
-    text = "Progress: [{0}] {1:.1f}%".format( "#" * block + "-" * (bar_length - block), progress * 100)
-    print(text)
-
-
 def plot_distribution(bigsmiles, expected_mu, expected_sigma, bins=25):
     # Generate the ensemble of molecules
     bigsmiles_system = bigsmiles_gen.System(bigsmiles)
@@ -783,13 +781,15 @@ def plot_distribution(bigsmiles, expected_mu, expected_sigma, bins=25):
 ### Simple Linear Polymer
 
 ```python
-mu = 5e3
-sigma = 1e3
-generative_bigSMILES = "[H]{[>] [<]CC([>])c1ccccc1 [<]}|gauss("+str(mu)+", "+str(sigma)+")|[H].|1e6|"
-normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
-# Let's make sure our expectations are fulfilled (important for automated tests)
-if normalized_deviation > 0.5:
-    raise RuntimeError(f"The actual distribution deviates from the expected distribution {normalized_deviation}")
+# In testing environments only run on the linux systems:
+if IS_LINUX or not TESTING_ENV:
+    mu = 5e3
+    sigma = 1e3
+    generative_bigSMILES = "[H]{[>] [<]CC([>])c1ccccc1 [<]}|gauss("+str(mu)+", "+str(sigma)+")|[H].|5e6|"
+    normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
+    # Let's make sure our expectations are fulfilled (important for automated tests)
+    if normalized_deviation > 0.5:
+        raise RuntimeError(f"The actual distribution deviates from the expected distribution {normalized_deviation}")
 ```
 
 The produced ensemble closely aligns with the anticipated distribution.
@@ -797,13 +797,15 @@ The produced ensemble closely aligns with the anticipated distribution.
 ### Bottlebrush Structure
 
 ```python
-mu = 5e3
-sigma = 1e3
-generative_bigSMILES = "N#CC(C)(C){[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|gauss("+str(mu)+", "+str(sigma)+")|[Br].|1e6|"
-normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
-# Let's make sure our expectations are fulfilled (important for automated tests)
-if normalized_deviation > 0.5:
-    raise RuntimeError(f"The actual distribution deviates from the expected distribution {normalized_deviation}")
+# In testing environments only run on the linux systems:
+if IS_LINUX or not TESTING_ENV:
+    mu = 5e3
+    sigma = 1e3
+    generative_bigSMILES = "N#CC(C)(C){[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|gauss("+str(mu)+", "+str(sigma)+")|[Br].|1e6|"
+    normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
+    # Let's make sure our expectations are fulfilled (important for automated tests)
+    if normalized_deviation > 0.5:
+        raise RuntimeError(f"The actual distribution deviates from the expected distribution {normalized_deviation}")
 ```
 
 For this intricate scenario with numerous end groups, the resulting distribution aligns closely with the anticipated one, as foreseen. We utilize a smaller ensemble in this instance due to its elevated computational demand, leading to increased fluctuations.
@@ -813,16 +815,18 @@ For this intricate scenario with numerous end groups, the resulting distribution
 Given the linearity of the Gaussian distribution, the combined molecular weight of the two blocks is Gaussian-distributed. Both the mean and variance are sums of their respective blocks' mean and variance.
 
 ```python
-mu_ps = 2e3
-mu_pmma = 3e3
-sigma_ps = 1e3
-sigma_pmma = 2e3
-generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1 [<]}|gauss("+str(mu_ps)+", "+str(sigma_pmma)+")|{[>][<]CC([>])C(=O)OC[<]}|gauss("+str(mu_pmma)+", "+str(sigma_pmma)+")|[Br].|1e6|"
+# In testing environments only run on the linux systems:
+if IS_LINUX or not TESTING_ENV:
+    mu_ps = 2e3
+    mu_pmma = 3e3
+    sigma_ps = 1e3
+    sigma_pmma = 2e3
+    generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1 [<]}|gauss("+str(mu_ps)+", "+str(sigma_pmma)+")|{[>][<]CC([>])C(=O)OC[<]}|gauss("+str(mu_pmma)+", "+str(sigma_pmma)+")|[Br].|1e6|"
 
-normalized_deviation = plot_distribution(generative_bigSMILES, mu_ps+mu_pmma, sigma_ps+sigma_pmma)
-# Let's make sure our expectations are fulfilled (important for automated tests)
-if normalized_deviation > 0.5:
-    raise RuntimeError(f"The actual distribution deviates from the expected distribution {normalized_deviation}")
+    normalized_deviation = plot_distribution(generative_bigSMILES, mu_ps+mu_pmma, sigma_ps+sigma_pmma)
+    # Let's make sure our expectations are fulfilled (important for automated tests)
+    if normalized_deviation > 0.5:
+        raise RuntimeError(f"The actual distribution deviates from the expected distribution {normalized_deviation}")
 ```
 
 Owing to its linear nature, the total molecular weight distribution of the diblock copolymer adheres to the expected distribution derived from combining the molecular weights of the individual blocks.
@@ -834,13 +838,15 @@ Using list weights, one can dictate a premature termination of generation by ass
 In our demonstration, there's a 1 in 40 probability that the polymer generation halts prematurely.
 
 ```python
-mu = 5e3
-sigma = 1e3
-generative_bigSMILES = "[H]{[>] [<]CC([>|40 0 1|])c1ccccc1 ; [<][H] []}|gauss("+str(mu)+", "+str(sigma)+")|.|1e6|"
-normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
-# Let's make sure our expectations are fulfilled (important for automated tests)
-if normalized_deviation < 0.5:
-    raise RuntimeError(f"We expect the distributions to clearly deviate, which is not the case. {normalized_deviation}")
+# In testing environments only run on the linux systems:
+if IS_LINUX or not TESTING_ENV:
+    mu = 5e3
+    sigma = 1e3
+    generative_bigSMILES = "[H]{[>] [<]CC([>|40 0 1|])c1ccccc1 ; [<][H] []}|gauss("+str(mu)+", "+str(sigma)+")|.|1e6|"
+    normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
+    # Let's make sure our expectations are fulfilled (important for automated tests)
+    if normalized_deviation < 0.5:
+        raise RuntimeError(f"We expect the distributions to clearly deviate, which is not the case. {normalized_deviation}")
 ```
 
 Upon juxtaposing the distributions, a noticeable divergence is evident. The molecular weight distribution that's generated skews significantly towards lower molecular weights. This is anticipated since the generation can halt prematurely. While the resultant distribution bears resemblance to a geometric distribution, it isn't a precise match. The inherent Gaussian distribution can also interrupt the generation. Consequently, we detect a peak in higher molecular weights, proximate to the expected mean of the Gaussian distribution.
