@@ -11,6 +11,9 @@ This code implements a parser for an extension of the original [bigSMILES notati
 The extension is designed to add details into the line notation that enable the generation of molecules from that specific ensemble.
 The syntax of the extension of bigSMILES can be removed if everything between the `|` symbols and the `|` symbols is removed from the string.
 
+The corresponding peer-reviewed journal article can be found published in RSC Digital Discoveries [here](https://doi.org/10.1039/D3DD00147D).
+Please cite this article if you are using this code. Thank you.
+
 ## Installation
 
 The following instructions are designed to be independent of the operating system, but are tested for debian-linux systems only.
