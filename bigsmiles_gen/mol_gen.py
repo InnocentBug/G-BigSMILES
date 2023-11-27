@@ -128,21 +128,25 @@ class MolGen:
         for i in range(other._mol.GetConformer().GetNumAtoms()):
             rcm += other._mol.GetConformer().GetAtomPosition(i)
         rcm /= other._mol.GetConformer().GetNumAtoms()
+        print(np.asarray(rcm))
         rg2 = np.zeros(3)
         for i in range(other._mol.GetConformer().GetNumAtoms()):
             rg2 += (rcm - other._mol.GetConformer().GetAtomPosition(i)) ** 2
         rg2 /= other._mol.GetConformer().GetNumAtoms()
-        rg = np.sqrt(rg2)
         rg_len = np.sqrt(np.sum(rg2))
-        if rg_len < 0.1:
+        if rg_len < 0.5:
             rg_len = 1
-
         offset = np.asarray((rg_len, 0, 0))
 
         for i in range(other._mol.GetConformer().GetNumAtoms()):
             old_pos = other._mol.GetConformer().GetAtomPosition(i)
             new_pos = old_pos - other_bond_point + self_bond_point + offset
             other._mol.GetConformer().SetAtomPosition(i, new_pos)
+
+        for i in range(other._mol.GetConformer().GetNumAtoms()):
+            rcm += other._mol.GetConformer().GetAtomPosition(i)
+        rcm /= other._mol.GetConformer().GetNumAtoms()
+        print(np.asarray(rcm))
 
         for bd in other_bond_descriptors:
             bd.atom_bonding_to += current_atom_number
