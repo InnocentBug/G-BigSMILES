@@ -33,6 +33,8 @@ class MolGen:
         self.bond_descriptors = copy.deepcopy(token.bond_descriptors)
         self.graph = nx.Graph()
         assert len(token.residues) == 1
+        res_names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        res_name = res_names[token.res_id]
         smiles = token.generate_smiles_fragment()
         params = Chem.SmilesParserParams()
         params.removeHs = True
@@ -43,6 +45,30 @@ class MolGen:
             # Our graph has only 1 node and all BD are associated with that.
             bd.node_idx = 0
         self._mol = mol
+
+        atom_serial = 1
+        elem_count = {}
+        for atom in self._mol.GetAtoms():
+            monomer_info = Chem.AtomPDBResidueInfo()
+            atom.SetMonomerInfo(monomer_info)
+            elem_count[atom.GetAtomicNum()] = atom_serial
+            atom_serial = min(atom_serial, 99)
+            monomer_info = atom.GetPDBResidueInfo()
+            monomer_info.SetResidueName(res_name)
+            monomer_info.SetResidueNumber(token.res_id)
+            monomer_info.SetIsHeteroAtom(False)
+            monomer_info.SetOccupancy(0.0)
+            monomer_info.SetTempFactor(0.0)
+            if monomer_info.GetSerialNumber() == 0:
+                atom_name = "%2s%02d" % (atom.GetSymbol(), atom_serial)
+                monomer_info.SetName(atom_name)
+                monomer_info.SetSerialNumber(atom_serial)
+                atom_serial += 1
+
+            if atom_serial - 1 > 99:
+                raise ValueError(
+                    "Number of atoms exceeds 99. This causes issues in properly labeling the atoms."
+                )
 
     @property
     def fully_generated(self):

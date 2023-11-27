@@ -21,7 +21,7 @@ class Stochastic(BigSMILESbase):
     ## Note: Empty stochastic objects, that only contain a single terminal bond descriptor are not supported.
     """
 
-    def __init__(self, big_smiles_ext):
+    def __init__(self, big_smiles_ext, res_id_prefix):
         """
         Constructor, taking a extended bigSMILES string for generation.
 
@@ -71,10 +71,12 @@ class Stochastic(BigSMILESbase):
         self.repeat_tokens = []
         self.repeat_bonds = []
         self.repeat_bond_token_idx = []
+        res_id_counter = 0
         for ru in repeat_unit_text.split(","):
             ru = ru.strip()
             if len(ru) > 0:
-                token = SmilesToken(ru, len(self.bond_descriptors))
+                token = SmilesToken(ru, len(self.bond_descriptors), res_id_prefix + res_id_counter)
+                res_id_counter += 1
                 self.repeat_tokens.append(token)
                 self.bond_descriptors += token.bond_descriptors
                 self.repeat_bonds += token.bond_descriptors
@@ -87,7 +89,8 @@ class Stochastic(BigSMILESbase):
         for eg in end_group_text.split(","):
             eg = eg.strip()
             if len(eg) > 0:
-                token = SmilesToken(eg, len(self.bond_descriptors))
+                token = SmilesToken(eg, len(self.bond_descriptors), res_id_prefix + res_id_counter)
+                res_id_counter += 1
                 self.end_tokens.append(token)
                 self.bond_descriptors += token.bond_descriptors
                 self.end_bonds += token.bond_descriptors

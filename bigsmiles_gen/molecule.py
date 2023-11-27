@@ -18,7 +18,7 @@ class Molecule(BigSMILESbase):
     Part of an extended bigSMILES description hat contains up to exactly one mixture description.
     """
 
-    def __init__(self, big_smiles_ext):
+    def __init__(self, big_smiles_ext, res_id_prefix=0):
         """
         Construction of a molecule to make up mixtures.
 
@@ -47,11 +47,13 @@ class Molecule(BigSMILESbase):
             stochastic_text = stochastic_text[:start]
             self.mixture = Mixture(mixture_text)
 
+        res_id_counter = 0
         while stochastic_text.find("{") >= 0:
             pre_token = stochastic_text[: stochastic_text.find("{")].strip()
             pre_stochastic = None
             if len(pre_token) > 0:
-                pre_stochastic = SmilesToken(pre_token, 0)
+                pre_stochastic = SmilesToken(pre_token, 0, res_id_prefix + res_id_counter)
+                res_id_counter += 1
                 # Find the connecting terminal bond descriptor of previous element.
                 if len(self._elements) > 0:
                     # Get expected terminal bond descriptor
@@ -72,7 +74,8 @@ class Molecule(BigSMILESbase):
                     else:
                         bond_string = _create_compatible_bond_text(other_bd)
                         pre_token = bond_string + pre_token
-                        pre_stochastic = SmilesToken(pre_token, 0)
+                        pre_stochastic = SmilesToken(pre_token, 0, res_id_prefix + res_id_counter)
+                        res_id_counter += 1
 
             stochastic_text = stochastic_text[stochastic_text.find("{") :].strip()
             end_pos = stochastic_text.find("}") + 1
@@ -83,7 +86,8 @@ class Molecule(BigSMILESbase):
             # Find distribution extension
             if stochastic_text[end_pos] == "|":
                 end_pos = stochastic_text.find("|", end_pos + 2) + 1
-            stochastic = Stochastic(stochastic_text[:end_pos])
+            stochastic = Stochastic(stochastic_text[:end_pos], res_id_prefix + res_id_counter)
+            res_id_counter += len(stochastic.residues)
             if pre_stochastic:
                 min_expected_bond_descriptors = 2
                 if len(self._elements) == 0:
@@ -94,14 +98,15 @@ class Molecule(BigSMILESbase):
                     bond_text = _create_compatible_bond_text(other_bd)
                     bond_text = bond_text[:-1] + "|0|]"
                     pre_token += bond_text
-                    pre_stochastic = SmilesToken(pre_token, 0)
+                    pre_stochastic = SmilesToken(pre_token, 0, res_id_prefix + res_id_counter)
+                    res_id_counter += 1
                 self._elements.append(pre_stochastic)
             self._elements.append(stochastic)
 
             stochastic_text = stochastic_text[end_pos:].strip()
 
         if len(stochastic_text) > 0:
-            token = SmilesToken(stochastic_text, 0)
+            token = SmilesToken(stochastic_text, 0, res_id_prefix + res_id_counter)
             if len(self._elements) > 0 and len(token.bond_descriptors) == 0:
                 if isinstance(self._elements[-1], Stochastic):
                     bond_text = _create_compatible_bond_text(self._elements[-1].right_terminal)
@@ -109,7 +114,9 @@ class Molecule(BigSMILESbase):
                     bond_text = _create_compatible_bond_text(
                         self._elements[-1].bond_descriptors[-1]
                     )
-                token = SmilesToken(bond_text + stochastic_text, 0)
+
+                token = SmilesToken(bond_text + stochastic_text, 0, res_id_prefix + res_id_counter)
+            res_id_counter += 1
             self._elements.append(token)
 
     @property

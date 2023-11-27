@@ -42,7 +42,7 @@ class SmilesToken(BigSMILESbase):
     Example:  '[$]CC(c1ccccc1)[$]'
     """
 
-    def __init__(self, big_smiles_ext, bond_id_offset):
+    def __init__(self, big_smiles_ext, bond_id_offset, res_id):
         """
         Construct the element.
 
@@ -54,6 +54,7 @@ class SmilesToken(BigSMILESbase):
         bond_id_offset: int
            Number of bond descriptors in the stochastic objects before this token.
         """
+        self.res_id = res_id
         bond_id_offset = int(bond_id_offset)
         if bond_id_offset < 0:
             raise RuntimeError(f"bond_id_offset {bond_id_offset} is not positive.")
