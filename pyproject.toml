@@ -23,3 +23,6 @@ omit = [
   "*/py/*",
   "*/six.py",
 ]
+
+[tool.setuptools.package-data]
+bigsmiles_gen = ["data/ffbonded.itp", "data/ffnonbonded.itp", "data/opls.par"]

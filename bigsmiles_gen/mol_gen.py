@@ -204,3 +204,9 @@ class MolGen:
     def add_graph_res(self, residues):
         for n in self.graph:
             self.graph.nodes[n]["res"] = residues.index(self.graph.nodes[n]["smiles"])
+
+    def get_forcefield_types(self):
+        if not self.fully_generated:
+            raise RuntimeError(
+                "Forcefield assignment is only possible for fully generated molecules"
+            )
