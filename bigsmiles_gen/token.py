@@ -225,7 +225,7 @@ class SmilesToken(BigSMILESbase):
 
     @property
     def residues(self):
-        return [self.generate_smiles_fragment()]
+        return [self]
 
     @property
     def generable(self):

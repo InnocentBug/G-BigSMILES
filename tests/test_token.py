@@ -49,11 +49,12 @@ def test_token_str():
     ]
 
     for text, offset, big, ref, smi in test_args:
-        token = bigsmiles_gen.SmilesToken(text, offset)
+        token = bigsmiles_gen.SmilesToken(text, offset, 0)
         assert ref == str(token)
         assert big == token.generate_string(False)
         assert token.bond_descriptors[0].descriptor_num == offset
         assert token.generable
+        assert token.res_id == 0
 
         if token.generable:
             mol = token.generate()
