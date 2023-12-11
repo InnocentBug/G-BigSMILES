@@ -5,7 +5,9 @@
 import copy
 
 import networkx as nx
+import numpy as np
 from rdkit import Chem
+from rdkit.Chem import AllChem
 from rdkit.Chem import Descriptors as rdDescriptors
 from rdkit.Chem import rdFingerprintGenerator
 
@@ -33,16 +35,44 @@ class MolGen:
         self.bond_descriptors = copy.deepcopy(token.bond_descriptors)
         self.graph = nx.Graph()
         assert len(token.residues) == 1
+        res_names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        res_name = res_names[token.res_id]
         smiles = token.generate_smiles_fragment()
         params = Chem.SmilesParserParams()
         params.removeHs = True
         mol = Chem.MolFromSmiles(smiles, params.removeHs)
+        AllChem.EmbedMolecule(mol)
+        AllChem.UFFOptimizeMolecule(mol, maxIters=200000)
         rdFP = _RDKGEN.GetFingerprint(mol)
         self.graph.add_node(0, smiles=smiles, big_smiles=str(token), rdFP=rdFP)
         for bd in self.bond_descriptors:
             # Our graph has only 1 node and all BD are associated with that.
             bd.node_idx = 0
         self._mol = mol
+
+        atom_serial = 1
+        elem_count = {}
+        for atom in self._mol.GetAtoms():
+            monomer_info = Chem.AtomPDBResidueInfo()
+            atom.SetMonomerInfo(monomer_info)
+            elem_count[atom.GetAtomicNum()] = atom_serial
+            atom_serial = min(atom_serial, 99)
+            monomer_info = atom.GetPDBResidueInfo()
+            monomer_info.SetResidueName(res_name)
+            monomer_info.SetResidueNumber(token.res_id)
+            monomer_info.SetIsHeteroAtom(False)
+            monomer_info.SetOccupancy(0.0)
+            monomer_info.SetTempFactor(0.0)
+            if monomer_info.GetSerialNumber() == 0:
+                atom_name = "%2s%02d" % (atom.GetSymbol(), atom_serial)
+                monomer_info.SetName(atom_name)
+                monomer_info.SetSerialNumber(atom_serial)
+                atom_serial += 1
+
+            if atom_serial - 1 > 99:
+                raise ValueError(
+                    "Number of atoms exceeds 99. This causes issues in properly labeling the atoms."
+                )
 
     @property
     def fully_generated(self):
@@ -85,6 +115,37 @@ class MolGen:
                 f" is incompatible with {str(self.bond_descriptors[self_bond_idx])}."
             )
         self_graph_len = len(self.graph)
+
+        # Align position in space
+        self_bond_point = self._mol.GetConformer().GetAtomPosition(
+            self.bond_descriptors[self_bond_idx].atom_bonding_to
+        )
+        other_bond_point = other._mol.GetConformer().GetAtomPosition(
+            other_bond_descriptors[other_bond_idx].atom_bonding_to
+        )
+
+        rcm = np.zeros(3)
+        for i in range(other._mol.GetConformer().GetNumAtoms()):
+            rcm += other._mol.GetConformer().GetAtomPosition(i)
+        rcm /= other._mol.GetConformer().GetNumAtoms()
+        rg2 = np.zeros(3)
+        for i in range(other._mol.GetConformer().GetNumAtoms()):
+            rg2 += (rcm - other._mol.GetConformer().GetAtomPosition(i)) ** 2
+        rg2 /= other._mol.GetConformer().GetNumAtoms()
+        rg_len = np.sqrt(np.sum(rg2))
+        if rg_len < 0.5:
+            rg_len = 1
+        offset = np.asarray((rg_len, 0, 0))
+
+        for i in range(other._mol.GetConformer().GetNumAtoms()):
+            old_pos = other._mol.GetConformer().GetAtomPosition(i)
+            new_pos = old_pos - other_bond_point + self_bond_point + offset
+            other._mol.GetConformer().SetAtomPosition(i, new_pos)
+
+        for i in range(other._mol.GetConformer().GetNumAtoms()):
+            rcm += other._mol.GetConformer().GetAtomPosition(i)
+        rcm /= other._mol.GetConformer().GetNumAtoms()
+
         for bd in other_bond_descriptors:
             bd.atom_bonding_to += current_atom_number
             bd.node_idx += self_graph_len

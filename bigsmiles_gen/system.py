@@ -97,9 +97,11 @@ class System(BigSMILESbase):
            text representation
         """
         self._raw_text = big_smiles_ext.strip()
+        self._res_id_prefix = 0
 
         self._molecules = []
         text = copy.copy(self._raw_text)
+        res_id_counter = 0
         while text.find(".|") >= 0:
             # text = text[text.find(".|") :].strip()
             end_pos = text.find("|", text.find(".|") + 2) + 1
@@ -107,7 +109,8 @@ class System(BigSMILESbase):
                 raise RuntimeError(
                     f"System {text} contains an opening '.|' for a stochastic object, but no closing '|'."
                 )
-            self._molecules.append(Molecule(text[:end_pos]))
+            self._molecules.append(Molecule(text[:end_pos], self._res_id_prefix + res_id_counter))
+            res_id_counter += len(self._molecules[-1].residues)
             text = text[end_pos:].strip()
 
         if len(text) > 0:
