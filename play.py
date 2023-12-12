@@ -59,27 +59,27 @@ bigA = "CCC(C){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1000, 900)|{[>][<]CC([>])C(
 # bigA = "F{[<] [<]CC[>] [>]}|uniform(0, 20)|[H]"
 # gen_calc_prob(bigA)
 
-bigA = "CCOC(=S)S{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poisson(900)|CCCC"
+bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poisson(900)|CCCC"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
 mol_gen = mol.generate()
 print(mol_gen.smiles)
-print(mol_gen.forcefield_types)
-# molSize = (450, 150)
-# mc = Chem.Mol(mol_gen.mol.ToBinary())
-# drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
-# drawer.DrawMolecule(mc)
-# drawer.FinishDrawing()
-# svg = drawer.GetDrawingText()
-# with open("molPlay.svg", "w") as filehandle:
-#     filehandle.write(svg)
-# # calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
-# # print(calc_prob)
+ffparam, mol = mol_gen.forcefield_types
+molSize = (450, 150)
+mc = Chem.Mol(mol_gen.mol.ToBinary())
+drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
+drawer.DrawMolecule(mc)
+drawer.FinishDrawing()
+svg = drawer.GetDrawingText()
+with open("molPlay.svg", "w") as filehandle:
+    filehandle.write(svg)
+# calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
+# print(calc_prob)
 
-# print(mol.generate_string(True))
-# graph = mol.gen_reaction_graph()
-# graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
+print(mol.generate_string(True))
+graph = mol.gen_reaction_graph()
+graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
 
-# with open("graph.dot", "w") as filehandle:
-#     filehandle.write(graph_dot)
+with open("graph.dot", "w") as filehandle:
+    filehandle.write(graph_dot)

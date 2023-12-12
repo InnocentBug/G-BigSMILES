@@ -99,7 +99,7 @@ class SMARTS_ASSIGNMENTS:
         return self._type_dict[type]
 
     def get_ffparam(self, type):
-        return self._type_dict_param[self.get_type]
+        return self._type_param[self.get_type(type)]
 
     def get_type_assignments(self, mol):
         match_dict = {}
