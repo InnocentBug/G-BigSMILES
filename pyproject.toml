@@ -3,7 +3,7 @@
 #     "tests",
 # ]
 [build-system]
-requires = ["setuptools >= 42", "wheel"]
+requires = ["setuptools >= 43", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -14,11 +14,8 @@ authors = [
 ]
 license = { text = "GPL-3.0", files = ["LICENSE.md"] }
 description = "Bigsmiles extension handling the generation of ensembles smiles strings."
-
-[options]
-packages = ["bigsmiles_gen"]
-python_requires = ">=3.9"
-install_requires = ["scipy", "numpy", "networkx", "matplotlib"]
+requires-python = ">=3.9"
+dependencies = ["scipy", "numpy", "networkx", "matplotlib"]
 
 [tool.setuptools_scm]
 write_to = "bigsmiles_gen/_version.py"
