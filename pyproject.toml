@@ -3,7 +3,7 @@
 #     "tests",
 # ]
 [build-system]
-requires = ["setuptools >= 43", "wheel"]
+requires = ["setuptools >= 43", "wheel", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
