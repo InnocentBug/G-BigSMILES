@@ -1,10 +1,24 @@
-[build-system]
-requires = ["setuptools>=41.0", "wheel>=0.33", "setuptools_scm[toml]>=6.0"]
-
 # [tool.pytest.ini_options]
 # testpaths = [
 #     "tests",
 # ]
+[build-system]
+requires = ["setuptools >= 42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bigsmiles_gen"
+version = "1.0.0"
+authors = [
+  { name = "Ludwig Schneider", email = "ludwigschneider@uchicago.edu" },
+]
+license = { text = "GPL-3.0", files = ["LICENSE.md"] }
+description = "Bigsmiles extension handling the generation of ensembles smiles strings."
+
+[options]
+packages = ["bigsmiles_gen"]
+python_requires = ">=3.9"
+install_requires = ["scipy", "numpy", "networkx", "matplotlib"]
 
 [tool.setuptools_scm]
 write_to = "bigsmiles_gen/_version.py"

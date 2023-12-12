@@ -1,8 +1,14 @@
+import dataclasses
 from importlib.resources import files
 
-import dataclassses
+from rdkit import Chem
+
+_global_nonbonded_itp_file = None
+_global_smarts_rule_file = None
+_global_assignment_class = None
 
 
+@dataclasses.dataclass
 class FFParam:
     mass: float
     charge: float
@@ -15,7 +21,7 @@ class FFParam:
 class SMARTS_ASSIGNMENTS:
     def _read_smarts_rules(self, filename):
         if filename is None:
-            filename = files("mypkg.data").joinpath("opls.par")
+            filename = files("bigsmiles_gen").joinpath("data", "opls.par")
         self._type_dict = {}
         self._type_dict_rev = {}
         self._rule_dict = {}
@@ -29,7 +35,7 @@ class SMARTS_ASSIGNMENTS:
                     TYPE = TYPE.strip()
                     RULE = RULE.strip()
                     try:
-                        type_id = type_dict[TYPE]
+                        type_id = self._type_dict[TYPE]
                     except KeyError:
                         type_id = opls_counter
                         opls_counter += 1
@@ -54,12 +60,14 @@ class SMARTS_ASSIGNMENTS:
 
         self._type_param = {}
 
+        if filename is None:
+            filename = files("bigsmiles_gen").joinpath("data", "ffnonbonded.itp")
         with open(filename, "r") as ff_file:
             for line in ff_file:
                 if line and line[0] != "[" and line[0] != ";":
                     line = line.strip()
                     line = line.split()
-                    if line[0] in type_dict:
+                    if line[0] in self._type_dict:
                         bond_type_name = line[1]
                         mass = float(line[3])
                         charge = float(line[4])
@@ -72,19 +80,20 @@ class SMARTS_ASSIGNMENTS:
                             epsilon=epsilon,
                             bond_type_name=bond_type_name,
                         )
-        bond_dict, bond_dict_rev = assign_bond_index(type_param)
+        bond_dict, bond_dict_rev = assign_bond_index(self._type_param)
 
-    def __init__(self, smarts_filename=None):
+    def __init__(self, smarts_filename, nb_filename):
         self._read_smarts_rules(smarts_filename)
+        self._read_nb_param(nb_filename)
 
     def get_type(self, type):
         try:
             return self._type_dict_rev[type]
-        except:
+        except KeyError:
             pass
         try:
             return self._type_dict[type]
-        except:
+        except KeyError:
             pass
         # Fallback, we generate a key error
         return self._type_dict[type]
@@ -94,9 +103,9 @@ class SMARTS_ASSIGNMENTS:
 
     def get_type_assignments(self, mol):
         match_dict = {}
-        for rule in rule_dict:
+        for rule in self._rule_dict:
             rule_mol = Chem.MolFromSmarts(rule)
-            matches = test_mol.GetSubstructMatches(rule_mol)
+            matches = mol.GetSubstructMatches(rule_mol)
             for match in matches:
                 if len(match) > 1:
                     RuntimeError("Match with more then atom, that doesn't make sense here.")
@@ -105,34 +114,52 @@ class SMARTS_ASSIGNMENTS:
                     match_dict[match].append(rule)
                 except KeyError:
                     match_dict[match] = [rule]
-        if len(match_dict) != test_mol.GetNumAtoms():
+        if len(match_dict) != mol.GetNumAtoms():
             raise RuntimeError("Not all atoms could be assigned")
 
-        for atomnum in match_dict:
-            final_match = match_dict[atomnum][0]
-            for match_rule in match_dict[atomnum]:
-                # Debatable rule, that longer SMARTS strings make a better assignement
+        for atom_num in match_dict:
+            final_match = match_dict[atom_num][0]
+            for match_rule in match_dict[atom_num]:
+                # Debatable rule, that longer SMARTS strings make a better assignment
                 if len(match_rule) > len(final_match):
                     final_match = match_rule
-            match_dict[atomnum] = final_match
+            match_dict[atom_num] = final_match
 
         final_dict = {}
-        for atomnum in match_dict:
-            final_dict[atomnum] = self.get_
-
-        graph = nx.Graph()
-        for atomnum in match_dict:
-            atom = test_mol.GetAtomWithIdx(atomnum)
-            graph.add_node(
-                atomnum,
-                atomic=atom.GetAtomicNum(),
-                param=opls_param[rule_dict[match_dict[atomnum]]],
+        for atom_num in match_dict:
+            final_dict[atom_num] = self.get_ffparam(
+                self.get_type(self._rule_dict[match_dict[atom_num]])
             )
-        for node in graph.nodes():
-            atom = test_mol.GetAtomWithIdx(node)
-            for bond in atom.GetBonds():
-                graph.add_edge(
-                    bond.GetBeginAtomIdx(), bond.GetEndAtomIdx(), bond_type=bond.GetBondType()
-                )
+        return final_dict
 
-        return graph
+        # graph = nx.Graph()
+        # for atom_num in match_dict:
+        #     atom = mol.GetAtomWithIdx(atom_num)
+        #     graph.add_node(
+        #         atom_num,
+        #         atomic=atom.GetAtomicNum(),
+        #         param=opls_param[rule_dict[match_dict[atom_num]]],
+        #     )
+        # for node in graph.nodes():
+        #     atom = mol.GetAtomWithIdx(node)
+        #     for bond in atom.GetBonds():
+        #         graph.add_edge(
+        #             bond.GetBeginAtomIdx(), bond.GetEndAtomIdx(), bond_type=bond.GetBondType()
+        #         )
+
+        # return graph
+
+
+def get_assignment_class(smarts_filename, nb_filename):
+    global _global_assignment_class, _global_nonbonded_itp_file, _global_smarts_rule_file
+    if (
+        _global_assignment_class is None
+        or smarts_filename != _global_nonbonded_itp_file
+        or nb_filename != _global_smarts_rule_file
+    ):
+        _global_nonbonded_itp_file = nb_filename
+        _global_nonbonded_itp_file = smarts_filename
+        _global_assignment_class = SMARTS_ASSIGNMENTS(
+            _global_smarts_rule_file, _global_nonbonded_itp_file
+        )
+    return _global_assignment_class

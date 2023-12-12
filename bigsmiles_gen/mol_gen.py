@@ -11,6 +11,8 @@ from rdkit.Chem import AllChem
 from rdkit.Chem import Descriptors as rdDescriptors
 from rdkit.Chem import rdFingerprintGenerator
 
+from .forcefield_helper import get_assignment_class
+
 _RDKGEN = rdFingerprintGenerator.GetRDKitFPGenerator(fpSize=512)
 
 
@@ -205,8 +207,17 @@ class MolGen:
         for n in self.graph:
             self.graph.nodes[n]["res"] = residues.index(self.graph.nodes[n]["smiles"])
 
-    def get_forcefield_types(self):
+    def get_forcefield_types(self, smarts_filename=None, nb_filename=None):
         if not self.fully_generated:
             raise RuntimeError(
                 "Forcefield assignment is only possible for fully generated molecules"
             )
+
+        assigner = get_assignment_class(smarts_filename, nb_filename)
+        mol = self.mol
+        mol = Chem.AddHs(mol)
+        return assigner.get_type_assignments(mol), mol
+
+    @property
+    def forcefield_types(self):
+        return self.get_forcefield_types(smarts_filename=None, nb_filename=None)
