@@ -59,12 +59,13 @@ bigA = "CCC(C){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1000, 900)|{[>][<]CC([>])C(
 # bigA = "F{[<] [<]CC[>] [>]}|uniform(0, 20)|[H]"
 # gen_calc_prob(bigA)
 
-bigA = "CCOC(=S)S{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poisson(900)|CCCC"
+bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poisson(900)|CCCC"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
 mol_gen = mol.generate()
 print(mol_gen.smiles)
+ffparam, mol = mol_gen.forcefield_types
 molSize = (450, 150)
 mc = Chem.Mol(mol_gen.mol.ToBinary())
 drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])

@@ -103,6 +103,13 @@
     "pydotplus",
     "Carbocycles",
     "xlabel",
-    "ylabel"
+    "ylabel",
+    "ffnonbonded",
+    "forcefield",
+    "opls",
+    "nonbonded",
+    "ffparam",
+    "atomnum",
+    "ffbonded"
   ]
 }

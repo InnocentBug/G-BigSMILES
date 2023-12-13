@@ -32,6 +32,7 @@ lint:
       paths:
         - tests/test_molecule.py
         - .gitignore
+        - bigsmiles_gen/data/*
 actions:
   enabled:
     - trunk-announce
