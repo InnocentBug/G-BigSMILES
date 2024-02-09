@@ -11,7 +11,7 @@ from rdkit.Chem import AllChem
 from rdkit.Chem import Descriptors as rdDescriptors
 from rdkit.Chem import rdFingerprintGenerator
 
-from .forcefield_helper import get_assignment_class
+from .forcefield_helper import FfAssignmentError, get_assignment_class
 
 _RDKGEN = rdFingerprintGenerator.GetRDKitFPGenerator(fpSize=512)
 
@@ -216,7 +216,12 @@ class MolGen:
         assigner = get_assignment_class(smarts_filename, nb_filename)
         mol = self.mol
         mol = Chem.AddHs(mol)
-        return assigner.get_type_assignments(mol), mol
+        try:
+            ffparam = assigner.get_type_assignments(mol)
+        except FfAssignmentError as exc:
+            exc.attach_mol(mol)
+            raise exc
+        return ffparam, mol
 
     @property
     def forcefield_types(self):

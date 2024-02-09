@@ -8,6 +8,18 @@ _global_smarts_rule_file = None
 _global_assignment_class = None
 
 
+class FfAssignmentError(Exception):
+    def __init__(self, incomplete_ff_dict, mol=None):
+        self.incomplete_ff_dict = incomplete_ff_dict
+        self.mol = mol
+
+    def attach_mol(self, mol):
+        self.mol = mol
+
+    def __str__(self):
+        return "Not all atoms could be assigned"
+
+
 @dataclasses.dataclass
 class FFParam:
     mass: float
@@ -114,8 +126,6 @@ class SMARTS_ASSIGNMENTS:
                     match_dict[match].append(rule)
                 except KeyError:
                     match_dict[match] = [rule]
-        if len(match_dict) != mol.GetNumAtoms():
-            raise RuntimeError("Not all atoms could be assigned")
 
         for atom_num in match_dict:
             final_match = match_dict[atom_num][0]
@@ -130,6 +140,10 @@ class SMARTS_ASSIGNMENTS:
             final_dict[atom_num] = self.get_ffparam(
                 self.get_type(self._rule_dict[match_dict[atom_num]])
             )
+
+        if len(final_dict) != mol.GetNumAtoms():
+            raise FfAssignmentError(final_dict)
+
         return final_dict
 
         # graph = nx.Graph()
