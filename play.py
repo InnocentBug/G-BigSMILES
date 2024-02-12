@@ -7,6 +7,7 @@ from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 
 import bigsmiles_gen
+from bigsmiles_gen.stochastic_atom_graph import _generate_stochastic_atom_graph
 
 
 def test_mirror(bigA):
@@ -63,23 +64,28 @@ bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poi
 
 
 mol = bigsmiles_gen.Molecule(bigA)
+
+la = _generate_stochastic_atom_graph(mol)
+
 mol_gen = mol.generate()
 print(mol_gen.smiles)
 ffparam, mol = mol_gen.forcefield_types
-molSize = (450, 150)
-mc = Chem.Mol(mol_gen.mol.ToBinary())
-drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
-drawer.DrawMolecule(mc)
-drawer.FinishDrawing()
-svg = drawer.GetDrawingText()
-with open("molPlay.svg", "w") as filehandle:
-    filehandle.write(svg)
-# calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
-# print(calc_prob)
 
-print(mol.generate_string(True))
-graph = mol.gen_reaction_graph()
-graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
 
-with open("graph.dot", "w") as filehandle:
-    filehandle.write(graph_dot)
+# molSize = (450, 150)
+# mc = Chem.Mol(mol_gen.mol.ToBinary())
+# drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
+# drawer.DrawMolecule(mc)
+# drawer.FinishDrawing()
+# svg = drawer.GetDrawingText()
+# with open("molPlay.svg", "w") as filehandle:
+#     filehandle.write(svg)
+# # calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
+# # print(calc_prob)
+
+# print(mol.generate_string(True))
+# graph = mol.gen_reaction_graph()
+# graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
+
+# with open("graph.dot", "w") as filehandle:
+#     filehandle.write(graph_dot)
