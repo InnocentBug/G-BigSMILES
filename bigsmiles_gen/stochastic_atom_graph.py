@@ -15,7 +15,7 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
     if not molecule.generable:
         raise RuntimeError("G-BigSMILES Molecule must be generable for a stochastic atom graph.")
 
-    graph = nx.Graph()
+    graph = nx.MultiDiGraph()
     node_counter = 0
     node_offset_list = []
     # Add all nodes and static weights

@@ -68,6 +68,12 @@ mol = bigsmiles_gen.Molecule(bigA)
 
 stochastic_atom_graph = _generate_stochastic_atom_graph(mol)
 graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
+
+node = stochastic_atom_graph.nodes[12]
+print(node)
+print(stochastic_atom_graph.edges(12))
+
+
 with open("stochastic_atom_graph.dot", "w") as filehandle:
     filehandle.write(graph_dot)
 
