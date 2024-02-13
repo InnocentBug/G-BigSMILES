@@ -11,9 +11,17 @@ from .token import SmilesToken
 STATIC_BOND_WEIGHT = -1
 
 
-def _generate_stochastic_atom_graph(molecule: Molecule):
-    if not molecule.generable:
+def _generate_stochastic_atom_graph(molecule: Molecule, distribution: bool = True):
+    if distribution and not molecule.generable:
         raise RuntimeError("G-BigSMILES Molecule must be generable for a stochastic atom graph.")
+
+    # Check distribution possibility
+    for element in molecule.elements:
+        if isinstance(elements, Stochastic):
+            if not isinstance(elements.distribution, SchulzZimm):
+                raise RuntimeError(
+                    "At the moment, we only support SchulzZimm Distribution for stochastic atom graphs."
+                )
 
     graph = nx.MultiDiGraph()
     node_counter = 0
@@ -24,7 +32,7 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
             smi = element.generate_smiles_fragment()
             mol = Chem.MolFromSmiles(smi)
             mw_info = (Chem.Descriptors.HeavyAtomMolWt(mol), Chem.Descriptors.HeavyAtomMolWt(mol))
-            nodes = _get_token_nodes(element, mw_info)
+            nodes = _get_token_nodes(element, mw_info, distribution)
 
             graph = _add_nodes_to_graph(graph, nodes, node_counter)
 
@@ -32,20 +40,15 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
             node_offset_list.append([node_counter + len(nodes)])
 
         if isinstance(element, Stochastic):
-            distribution = element.distribution
-            if not isinstance(distribution, SchulzZimm):
-                raise RuntimeError(
-                    "At the moment, we only support SchulzZimm Distribution for stochastic atom graphs."
-                )
             mw_info = (distribution._Mn, distribution._Mw)
             nested_offset = [node_counter]
             for token in element.repeat_tokens:
-                nodes = _get_token_nodes(token, mw_info)
+                nodes = _get_token_nodes(token, mw_info, distribution)
                 graph = _add_nodes_to_graph(graph, nodes, node_counter)
                 node_counter += len(nodes)
                 nested_offset.append(nested_offset[-1] + len(nodes))
             for token in element.end_tokens:
-                nodes = _get_token_nodes(token, mw_info)
+                nodes = _get_token_nodes(token, mw_info, distribution)
                 graph = _add_nodes_to_graph(graph, nodes, node_counter)
                 node_counter += len(nodes)
                 nested_offset.append(nested_offset[-1] + len(nodes))
@@ -79,10 +82,10 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
                         if graph_bd.is_compatible(other_bd) and other_bd.weight > 0:
                             other_bd_token_idx = _find_bd_token(element, other_bd)
                             first_atom = (
-                                graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx-1]
+                                graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx - 1]
                             )
                             second_atom = (
-                                other_bd.atom_bonding_to + nested_offset[other_bd_token_idx-1]
+                                other_bd.atom_bonding_to + nested_offset[other_bd_token_idx - 1]
                             )
 
                             if other_bd_token_idx < len(element.repeat_tokens):
@@ -185,7 +188,7 @@ def _add_nodes_to_graph(graph, nodes, node_counter):
     return graph
 
 
-def _get_token_nodes(token: SmilesToken, mw_info):
+def _get_token_nodes(token: SmilesToken, mw_info, distribution: bool):
     smi = token.generate_smiles_fragment()
     mol = Chem.MolFromSmiles(smi)
     mol = Chem.AddHs(mol)
@@ -204,7 +207,9 @@ def _get_token_nodes(token: SmilesToken, mw_info):
                 other_atom_idx = bond.GetBeginAtomIdx()
             static_bonds[other_atom_idx] = bond
 
-        nodes += [{"atom": atom, "mw_info": mw_info, "static_bonds": static_bonds}]
+        node_properties = {"atom": atom, "static_bonds": static_bonds}
+        if distribution:
+            node_properties["mw_info"] = mw_info
 
     return nodes
 
