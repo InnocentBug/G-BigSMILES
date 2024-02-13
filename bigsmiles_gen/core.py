@@ -122,7 +122,6 @@ def stochastic_atom_graph_to_dot_string(graph):
 
     for edge in graph.edges():
         edge_data = graph.get_edge_data(*edge)
-        weight = edge_data["weight"]
-        dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [label={weight}];\n'
+        dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [label="{tuple(edge_data.values())}"];\n'
     dot_str += "}\n"
     return dot_str

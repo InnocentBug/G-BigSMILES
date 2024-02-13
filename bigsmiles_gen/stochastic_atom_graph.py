@@ -29,7 +29,7 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
             graph = _add_nodes_to_graph(graph, nodes, node_counter)
 
             node_counter += len(nodes)
-            node_offset_list.append(node_counter + len(nodes))
+            node_offset_list.append([node_counter + len(nodes)])
 
         if isinstance(element, Stochastic):
             distribution = element.distribution
@@ -40,13 +40,11 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
             mw_info = (distribution._Mn, distribution._Mw)
             nested_offset = [node_counter]
             for token in element.repeat_tokens:
-                print(token, node_counter)
                 nodes = _get_token_nodes(token, mw_info)
                 graph = _add_nodes_to_graph(graph, nodes, node_counter)
                 node_counter += len(nodes)
                 nested_offset.append(nested_offset[-1] + len(nodes))
             for token in element.end_tokens:
-                print(token, node_counter)
                 nodes = _get_token_nodes(token, mw_info)
                 graph = _add_nodes_to_graph(graph, nodes, node_counter)
                 node_counter += len(nodes)
@@ -68,18 +66,13 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
                             second_atom = (
                                 other_bd.atom_bonding_to + nested_offset[other_bd_token_idx]
                             )
-                            print(
-                                nested_offset,
-                                other_bd_token_idx,
-                                other_bd.atom_bonding_to,
-                                first_atom,
-                                second_atom,
-                            )
                             graph.add_edge(
                                 first_atom,
                                 second_atom,
+                                bond_type=int(graph_bd.bond_type),
                                 weight=p,
                                 termination_weight=graph_bd.weight,
+                                transition_weight=0,
                             )
                 else:
                     for other_bd in element.bond_descriptors:
@@ -96,29 +89,67 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
                                 graph.add_edge(
                                     first_atom,
                                     second_atom,
+                                    bond_type=int(graph_bd.bond_type),
                                     weight=other_bd.weight,
                                     termination_weight=0,
+                                    transition_weight=0,
                                 )
                             else:
                                 graph.add_edge(
                                     first_atom,
                                     second_atom,
+                                    bond_type=int(graph_bd.bond_type),
                                     termination_weight=other_bd.weight,
                                     weight=0,
                                 )
 
-            node_offset_list.append(nested_offset)
+                node_offset_list.append(nested_offset)
+
+    # Add transitions between elements, this is the first
+    for element_lhs_i, element_lhs in enumerate(molecule.elements[:-1]):
+        element_rhs_i = element_lhs_i + 1
+        element_rhs = molecule.elements[element_rhs_i]
+        for bd_lhs in element_lhs.bond_descriptors:
+            for bd_rhs in element_rhs.bond_descriptors:
+                if bd_lhs.is_compatible(bd_rhs):
+                    terminal_ok = False
+                    try:
+                        terminal_ok = bd_lhs.is_compatible(element_rhs.left_terminal)
+                    except AttributeError:
+                        if isinstance(element_rhs, SmilesToken):
+                            terminal_ok = True
+                    if terminal_ok:
+                        bd_lhs_idx = _find_bd_token(element_lhs, bd_lhs)
+                        bd_rhs_idx = _find_bd_token(element_rhs, bd_rhs)
+                        first_atom = (
+                            node_offset_list[element_lhs_i][bd_lhs_idx] + bd_lhs.atom_bonding_to
+                        )
+                        second_atom = (
+                            node_offset_list[element_rhs_i][bd_rhs_idx] + bd_rhs.atom_bonding_to
+                        )
+                        graph.add_edge(
+                            first_atom,
+                            second_atom,
+                            bond_type=int(bd_lhs.bond_type),
+                            termination_weight=0,
+                            weight=0,
+                            transition_weight=bd_rhs.weight,
+                        )
 
     return graph
 
 
 def _find_bd_token(element, bd):
-    for i, token in enumerate(element.repeat_tokens):
-        if bd in token.bond_descriptors:
-            return i
-    for i, token in enumerate(element.end_tokens):
-        if bd in token.bond_descriptors:
-            return i + len(element.repeat_tokens)
+    try:
+        for i, token in enumerate(element.repeat_tokens):
+            if bd in token.bond_descriptors:
+                return i
+        for i, token in enumerate(element.end_tokens):
+            if bd in token.bond_descriptors:
+                return i + len(element.repeat_tokens)
+    except AttributeError:
+        if isinstance(element, SmilesToken):
+            return 0
 
 
 def _add_nodes_to_graph(graph, nodes, node_counter):
@@ -140,14 +171,15 @@ def _add_nodes_to_graph(graph, nodes, node_counter):
         atom = node["atom"]
         static_bonds = node["static_bonds"]
         for other_idx in static_bonds:
-            bonda = atom.GetIdx() + node_counter
-            bondb = other_idx + node_counter
+            bond_a = atom.GetIdx() + node_counter
+            bond_b = other_idx + node_counter
             graph.add_edge(
-                bonda,
-                bondb,
+                bond_a,
+                bond_b,
                 bond_type=int(static_bonds[other_idx].GetBondType()),
                 weight=STATIC_BOND_WEIGHT,
-                termination_weight=STATIC_BOND_WEIGHT,
+                termination_weight=0,
+                transition_weight=0,
             )
 
     return graph
