@@ -3,6 +3,7 @@
 # import matplotlib.pyplot as plt
 
 # import pydot
+import networkx as nx
 from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 
@@ -65,14 +66,12 @@ bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]C=CO[<|0 0 0 1 0 2|] ; [>][H] [$]}|sc
 
 
 mol = bigsmiles_gen.Molecule(bigA)
-
+print(mol)
 stochastic_atom_graph = _generate_stochastic_atom_graph(mol)
 graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
 
-node = stochastic_atom_graph.nodes[12]
-print(node)
-print(stochastic_atom_graph.edges(12))
-
+A = nx.adjacency_matrix(stochastic_atom_graph)
+print(A.todense())
 
 with open("stochastic_atom_graph.dot", "w") as filehandle:
     filehandle.write(graph_dot)

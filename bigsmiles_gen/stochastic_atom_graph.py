@@ -17,7 +17,7 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
 
     graph = nx.MultiDiGraph()
     node_counter = 0
-    node_offset_list = []
+    node_offset_list = [[0]]
     # Add all nodes and static weights
     for element in molecule.elements:
         if isinstance(element, SmilesToken):
@@ -79,10 +79,10 @@ def _generate_stochastic_atom_graph(molecule: Molecule):
                         if graph_bd.is_compatible(other_bd) and other_bd.weight > 0:
                             other_bd_token_idx = _find_bd_token(element, other_bd)
                             first_atom = (
-                                graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx]
+                                graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx-1]
                             )
                             second_atom = (
-                                other_bd.atom_bonding_to + nested_offset[other_bd_token_idx]
+                                other_bd.atom_bonding_to + nested_offset[other_bd_token_idx-1]
                             )
 
                             if other_bd_token_idx < len(element.repeat_tokens):
