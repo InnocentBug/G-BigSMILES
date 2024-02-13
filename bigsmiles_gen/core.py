@@ -105,3 +105,23 @@ def reaction_graph_to_dot_string(graph, bigsmiles=None):
     dot_str += "}\n"
 
     return dot_str
+
+
+def stochastic_atom_graph_to_dot_string(graph):
+    dot_str = "strict digraph { \n"
+    for node in graph.nodes(data=True):
+        label = f"{node[1]['atomic_num']}"
+
+        # if node.node_type in CRIPT_colors:
+        #     color = CRIPT_colors[node.node_type]
+        #     extra_attr = f'style=filled, fillcolor="{color}", '
+        #     if _determine_darkness_from_hex(color):
+        #         extra_attr += "fontcolor=white,"
+
+        dot_str += f'"{node[0]}" [label="{label}"];\n'
+
+    for edge in graph.edges():
+        edge_data = graph.get_edge_data(*edge)
+        dot_str += f"\"{int(edge[0])}\" -> \"{int(edge[1])}\";\n"
+    dot_str += "}\n"
+    return dot_str

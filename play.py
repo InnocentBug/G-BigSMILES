@@ -61,15 +61,21 @@ bigA = "CCC(C){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1000, 900)|{[>][<]CC([>])C(
 # gen_calc_prob(bigA)
 
 bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poisson(900)|CCCC"
+bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|schulz_zimm(900, 800)|CCCC"
+bigA = "C{[$] [<]N[>]; [>]C [$]}|schulz_zimm(900, 800)|O"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
 
-la = _generate_stochastic_atom_graph(mol)
+stochastic_atom_graph = _generate_stochastic_atom_graph(mol)
+graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
+with open("stochastic_atom_graph.dot", "w") as filehandle:
+    filehandle.write(graph_dot)
 
-mol_gen = mol.generate()
-print(mol_gen.smiles)
-ffparam, mol = mol_gen.forcefield_types
+print(stochastic_atom_graph)
+# mol_gen = mol.generate()
+# print(mol_gen.smiles)
+# ffparam, mol = mol_gen.forcefield_types
 
 
 # molSize = (450, 150)
