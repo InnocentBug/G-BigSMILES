@@ -110,7 +110,7 @@ def reaction_graph_to_dot_string(graph, bigsmiles=None):
 def stochastic_atom_graph_to_dot_string(graph):
     dot_str = "strict digraph { \n"
     for node in graph.nodes(data=True):
-        label = f"{node[1]['atomic_num']}"
+        label = f"{node[1]['atomic_num']} {node[0]}"
 
         # if node.node_type in CRIPT_colors:
         #     color = CRIPT_colors[node.node_type]
@@ -122,6 +122,7 @@ def stochastic_atom_graph_to_dot_string(graph):
 
     for edge in graph.edges():
         edge_data = graph.get_edge_data(*edge)
-        dot_str += f"\"{int(edge[0])}\" -> \"{int(edge[1])}\";\n"
+        weight = edge_data["weight"]
+        dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [label={weight}];\n'
     dot_str += "}\n"
     return dot_str
