@@ -3,6 +3,7 @@ import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
+from .bond import BondDescriptor, _create_compatible_bond_text
 from .distribution import SchulzZimm
 from .molecule import Molecule
 from .stochastic import Stochastic
@@ -41,7 +42,7 @@ def _generate_stochastic_atom_graph(
             nodes = _get_token_nodes(element, mw_info, add_hydrogen, distribution)
 
             graph = _add_nodes_to_graph(graph, nodes, node_counter, distribution)
-            node_offset_list.append([node_counter + len(nodes)])
+            node_offset_list.append([node_counter])
             node_counter += len(nodes)
 
         if isinstance(element, Stochastic):
@@ -63,7 +64,7 @@ def _generate_stochastic_atom_graph(
 
             node_offset_list.append(nested_offset)
             graph = _add_stochastic_bonds(element, nested_offset, graph)
-
+    node_offset_list = node_offset_list[1:]
     # Add transitions between elements, this is the first
     graph = _add_transistion_bonds(molecule, node_offset_list, graph)
 
@@ -71,26 +72,31 @@ def _generate_stochastic_atom_graph(
 
 
 def _add_transistion_bonds(molecule: Molecule, node_offset_list: list[list[int]], graph):
-    print(node_offset_list)
+
     for element_lhs_i, element_lhs in enumerate(molecule.elements[:-1]):
         element_rhs_i = element_lhs_i + 1
         element_rhs = molecule.elements[element_rhs_i]
         for bd_lhs in element_lhs.bond_descriptors:
             for bd_rhs in element_rhs.bond_descriptors:
                 if bd_lhs.is_compatible(bd_rhs):
-                    terminal_ok = False
                     try:
-                        terminal_ok = bd_lhs.is_compatible(element_rhs.left_terminal)
+                        invert_text = _create_compatible_bond_text(element_rhs.left_terminal)
+                        invert_terminal = BondDescriptor(invert_text, 0, "", None)
+                        terminal_ok = invert_terminal.is_compatible(bd_rhs)
+                        print(bd_lhs, bd_rhs, invert_terminal, terminal_ok)
                     except AttributeError:
                         if isinstance(element_rhs, SmilesToken):
                             terminal_ok = True
+
                     if terminal_ok:
                         try:
-                            terminal_ok = bd_lhs.is_compatible(element_lhs.right_terminal)
+                            invert_text = _create_compatible_bond_text(element_lhs.right_terminal)
+                            invert_terminal = BondDescriptor(invert_text, 0, "", None)
+                            terminal_ok = invert_terminal.is_compatible(bd_lhs)
                         except AttributeError:
                             if not isinstance(element_lhs, SmilesToken):
                                 terminal_ok = False
-                    print(bd_lhs, bd_rhs, element_rhs, terminal_ok)
+
                     if terminal_ok:
                         bd_lhs_idx = _find_bd_token(element_lhs, bd_lhs)
                         bd_rhs_idx = _find_bd_token(element_rhs, bd_rhs)
@@ -140,15 +146,6 @@ def _add_stochastic_bonds(element: Stochastic, nested_offset: list[int], graph):
                     first_atom = graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx]
                     second_atom = other_bd.atom_bonding_to + nested_offset[other_bd_token_idx]
 
-                    print(
-                        graph_bd,
-                        graph_bd_token_idx,
-                        other_bd,
-                        other_bd_token_idx,
-                        len(element.repeat_tokens),
-                        first_atom,
-                        second_atom,
-                    )
                     if other_bd_token_idx < len(element.repeat_tokens):
                         graph.add_edge(
                             first_atom,
