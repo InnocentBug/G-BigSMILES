@@ -41,9 +41,8 @@ def _generate_stochastic_atom_graph(
             nodes = _get_token_nodes(element, mw_info, add_hydrogen, distribution)
 
             graph = _add_nodes_to_graph(graph, nodes, node_counter, distribution)
-
-            node_counter += len(nodes)
             node_offset_list.append([node_counter + len(nodes)])
+            node_counter += len(nodes)
 
         if isinstance(element, Stochastic):
             if distribution:
@@ -62,62 +61,17 @@ def _generate_stochastic_atom_graph(
                 node_counter += len(nodes)
                 nested_offset.append(nested_offset[-1] + len(nodes))
 
-            # Add stochastic bonds inside the stochastic element
-            for graph_bd in element.bond_descriptors:
-                graph_bd_token_idx = _find_bd_token(element, graph_bd)
-                # Add regular weights for listed bd
-                if graph_bd.transitions is not None:
-                    prob = graph_bd.transitions
-                    for i, p in enumerate(prob):
-                        other_bd = element.bond_descriptors[i]
-                        other_bd_token_idx = _find_bd_token(element, other_bd)
-                        if p > 0:
-                            first_atom = (
-                                graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx]
-                            )
-                            second_atom = (
-                                other_bd.atom_bonding_to + nested_offset[other_bd_token_idx]
-                            )
-                            graph.add_edge(
-                                first_atom,
-                                second_atom,
-                                bond_type=int(graph_bd.bond_type),
-                                weight=p,
-                                termination_weight=graph_bd.weight,
-                                transition_weight=0,
-                            )
-                else:
-                    for other_bd in element.bond_descriptors:
-                        if graph_bd.is_compatible(other_bd) and other_bd.weight > 0:
-                            other_bd_token_idx = _find_bd_token(element, other_bd)
-                            first_atom = (
-                                graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx - 1]
-                            )
-                            second_atom = (
-                                other_bd.atom_bonding_to + nested_offset[other_bd_token_idx - 1]
-                            )
-
-                            if other_bd_token_idx < len(element.repeat_tokens):
-                                graph.add_edge(
-                                    first_atom,
-                                    second_atom,
-                                    bond_type=int(graph_bd.bond_type),
-                                    weight=other_bd.weight,
-                                    termination_weight=0,
-                                    transition_weight=0,
-                                )
-                            else:
-                                graph.add_edge(
-                                    first_atom,
-                                    second_atom,
-                                    bond_type=int(graph_bd.bond_type),
-                                    termination_weight=other_bd.weight,
-                                    weight=0,
-                                )
-
-                node_offset_list.append(nested_offset)
+            node_offset_list.append(nested_offset)
+            graph = _add_stochastic_bonds(element, nested_offset, graph)
 
     # Add transitions between elements, this is the first
+    graph = _add_transistion_bonds(molecule, node_offset_list, graph)
+
+    return graph
+
+
+def _add_transistion_bonds(molecule: Molecule, node_offset_list: list[list[int]], graph):
+    print(node_offset_list)
     for element_lhs_i, element_lhs in enumerate(molecule.elements[:-1]):
         element_rhs_i = element_lhs_i + 1
         element_rhs = molecule.elements[element_rhs_i]
@@ -154,7 +108,64 @@ def _generate_stochastic_atom_graph(
                             weight=0,
                             transition_weight=bd_rhs.weight,
                         )
+    return graph
 
+
+def _add_stochastic_bonds(element: Stochastic, nested_offset: list[int], graph):
+    # Add stochastic bonds inside the stochastic element
+    for graph_bd in element.bond_descriptors:
+        graph_bd_token_idx = _find_bd_token(element, graph_bd)
+
+        if graph_bd.transitions is not None:
+            prob = graph_bd.transitions
+            for i, p in enumerate(prob):
+                other_bd = element.bond_descriptors[i]
+                if graph_bd.is_compatible(other_bd):
+                    other_bd_token_idx = _find_bd_token(element, other_bd)
+                    if p > 0:
+                        first_atom = graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx]
+                        second_atom = other_bd.atom_bonding_to + nested_offset[other_bd_token_idx]
+                        graph.add_edge(
+                            first_atom,
+                            second_atom,
+                            bond_type=int(graph_bd.bond_type),
+                            weight=p,
+                            termination_weight=graph_bd.weight,
+                            transition_weight=0,
+                        )
+        else:
+            for other_bd in element.bond_descriptors:
+                if graph_bd.is_compatible(other_bd) and other_bd.weight > 0:
+                    other_bd_token_idx = _find_bd_token(element, other_bd)
+                    first_atom = graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx]
+                    second_atom = other_bd.atom_bonding_to + nested_offset[other_bd_token_idx]
+
+                    print(
+                        graph_bd,
+                        graph_bd_token_idx,
+                        other_bd,
+                        other_bd_token_idx,
+                        len(element.repeat_tokens),
+                        first_atom,
+                        second_atom,
+                    )
+                    if other_bd_token_idx < len(element.repeat_tokens):
+                        graph.add_edge(
+                            first_atom,
+                            second_atom,
+                            bond_type=int(graph_bd.bond_type),
+                            weight=other_bd.weight,
+                            termination_weight=0,
+                            transition_weight=0,
+                        )
+                    else:
+                        graph.add_edge(
+                            first_atom,
+                            second_atom,
+                            bond_type=int(graph_bd.bond_type),
+                            termination_weight=other_bd.weight,
+                            weight=0,
+                        )
     return graph
 
 
