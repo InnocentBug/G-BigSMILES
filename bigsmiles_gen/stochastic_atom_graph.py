@@ -64,12 +64,12 @@ def _generate_stochastic_atom_graph(
             graph = _add_stochastic_bonds(element, nested_offset, graph)
     node_offset_list = node_offset_list[1:]
     # Add transitions between elements, this is the first
-    graph = _add_transistion_bonds(molecule, node_offset_list, graph)
+    graph = _add_transition_bonds(molecule, node_offset_list, graph)
 
     return graph
 
 
-def _add_transistion_bonds(molecule: Molecule, node_offset_list: list[list[int]], graph):
+def _add_transition_bonds(molecule: Molecule, node_offset_list: list[list[int]], graph):
 
     for element_lhs_i, element_lhs in enumerate(molecule.elements[:-1]):
         element_rhs_i = element_lhs_i + 1

@@ -110,7 +110,7 @@ atom_name_mapping = {
     109: "Mt",
 }
 
-atom_color_mappring = {
+atom_color_mapping = {
     1: "FFFFFF",
     2: "D9FFFF",
     3: "CC80FF",

@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from warnings import warn
 
 import numpy as np
-from chem_resource import atom_color_mappring, atom_name_mapping
+from chem_resource import atom_color_mapping, atom_name_mapping
 
 _GLOBAL_RNG = np.random.default_rng()
 
@@ -135,7 +135,7 @@ def stochastic_atom_graph_to_dot_string(graph):
     for node in graph.nodes(data=True):
         label = f"{atom_name_mapping[node[1]['atomic_num']]}"
 
-        color = "#" + atom_color_mappring[node[1]["atomic_num"]]
+        color = "#" + atom_color_mapping[node[1]["atomic_num"]]
         extra_attr = f'style=filled, fillcolor="{color}", '
         if _determine_darkness_from_hex(color):
             extra_attr += "fontcolor=white,"
