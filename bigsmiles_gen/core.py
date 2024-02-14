@@ -6,7 +6,8 @@ from abc import ABC, abstractmethod
 from warnings import warn
 
 import numpy as np
-from chem_resource import atom_color_mapping, atom_name_mapping
+
+from .chem_resource import atom_color_mapping, atom_name_mapping
 
 _GLOBAL_RNG = np.random.default_rng()
 

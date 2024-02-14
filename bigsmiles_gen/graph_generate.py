@@ -9,7 +9,11 @@ def find_start_source(stochastic_graph):
 
 
 def add_node(node, atom_graph, stochastic_graph):
-    atom_graph.add_node(node["atomic_num"], stochastic_edges=stochastic_graph.out_edges(node))
+    atom_graph.add_node(
+        len(atom_graph),
+        atomic_num=node["atomic_num"],
+        stochastic_edges=stochastic_graph.out_edges(node),
+    )
 
 
 def generate_full_mol_graph(stochastic_graph):

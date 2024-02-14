@@ -119,6 +119,11 @@ def _add_stochastic_bonds(element: Stochastic, nested_offset: list[int], graph):
     for graph_bd in element.bond_descriptors:
         graph_bd_token_idx = _find_bd_token(element, graph_bd)
 
+        # Exclude the generation of out connections from end tokens.
+        # End token IDs are *after* the repeat token IDs
+        if graph_bd_token_idx >= len(element.repeat_tokens):
+            continue
+
         if graph_bd.transitions is not None:
             prob = graph_bd.transitions
             for i, p in enumerate(prob):
@@ -193,6 +198,7 @@ def _add_nodes_to_graph(graph, nodes, node_counter, distribution: bool):
             node_prop["mw"] = mw_info[1]
 
         graph.add_node(node_counter + atom.GetIdx(), **node_prop)
+
     for node in nodes:
         atom = node["atom"]
         static_bonds = node["static_bonds"]

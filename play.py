@@ -8,10 +8,8 @@ from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 
 import bigsmiles_gen
-from bigsmiles_gen.stochastic_atom_graph import (
-    _generate_stochastic_atom_graph,
-    generate_full_mol_graph,
-)
+from bigsmiles_gen.graph_generate import generate_full_mol_graph
+from bigsmiles_gen.stochastic_atom_graph import _generate_stochastic_atom_graph
 
 
 def test_mirror(bigA):
