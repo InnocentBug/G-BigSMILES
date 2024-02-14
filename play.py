@@ -8,7 +8,10 @@ from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 
 import bigsmiles_gen
-from bigsmiles_gen.stochastic_atom_graph import _generate_stochastic_atom_graph
+from bigsmiles_gen.stochastic_atom_graph import (
+    _generate_stochastic_atom_graph,
+    generate_full_mol_graph,
+)
 
 
 def test_mirror(bigA):
@@ -65,14 +68,13 @@ bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poi
 bigA = (
     "CCOC{[$] O([<|3|])(C([$])C[$]), [>]C=CO[<|0 0 0 1 0 2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
 )
-bigA = "OO {[<] [<]C(CCCCCC[$|0|])B[>|3 0 0 0 2 0|], [>]S=[Si][<] ; [$][H] [>]}|schulz_zimm(300, 200)|  NN"
+bigA = "OO {[<] [<]C(CCCCCC[$|0|])B[>|3 0 0 0 2 0|], [>]S=[Si][<] ; [$][Br] [>]}|schulz_zimm(300, 200)|  NN"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
 print(mol)
-stochastic_atom_graph = _generate_stochastic_atom_graph(mol, add_hydrogen=True, distribution=False)
+stochastic_atom_graph = _generate_stochastic_atom_graph(mol, add_hydrogen=True, distribution=True)
 graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
-
 
 with open("stochastic_atom_graph.dot", "w") as filehandle:
     filehandle.write(graph_dot)
@@ -80,6 +82,10 @@ with open("stochastic_atom_graph.dot", "w") as filehandle:
 print(stochastic_atom_graph)
 mol_gen = mol.generate()
 print(mol_gen.smiles)
+
+full_graph = generate_full_mol_graph(stochastic_atom_graph)
+
+
 # ffparam, mol = mol_gen.forcefield_types
 
 

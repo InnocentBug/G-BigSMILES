@@ -1,7 +1,5 @@
 import networkx as nx
-import rdkit
 from rdkit import Chem
-from rdkit.Chem import AllChem
 
 from .bond import BondDescriptor, _create_compatible_bond_text
 from .distribution import SchulzZimm
@@ -83,7 +81,6 @@ def _add_transistion_bonds(molecule: Molecule, node_offset_list: list[list[int]]
                         invert_text = _create_compatible_bond_text(element_rhs.left_terminal)
                         invert_terminal = BondDescriptor(invert_text, 0, "", None)
                         terminal_ok = invert_terminal.is_compatible(bd_rhs)
-                        print(bd_lhs, bd_rhs, invert_terminal, terminal_ok)
                     except AttributeError:
                         if isinstance(element_rhs, SmilesToken):
                             terminal_ok = True
