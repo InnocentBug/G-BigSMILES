@@ -70,7 +70,7 @@ bigA = "OO {[<] [<]C(CCCCCC[$|0|])B[>|3 0 0 0 2 0|], [>]S=[Si][<] ; [$][H] [>]}|
 
 mol = bigsmiles_gen.Molecule(bigA)
 print(mol)
-stochastic_atom_graph = _generate_stochastic_atom_graph(mol, add_hydrogen=False, distribution=False)
+stochastic_atom_graph = _generate_stochastic_atom_graph(mol, add_hydrogen=True, distribution=False)
 graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
 
 
