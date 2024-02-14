@@ -11,17 +11,23 @@ from .token import SmilesToken
 STATIC_BOND_WEIGHT = -1
 
 
-def _generate_stochastic_atom_graph(molecule: Molecule, distribution: bool = True):
+def _generate_stochastic_atom_graph(
+    molecule: Molecule, add_hydrogen: bool = False, distribution: bool = True
+):
     if distribution and not molecule.generable:
         raise RuntimeError("G-BigSMILES Molecule must be generable for a stochastic atom graph.")
 
+    schulz_zimm_distribution = True
     # Check distribution possibility
     for element in molecule.elements:
-        if isinstance(elements, Stochastic):
-            if not isinstance(elements.distribution, SchulzZimm):
-                raise RuntimeError(
-                    "At the moment, we only support SchulzZimm Distribution for stochastic atom graphs."
-                )
+        if isinstance(element, Stochastic):
+            if not isinstance(element.distribution, SchulzZimm):
+                schulz_zimm_distribution = False
+                break
+    if not schulz_zimm_distribution and distribution:
+        raise RuntimeError(
+            "At the moment, we only support SchulzZimm Distribution for stochastic atom graphs."
+        )
 
     graph = nx.MultiDiGraph()
     node_counter = 0
@@ -32,24 +38,27 @@ def _generate_stochastic_atom_graph(molecule: Molecule, distribution: bool = Tru
             smi = element.generate_smiles_fragment()
             mol = Chem.MolFromSmiles(smi)
             mw_info = (Chem.Descriptors.HeavyAtomMolWt(mol), Chem.Descriptors.HeavyAtomMolWt(mol))
-            nodes = _get_token_nodes(element, mw_info, distribution)
+            nodes = _get_token_nodes(element, mw_info, add_hydrogen, distribution)
 
-            graph = _add_nodes_to_graph(graph, nodes, node_counter)
+            graph = _add_nodes_to_graph(graph, nodes, node_counter, distribution)
 
             node_counter += len(nodes)
             node_offset_list.append([node_counter + len(nodes)])
 
         if isinstance(element, Stochastic):
-            mw_info = (distribution._Mn, distribution._Mw)
+            if distribution:
+                mw_info = (element.distribution._Mn, element.distribution._Mw)
+            else:
+                mw_info = None
             nested_offset = [node_counter]
             for token in element.repeat_tokens:
-                nodes = _get_token_nodes(token, mw_info, distribution)
-                graph = _add_nodes_to_graph(graph, nodes, node_counter)
+                nodes = _get_token_nodes(token, mw_info, add_hydrogen, distribution)
+                graph = _add_nodes_to_graph(graph, nodes, node_counter, distribution)
                 node_counter += len(nodes)
                 nested_offset.append(nested_offset[-1] + len(nodes))
             for token in element.end_tokens:
-                nodes = _get_token_nodes(token, mw_info, distribution)
-                graph = _add_nodes_to_graph(graph, nodes, node_counter)
+                nodes = _get_token_nodes(token, mw_info, add_hydrogen, distribution)
+                graph = _add_nodes_to_graph(graph, nodes, node_counter, distribution)
                 node_counter += len(nodes)
                 nested_offset.append(nested_offset[-1] + len(nodes))
 
@@ -122,6 +131,13 @@ def _generate_stochastic_atom_graph(molecule: Molecule, distribution: bool = Tru
                         if isinstance(element_rhs, SmilesToken):
                             terminal_ok = True
                     if terminal_ok:
+                        try:
+                            terminal_ok = bd_lhs.is_compatible(element_lhs.right_terminal)
+                        except AttributeError:
+                            if not isinstance(element_lhs, SmilesToken):
+                                terminal_ok = False
+                    print(bd_lhs, bd_rhs, element_rhs, terminal_ok)
+                    if terminal_ok:
                         bd_lhs_idx = _find_bd_token(element_lhs, bd_lhs)
                         bd_rhs_idx = _find_bd_token(element_rhs, bd_rhs)
                         first_atom = (
@@ -155,21 +171,23 @@ def _find_bd_token(element, bd):
             return 0
 
 
-def _add_nodes_to_graph(graph, nodes, node_counter):
+def _add_nodes_to_graph(graph, nodes, node_counter, distribution: bool):
     for node in nodes:
         atom = node["atom"]
-        mw_info = node["mw_info"]
 
-        graph.add_node(
-            node_counter + atom.GetIdx(),
-            atomic_num=atom.GetAtomicNum(),
-            valence=atom.GetTotalValence(),
-            formal_charge=atom.GetFormalCharge(),
-            aromatic=atom.GetIsAromatic(),
-            hybridization=int(atom.GetHybridization()),
-            mn=mw_info[0],
-            mw=mw_info[1],
-        )
+        node_prop = {
+            "atomic_num": atom.GetAtomicNum(),
+            "valence": atom.GetTotalValence(),
+            "formal_charge": atom.GetFormalCharge(),
+            "aromatic": atom.GetIsAromatic(),
+            "hybridization": int(atom.GetHybridization()),
+        }
+        if distribution:
+            mw_info = node["mw_info"]
+            node_prop["mn"] = mw_info[0]
+            node_prop["mw"] = mw_info[1]
+
+        graph.add_node(node_counter + atom.GetIdx(), **node_prop)
     for node in nodes:
         atom = node["atom"]
         static_bonds = node["static_bonds"]
@@ -188,12 +206,12 @@ def _add_nodes_to_graph(graph, nodes, node_counter):
     return graph
 
 
-def _get_token_nodes(token: SmilesToken, mw_info, distribution: bool):
+def _get_token_nodes(token: SmilesToken, mw_info, add_hydrogen: bool, distribution: bool):
     smi = token.generate_smiles_fragment()
     mol = Chem.MolFromSmiles(smi)
-    mol = Chem.AddHs(mol)
-
-    mol = _remove_extra_hydrogen_atoms(token, mol)
+    if add_hydrogen:
+        mol = Chem.AddHs(mol)
+        mol = _remove_extra_hydrogen_atoms(token, mol)
 
     nodes = []
     for atom_idx in range(mol.GetNumAtoms()):
@@ -210,6 +228,7 @@ def _get_token_nodes(token: SmilesToken, mw_info, distribution: bool):
         node_properties = {"atom": atom, "static_bonds": static_bonds}
         if distribution:
             node_properties["mw_info"] = mw_info
+        nodes += [node_properties]
 
     return nodes
 
