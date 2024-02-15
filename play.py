@@ -66,11 +66,11 @@ bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poi
 bigA = (
     "CCOC{[$] O([<|3|])(C([$])C[$]), [>]C=CO[<|0 0 0 1 0 2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
 )
-bigA = "OC(=O)ON {[<] [<]C(CCCCCC[$|0|])B[>|3 0 0 0 2 0|], [>]S=[Si][<] ; [$][Br] [>]}|schulz_zimm(300, 200)|  NN"
+bigA = "OC(=O)ON {[<] [<]C(CCCCCC[$|0|])B[>|3 0 0 0 2 0|], [>]S=[Si][<] ; [$][Br] [>]}|schulz_zimm(11.3e2, 1000)|  NN"
+bigA = "OC(=O)ON {[<] [>]S=[Si][<] [>]}|schulz_zimm(11.3e2, 1000)|  NN"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
-print(mol)
 stochastic_atom_graph = _generate_stochastic_atom_graph(mol, add_hydrogen=True, distribution=True)
 graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
 
@@ -90,9 +90,9 @@ atom_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(full_graph.ato
 with open("atom_graph.dot", "w") as filehandle:
     filehandle.write(atom_dot)
 
-for node in full_graph.atom_graph:
-    node_data = full_graph.atom_graph.nodes[node]
-    print(node_data)
+# for node in full_graph.atom_graph:
+#     node_data = full_graph.atom_graph.nodes[node]
+#     print(node_data)
 
 
 # ffparam, mol = mol_gen.forcefield_types
