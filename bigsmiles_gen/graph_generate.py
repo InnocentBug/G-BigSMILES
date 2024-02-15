@@ -2,6 +2,7 @@ import copy
 
 import networkx as nx
 import numpy as np
+from rdkit import Chem
 
 from .chem_resource import atomic_masses
 from .distribution import SchulzZimm
@@ -32,6 +33,7 @@ class AtomGraph:
         self.mw = [0]
         self.fully_generated = False
         self.rng = np.random.default_rng(seed=rng_seed)
+        self._mw_draw_map = {}
 
         start = self._find_start_source()
         if start is None:
@@ -100,14 +102,23 @@ class AtomGraph:
                 # Draw distribution etc.
                 last_node = self.atom_graph.nodes[last_node_id]
 
-                distr = SchulzZimm(f"schulz_zimm({last_node['mw']}, {last_node['mn']})")
-                drawn_mw = distr.draw_mw(self.rng)
+                mw = last_node["mw"]
+                mn = last_node["mn"]
+                try:
 
+                    drawn_mw = self._mw_draw_map[(mw, mn)]
+                except KeyError:
+                    distr = SchulzZimm(f"schulz_zimm({mw}, {mn})")
+                    drawn_mw = distr.draw_mw(self.rng)
+                    self._mw_draw_map[(mw, mn)] = drawn_mw
+                    swap_atom_graph._mw_draw_map = self._mw_draw_map
+
+                print(self.mw[-1], drawn_mw)
                 if not self.mw[-1] >= drawn_mw:
+                    print("a")
                     # Reverse the termination of the graph
-                    # self = swap_atom_graph
+                    self = swap_atom_graph
                     self._add_stochastic_connection(next_stochastic)
-
                 else:
                     break
             else:
@@ -290,3 +301,15 @@ class AtomGraph:
         self.mw[-1] += mw
 
         return node_id
+
+    def to_mol(self):
+        mol = Chem.EditableMol(Chem.MolFromSmiles(""))
+        for node in self.atom_graph.nodes(data=True):
+            atom = Chem.Atom(node[1]["atomic_num"])
+            mol.AddAtom(atom)
+        for edge in self.atom_graph.edges(data=True):
+            bond_type = Chem.BondType(edge[2]["bond_type"])
+            mol.AddBond(edge[0], edge[1], bond_type)
+        mol = mol.GetMol()
+        Chem.SanitizeMol(mol)
+        return mol

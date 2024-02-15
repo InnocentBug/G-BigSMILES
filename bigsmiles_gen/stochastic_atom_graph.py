@@ -3,7 +3,6 @@ from rdkit import Chem
 
 from .bond import BondDescriptor, _create_compatible_bond_text
 from .distribution import SchulzZimm
-from .molecule import Molecule
 from .stochastic import Stochastic
 from .token import SmilesToken
 
@@ -11,7 +10,7 @@ STATIC_BOND_WEIGHT = -1
 
 
 def _generate_stochastic_atom_graph(
-    molecule: Molecule, add_hydrogen: bool = False, distribution: bool = True
+    molecule, add_hydrogen: bool = False, distribution: bool = True
 ):
     if distribution and not molecule.generable:
         raise RuntimeError("G-BigSMILES Molecule must be generable for a stochastic atom graph.")
@@ -69,7 +68,7 @@ def _generate_stochastic_atom_graph(
     return graph
 
 
-def _add_transition_bonds(molecule: Molecule, node_offset_list: list[list[int]], graph):
+def _add_transition_bonds(molecule, node_offset_list: list[list[int]], graph):
 
     for element_lhs_i, element_lhs in enumerate(molecule.elements[:-1]):
         element_rhs_i = element_lhs_i + 1

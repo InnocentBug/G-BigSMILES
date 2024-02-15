@@ -19,10 +19,10 @@ def test_molecule():
             None,
         ),
         (
-            "{[] CC([$])=NCC[$]; [H][$][]}|uniform(500, 600)|",
+            "{[] CC([$])=NCC[$]; [H][$][]}|schulz_zimm(1000, 900)|",
             "{[]CC([$])=NCC[$]; [H][$][]}",
-            "{[]CC([$])=NCC[$]; [H][$][]}|uniform(500, 600)|",
-            "[H]CCN=C(C)C(C)=NCCC(C)=NCCCCN=C(C)C(C)=NCCC(C)=NCCCCN=C(C)C(C)=NCCCCN=C([H])C",
+            "{[]CC([$])=NCC[$]; [H][$][]}|schulz_zimm(1000.0, 900.0)|",
+            "[H]CCN=C(C)C(C)=NCCCCN=C(C)CCN=C(C)C(C)=NCCCCN=C(C)CCN=C(C)C(C)=NCC[H]",
             None,
         ),
         (
@@ -94,6 +94,19 @@ def test_molecule():
         assert mol.generable == (gen is not None)
 
         mol_mirror = mol.gen_mirror()
+
+        schulz_zimm_distribution = True
+        # Check distribution possibility
+        for element in mol.elements:
+            if isinstance(element, bigsmiles_gen.stochastic.Stochastic):
+                if not isinstance(element.distribution, bigsmiles_gen.distribution.SchulzZimm):
+                    schulz_zimm_distribution = False
+                    break
+
+        stochastic_graph = mol.gen_stochastic_atom_graph(distribution=schulz_zimm_distribution)
+        if schulz_zimm_distribution:
+            full_atom_graph = bigsmiles_gen.AtomGraph(stochastic_graph)
+            full_atom_graph.generate()
 
         if mol.generable:
             gen_mol = mol.generate(rng=copy.deepcopy(rng))
