@@ -145,7 +145,13 @@ def stochastic_atom_graph_to_dot_string(graph):
 
     for edge in graph.edges():
         edge_data = graph.get_edge_data(*edge)
-        edge_data = [tuple(a.values())[0] for a in edge_data.values()]
-        dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [label="{edge_data}"];\n'
+        bond_type = []
+        try:
+            bond_type += [edge_data["bond_type"]]
+        except KeyError:
+            for key in edge_data:
+                bond_type += [edge_data[key]["bond_type"]]
+
+        dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [label="{bond_type}"];\n'
     dot_str += "}\n"
     return dot_str
