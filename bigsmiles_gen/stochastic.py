@@ -220,7 +220,6 @@ class Stochastic(BigSMILESbase):
 
             starting_mol_weight = rdDescriptors.HeavyAtomMolWt(my_mol.mol)
             target_mol_weight = self.distribution.draw_mw(rng)
-            print(target_mol_weight, self.distribution)
             while True:
                 my_mol = add_repeat_unit(my_mol)
                 # Prematurely end if no more open bonds available

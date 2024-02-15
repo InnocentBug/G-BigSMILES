@@ -116,7 +116,26 @@ class AtomGraph:
         self.mw += [0]
 
     def _add_stochastic_connection(self, next_stochastic):
-        print("a", next_stochastic)
+        node = next_stochastic["node"]
+        stochastic_edges = next_stochastic["stochastic_edges"]
+        weights = [edge[1]["weight"] for edge in stochastic_edges]
+        weights = np.asarray(weights)
+        weights /= np.sum(weights)
+        idx = self.rng.choice(len(stochastic_edges), p=weights)
+        edge = stochastic_edges[idx]
+
+        # Since we will add a stochastic edge to the node, we remove all others.
+        self.atom_graph.nodes[node]["weight_edges"].clear()
+
+        new_stochastic_node = edge[0][1]
+        new_bond_type = edge[1]["bond_type"]
+        new_node_idx = self._add_node(
+            new_stochastic_node,
+            edge[0],
+            termination_edge_allowed=False,
+            transition_edge_allowed=False,
+        )
+        self.atom_graph.add_edge(node, new_node_idx, bond_type=new_bond_type)
 
     def _terminate_graph(self, last_node_id, exempt_node):
 
