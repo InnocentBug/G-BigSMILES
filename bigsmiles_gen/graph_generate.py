@@ -11,15 +11,18 @@ def _is_weight_edge(edge):
         return True
     return False
 
+
 def _is_termination_edge(edge):
     if edge["termination_weight"] != 0:
         return True
     return False
 
+
 def _is_transition_edge(edge):
     if edge["transition_weight"] != 0:
         return True
     return False
+
 
 class AtomGraph:
     def __init__(self, stochastic_graph, rng_seed=None):
@@ -31,37 +34,39 @@ class AtomGraph:
 
         start = self._find_start_source()
         if start is None:
-            raise RuntimeError("The graph does not contain a single source node. There is at least one start node, which reach all other nodes.")
+            raise RuntimeError(
+                "The graph does not contain a single source node. There is at least one start node, which reach all other nodes."
+            )
 
         node_id = self._add_node(start)
 
     def generate(self):
 
-        next_stochastic = True:
-        while:
+        next_stochastic = [True]
+        while next_stochastic:
             last_node_id = self._fill_static_edges()
 
-            swap_atom_graph, last_node_id = self._terminate_graph(last_node_id)
             new_node = self.atom_graph.nodes[last_node_id]
 
-            next_stochastic = self._next_static_edges()
+            next_stochastic = self._next_stochastic_edges()
+            swap_atom_graph, last_node_id = self._terminate_graph(last_node_id)
+            if next_stochastic:
+                # Draw distribution etc.
+                pass
+            else:
+                break
 
+        # do transition
 
-            while next_stochastic:
-
-
-            if
         print(next_stochastic)
         print(new_node)
-
-
 
     def _fill_static_edges(self):
         edge_tuple = self._next_static_edges()
         while edge_tuple is not None:
             node, edge, bond_type = edge_tuple
 
-            node_id = self._add_node(edge[1], weight_edge = edge)
+            node_id = self._add_node(edge[1], weight_edge=edge)
             self.atom_graph.add_edge(node, node_id, bond_type=bond_type)
 
             edge_tuple = self._next_static_edges()
@@ -69,7 +74,7 @@ class AtomGraph:
 
     def _terminate_graph(self, last_node_id):
 
-        swap_atom_graph = copy.deepcopy(self.atom_graph)
+        swap_atom_graph = copy.deepcopy(self)
 
         edge_tuple = self._next_termination_edges()
         while edge_tuple is not None:
@@ -86,12 +91,11 @@ class AtomGraph:
 
             edge, bond_type, weight = edge_options[idx]
 
-            node_id = self._add_node(edge[1], weight_edge = edge)
+            node_id = self._add_node(edge[1], weight_edge=edge)
             last_node_id = node_id
             self.atom_graph.add_edge(node, node_id, bond_type=bond_type)
 
             edge_tuple = self._next_termination_edges()
-
 
         return swap_atom_graph, last_node_id
 
@@ -113,21 +117,16 @@ class AtomGraph:
         return None
 
     def _next_stochastic_edges(self):
+        stochastic_edges = []
         for node in self.atom_graph.nodes():
             node_data = self.atom_graph.nodes[node]
-            try:
-                edge_tuple = node_data["_edges"].pop()
-                edge = edge_tuple[0]
-                bond_type = edge_tuple[1]["bond_type"]
-                if weight < 0:
-                    node_data["weight_edges"].push(edge_tuple)
-                else:
-                    return node, edge, bond_type
-            except IndexError:
-                pass
-
-        return None
-
+            node_edges = node_data["weight_edges"]
+            weights = [edge_tuple[1]["weight"] for edge_tuple in node_edges]
+            weight = np.sum(weights)
+            stochastic_edges.append(
+                {"node": node, "stochastic_edges": node_edges, "weight": weight}
+            )
+        return stochastic_edges
 
     def _next_termination_edges(self):
         for node in self.atom_graph.nodes():
@@ -141,13 +140,11 @@ class AtomGraph:
                 edge = edge_tuple[0]
                 bond_type = edge_tuple[1]["bond_type"]
                 weight = edge_tuple[1]["termination_weight"]
-                edge_list.append( (edge, bond_type, weight) )
+                edge_list.append((edge, bond_type, weight))
             if len(edge_list) > 0:
                 return node, edge_list
 
         return None
-
-
 
     def _find_start_source(self):
         for node in self.stochastic_graph:
@@ -156,7 +153,7 @@ class AtomGraph:
             if len(tree) == len(self.stochastic_graph):
                 return node
 
-    def _add_node(self, node, weight_edge=None, transition_edge = None, termination_edge = None):
+    def _add_node(self, node, weight_edge=None, transition_edge=None, termination_edge=None):
         node_id = len(self.atom_graph)
         stochastic_edges = self.stochastic_graph.out_edges([node])
         weight_edges = []
@@ -173,7 +170,10 @@ class AtomGraph:
                     if transition_edge is None or (transition_edge[1], transition_edge[0]) != edge:
                         transition_edges += [(edge, data)]
                 if _is_termination_edge(data):
-                    if termination_edge is None or (termination_edge[1], termination_edge[0]) != edge:
+                    if (
+                        termination_edge is None
+                        or (termination_edge[1], termination_edge[0]) != edge
+                    ):
 
                         termination_edges += [(edge, data)]
 
@@ -181,11 +181,11 @@ class AtomGraph:
         self.atom_graph.add_node(
             node_id,
             atomic_num=node_data["atomic_num"],
-            mn = node_data["mn"],
-            mw = node_data["mw"],
+            mn=node_data["mn"],
+            mw=node_data["mw"],
             weight_edges=weight_edges,
-            transition_edges = transition_edges,
-            termination_edges = termination_edges,
+            transition_edges=transition_edges,
+            termination_edges=termination_edges,
         )
         mw = atomic_masses[node_data["atomic_num"]]
         self.mw[-1] += mw
