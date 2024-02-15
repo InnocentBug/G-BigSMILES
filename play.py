@@ -67,6 +67,7 @@ bigA = (
     "CCOC{[$] O([<|3|])(C([$])C[$]), [>]C=CO[<|0 0 0 1 0 2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
 )
 bigA = "OC(=O)ON {[<] [<]C(NNC=C[$|0|])B[>|3 0 0 0 2 0|], [>]S=S[<] ; [$][Br] [>]}|schulz_zimm(51.3e2, 5000)|  [Si]"
+bigA = "{[] [<]C(NNC=C[$|0|])B[>|3 0 0 0 2 0|], [>]S=S[<] ; [$][Br] [>]}|schulz_zimm(51.3e2, 5000)|  [Si]"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
