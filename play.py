@@ -90,6 +90,9 @@ atom_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(full_graph.ato
 with open("atom_graph.dot", "w") as filehandle:
     filehandle.write(atom_dot)
 
+for node in full_graph.atom_graph:
+    node_data = full_graph.atom_graph.nodes[node]
+    print(node_data)
 
 
 # ffparam, mol = mol_gen.forcefield_types

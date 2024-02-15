@@ -163,6 +163,7 @@ def _add_stochastic_bonds(element: Stochastic, nested_offset: list[int], graph):
                             second_atom,
                             bond_type=int(graph_bd.bond_type),
                             termination_weight=other_bd.weight,
+                            transition_weight=0,
                             weight=0,
                         )
     return graph
