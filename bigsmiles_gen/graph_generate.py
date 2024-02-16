@@ -37,11 +37,14 @@ def _is_static_edge(edge):
 class AtomGraph:
     def __init__(self, stochastic_graph, rng_seed=None):
         self.stochastic_graph = stochastic_graph.graph
+        self.static_graph = self._build_static_graph()
         self.graph = None
         self.mw = [0]
         self.fully_generated = False
         self.rng = np.random.default_rng(seed=rng_seed)
         self._mw_draw_map = {}
+
+        self._build_static_graph()
 
     def to_mol(self):
         mol = Chem.EditableMol(Chem.MolFromSmiles(""))
@@ -106,6 +109,22 @@ class AtomGraph:
             )
             self.graph.add_edge(old_node_idx, new_node_idx, bond_type=new_bond_type)
 
+    def _build_static_graph(self):
+        static_graph = nx.Graph()
+        for node in self.stochastic_graph.nodes(data=True):
+            static_graph.add_node(node[0], **node[1])
+
+        for edge in self.stochastic_graph.edges():
+            edge_data_list = self.stochastic_graph.get_edge_data(*edge)
+            valid_edge = None
+            for edge_data in edge_data_list.values():
+                if _is_static_edge(edge_data):
+                    valid_edge = edge_data
+                    break
+            if valid_edge and (edge[1], edge[0]) not in static_graph.edges:
+                static_graph.add_edge(*edge, **edge_data)
+        return static_graph
+
     def _next_static_edge(self):
         for node in self.graph.nodes():
             node_data = self.graph.nodes[node]
@@ -119,19 +138,44 @@ class AtomGraph:
                 return node, edge, bond_type
         return None
 
+    def _find_static_ring(self, edge):
+        back_node = edge[0]
+        start_node = edge[1]
+
+        try:
+            cycle = nx.find_cycle(self.static_graph, start_node)
+        except nx.exception.NetworkXNoCycle:
+            pass
+        else:
+            if edge not in cycle:
+                return cycle
+        return [edge]
+
     def _fill_static_edges(self):
         node_id = None
         edge_tuple = self._next_static_edge()
         while edge_tuple is not None:
-            node, edge, bond_type = edge_tuple
-            node_id = self._add_node(
-                edge[1],
-                static_edge=edge,
-                termination_allowed=True,
-                stochastic_allowed=True,
-                transition_allowed=True,
-            )
-            self.graph.add_edge(node, node_id, bond_type=bond_type)
+            start_node, edge, _ = edge_tuple
+            node = start_node
+
+            static_ring_edge = self._find_static_ring(edge)
+            for i, edge in enumerate(static_ring_edge):
+                edge_data = self.static_graph.get_edge_data(*edge)
+                bond_type = edge_data["bond_type"]
+
+                if len(static_ring_edge) == 1 or i < len(static_ring_edge) - 1:
+                    node_id = self._add_node(
+                        edge[1],
+                        not_allowed_static_edges=static_ring_edge,
+                        termination_allowed=True,
+                        stochastic_allowed=True,
+                        transition_allowed=True,
+                    )
+                else:
+                    node_id = start_node
+
+                self.graph.add_edge(node, node_id, bond_type=bond_type)
+                node = node_id
 
             edge_tuple = self._next_static_edge()
         return node_id
@@ -291,8 +335,15 @@ class AtomGraph:
                 return node
 
     def _add_node(
-        self, node, static_edge, transition_allowed, termination_allowed, stochastic_allowed
+        self,
+        node,
+        not_allowed_static_edges,
+        transition_allowed,
+        termination_allowed,
+        stochastic_allowed,
     ):
+        if not_allowed_static_edges is None:
+            not_allowed_static_edges = []
         node_id = len(self.graph)
         edges = self.stochastic_graph.out_edges(node, data=True)
         static_edges = []
@@ -303,7 +354,10 @@ class AtomGraph:
             edge = (full_edge[0], full_edge[1])
             edge_data = full_edge[2]
             if _is_static_edge(edge_data):
-                if static_edge is None or (static_edge[1], static_edge[0]) != edge:
+                if not (
+                    (edge[1], edge[0]) in not_allowed_static_edges
+                    or edge in not_allowed_static_edges
+                ):
                     static_edges += [(edge, edge_data)]
             if _is_transition_edge(edge_data) and transition_allowed:
                 transition_edges += [(edge, edge_data)]

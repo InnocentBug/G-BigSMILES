@@ -160,7 +160,7 @@ class StochasticAtomGraph:
                                 first_atom,
                                 second_atom,
                                 bond_type=int(graph_bd.bond_type),
-                                stochastic_weight=p,
+                                stochastic_weight=0,
                                 static_weight=0,
                                 termination_weight=graph_bd.weight,
                                 transition_weight=0,

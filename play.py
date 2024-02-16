@@ -6,6 +6,7 @@
 import networkx as nx
 import numpy as np
 from rdkit import Chem
+from rdkit.Chem import AllChem
 from rdkit.Chem.Draw import rdMolDraw2D
 
 import bigsmiles_gen
@@ -63,10 +64,7 @@ bigA = "CCC(C){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1000, 900)|{[>][<]CC([>])C(
 # gen_calc_prob(bigA)
 
 bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poisson(900)|CCCC"
-bigA = (
-    "CCOC{[$] O([<|3|])(C([$])C[$]), [>]C=CO[<|0 0 0 1 0 2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
-)
-bigA = "OC(=O)ON {[<] [<]C(NNC=C[$|0|])B[>|0.1 0 0 0 4 0 0 0|], [>]S=S[<], [$]CNSC[$] ; [$][Br] [>]}|schulz_zimm(11.3e2, 1000)|  [Si]"
+bigA = "CCOC{[$] C([<|3|])(C([$])C[$]), [>]C=C(Cc1ccccc1)[<|0 0 0 0.1 0 0.2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
@@ -91,29 +89,22 @@ print(Chem.Descriptors.HeavyAtomMolWt(rd_mol), np.sum(full_graph.mw))
 mol_gen = mol.generate()
 print(mol_gen.smiles)
 
+molSize = (450, 150)
+my_mol = mol_gen.mol
+AllChem.EmbedMolecule(my_mol, clearConfs=True)
+mc = Chem.Mol(my_mol.ToBinary())
+drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
+drawer.DrawMolecule(mc)
+drawer.FinishDrawing()
+svg = drawer.GetDrawingText()
+with open("molPlay.svg", "w") as filehandle:
+    filehandle.write(svg)
+# calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
+# print(calc_prob)
 
-# for node in full_graph.atom_graph:
-#     node_data = full_graph.atom_graph.nodes[node]
-#     print(node_data)
+print(mol.generate_string(True))
+graph = mol.gen_reaction_graph()
+graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
 
-
-# ffparam, mol = mol_gen.forcefield_types
-
-
-# molSize = (450, 150)
-# mc = Chem.Mol(mol_gen.mol.ToBinary())
-# drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
-# drawer.DrawMolecule(mc)
-# drawer.FinishDrawing()
-# svg = drawer.GetDrawingText()
-# with open("molPlay.svg", "w") as filehandle:
-#     filehandle.write(svg)
-# # calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
-# # print(calc_prob)
-
-# print(mol.generate_string(True))
-# graph = mol.gen_reaction_graph()
-# graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
-
-# with open("graph.dot", "w") as filehandle:
-#     filehandle.write(graph_dot)
+with open("graph.dot", "w") as filehandle:
+    filehandle.write(graph_dot)
