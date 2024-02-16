@@ -35,13 +35,15 @@ def _is_static_edge(edge):
 
 
 class AtomGraph:
-    def __init__(self, stochastic_graph, rng_seed=None):
+    def __init__(self, stochastic_graph, rng=None):
         self.stochastic_graph = stochastic_graph.graph
         self.static_graph = self._build_static_graph()
         self.graph = None
         self.mw = [0]
         self.fully_generated = False
-        self.rng = np.random.default_rng(seed=rng_seed)
+        self.rng = rng
+        if self.rng is None:
+            self.rng = np.random.default_rng()
         self._mw_draw_map = {}
 
         self._build_static_graph()
@@ -67,12 +69,12 @@ class AtomGraph:
             )
 
         node_id = self._add_node(
-            start, None, stochastic_allowed=True, termination_allowed=True, transition_allowed=True
+            start, stochastic_allowed=True, termination_allowed=True, transition_allowed=True
         )
 
         transition_edge_options = True
         while transition_edge_options:
-            self._fill_stochastic_edges()
+            self._fill_stochastic_edges(node_id)
             # do transition
             transition_edge_options = self._next_transition_edge()
 
@@ -102,11 +104,11 @@ class AtomGraph:
             old_node_idx = transition_edge_options["node"]
             new_node_idx = self._add_node(
                 stochastic_graph_node_idx,
-                None,
                 transition_allowed=False,
                 termination_allowed=False,
                 stochastic_allowed=False,
             )
+            node_id = new_node_idx
             self.graph.add_edge(old_node_idx, new_node_idx, bond_type=new_bond_type)
 
     def _build_static_graph(self):
@@ -125,60 +127,23 @@ class AtomGraph:
                 static_graph.add_edge(*edge, **edge_data)
         return static_graph
 
-    def _next_static_edge(self):
-        for node in self.graph.nodes():
-            node_data = self.graph.nodes[node]
-            try:
-                edge_tuple = node_data["static_edges"].pop()
-            except IndexError:
-                continue
-            else:
-                edge = edge_tuple[0]
-                bond_type = edge_tuple[1]["bond_type"]
-                return node, edge, bond_type
-        return None
+    def _fill_static_edges(self, current_atom):
+        stochastic_node = self.graph.nodes[current_atom]["stochastic_node"]
+        static_tree = nx.dfs_tree(self.static_graph, source=stochastic_node)
+        static_map = {self.graph.nodes[current_atom]["stochastic_node"]: current_atom}
 
-    def _find_static_ring(self, edge):
-        back_node = edge[0]
-        start_node = edge[1]
+        for node in static_tree:
+            if self.graph.nodes[current_atom]["stochastic_node"] != node:
+                local_node = self._add_node(
+                    node, transition_allowed=True, termination_allowed=True, stochastic_allowed=True
+                )
+                static_map[node] = local_node
 
-        try:
-            cycle = nx.find_cycle(self.static_graph, start_node)
-        except nx.exception.NetworkXNoCycle:
-            pass
-        else:
-            if edge not in cycle:
-                return cycle
-        return [edge]
-
-    def _fill_static_edges(self):
-        node_id = None
-        edge_tuple = self._next_static_edge()
-        while edge_tuple is not None:
-            start_node, edge, _ = edge_tuple
-            node = start_node
-
-            static_ring_edge = self._find_static_ring(edge)
-            for i, edge in enumerate(static_ring_edge):
-                edge_data = self.static_graph.get_edge_data(*edge)
-                bond_type = edge_data["bond_type"]
-
-                if len(static_ring_edge) == 1 or i < len(static_ring_edge) - 1:
-                    node_id = self._add_node(
-                        edge[1],
-                        not_allowed_static_edges=static_ring_edge,
-                        termination_allowed=True,
-                        stochastic_allowed=True,
-                        transition_allowed=True,
-                    )
-                else:
-                    node_id = start_node
-
-                self.graph.add_edge(node, node_id, bond_type=bond_type)
-                node = node_id
-
-            edge_tuple = self._next_static_edge()
-        return node_id
+        for edge in self.static_graph.edges(static_map.keys(), data=True):
+            atom_a = static_map[edge[0]]
+            atom_b = static_map[edge[1]]
+            bond_type = edge[2]["bond_type"]
+            self.graph.add_edge(atom_a, atom_b, bond_type=bond_type)
 
     def _next_stochastic_edge(self):
         stochastic_edges = []
@@ -201,9 +166,9 @@ class AtomGraph:
 
         return stochastic_edges[idx]
 
-    def _fill_stochastic_edges(self):
-        def get_target_mw(self, last_node_id, swap_self):
-            last_node = self.graph.nodes[last_node_id]
+    def _fill_stochastic_edges(self, last_node_id):
+        def get_target_mw(self, node_id, swap_self):
+            last_node = self.graph.nodes[node_id]
             try:
                 drawn_mw = self._mw_draw_map[(last_node["mw"], last_node["mn"])]
             except KeyError:
@@ -214,20 +179,21 @@ class AtomGraph:
             return drawn_mw
 
         # do-while init
-        last_node_id = self._fill_static_edges()
+
+        self._fill_static_edges(last_node_id)
         next_stochastic = self._next_stochastic_edge()
 
-        while next_stochastic and last_node_id:
+        while next_stochastic:
 
-            excempt_node = next_stochastic["node"]
-            swap_self, last_node_id = self._terminate_graph(last_node_id, excempt_node)
+            exempt_node = next_stochastic["node"]
+            swap_self = self._terminate_graph(exempt_node)
 
-            if self.mw[-1] < get_target_mw(self, last_node_id, swap_self):
+            if self.mw[-1] < get_target_mw(self, exempt_node, swap_self):
                 # Reverse the termination of the graph
                 self.graph = swap_self.graph
                 self.mw = swap_self.mw
 
-                self._add_stochastic_connection(next_stochastic)
+                new_node = self._add_stochastic_connection(next_stochastic)
             else:
                 # Target MW reached, so we leave the termination in place
                 # But this also means, not more terminations and stochastic options are open
@@ -237,9 +203,7 @@ class AtomGraph:
                 break
 
             # do-while advance
-            new_last_node_id = self._fill_static_edges()
-            if new_last_node_id:
-                last_node_id = new_last_node_id
+            self._fill_static_edges(new_node)
             next_stochastic = self._next_stochastic_edge()
 
         # We finished generating this stochastic element of the graph, on to the next one, which counts its mw on its own
@@ -263,12 +227,12 @@ class AtomGraph:
         new_bond_type = edge[1]["bond_type"]
         new_node_idx = self._add_node(
             new_stochastic_node,
-            None,
             termination_allowed=False,
             transition_allowed=False,
             stochastic_allowed=False,
         )
         self.graph.add_edge(node, new_node_idx, bond_type=new_bond_type)
+        return new_node_idx
 
     def _next_termination_edge(self, exempt_node):
         for node in self.graph.nodes():
@@ -286,7 +250,7 @@ class AtomGraph:
 
                     return {"node": node, "edge": edge, "bond_type": bond_type}
 
-    def _terminate_graph(self, last_node_id, exempt_node):
+    def _terminate_graph(self, exempt_node):
         swap_graph = copy.deepcopy(self)
 
         edge_info = self._next_termination_edge(exempt_node)
@@ -296,7 +260,6 @@ class AtomGraph:
 
             last_node_id = self._add_node(
                 new_node,
-                None,
                 transition_allowed=False,
                 termination_allowed=False,
                 stochastic_allowed=False,
@@ -304,14 +267,14 @@ class AtomGraph:
             self.graph.add_edge(node, last_node_id, bond_type=edge_info["bond_type"])
 
             node_data = self.graph.nodes[node]
-            # Since we are fullfilling this termination, we clear the node
+            # Since we are fulfilling this termination, we clear the node
             node_data["termination_edges"].clear()
             node_data["stochastic_edges"].clear()
             node_data["transition_edges"].clear()
 
             edge_info = self._next_termination_edge(exempt_node)
 
-        return swap_graph, last_node_id
+        return swap_graph
 
     def _next_transition_edge(self):
         transition_edges = []
@@ -342,28 +305,18 @@ class AtomGraph:
     def _add_node(
         self,
         node,
-        not_allowed_static_edges,
         transition_allowed,
         termination_allowed,
         stochastic_allowed,
     ):
-        if not_allowed_static_edges is None:
-            not_allowed_static_edges = []
         node_id = len(self.graph)
         edges = self.stochastic_graph.out_edges(node, data=True)
-        static_edges = []
         stochastic_edges = []
         transition_edges = []
         termination_edges = []
         for full_edge in edges:
             edge = (full_edge[0], full_edge[1])
             edge_data = full_edge[2]
-            if _is_static_edge(edge_data):
-                if not (
-                    (edge[1], edge[0]) in not_allowed_static_edges
-                    or edge in not_allowed_static_edges
-                ):
-                    static_edges += [(edge, edge_data)]
             if _is_transition_edge(edge_data) and transition_allowed:
                 transition_edges += [(edge, edge_data)]
             if _is_termination_edge(edge_data) and termination_allowed:
@@ -375,9 +328,9 @@ class AtomGraph:
         self.graph.add_node(
             node_id,
             atomic_num=node_data["atomic_num"],
+            stochastic_node=node,
             mn=node_data["mn"],
             mw=node_data["mw"],
-            static_edges=static_edges,
             transition_edges=transition_edges,
             termination_edges=termination_edges,
             stochastic_edges=stochastic_edges,
