@@ -230,6 +230,10 @@ class AtomGraph:
                 self._add_stochastic_connection(next_stochastic)
             else:
                 # Target MW reached, so we leave the termination in place
+                # But this also means, not more terminations and stochastic options are open
+                for node in self.graph:
+                    self.graph.nodes[node]["stochastic_edges"].clear()
+                    self.graph.nodes[node]["termination_edges"].clear()
                 break
 
             # do-while advance
@@ -237,6 +241,7 @@ class AtomGraph:
             if new_last_node_id:
                 last_node_id = new_last_node_id
             next_stochastic = self._next_stochastic_edge()
+
         # We finished generating this stochastic element of the graph, on to the next one, which counts its mw on its own
         self.mw += [0]
 

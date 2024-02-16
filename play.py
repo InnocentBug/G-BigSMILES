@@ -64,7 +64,7 @@ bigA = "CCC(C){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1000, 900)|{[>][<]CC([>])C(
 # gen_calc_prob(bigA)
 
 bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poisson(900)|CCCC"
-bigA = "CCOC{[$] C([<|3|])(C([$])C[$]), [>]C=C(Cc1ccccc1)[<|0 0 0 0.1 0 0.2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
+bigA = "CCOC{[$] C([<|0.3|])(C([$])C[$]), [>|0.2|]C=CCc1ccccc1[<|0 0 0 0.1 0 0.2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
@@ -75,7 +75,7 @@ print(stochastic_atom_graph.graph)
 with open("stochastic_atom_graph.dot", "w") as filehandle:
     filehandle.write(graph_dot)
 
-full_graph = AtomGraph(stochastic_atom_graph)
+full_graph = AtomGraph(stochastic_atom_graph, rng_seed=46)
 full_graph.generate()
 print(full_graph.mw, full_graph._mw_draw_map, full_graph.graph)
 atom_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(full_graph)
@@ -90,7 +90,7 @@ mol_gen = mol.generate()
 print(mol_gen.smiles)
 
 molSize = (450, 150)
-my_mol = mol_gen.mol
+my_mol = rd_mol
 AllChem.EmbedMolecule(my_mol, clearConfs=True)
 mc = Chem.Mol(my_mol.ToBinary())
 drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
