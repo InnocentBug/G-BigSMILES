@@ -113,9 +113,7 @@ class AtomGraph:
                     self._mw_draw_map[(mw, mn)] = drawn_mw
                     swap_atom_graph._mw_draw_map = self._mw_draw_map
 
-                print(self.mw[-1], drawn_mw)
                 if not self.mw[-1] >= drawn_mw:
-                    print("a")
                     # Reverse the termination of the graph
                     self = swap_atom_graph
                     self._add_stochastic_connection(next_stochastic)
