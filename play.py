@@ -3,10 +3,14 @@
 # import matplotlib.pyplot as plt
 
 # import pydot
+
+import numpy as np
 from rdkit import Chem
+from rdkit.Chem import AllChem
 from rdkit.Chem.Draw import rdMolDraw2D
 
 import bigsmiles_gen
+from bigsmiles_gen.graph_generate import AtomGraph
 
 
 def test_mirror(bigA):
@@ -60,14 +64,38 @@ bigA = "CCC(C){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1000, 900)|{[>][<]CC([>])C(
 # gen_calc_prob(bigA)
 
 bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poisson(900)|CCCC"
-
+bigA = "CCOC{[$] C([<|0.3|])(C([$])C[$]), [>|0.2|]C=CCc1ccccc1[<|0 0 0 0.1 0 0.2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
+bigA = "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}|schulz_zimm(5000, 4100)|[<]CC.|60000|"
+# bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
+bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
 
 mol = bigsmiles_gen.Molecule(bigA)
+
+stochastic_atom_graph = mol.gen_stochastic_atom_graph(expect_schulz_zimm_distribution=True)
+graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
+print(stochastic_atom_graph.graph)
+with open("stochastic_atom_graph.dot", "w") as filehandle:
+    filehandle.write(graph_dot)
+
+rng = np.random.default_rng(45)
+full_graph = AtomGraph(stochastic_atom_graph, rng=rng)
+full_graph.generate()
+print(full_graph.mw, full_graph._mw_draw_map, full_graph.graph)
+atom_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(full_graph)
+with open("atom_graph.dot", "w") as filehandle:
+    filehandle.write(atom_dot)
+
+rd_mol = full_graph.to_mol()
+print(Chem.MolToSmiles(rd_mol))
+print(Chem.Descriptors.HeavyAtomMolWt(rd_mol), np.sum(full_graph.mw))
+
 mol_gen = mol.generate()
 print(mol_gen.smiles)
-ffparam, mol = mol_gen.forcefield_types
-molSize = (450, 150)
-mc = Chem.Mol(mol_gen.mol.ToBinary())
+
+molSize = (2000, 1000)
+my_mol = rd_mol
+AllChem.EmbedMolecule(my_mol)
+mc = Chem.Mol(my_mol.ToBinary())
 drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
 drawer.DrawMolecule(mc)
 drawer.FinishDrawing()

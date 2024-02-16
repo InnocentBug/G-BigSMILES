@@ -10,6 +10,7 @@ from .bond import _create_compatible_bond_text
 from .core import _GLOBAL_RNG, BigSMILESbase
 from .mixture import Mixture
 from .stochastic import Stochastic
+from .stochastic_atom_graph import StochasticAtomGraph
 from .token import SmilesToken
 
 
@@ -336,3 +337,8 @@ class Molecule(BigSMILESbase):
 
         validate_graph(G)
         return G
+
+    def gen_stochastic_atom_graph(self, expect_schulz_zimm_distribution: bool = True):
+        stochastic_atom_graph = StochasticAtomGraph(self, expect_schulz_zimm_distribution)
+        stochastic_atom_graph.generate()
+        return stochastic_atom_graph

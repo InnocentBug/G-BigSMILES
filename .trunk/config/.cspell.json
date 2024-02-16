@@ -110,6 +110,12 @@
     "nonbonded",
     "ffparam",
     "atomnum",
-    "ffbonded"
+    "ffbonded",
+    "FFFFC",
+    "FFC",
+    "FFFC",
+    "ABFA",
+    "BAFF",
+    "fontcolor"
   ]
 }

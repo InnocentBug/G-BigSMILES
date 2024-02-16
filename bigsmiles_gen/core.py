@@ -7,7 +7,31 @@ from warnings import warn
 
 import numpy as np
 
+from .chem_resource import atom_color_mapping, atom_name_mapping
+
 _GLOBAL_RNG = np.random.default_rng()
+
+
+def _determine_darkness_from_hex(color):
+    """
+    Determine the darkness of a color from its hex string.
+
+    Arguments:
+    ----------
+    color: str
+       7 character string with prefix `#` followed by RGB hex code.
+
+    Returns: bool
+       if the darkness is below half
+    """
+    # If hex --> Convert it to RGB: http://gist.github.com/983661
+    assert color[0] == "#"
+    red = int(color[1:3], 16)
+    green = int(color[3:5], 16)
+    blue = int(color[5:7], 16)
+    # HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+    hsp = np.sqrt(0.299 * red**2 + 0.587 * green**2 + 0.114 * blue**2)
+    return hsp < 127.5
 
 
 class BigSMILESbase(ABC):
@@ -104,4 +128,31 @@ def reaction_graph_to_dot_string(graph, bigsmiles=None):
 
     dot_str += "}\n"
 
+    return dot_str
+
+
+def stochastic_atom_graph_to_dot_string(stochastic_atom_graph):
+    graph = stochastic_atom_graph.graph
+    dot_str = "strict digraph { \n"
+    for node in graph.nodes(data=True):
+        label = f"{atom_name_mapping[node[1]['atomic_num']]}"
+
+        color = "#" + atom_color_mapping[node[1]["atomic_num"]]
+        extra_attr = f'style=filled, fillcolor="{color}", '
+        if _determine_darkness_from_hex(color):
+            extra_attr += "fontcolor=white,"
+
+        dot_str += f'"{node[0]}" [{extra_attr} label="{label}"];\n'
+
+    for edge in graph.edges():
+        edge_data = graph.get_edge_data(*edge)
+        bond_type = []
+        try:
+            bond_type += [edge_data["bond_type"]]
+        except KeyError:
+            for key in edge_data:
+                bond_type += [edge_data[key]["bond_type"]]
+
+        dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [label="{bond_type}"];\n'
+    dot_str += "}\n"
     return dot_str

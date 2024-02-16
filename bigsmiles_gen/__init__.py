@@ -19,6 +19,7 @@ except ImportError as exc:
 from .bond import BondDescriptor
 from .core import _GLOBAL_RNG, BigSMILESbase, reaction_graph_to_dot_string
 from .distribution import Distribution, FlorySchulz, Gauss
+from .graph_generate import AtomGraph
 from .mixture import Mixture
 from .mol_prob import get_ensemble_prob
 from .molecule import Molecule
