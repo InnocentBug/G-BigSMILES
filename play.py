@@ -9,7 +9,6 @@ from rdkit.Chem.Draw import rdMolDraw2D
 
 import bigsmiles_gen
 from bigsmiles_gen.graph_generate import AtomGraph
-from bigsmiles_gen.stochastic_atom_graph import _generate_stochastic_atom_graph
 
 
 def test_mirror(bigA):
@@ -66,29 +65,29 @@ bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poi
 bigA = (
     "CCOC{[$] O([<|3|])(C([$])C[$]), [>]C=CO[<|0 0 0 1 0 2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
 )
-bigA = "OC(=O)ON {[<] [<]C(NNC=C[$|0|])B[>|3 0 0 0 2 0 0 0|], [>]S=S[<], [$]CNC[$] ; [$][Br] [>]}|schulz_zimm(11.3e2, 1000)|  [Si]"
+bigA = "OC(=O)ON {[<] [<]C(NNC=C[$|0|])B[>|3 0 0 0 2 0 0 0|], [>]S=S[<], [$]CNSC[$] ; [$][Br] [>]}|schulz_zimm(11.3e2, 1000)|  [Si]"
 
 
 mol = bigsmiles_gen.Molecule(bigA)
-stochastic_atom_graph = _generate_stochastic_atom_graph(mol, add_hydrogen=False, distribution=True)
+stochastic_atom_graph = mol.gen_stochastic_atom_graph(expect_schulz_zimm_distribution=True)
 graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
 
 with open("stochastic_atom_graph.dot", "w") as filehandle:
     filehandle.write(graph_dot)
 
-print(stochastic_atom_graph)
-mol_gen = mol.generate()
-print(mol_gen.smiles)
+# print(stochastic_atom_graph)
+# mol_gen = mol.generate()
+# print(mol_gen.smiles)
 
-full_graph = AtomGraph(stochastic_atom_graph)
-full_graph.generate()
-print(full_graph.mw, full_graph._mw_draw_map)
-atom_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(full_graph.atom_graph)
-with open("atom_graph.dot", "w") as filehandle:
-    filehandle.write(atom_dot)
+# full_graph = AtomGraph(stochastic_atom_graph)
+# full_graph.generate()
+# print(full_graph.mw, full_graph._mw_draw_map)
+# atom_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(full_graph.atom_graph)
+# with open("atom_graph.dot", "w") as filehandle:
+#     filehandle.write(atom_dot)
 
-mol = full_graph.to_mol()
-print(Chem.MolToSmiles(mol))
+# mol = full_graph.to_mol()
+# print(Chem.MolToSmiles(mol))
 
 # for node in full_graph.atom_graph:
 #     node_data = full_graph.atom_graph.nodes[node]

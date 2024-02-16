@@ -131,7 +131,8 @@ def reaction_graph_to_dot_string(graph, bigsmiles=None):
     return dot_str
 
 
-def stochastic_atom_graph_to_dot_string(graph):
+def stochastic_atom_graph_to_dot_string(stochatic_atom_graph):
+    graph = stochatic_atom_graph.graph
     dot_str = "strict digraph { \n"
     for node in graph.nodes(data=True):
         label = f"{atom_name_mapping[node[1]['atomic_num']]}"
