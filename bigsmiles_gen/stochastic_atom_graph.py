@@ -77,7 +77,6 @@ class StochasticAtomGraph:
         self._add_stochastic_bonds(stochastic, nested_offset)
 
     def _add_transition_bonds(self):
-
         for element_lhs_i, element_lhs in enumerate(self._big_smi_mol.elements[:-1]):
             element_rhs_i = element_lhs_i + 1
             element_rhs = self._big_smi_mol.elements[element_rhs_i]
@@ -106,23 +105,35 @@ class StochasticAtomGraph:
                         if terminal_ok:
                             bd_lhs_idx = _find_bd_token(element_lhs, bd_lhs)
                             bd_rhs_idx = _find_bd_token(element_rhs, bd_rhs)
-                            first_atom = (
-                                self.node_offset_list[element_lhs_i][bd_lhs_idx]
-                                + bd_lhs.atom_bonding_to
-                            )
-                            second_atom = (
-                                self.node_offset_list[element_rhs_i][bd_rhs_idx]
-                                + bd_rhs.atom_bonding_to
-                            )
-                            self.graph.add_edge(
-                                first_atom,
-                                second_atom,
-                                bond_type=int(bd_lhs.bond_type),
-                                termination_weight=0,
-                                static_weight=0,
-                                stochastic_weight=0,
-                                transition_weight=bd_rhs.weight,
-                            )
+
+                            # Exclude direct exit into terminal group
+                            exclude_transition_into_terminal = True
+                            try:
+                                exclude_transition_into_terminal = bd_rhs_idx < len(
+                                    element_rhs.repeat_tokens
+                                )
+                            except AttributeError:
+                                assert isinstance(element_rhs, SmilesToken)
+                                exclude_transition_into_terminal = True
+
+                            if exclude_transition_into_terminal:
+                                first_atom = (
+                                    self.node_offset_list[element_lhs_i][bd_lhs_idx]
+                                    + bd_lhs.atom_bonding_to
+                                )
+                                second_atom = (
+                                    self.node_offset_list[element_rhs_i][bd_rhs_idx]
+                                    + bd_rhs.atom_bonding_to
+                                )
+                                self.graph.add_edge(
+                                    first_atom,
+                                    second_atom,
+                                    bond_type=int(bd_lhs.bond_type),
+                                    termination_weight=0,
+                                    static_weight=0,
+                                    stochastic_weight=0,
+                                    transition_weight=bd_rhs.weight,
+                                )
 
     def _add_stochastic_bonds(self, element: Stochastic, nested_offset: list[int]):
         # Add stochastic bonds inside the stochastic element

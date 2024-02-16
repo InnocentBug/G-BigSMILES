@@ -87,7 +87,6 @@ class AtomGraph:
             # No options for transitions means we finishing the generation
             if len(weights) == 0:
                 break
-
             idx = self.rng.choice(
                 range(len(transition_edge_options["transition_edges"])), p=weights
             )
