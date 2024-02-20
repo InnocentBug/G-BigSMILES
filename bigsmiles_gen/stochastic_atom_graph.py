@@ -82,8 +82,11 @@ class StochasticAtomGraph:
             element_rhs = self._big_smi_mol.elements[element_rhs_i]
             for bd_lhs in element_lhs.bond_descriptors:
                 for bd_rhs in element_rhs.bond_descriptors:
-                    if bd_lhs.is_compatible(bd_rhs):
-                        try:
+                    if bd_lhs.is_compatible(bd_rhs) or (
+                        isinstance(element_rhs, Stochastic) and isinstance(element_lhs, Stochastic)
+                    ):
+
+                        try:  # Check that the RHS left terminal is compatible with the LHS Bond
                             invert_text = _create_compatible_bond_text(element_rhs.left_terminal)
                             invert_terminal = BondDescriptor(invert_text, 0, "", None)
                             terminal_ok = invert_terminal.is_compatible(bd_rhs)
@@ -92,7 +95,7 @@ class StochasticAtomGraph:
                                 terminal_ok = True
 
                         if terminal_ok:
-                            try:
+                            try:  # Check that the LHS right terminal is compatible with the RHS Bond
                                 invert_text = _create_compatible_bond_text(
                                     element_lhs.right_terminal
                                 )
@@ -102,7 +105,8 @@ class StochasticAtomGraph:
                                 if not isinstance(element_lhs, SmilesToken):
                                     terminal_ok = False
 
-                        if terminal_ok:
+                        # Disable terminal check between elements, because Nathan said so.
+                        if terminal_ok or True:
                             bd_lhs_idx = _find_bd_token(element_lhs, bd_lhs)
                             bd_rhs_idx = _find_bd_token(element_rhs, bd_rhs)
 

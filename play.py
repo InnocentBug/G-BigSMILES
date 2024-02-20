@@ -4,6 +4,8 @@
 
 # import pydot
 
+import subprocess
+
 import numpy as np
 from rdkit import Chem
 from rdkit.Chem import AllChem
@@ -40,6 +42,61 @@ def gen_calc_prob(big):
     print(mol_gen.smiles, calc_prob)
 
 
+def run_dot(in_filename, out_filename):
+    with open(in_filename, "r") as in_file:
+        with open(out_filename, "w") as out_file:
+            subprocess.run(["dot", "-Tsvg"], stdin=in_file, stdout=out_file)
+
+
+def handle_stochastic_atom_graph(mol):
+    stochastic_atom_graph = mol.gen_stochastic_atom_graph(expect_schulz_zimm_distribution=True)
+    graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph.graph)
+    with open("stochastic_atom_graph.dot", "w") as filehandle:
+        filehandle.write(graph_dot)
+    run_dot("stochastic_atom_graph.dot", "stochastic_atom_graph.svg")
+    return stochastic_atom_graph
+
+
+def handle_atom_graph(stochastic_atom_graph):
+    rng = np.random.default_rng(45)
+    full_graph = AtomGraph(stochastic_atom_graph, rng=rng)
+    full_graph.generate()
+    print(full_graph.mw, full_graph._mw_draw_map, full_graph.graph)
+    atom_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(full_graph.graph)
+    with open("atom_graph.dot", "w") as filehandle:
+        filehandle.write(atom_dot)
+    run_dot("atom_graph.dot", "atom_graph.svg")
+    rd_mol = full_graph.to_mol()
+    print(Chem.MolToSmiles(rd_mol))
+    print(Chem.Descriptors.HeavyAtomMolWt(rd_mol), np.sum(full_graph.mw))
+    return rd_mol
+
+
+def draw_mol(mol):
+    molSize = (2000, 1000)
+
+    AllChem.EmbedMolecule(mol)
+    mc = Chem.Mol(mol.ToBinary())
+    drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
+    drawer.DrawMolecule(mc)
+    drawer.FinishDrawing()
+    svg = drawer.GetDrawingText()
+    with open("molPlay.svg", "w") as filehandle:
+        filehandle.write(svg)
+    # calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
+    # print(calc_prob)
+
+
+def bigsmi_graph(mol):
+    print(mol.generate_string(True))
+    graph = mol.gen_reaction_graph()
+    graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
+
+    with open("graph.dot", "w") as filehandle:
+        filehandle.write(graph_dot)
+    run_dot("graph.dot", "graph.svg")
+
+
 bigA = "{[][<]C(N)C[>]; [<][H][>]}|uniform(500, 600)|{[<][<]C(=O)C[>]; [>][H][]}|uniform(500, 600)|"
 bigA = "CCO{[<][<]C(N)C[>][>]}|uniform(500, 600)|{[<][<]C(=O)C[>][>]}|uniform(500, 600)|CCN"
 # test_mirror(bigA)
@@ -67,47 +124,12 @@ bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poi
 bigA = "CCOC{[$] C([<|0.3|])(C([$])C[$]), [>|0.2|]C=CCc1ccccc1[<|0 0 0 0.1 0 0.2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
 bigA = "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}|schulz_zimm(5000, 4100)|[<]CC.|60000|"
 # bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
-bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
+# bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
+bigA = "{[][$]CC(c1ccccc1)[$][$]}|schulz_zimm(5448.0, 4864.2857144)|{[>][<][Si](C)(C)O[>][]}|schulz_zimm(62652.0, 55939.2857156)|"
+
 
 mol = bigsmiles_gen.Molecule(bigA)
-
-stochastic_atom_graph = mol.gen_stochastic_atom_graph(expect_schulz_zimm_distribution=True)
-graph_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
-print(stochastic_atom_graph.graph)
-with open("stochastic_atom_graph.dot", "w") as filehandle:
-    filehandle.write(graph_dot)
-
-rng = np.random.default_rng(45)
-full_graph = AtomGraph(stochastic_atom_graph, rng=rng)
-full_graph.generate()
-print(full_graph.mw, full_graph._mw_draw_map, full_graph.graph)
-atom_dot = bigsmiles_gen.core.stochastic_atom_graph_to_dot_string(full_graph)
-with open("atom_graph.dot", "w") as filehandle:
-    filehandle.write(atom_dot)
-
-rd_mol = full_graph.to_mol()
-print(Chem.MolToSmiles(rd_mol))
-print(Chem.Descriptors.HeavyAtomMolWt(rd_mol), np.sum(full_graph.mw))
-
-mol_gen = mol.generate()
-print(mol_gen.smiles)
-
-molSize = (2000, 1000)
-my_mol = rd_mol
-AllChem.EmbedMolecule(my_mol)
-mc = Chem.Mol(my_mol.ToBinary())
-drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
-drawer.DrawMolecule(mc)
-drawer.FinishDrawing()
-svg = drawer.GetDrawingText()
-with open("molPlay.svg", "w") as filehandle:
-    filehandle.write(svg)
-# calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
-# print(calc_prob)
-
-print(mol.generate_string(True))
-graph = mol.gen_reaction_graph()
-graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, mol)
-
-with open("graph.dot", "w") as filehandle:
-    filehandle.write(graph_dot)
+stochastic_atom_graph = handle_stochastic_atom_graph(mol)
+graph_mol = handle_atom_graph(stochastic_atom_graph)
+draw_mol(graph_mol)
+bigsmi_graph(mol)
