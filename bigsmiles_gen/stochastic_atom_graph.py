@@ -87,6 +87,7 @@ class StochasticAtomGraph:
                     ):
 
                         try:  # Check that the RHS left terminal is compatible with the LHS Bond
+
                             invert_text = _create_compatible_bond_text(element_rhs.left_terminal)
                             invert_terminal = BondDescriptor(invert_text, 0, "", None)
                             terminal_ok = invert_terminal.is_compatible(bd_rhs)
@@ -96,6 +97,7 @@ class StochasticAtomGraph:
 
                         if terminal_ok:
                             try:  # Check that the LHS right terminal is compatible with the RHS Bond
+
                                 invert_text = _create_compatible_bond_text(
                                     element_lhs.right_terminal
                                 )

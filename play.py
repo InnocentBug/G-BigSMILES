@@ -124,6 +124,7 @@ bigA = "CCOC{[$] O([<|3|])(C([$])C[$]), [>]CCO[<|0 0 0 1 0 2|] ; [>][H] [$]}|poi
 bigA = "CCOC{[$] C([<|0.3|])(C([$])C[$]), [>|0.2|]C=CCc1ccccc1[<|0 0 0 0.1 0 0.2|] ; [>][H] [$]}|schulz_zimm(900, 800)|N"
 bigA = "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}|schulz_zimm(5000, 4100)|[<]CC.|60000|"
 # bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
+
 # bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
 bigA = "{[][$]CC(c1ccccc1)[$][$]}|schulz_zimm(5448.0, 4864.2857144)|{[>][<][Si](C)(C)O[>][]}|schulz_zimm(62652.0, 55939.2857156)|"
 
