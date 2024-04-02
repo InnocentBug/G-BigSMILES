@@ -80,12 +80,12 @@ class Molecule(BigSMILESbase):
 
             stochastic_text = stochastic_text[stochastic_text.find("{") :].strip()
             end_pos = stochastic_text.find("}") + 1
-            if end_pos < 0:
+            if end_pos <= 0:
                 raise RuntimeError(
                     f"System {stochastic_text} contains an opening '{' for a stochastic object, but no closing '}'."
                 )
             # Find distribution extension
-            if stochastic_text[end_pos] == "|":
+            if end_pos < len(stochastic_text) and stochastic_text[end_pos] == "|":
                 end_pos = stochastic_text.find("|", end_pos + 2) + 1
             stochastic = Stochastic(stochastic_text[:end_pos], res_id_prefix + res_id_counter)
             res_id_counter += len(stochastic.residues)
