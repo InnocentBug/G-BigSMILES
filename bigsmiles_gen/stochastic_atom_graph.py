@@ -155,13 +155,13 @@ class StochasticAtomGraph:
                     other_bd = element.bond_descriptors[i]
                     if graph_bd.is_compatible(other_bd):
                         other_bd_token_idx = _find_bd_token(element, other_bd)
+                        first_atom = (
+                            graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx]
+                        )
+                        second_atom = (
+                            other_bd.atom_bonding_to + nested_offset[other_bd_token_idx]
+                        )
                         if p > 0:
-                            first_atom = (
-                                graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx]
-                            )
-                            second_atom = (
-                                other_bd.atom_bonding_to + nested_offset[other_bd_token_idx]
-                            )
                             self.graph.add_edge(
                                 first_atom,
                                 second_atom,
@@ -171,15 +171,16 @@ class StochasticAtomGraph:
                                 termination_weight=0,
                                 transition_weight=0,
                             )
+                        if other_bd_token_idx >= len(element.repeat_tokens):
                             self.graph.add_edge(
-                                first_atom,
-                                second_atom,
-                                bond_type=int(graph_bd.bond_type),
-                                stochastic_weight=0,
-                                static_weight=0,
-                                termination_weight=graph_bd.weight,
-                                transition_weight=0,
-                            )
+                                    first_atom,
+                                    second_atom,
+                                    bond_type=int(graph_bd.bond_type),
+                                    stochastic_weight=0,
+                                    static_weight=0,
+                                    termination_weight=graph_bd.weight,
+                                    transition_weight=0,
+                                )
             else:
                 for other_bd in element.bond_descriptors:
                     if graph_bd.is_compatible(other_bd) and other_bd.weight > 0:
@@ -187,6 +188,7 @@ class StochasticAtomGraph:
                         first_atom = graph_bd.atom_bonding_to + nested_offset[graph_bd_token_idx]
                         second_atom = other_bd.atom_bonding_to + nested_offset[other_bd_token_idx]
 
+                        print(first_atom, second_atom, other_bd.weight)
                         if other_bd_token_idx < len(element.repeat_tokens):
                             self.graph.add_edge(
                                 first_atom,

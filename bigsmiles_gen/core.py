@@ -155,3 +155,49 @@ def stochastic_atom_graph_to_dot_string(graph):
         dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [label="{bond_type}"];\n'
     dot_str += "}\n"
     return dot_str
+
+
+def stochastic_atom_graph_to_dot_string2(graph):
+    dot_str = "digraph { \n"
+    for node in graph.nodes(data=True):
+        label = f"{atom_name_mapping[node[1]['atomic_num']]}"
+
+        color = "#" + atom_color_mapping[node[1]["atomic_num"]]
+        extra_attr = f'style=filled, fillcolor="{color}", '
+        if _determine_darkness_from_hex(color):
+            extra_attr += "fontcolor=white,"
+
+        dot_str += f'"{node[0]}" [{extra_attr} label="{label}"];\n'
+
+    for edge in graph.edges():
+        edge_data = graph.get_edge_data(*edge)
+        for data in edge_data.values():
+            bond_type = data["bond_type"]
+            shape_text = "normal"
+            if bond_type == 1:
+                shape_text = "box"
+            if bond_type == 2:
+                shape_text = "diamond"
+            if bond_type == 3:
+                shape_text = "curve"
+            if bond_type == 12:
+                shape_text = "icurve"
+            color = "black"
+            style = "solid"
+            value = 1
+            if data["stochastic_weight"] > 0:
+                color = "red"
+                value = data["stochastic_weight"]
+                style = "dashed"
+            if data["termination_weight"] > 0:
+                color = "green"
+                value = data["termination_weight"]
+                style = "dotted"
+            if data["transition_weight"] > 0:
+                color = "blue"
+                value = data["transition_weight"]
+
+            print(edge, data)
+            dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [label="{value}", arrowhead="{shape_text}", color="{color}"];\n'
+    dot_str += "}\n"
+    return dot_str

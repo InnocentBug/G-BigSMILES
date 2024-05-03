@@ -127,6 +127,7 @@ bigA = "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}|schulz_zimm(5
 # bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
 bigA = "{[][$]CC(c1ccccc1)[$][$]}|schulz_zimm(5448.0, 4864.2857144)|{[>][<][Si](C)(C)O[>][]}|schulz_zimm(62652.0, 55939.2857156)|"
 
+bigA = "CC(=O)Oc1ccccc1C(O)=O"
 
 mol = bigsmiles_gen.Molecule(bigA)
 stochastic_atom_graph = handle_stochastic_atom_graph(mol)
