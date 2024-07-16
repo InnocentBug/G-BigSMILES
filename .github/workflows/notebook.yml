@@ -35,8 +35,11 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install .
 
-      - name: Run Jupytext
+      - name: Create test with Jupytext
         run: |
+          shell: bash -l {0}
           python -m pip install jupytext
           jupytext --to py SI.ipynb
+      - name: Run Notebook test
+        run:
           python SI.py
