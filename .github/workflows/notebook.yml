@@ -33,7 +33,7 @@ jobs:
       - name: pip install G-BigSMILES Python package
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install jupytext ipython jupyter
+          python -m pip install jupytext ipython jupyter pydot
           python -m pip install .
 
       - name: Create test with Jupytext
