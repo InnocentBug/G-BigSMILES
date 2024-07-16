@@ -7,7 +7,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.15.2
+      jupytext_version: 1.16.2
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -27,8 +27,11 @@ import numpy as np
 from rdkit import Chem
 from rdkit.Chem.Draw import IPythonConsole
 from IPython.display import SVG
-import pydot
-
+pydot = None
+try:
+    import pydot
+except:
+    pass
 from rdkit.Chem import rdDepictor
 from rdkit.Chem.Draw import rdMolDraw2D
 
@@ -79,9 +82,12 @@ def draw_generation_graph(molecule_string):
     bigSMILESmol = Molecule(molecule_string)
     graph = bigSMILESmol.gen_reaction_graph()
     graph_dot = gbigsmiles.reaction_graph_to_dot_string(graph, bigSMILESmol)
-    pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
-    graph_svg = pydot_graph.create_svg()
-    render_svg(graph_svg)
+    if pydot:
+        pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
+        graph_svg = pydot_graph.create_svg()
+        return render_svg(graph_svg)
+    else:
+        return ''
 
 ```
 
@@ -139,7 +145,7 @@ def update_progress(progress):
         clear_output(wait = True)
         text = "Progress: [{0}] {1:.1f}%".format( "#" * block + "-" * (bar_length - block), progress * 100)
         print(text)
-
+    
 def count_PS_PMMA_monomers(gen_mol):
     # Since the =O is unique to the PMMA and head group we can count the '=' in the smiles string to determine the number of PMMA.
     n_PMMA = gen_mol.smiles.count("=")
@@ -165,7 +171,7 @@ if IS_LINUX or not TESTING_ENV:
         total_PS += n_PS
         total_weight += gen_mol.weight
         update_progress(total_weight/system.system_mass)
-
+    
     ratio = total_PMMA/(total_PS + total_PMMA)
     print(ratio, total_PMMA, total_PS)
     expected_ratio = 0.5
