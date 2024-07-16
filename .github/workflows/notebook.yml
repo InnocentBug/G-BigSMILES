@@ -23,15 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Conda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-update-conda: true
-          environment-file: environment.yml
-          activate-environment: bigsmiles
+      - name: pip install CRIPT Python SDK local package
+        run: pip install .
+
       - name: Run Jupytext
         shell: bash -l {0}
         run: |
-          pip install .
+          pip install jupytext
           jupytext --to py SI.ipynb
           python SI.py

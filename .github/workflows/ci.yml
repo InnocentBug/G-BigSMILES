@@ -19,14 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Conda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          auto-update-conda: true
-          environment-file: environment.yml
-          activate-environment: bigsmiles
-      - name: Run Pytest
-        shell: bash -l {0}
-        run: |
-          pip install .
-          python -m pytest
+          python-version: ${{ matrix.python-version }}
+
+      - name: pip install G-BigSMILES local package
+        run: python${{ matrix.python-version }} -m pip install .
+
+      - name: Run pytest on tests/
+        run: python${{ matrix.python-version }} -m pytest ./tests/
