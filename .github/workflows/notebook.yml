@@ -24,11 +24,11 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: pip install G-BigSMILES Python package
-        run: pip install .
+        run: python -m pip install .
 
       - name: Run Jupytext
         shell: bash -l {0}
         run: |
-          pip install jupytext
+          python -m pip install jupytext
           jupytext --to py SI.ipynb
           python SI.py

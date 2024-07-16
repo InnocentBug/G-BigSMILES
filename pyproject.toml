@@ -1,20 +1,22 @@
+# Uncomment if needed
 # [tool.pytest.ini_options]
 # testpaths = [
 #     "tests",
 # ]
+
 [build-system]
-requires = ["setuptools >= 43", "wheel", "setuptools-scm"]
+requires = ["setuptools>=43", "wheel", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "gbigsmiles"
+description = "Bigsmiles extension handling the generation of ensemble smiles strings."
 authors = [
   { name = "Ludwig Schneider", email = "ludwigschneider@uchicago.edu" },
 ]
 license = { text = "GPL-3.0", files = ["LICENSE.md"] }
-description = "Bigsmiles extension handling the generation of ensembles smiles strings."
 requires-python = ">=3.9"
-dependencies = ["scipy", "numpy", "networkx", "matplotlib"]
+dependencies = ["scipy", "numpy", "networkx", "matplotlib", "pytest"]
 dynamic = ["version"]
 
 [tool.setuptools.dynamic]

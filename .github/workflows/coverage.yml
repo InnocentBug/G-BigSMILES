@@ -22,5 +22,4 @@ jobs:
       - name: Run Pytest
         shell: bash -l {0}
         run: |
-          pip install .
           pytest --cov --cov-fail-under=85
