@@ -33,7 +33,7 @@ class FFParam:
 class SMARTS_ASSIGNMENTS:
     def _read_smarts_rules(self, filename):
         if filename is None:
-            filename = files("bigsmiles_gen").joinpath("data", "opls.par")
+            filename = files("gbigsmiles").joinpath("data", "opls.par")
         self._type_dict = {}
         self._type_dict_rev = {}
         self._rule_dict = {}
@@ -73,7 +73,7 @@ class SMARTS_ASSIGNMENTS:
         self._type_param = {}
 
         if filename is None:
-            filename = files("bigsmiles_gen").joinpath("data", "ffnonbonded.itp")
+            filename = files("gbigsmiles").joinpath("data", "ffnonbonded.itp")
         with open(filename, "r") as ff_file:
             for line in ff_file:
                 if line and line[0] != "[" and line[0] != ";":

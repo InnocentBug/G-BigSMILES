@@ -7,7 +7,7 @@ from ast import literal_eval as make_tuple
 import numpy as np
 from scipy import special, stats
 
-import bigsmiles_gen
+import gbigsmiles
 
 from .core import _GLOBAL_RNG, BigSMILESbase
 
@@ -71,7 +71,7 @@ class Distribution(BigSMILESbase):
         if self._distribution is None:
             raise NotImplementedError
 
-        if isinstance(mw, bigsmiles_gen.mol_prob.RememberAdd):
+        if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
             return self._distribution.cdf(mw.value) - self._distribution.cdf(mw.previous)
 
         return self._distribution.pdf(mw)
@@ -129,7 +129,7 @@ class FlorySchulz(Distribution):
         return self._distribution.rvs(a=self._a, random_state=rng)
 
     def prob_mw(self, mw):
-        if isinstance(mw, bigsmiles_gen.mol_prob.RememberAdd):
+        if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
             return self._distribution.cdf(mw.value, a=self._a) - self._distribution.cdf(
                 mw.previous, a=self._a
             )
@@ -195,7 +195,7 @@ class SchulzZimm(Distribution):
         return self._distribution.rvs(z=self._z, Mn=self._Mn, random_state=rng)
 
     def prob_mw(self, mw):
-        if isinstance(mw, bigsmiles_gen.mol_prob.RememberAdd):
+        if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
             return self._distribution.cdf(
                 mw.value, z=self._z, Mn=self._Mn
             ) - self._distribution.cdf(mw.previous, z=self._z, Mn=self._Mn)
@@ -354,7 +354,7 @@ class LogNormal(Distribution):
         return self._distribution.rvs(M=self._M, D=self._D, random_state=rng)
 
     def prob_mw(self, mw):
-        if isinstance(mw, bigsmiles_gen.mol_prob.RememberAdd):
+        if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
             return self._distribution.cdf(mw.value, M=self._M, D=self._D) - self._distribution.cdf(
                 mw.previous, M=self._M, D=self._D
             )

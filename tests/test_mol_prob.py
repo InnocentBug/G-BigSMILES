@@ -6,7 +6,7 @@ import copy
 
 import numpy as np
 
-import bigsmiles_gen
+import gbigsmiles
 
 
 def test_mol_prob():
@@ -59,10 +59,10 @@ def test_mol_prob():
 
     rng = np.random.default_rng(42)
     for big_smi, prob, num_matches in test_objects:
-        mol = bigsmiles_gen.Molecule(big_smi)
+        mol = gbigsmiles.Molecule(big_smi)
         smi = mol.generate(rng=copy.deepcopy(rng)).smiles
         print(smi)
-        calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(smi, mol)
+        calc_prob, matches = gbigsmiles.mol_prob.get_ensemble_prob(smi, mol)
         print(big_smi, prob, calc_prob, len(matches))
         assert abs(calc_prob - prob) < 1e-10
         assert len(matches) == num_matches
@@ -70,7 +70,7 @@ def test_mol_prob():
         tmp_rng = copy.deepcopy(rng)
         for i in range(6):
             smi = mol.generate(rng=tmp_rng).smiles
-            calc_prob, matches = bigsmiles_gen.mol_prob.get_ensemble_prob(smi, mol)
+            calc_prob, matches = gbigsmiles.mol_prob.get_ensemble_prob(smi, mol)
             assert 0 < calc_prob <= 1.0
 
 

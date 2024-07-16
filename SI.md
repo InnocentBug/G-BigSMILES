@@ -32,8 +32,8 @@ import pydot
 from rdkit.Chem import rdDepictor
 from rdkit.Chem.Draw import rdMolDraw2D
 
-import bigsmiles_gen
-from bigsmiles_gen import System, mol_prob, Molecule, System
+import gbigsmiles
+from gbigsmiles import System, mol_prob, Molecule, System
 
 # Consistent random numbers also across calls
 rng = np.random.default_rng(42)
@@ -78,7 +78,7 @@ def draw_molecule(molecule_string):
 def draw_generation_graph(molecule_string):
     bigSMILESmol = Molecule(molecule_string)
     graph = bigSMILESmol.gen_reaction_graph()
-    graph_dot = bigsmiles_gen.reaction_graph_to_dot_string(graph, bigSMILESmol)
+    graph_dot = gbigsmiles.reaction_graph_to_dot_string(graph, bigSMILESmol)
     pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
     graph_svg = pydot_graph.create_svg()
     render_svg(graph_svg)
@@ -139,7 +139,7 @@ def update_progress(progress):
         clear_output(wait = True)
         text = "Progress: [{0}] {1:.1f}%".format( "#" * block + "-" * (bar_length - block), progress * 100)
         print(text)
-    
+
 def count_PS_PMMA_monomers(gen_mol):
     # Since the =O is unique to the PMMA and head group we can count the '=' in the smiles string to determine the number of PMMA.
     n_PMMA = gen_mol.smiles.count("=")
@@ -154,7 +154,7 @@ def count_PS_PMMA_monomers(gen_mol):
 # In testing environments only run on the linux systems:
 if IS_LINUX or not TESTING_ENV:
     # Use a full ensemble system determine the ration of PS to PMMA
-    system = bigsmiles_gen.System(generative_bigSMILES)
+    system = gbigsmiles.System(generative_bigSMILES)
     total_PMMA = 0
     total_PS = 0
     total_weight = 0
@@ -165,7 +165,7 @@ if IS_LINUX or not TESTING_ENV:
         total_PS += n_PS
         total_weight += gen_mol.weight
         update_progress(total_weight/system.system_mass)
-    
+
     ratio = total_PMMA/(total_PS + total_PMMA)
     print(ratio, total_PMMA, total_PS)
     expected_ratio = 0.5
@@ -202,7 +202,7 @@ draw_generation_graph(generative_bigSMILES)
 # In testing environments only run on the linux systems:
 if IS_LINUX or not TESTING_ENV:
     # Use a full ensemble system determine the ration of PS to PMMA
-    system = bigsmiles_gen.System(generative_bigSMILES)
+    system = gbigsmiles.System(generative_bigSMILES)
     total_PMMA = 0
     total_PS = 0
     total_weight = 0
@@ -249,7 +249,7 @@ draw_generation_graph(generative_bigSMILES)
 # In testing environments only run on the linux systems:
 if IS_LINUX or not TESTING_ENV:
     # Use a full ensemble system determine the ration of PS to PMMA
-    system = bigsmiles_gen.System(generative_bigSMILES)
+    system = gbigsmiles.System(generative_bigSMILES)
     total_PMMA = 0
     total_PS = 0
     total_weight = 0
@@ -733,7 +733,7 @@ Note how terminal bond descriptors do not have an ID and IDs for bond descriptor
 
 In prior sections, we focused on single molecule examples. Now, we'll ensure that the properties of entire ensembles are also consistent with our expectations. Our starting point is the targeted molecular weight of stochastic entities.
 
-We begin by crafting a function to analyze and visualize the distribution of G-BigSMILES strings. Remember, we're considering full ensembles in this context, necessitating the `bigsmiles_gen.System` specification along with a molecular weight descriptor. While we showcase the Gaussian distribution for its appealing linear characteristics, the approach—aside from merging two stochastic entities—remains unchanged. Other distributions undergo separate unit testing.
+We begin by crafting a function to analyze and visualize the distribution of G-BigSMILES strings. Remember, we're considering full ensembles in this context, necessitating the `gbigsmiles.System` specification along with a molecular weight descriptor. While we showcase the Gaussian distribution for its appealing linear characteristics, the approach—aside from merging two stochastic entities—remains unchanged. Other distributions undergo separate unit testing.
 
 *Note:* Creating complete ensembles significantly extends the execution time compared to single molecule generation. Anticipate each test to span several minutes.
 
@@ -744,7 +744,7 @@ from IPython.display import clear_output
 
 def plot_distribution(bigsmiles, expected_mu, expected_sigma, bins=25):
     # Generate the ensemble of molecules
-    bigsmiles_system = bigsmiles_gen.System(bigsmiles)
+    bigsmiles_system = gbigsmiles.System(bigsmiles)
     generated_weights = []
     total_weight = 0
     for gen_mol in bigsmiles_system.generator:

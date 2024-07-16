@@ -2,7 +2,7 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-import bigsmiles_gen
+import gbigsmiles
 
 
 def test_token_str():
@@ -49,7 +49,7 @@ def test_token_str():
     ]
 
     for text, offset, big, ref, smi in test_args:
-        token = bigsmiles_gen.SmilesToken(text, offset, 0)
+        token = gbigsmiles.SmilesToken(text, offset, 0)
         assert ref == str(token)
         assert big == token.generate_string(False)
         assert token.bond_descriptors[0].descriptor_num == offset

@@ -2,7 +2,7 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-import bigsmiles_gen
+import gbigsmiles
 
 
 def test_molecule():
@@ -46,7 +46,7 @@ def test_molecule():
     ]
 
     for text, big, ref, gen in test_args:
-        system = bigsmiles_gen.System(text)
+        system = gbigsmiles.System(text)
         assert str(system) == ref
         assert system.generate_string(False) == big
         assert system.generable == gen

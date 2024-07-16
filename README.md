@@ -37,7 +37,7 @@ pip install .
 Outside the installation directory, you can test importing the installed package
 
 ```shell
-cd ~ && python -c "import bigsmiles_gen && cd -"
+cd ~ && python -c "import gbigsmiles && cd -"
 ```
 
 For a more detailed test, you can install and use `pytest`.
@@ -73,10 +73,10 @@ Here we describe the objects we usable examples, for more details on notation an
 
 #### Stochastic object
 
-The `bigsmiles_gen.Stochastic` object takes as user input a single string of a bigSMILES stochastic object.
+The `gbigsmiles.Stochastic` object takes as user input a single string of a bigSMILES stochastic object.
 
 ```python
-stochastic = bigsmiles_gen.Stochastic("{[][$]C([$])C=O,[$]CC([$])CO;[$][H], [$]O[]}|flory_schulz(0.0011)|"}
+stochastic = gbigsmiles.Stochastic("{[][$]C([$])C=O,[$]CC([$])CO;[$][H], [$]O[]}|flory_schulz(0.0011)|"}
 ```
 
 Because this stochastic object defines its molecular weight distribution explicitly and both terminal bond descriptors are empty it can generate a full molecule.
@@ -95,7 +95,7 @@ The resulting object is a wrapped `rdkit` molecule `MolGen`.
 
 #### MolGen object
 
-`bigsmiles_gen.MolGen` objects are the resulting molecules from the generation of bigSMILES strings.
+`gbigsmiles.MolGen` objects are the resulting molecules from the generation of bigSMILES strings.
 It can contain partially generated molecules and fully generated molecules.
 Only fully generated molecules are chemically meaningful, so we can ensure this:
 
@@ -121,11 +121,11 @@ print(generated_molecule.smiles)
 
 #### Molecule object
 
-The `bigsmiles_gen.Stochastic` object was only generable without prefixes and suffixes, so the `bigsmiles_gen.Molecule` object offers more flexibility.
+The `gbigsmiles.Stochastic` object was only generable without prefixes and suffixes, so the `gbigsmiles.Molecule` object offers more flexibility.
 It allows the prefixes and suffixes to combine different stochastic objects.
 
 ```python
-molecule = bigsmiles_gen.Molecule("NC{[$][$]C[$][$]}|uniform(12, 72)|COOC{[$][$]C[$][$]}|uniform(12, 72)|CO")
+molecule = gbigsmiles.Molecule("NC{[$][$]C[$][$]}|uniform(12, 72)|COOC{[$][$]C[$][$]}|uniform(12, 72)|CO")
 ```
 
 Similar to before we can ensure that this molecule is generable and subsequently generate the molecule.
@@ -137,18 +137,18 @@ generated_molecule = molecule.generate()
 
 #### System object
 
-If it is desired to generate not just a single molecule but a full ensemble system with one or more different types of molecules, this can be expressed with a `bigsmiles_gen.System` object.
+If it is desired to generate not just a single molecule but a full ensemble system with one or more different types of molecules, this can be expressed with a `gbigsmiles.System` object.
 
 This can be a simple system with just a single molecule type, where only the total molecular weight is specified like this one:
 
 ```python
-system = bigsmiles_gen.System("NC{[$][$]C[$][$]}|uniform(12, 72)|COOC{[$][$]C[$][$]}|uniform(12, 72)|CO.|1000|")
+system = gbigsmiles.System("NC{[$][$]C[$][$]}|uniform(12, 72)|COOC{[$][$]C[$][$]}|uniform(12, 72)|CO.|1000|")
 ```
 
 Or a more complicated situation that covers for example a polymer and a solvent.
 
 ```python
-system = bigsmiles_gen.System("C1CCOC1.|10%|{[][$]C([$])c1ccccc1; [$][H][]]}|gauss(400,20)|.|500|")
+system = gbigsmiles.System("C1CCOC1.|10%|{[][$]C([$])c1ccccc1; [$][H][]]}|gauss(400,20)|.|500|")
 ```
 
 We can still generate these systems as before, but now it returns a random `MolGen` from the ensemble.

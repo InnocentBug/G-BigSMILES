@@ -7,7 +7,7 @@ requires = ["setuptools >= 43", "wheel", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bigsmiles_gen"
+name = "gbigsmiles"
 authors = [
   { name = "Ludwig Schneider", email = "ludwigschneider@uchicago.edu" },
 ]
@@ -18,11 +18,11 @@ dependencies = ["scipy", "numpy", "networkx", "matplotlib"]
 dynamic = ["version"]
 
 [tool.setuptools.dynamic]
-version = { attr = "bigsmiles_gen._version.version" }
+version = { attr = "gbigsmiles._version.version" }
 
 [tool.setuptools_scm]
-write_to = "bigsmiles_gen/_version.py"
-version_file = "bigsmiles_gen/_version.py"
+write_to = "src/gbigsmiles/_version.py"
+version_file = "src/gbigsmiles/_version.py"
 
 [tool.black]
 line-length = 100
@@ -40,4 +40,4 @@ omit = [
 ]
 
 [tool.setuptools.package-data]
-bigsmiles_gen = ["data/ffbonded.itp", "data/ffnonbonded.itp", "data/opls.par"]
+gbigsmiles = ["data/ffbonded.itp", "data/ffnonbonded.itp", "data/opls.par"]

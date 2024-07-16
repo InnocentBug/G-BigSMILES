@@ -2,7 +2,7 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-import bigsmiles_gen
+import gbigsmiles
 
 
 def test_descriptors_str():
@@ -17,7 +17,7 @@ def test_descriptors_str():
     ]
 
     for text, gen, ref, absm, relm in test_args:
-        mix = bigsmiles_gen.Mixture(text)
+        mix = gbigsmiles.Mixture(text)
         assert str(mix) == ref
         assert mix.generate_string(False) == "."
         assert mix.generable == gen
