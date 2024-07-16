@@ -34,4 +34,4 @@ jobs:
       - name: Run Pytest
         shell: bash -l {0}
         run: |
-          pytest --cov --cov-fail-under=85
+          pytest --cov=src/gbigsmiles --cov-fail-under=85
