@@ -17,15 +17,17 @@ def _determine_darkness_from_hex(color):
     Determine the darkness of a color from its hex string.
 
     Arguments:
-    ----------
+    ---------
     color: str
        7 character string with prefix `#` followed by RGB hex code.
 
     Returns: bool
        if the darkness is below half
+
     """
     # If hex --> Convert it to RGB: http://gist.github.com/983661
-    assert color[0] == "#"
+    if color[0] != "#":
+        raise ValueError(f"{color} is missing '#'")
     red = int(color[1:3], 16)
     green = int(color[3:5], 16)
     blue = int(color[5:7], 16)
@@ -87,7 +89,8 @@ def choose_compatible_weight(bond_descriptors, bond, rng):
         idx = rng.choice(compatible_idx, p=weights)
     except ValueError as exc:
         warn(
-            f"Cannot choose compatible bonds, available bonds {len(compatible_idx)}, sum of weights {np.sum(weights)}."
+            f"Cannot choose compatible bonds, available bonds {len(compatible_idx)}, sum of weights {np.sum(weights)}.",
+            stacklevel=1,
         )
         raise exc
 

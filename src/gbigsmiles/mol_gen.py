@@ -28,15 +28,17 @@ class MolGen:
         Generate a new incompletely generated molecule from a token.
 
         Arguments:
-        ----------
+        ---------
         token: SmilesToken
            Token, that starts a new molecule generation.
+
         """
         if not token.generable:
             raise RuntimeError(f"Attempting to generate token {str(token)}, which isn't generable.")
         self.bond_descriptors = copy.deepcopy(token.bond_descriptors)
         self.graph = nx.Graph()
-        assert len(token.residues) == 1
+        if len(token.residues) != 1:
+            raise ValueError(f"{token} is not long enough")
         res_names = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         res_name = res_names[token.res_id]
         smiles = token.generate_smiles_fragment()
@@ -79,7 +81,7 @@ class MolGen:
     @property
     def fully_generated(self):
         """
-        Is this molecule fully generated?
+        Is this molecule fully generated?.
         """
         return len(self.bond_descriptors) == 0
 
@@ -88,7 +90,7 @@ class MolGen:
         Combine two molecules and store the result in this one.
 
         Arguments:
-        ----------
+        ---------
         self_bond_idx: int
            Bond descriptor index of this molecule, that is going to bind.
 
@@ -97,9 +99,9 @@ class MolGen:
 
         other_bond_idx: int
            Index of the BondDescriptor in the other molecule, that is going to bind.
+
         """
 
-        self.mol
         if self_bond_idx >= len(self.bond_descriptors):
             raise RuntimeError(f"Invalid bond descriptor id {self_bond_idx} (self).")
         if other_bond_idx >= len(other.bond_descriptors):

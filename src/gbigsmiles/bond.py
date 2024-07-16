@@ -28,7 +28,7 @@ class BondDescriptor(BigSMILESbase):
         Construction of a bond descriptor.
 
         Arguments:
-        ----------
+        ---------
         big_smiles_ext: str
            text representation of a bond descriptor. Example: `[$0]`
 
@@ -43,6 +43,7 @@ class BondDescriptor(BigSMILESbase):
 
         atom_bonding_to:
            Index of the atom this bond descriptor is bonding to
+
         """
         self._raw_text = big_smiles_ext
 

@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: pip install CRIPT Python SDK local package
+      - name: pip install G-BigSMILES Python package
         run: pip install .
 
       - name: Run Jupytext

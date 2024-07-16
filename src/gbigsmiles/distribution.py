@@ -38,9 +38,10 @@ class Distribution(BigSMILESbase):
         Initialize the generic distribution.
 
         Arguments:
-        ----------
+        ---------
         raw_text: str
              Text representation of the distribution. Example: `flory_schulz(0.01)`
+
         """
         self._raw_text = raw_text.strip("| \t\n")
         self._distribution = None
@@ -48,10 +49,12 @@ class Distribution(BigSMILESbase):
     def draw_mw(self, rng=None):
         """
         Draw a sample from the molecular weight distribution.
+
         Arguments:
-        ----------
+        ---------
         rng: numpy.random.Generator
              Numpy random number generator for the generation of numbers.
+
         """
         if self._distribution is None:
             raise NotImplementedError
@@ -63,10 +66,12 @@ class Distribution(BigSMILESbase):
     def prob_mw(self, mw):
         """
         Calculate the probability that this mw was from this distribution.
+
         Arguments:
-        ----------
+        ---------
         mw: float
              Integer heavy atom molecular weight.
+
         """
         if self._distribution is None:
             raise NotImplementedError
@@ -89,7 +94,7 @@ class FlorySchulz(Distribution):
     """
 
     class flory_schulz_gen(stats.rv_discrete):
-        "Flory Schulz distribution"
+        """Flory Schulz distribution."""
 
         def _pmf(self, k, a):
             return a**2 * k * (1 - a) ** (k - 1)
@@ -99,10 +104,11 @@ class FlorySchulz(Distribution):
         Initialization of Flory-Schulz distribution object.
 
         Arguments:
-        ----------
+        ---------
         raw_text: str
              Text representation of the distribution.
              Has to start with `flory_schulz`.
+
         """
         super().__init__(raw_text)
 
@@ -137,7 +143,7 @@ class FlorySchulz(Distribution):
 
 
 class SchulzZimm(Distribution):
-    """
+    r"""
     Schulz-Zimm distribution of molecular weights for geometrically distributed chain lengths.
 
     :math:`P_{M_w,M_n}(M) = z^{z+1}/\\Gamma(z+1) M^{z-1}/M_n^z \\exp(-zM/M_n)`
@@ -150,22 +156,21 @@ class SchulzZimm(Distribution):
     """
 
     class schulz_zimm_gen(stats.rv_discrete):
-        "Flory Schulz distribution"
+        """Flory Schulz distribution."""
 
         def _pmf(self, M, z, Mn):
-            return (
-                z ** (z + 1) / special.gamma(z + 1) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn)
-            )
+            return z ** (z + 1) / special.gamma(z + 1) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn)
 
     def __init__(self, raw_text):
         """
         Initialization of Schulz-Zimm distribution object.
 
         Arguments:
-        ----------
+        ---------
         raw_text: str
              Text representation of the distribution.
              Has to start with `schulz_zimm`.
+
         """
         super().__init__(raw_text)
 
@@ -207,7 +212,7 @@ class SchulzZimm(Distribution):
 
 
 class Gauss(Distribution):
-    """
+    r"""
     Gauss distribution of molecular weights for geometrically distributed chain lengths.
 
     :math:`G_{\\sigma,\\mu}(N) = 1/\\sqrt{\\sigma^2 2\\pi} \\exp(-1/2 (x-\\mu^2)/\\sigma`
@@ -222,10 +227,11 @@ class Gauss(Distribution):
         Initialization of Gaussian distribution object.
 
         Arguments:
-        ----------
+        ---------
         raw_text: str
              Text representation of the distribution.
              Has to start with `gauss`.
+
         """
         super().__init__(raw_text)
 
@@ -266,10 +272,11 @@ class Uniform(Distribution):
         Initialization of Uniform distribution object.
 
         Arguments:
-        ----------
+        ---------
         raw_text: str
              Text representation of the distribution.
              Has to start with `gauss`.
+
         """
         super().__init__(raw_text)
 
@@ -294,7 +301,7 @@ class Uniform(Distribution):
 
 
 class LogNormal(Distribution):
-    """
+    r"""
     LogNormal distribution of molecular weights for narrowly distributed chain lengths.
 
     :math:`\\mathrm{PDF}(m_{w,i}) =\\frac{1}{m_{w,i}\\sqrt{2\\pi \\ln(\\text{\\DH})}} \\exp\\left(-\\frac{\\left(\\ln\\left(\\frac{m_{w,i}}{M_n}\\right)+\\frac{\\text{\\DH}}{2}\\right)^2}{2\\sigma^2}\\right)`
@@ -306,7 +313,7 @@ class LogNormal(Distribution):
     """
 
     class log_normal_gen(stats.rv_continuous):
-        "Log-Normal distribution"
+        """Log-Normal distribution."""
 
         def _pdf(self, m, M, D):
             prefactor = 1 / (m * np.sqrt(2 * np.pi * np.log(D)))
@@ -321,10 +328,11 @@ class LogNormal(Distribution):
         Initialization of LogNormal distribution object.
 
         Arguments:
-        ----------
+        ---------
         raw_text: str
              Text representation of the distribution.
              Has to start with `log_normal`.
+
         """
         super().__init__(raw_text)
 
@@ -375,10 +383,11 @@ class Poisson(Distribution):
         Initialization of Poisson distribution object.
 
         Arguments:
-        ----------
+        ---------
         raw_text: str
              Text representation of the distribution.
              Has to start with `poisson`.
+
         """
         super().__init__(raw_text)
 

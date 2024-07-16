@@ -112,8 +112,9 @@ class StochasticAtomGraph:
                                 exclude_transition_into_terminal = bd_rhs_idx < len(
                                     element_rhs.repeat_tokens
                                 )
-                            except AttributeError:
-                                assert isinstance(element_rhs, SmilesToken)
+                            except AttributeError as exc:
+                                if not isinstance(element_rhs, SmilesToken):
+                                    raise RuntimeError("Expected a SmilesToken") from exc
                                 exclude_transition_into_terminal = True
 
                             if exclude_transition_into_terminal:

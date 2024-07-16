@@ -24,9 +24,13 @@ class Molecule(BigSMILESbase):
         Construction of a molecule to make up mixtures.
 
         Arguments:
-        ----------
+        ---------
         big_smiles_ext: str
            text representation
+
+        res_id_prefix: int = 0
+           If the molecule is part of a system of molecules, specify which number it is.
+
         """
         self._raw_text = big_smiles_ext.strip()
 
@@ -193,9 +197,12 @@ class Molecule(BigSMILESbase):
                     term_prob += edge_data.get("term_prob", 0)
                     trans_prob += edge_data.get("trans_prob", 0)
             # assert abs(weight - 1) < 1e-6 or abs(weight) < 1e-6
-            assert abs(prob - 1) < 1e-6 or abs(prob) < 1e-6
-            assert abs(term_prob - 1) < 1e-6 or abs(term_prob) < 1e-6
-            assert abs(trans_prob - 1) < 1e-6 or abs(trans_prob) < 1e-6
+            if not (abs(prob - 1) < 1e-6 or abs(prob) < 1e-6):
+                raise RuntimeError("invalid graph static probabilities")
+            if not (abs(term_prob - 1) < 1e-6 or abs(term_prob) < 1e-6):
+                raise RuntimeError("invalid graph termination probabilities")
+            if not (abs(trans_prob - 1) < 1e-6 or abs(trans_prob) < 1e-6):
+                raise RuntimeError("invalid graph transition probs")
 
         # Add primary nodes
         residues = {}

@@ -3,11 +3,12 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+"""Main entry point for the generation of SMILES string ensembles.
+
+This function serves as a convenience entry point.
 """
-Definition of the main entry point for CLI smiles string generation.
-"""
+
 import argparse
-import os
 import sys
 
 import gbigsmiles
