@@ -53,4 +53,3 @@ merge:
     - notebook (ubuntu-latest)
     - notebook (windows-latest)
     - notebook (macos-latest)
-    - ci-coverage
