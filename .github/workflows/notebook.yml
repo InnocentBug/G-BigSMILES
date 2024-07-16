@@ -36,10 +36,9 @@ jobs:
           python -m pip install .
 
       - name: Create test with Jupytext
+        shell: bash -l {0}
         run: |
-          shell: bash -l {0}
           python -m pip install jupytext
           jupytext --to py SI.ipynb
       - name: Run Notebook test
-        run:
-          python SI.py
+        run: python SI.py
