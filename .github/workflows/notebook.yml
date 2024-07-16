@@ -24,7 +24,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: pip install G-BigSMILES Python package
-        run: python -m pip install .
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install .
 
       - name: Run Jupytext
         shell: bash -l {0}
