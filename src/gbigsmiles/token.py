@@ -39,7 +39,7 @@ class SmilesToken(BigSMILESbase):
     """
     SMILES fragment including the bond descriptors, that make up the monomers and end groups.
     This also includes the weight of this particular monomer in the generation.
-    Example:  '[$]CC(c1ccccc1)[$]'
+    Example:  '[$]CC(c1ccccc1)[$]'.
     """
 
     def __init__(self, big_smiles_ext, bond_id_offset, res_id):
@@ -47,12 +47,16 @@ class SmilesToken(BigSMILESbase):
         Construct the element.
 
         Arguments:
-        ----------
+        ---------
         big_smiles_ext: str
            Text that describes the smiles token.
 
         bond_id_offset: int
            Number of bond descriptors in the stochastic objects before this token.
+
+        res_id: int
+           Residue ID this token is a part of.
+
         """
         self.res_id = res_id
         bond_id_offset = int(bond_id_offset)
@@ -125,8 +129,10 @@ class SmilesToken(BigSMILESbase):
                 atom_to_bond[-1] = len(atoms) - 1
             elif not isinstance(elements[element_counter], BondDescriptor):
                 if "$" in element or "<" in element or ">" in element:
-                    assert element.find("[") >= 0
-                    assert element.find("]") > 0
+                    if element.find("[") < 0:
+                        raise RuntimeError(f"Malformed token found '[' {element}")
+                    if element.find("]") <= 0:
+                        raise RuntimeError(f"Malformed token ']' found {element}")
 
                     elementA = element[: element.find("[")]
                     bond_text = element[element.find("[") : element.find("]") + 1]
@@ -212,7 +218,8 @@ class SmilesToken(BigSMILESbase):
             if isinstance(element, BondDescriptor):
                 # Bond descriptors indicate a missing atom, so no connection between existing atoms
                 element_string += "."
-            assert len(element_string) > 0
+            if len(element_string) <= 0:
+                raise RuntimeError("expected as non-empty string")
 
             string += element_string
         # Remove empty branches

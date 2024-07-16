@@ -7,10 +7,8 @@
 bigSMILES extension to generation SMILES string ensembles.
 """
 
-from . import distribution
-
 try:
-    from ._version import version as __version__  # noqa: E402, F401
+    from ._version import version as __version__
     from ._version import version_tuple
 except ImportError as exc:
     raise RuntimeError(
@@ -26,3 +24,22 @@ from .molecule import Molecule
 from .stochastic import Stochastic
 from .system import System
 from .token import SmilesToken
+
+__all__ = [
+    "__version__",
+    "version_tuple",
+    "BondDescriptor",
+    "_GLOBAL_RNG",
+    "BigSMILESbase",
+    "reaction_graph_to_dot_string",
+    "Distribution",
+    "FlorySchulz",
+    "Gauss",
+    "AtomGraph",
+    "Mixture",
+    "get_ensemble_prob",
+    "Molecule",
+    "Stochastic",
+    "System",
+    "SmilesToken",
+]

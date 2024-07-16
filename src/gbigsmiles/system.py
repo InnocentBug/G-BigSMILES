@@ -68,13 +68,15 @@ def _estimate_system_molecular_weight(molecules, system_molweight):
         system_weight = estimated_weights[0]
     except IndexError:
         warn(
-            "The system cannot be fully generated, since the total system molecular weight cannot be estimated."
+            "The system cannot be fully generated, since the total system molecular weight cannot be estimated.",
+            stacklevel=1,
         )
         return False
     for mol in molecules:
         if mol.mixture is None:
             warn(
-                "The system cannot be generated, since at least one weight is underspecified even as total mass is known."
+                "The system cannot be generated, since at least one weight is underspecified even as total mass is known.",
+                stacklevel=1,
             )
             return False
         mol.mixture.system_mass = system_weight
@@ -92,9 +94,13 @@ class System(BigSMILESbase):
         Construction of an entire system (mixtures).
 
         Arguments:
-        ----------
+        ---------
         big_smiles_ext: str
            text representation
+
+        system_molweight: Number | None
+           Optionally the expected system molecular weight if not supposed to be deducted from  G-BigSMILES string.
+
         """
         self._raw_text = big_smiles_ext.strip()
         self._res_id_prefix = 0
@@ -130,11 +136,14 @@ class System(BigSMILESbase):
 
     @property
     def system_mass(self):
-        assert self.generable
-        assert len(self._molecules) > 0
+        if not self.generable:
+            raise ValueError("Requires a generable system")
+        if len(self._molecules) <= 0:
+            raise ValueError("Requires a system with at least one molecule")
         system_mass = self._molecules[0].mixture.system_mass
         for mol in self._molecules:
-            assert (system_mass - mol.mixture.system_mass) < 1e-8
+            if (system_mass - mol.mixture.system_mass) > 1e-8:
+                raise RuntimeError("Inconsistent system mass detected")
         return system_mass
 
     def generate_string(self, extension):
@@ -146,7 +155,8 @@ class System(BigSMILESbase):
 
     @property
     def generator(self, rng=_GLOBAL_RNG):
-        assert self.generable
+        if not self.generable:
+            raise RuntimeError("Generable system required")
 
         relative_fractions = [mol.mixture.relative_mass for mol in self._molecules]
         generated_total_mass = 0
@@ -157,7 +167,8 @@ class System(BigSMILESbase):
             mol = self._molecules[mol_idx]
             mol_gen = mol.generate(rng=rng)
             generated_total_mass += mol_gen.weight
-            assert mol_gen.fully_generated
+            if not mol_gen.fully_generated:
+                raise RuntimeError("We expect a fully generated molecule here.")
             yield mol_gen
 
     def generate(self, prefix=None, rng=_GLOBAL_RNG):
@@ -167,9 +178,11 @@ class System(BigSMILESbase):
             range(len(relative_fractions)), p=relative_fractions / np.sum(relative_fractions)
         )
         mol = self._molecules[mol_idx]
-        assert mol.generable
+        if not mol.generable:
+            raise RuntimeError("Requires molecules to be generable")
         mol_gen = mol.generate(rng=rng)
-        assert mol_gen.fully_generated
+        if not mol_gen.fully_generated:
+            raise RuntimeError("Molecules must be fully generated")
         return mol_gen
 
     @property

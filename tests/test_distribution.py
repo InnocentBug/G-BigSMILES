@@ -5,7 +5,7 @@
 import numpy as np
 from scipy import stats
 
-import bigsmiles_gen
+import gbigsmiles
 
 EPSILON = 0.15
 NSTAT = 2000
@@ -23,7 +23,7 @@ def test_flory_schulz():
 
     rng = np.random.default_rng()
     for a in [0.01, 0.05, 0.1, 0.3, 0.5]:
-        flory_schulz = bigsmiles_gen.distribution.get_distribution(f"flory_schulz({a})")
+        flory_schulz = gbigsmiles.distribution.get_distribution(f"flory_schulz({a})")
 
         assert flory_schulz.prob_mw(flory_schulz.draw_mw(rng)) > 0
 
@@ -48,7 +48,7 @@ def test_gauss():
 
     rng = np.random.default_rng()
     for mu, sigma in [(100.0, 10.0), (200.0, 100.0), (500.0, 1.0), (600.0, 0.0)]:
-        gauss = bigsmiles_gen.distribution.get_distribution(f"gauss({mu}, {sigma})")
+        gauss = gbigsmiles.distribution.get_distribution(f"gauss({mu}, {sigma})")
 
         example = gauss.draw_mw(rng)
         assert gauss.prob_mw(example) > 0
@@ -75,7 +75,7 @@ def test_uniform():
 
     rng = np.random.default_rng()
     for low, high in [(10, 100), (200, 1000), (50, 100), (0, 600)]:
-        uniform = bigsmiles_gen.distribution.get_distribution(f"uniform({low}, {high})")
+        uniform = gbigsmiles.distribution.get_distribution(f"uniform({low}, {high})")
 
         assert uniform.prob_mw(uniform.draw_mw(rng)) > 0
 
@@ -98,7 +98,7 @@ def test_schulz_zimm():
     rng = np.random.default_rng()
     for Mw in [11.3e3]:
         Mn = Mw / 1.5
-        schulz_zimm = bigsmiles_gen.distribution.get_distribution(f"schulz_zimm({Mw}, {Mn})")
+        schulz_zimm = gbigsmiles.distribution.get_distribution(f"schulz_zimm({Mw}, {Mn})")
         z = schulz_zimm._z
 
         data = []
@@ -127,7 +127,7 @@ def test_log_normal():
         (20.3e3, 2.0),
     ]:
 
-        log_normal = bigsmiles_gen.distribution.get_distribution(f"log_normal({M}, {D})")
+        log_normal = gbigsmiles.distribution.get_distribution(f"log_normal({M}, {D})")
 
         data = []
         for i in range(NSTAT):
@@ -155,7 +155,7 @@ def test_poisson():
     rng = np.random.default_rng()
     for M in [11.3e3, 5.3e3, 20.3e3]:
 
-        poisson = bigsmiles_gen.distribution.get_distribution(f"poisson({M})")
+        poisson = gbigsmiles.distribution.get_distribution(f"poisson({M})")
 
         data = []
         for i in range(NSTAT):

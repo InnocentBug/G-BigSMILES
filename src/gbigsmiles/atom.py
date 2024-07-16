@@ -15,10 +15,13 @@ class Atom(BigSMILESbase):
 
     def __init__(self, big_smiles_ext):
         """
+        Initialize atoms.
+
         Arguments:
-        ----------
+        ---------
         big_smiles_ext: str
            string to describe a SMILES atom.
+
         """
         text = big_smiles_ext.strip()
         self._raw_text = text

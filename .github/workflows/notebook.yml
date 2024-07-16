@@ -20,18 +20,24 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11"]
+
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Conda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          auto-update-conda: true
-          environment-file: environment.yml
-          activate-environment: bigsmiles
-      - name: Run Jupytext
-        shell: bash -l {0}
+          python-version: ${{ matrix.python-version }}
+
+      - name: pip install G-BigSMILES Python package
         run: |
-          pip install .
-          jupytext --to py SI.ipynb
-          python SI.py
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install jupytext ipython jupyter
+          python -m pip install .
+
+      - name: Create test with Jupytext
+        shell: bash -l {0}
+        run: jupytext --to py SI.ipynb
+      - name: Run Notebook test
+        run: python SI.py

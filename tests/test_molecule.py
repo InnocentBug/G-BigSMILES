@@ -7,7 +7,7 @@ import copy
 import numpy as np
 from rdkit import Chem
 
-import bigsmiles_gen
+import gbigsmiles
 
 
 def test_molecule():
@@ -100,7 +100,7 @@ def test_molecule():
 
     for text, big, ref, gen, mir_gen, graph_gen in test_args:
         rng = copy.deepcopy(global_rng)
-        mol = bigsmiles_gen.Molecule(text)
+        mol = gbigsmiles.Molecule(text)
         assert str(mol) == ref
         assert mol.generate_string(False) == big
         assert mol.generable == (gen is not None)
@@ -110,14 +110,14 @@ def test_molecule():
         schulz_zimm_distribution = True
         # Check distribution possibility
         for element in mol.elements:
-            if isinstance(element, bigsmiles_gen.stochastic.Stochastic):
-                if not isinstance(element.distribution, bigsmiles_gen.distribution.SchulzZimm):
+            if isinstance(element, gbigsmiles.stochastic.Stochastic):
+                if not isinstance(element.distribution, gbigsmiles.distribution.SchulzZimm):
                     schulz_zimm_distribution = False
                     break
 
         stochastic_graph = mol.gen_stochastic_atom_graph(schulz_zimm_distribution)
         if schulz_zimm_distribution:
-            full_atom_graph = bigsmiles_gen.AtomGraph(stochastic_graph, rng=rng)
+            full_atom_graph = gbigsmiles.AtomGraph(stochastic_graph, rng=rng)
             full_atom_graph.generate()
             graph_smi = Chem.MolToSmiles(full_atom_graph.to_mol())
             assert graph_smi == graph_gen

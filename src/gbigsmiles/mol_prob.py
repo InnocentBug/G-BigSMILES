@@ -29,7 +29,8 @@ def get_starting_tokens(smiles, big_mol):
         end_weights /= np.sum(end_weights)
         start_probabilities += list(end_weights)
 
-    assert len(start_fragments) > 0
+    if len(start_fragments) <= 0:
+        raise ValueError(f"not enough fragments {start_fragments}")
 
     return start_fragments, start_probabilities
 
@@ -178,13 +179,15 @@ class PossibleMatch:
                 if token_pos == tmp_bd[i].atom_bonding_to:
                     if not self.is_atom_handled(bond[1]):
                         open_atoms.append(OpenAtom(bond, tmp_bd[i]))
-                    assert bd_idx is None
+                    if bd_idx is not None:
+                        raise RuntimeError(f"Invalid {bd_idx} should be None")
                     bd_idx = i
                     break
             if bd_idx is None:
                 return []
             del tmp_bd[bd_idx]
-        assert len(tmp_bd) == 0
+        if len(tmp_bd) != 0:
+            raise RuntimeError("length should be 0 here")
         return open_atoms
 
     def pop_open_atom(self, pos=-1):
@@ -314,7 +317,8 @@ class PossibleMatch:
             new_full = []
             match = match_input.copy()
             atom = match.pop_open_atom(i)
-            assert atom is not None
+            if atom is None:
+                raise RuntimeError("Atom must be valid")
             total_atom_weight = atom.bond_descriptor.weight
             for remaining_atom in match._open_atoms:
                 total_atom_weight += remaining_atom.bond_descriptor.weight

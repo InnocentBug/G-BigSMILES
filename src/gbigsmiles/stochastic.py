@@ -26,9 +26,12 @@ class Stochastic(BigSMILESbase):
         Constructor, taking a extended bigSMILES string for generation.
 
         Arguments:
-        ----------
+        ---------
         big_smiles_ext: str
           text representation of bigSMILES stochastic object.
+        res_id_prefix: int
+          How many residues are preceding this one in the G-BigSMILES string.
+
         """
 
         self._raw_text = big_smiles_ext.strip()
@@ -120,7 +123,10 @@ class Stochastic(BigSMILESbase):
                     f"Invalid transition length in bond descriptor {len(bd.transitions)} but the stochastic element has only {len(self.bond_descriptors)} descriptors."
                 )
 
-        assert len(self.bond_descriptors) == len(self.end_bonds) + len(self.repeat_bonds)
+        if not len(self.bond_descriptors) == len(self.end_bonds) + len(self.repeat_bonds):
+            raise RuntimeError(
+                f"Length of bond descriptors {len(self.bond_descriptors)} is incompatible with individual bonds counted {len(self.end_bonds)} {len(self.repeat_bonds)}."
+            )
 
     @property
     def generable(self):
@@ -170,14 +176,16 @@ class Stochastic(BigSMILESbase):
                 try:
                     end_bond_idx = choose_compatible_weight(self.end_bonds, None, rng)
                 except ValueError as exc:
-                    warn("Unable to pick an end group bond to start generating.")
+                    warn("Unable to pick an end group bond to start generating.", stacklevel=1)
                     raise exc
                 start_token = self.end_tokens[self.end_bond_token_idx[end_bond_idx]]
-                assert len(start_token.bond_descriptors) == 1
+                if len(start_token.bond_descriptors) != 1:
+                    raise RuntimeError("Single bond descriptor expected here.")
                 my_mol = MolGen(start_token)
             else:
                 # Ensure prefix is compatible with terminal bond descriptor.
-                assert len(prefix.bond_descriptors) == 1
+                if len(prefix.bond_descriptors) != 1:
+                    raise RuntimeError("Single bond descriptor expected here.")
                 if prefix.bond_descriptors[0].generate_string(
                     False
                 ) != self.left_terminal.generate_string(False):
@@ -225,7 +233,8 @@ class Stochastic(BigSMILESbase):
                 # Prematurely end if no more open bonds available
                 if len(my_mol.bond_descriptors) == 0:
                     warn(
-                        f"Premature end of generation of {str(self)} because no more open bond descriptors found."
+                        f"Premature end of generation of {str(self)} because no more open bond descriptors found.",
+                        stacklevel=1,
                     )
                     finalized_my_mol = my_mol
                     break
@@ -238,7 +247,8 @@ class Stochastic(BigSMILESbase):
                 # ):
                 #     warn(
                 #         f"Premature end of generation of {str(self)} with transitions specified"
-                #         " and only a single bond descriptor open for a required terminal."
+                #         " and only a single bond descriptor open for a required terminal.",
+                #         stacklevel=1,
                 #     )
                 #     finalized_my_mol = my_mol
                 #     break

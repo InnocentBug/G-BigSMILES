@@ -18,9 +18,10 @@ class Mixture(BigSMILESbase):
         Initialize the mixture description.
 
         Arguments:
-        ----------
+        ---------
         raw_text: str
              Text representation of the distribution. Example: `.|1234.|` or `.|30%|`
+
         """
         self._raw_text = raw_text
 
@@ -41,7 +42,8 @@ class Mixture(BigSMILESbase):
                 abs_mass = float(self._raw_text.strip(".|"))
             except ValueError:
                 warn(
-                    f"Mixture descriptor {self._raw_text} does not specify a valid mixture, the system will not be generable."
+                    f"Mixture descriptor {self._raw_text} does not specify a valid mixture, the system will not be generable.",
+                    stacklevel=1,
                 )
             else:
                 if abs_mass < 0:

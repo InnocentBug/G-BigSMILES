@@ -3,14 +3,15 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+"""Main entry point for the generation of SMILES string ensembles.
+
+This function serves as a convenience entry point.
 """
-Definition of the main entry point for CLI smiles string generation.
-"""
+
 import argparse
-import os
 import sys
 
-import bigsmiles_gen
+import gbigsmiles
 
 
 def _print_license(args):
@@ -49,10 +50,10 @@ def main(argv):
     print(SHORT_LICENSE_TEXT)
     main_parser = argparse.ArgumentParser(
         description="bigSMILES generation -- automatic generation of SMILES string a bigSMILES ensemble.",
-        prog="bigsmiles_gen",
+        prog="gbigsmiles",
     )
     main_parser.add_argument(
-        "--version", "-v", action="version", version="%(prog)s " + bigsmiles_gen.__version__
+        "--version", "-v", action="version", version="%(prog)s " + gbigsmiles.__version__
     )
     main_parser.set_defaults(func=lambda x: main_parser.print_usage())
 

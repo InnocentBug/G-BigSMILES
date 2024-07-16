@@ -4,7 +4,7 @@
 
 import numpy as np
 
-import bigsmiles_gen
+import gbigsmiles
 
 # trunk-disable-all(cspell/error)
 
@@ -50,7 +50,7 @@ def test_stochastic():
     ]
 
     for text, big, ref, gen in test_args:
-        stochastic = bigsmiles_gen.Stochastic(text, 0)
+        stochastic = gbigsmiles.Stochastic(text, 0)
         assert str(stochastic) == ref
         assert stochastic.generate_string(False) == big
         assert stochastic.generable == (gen is not None)
