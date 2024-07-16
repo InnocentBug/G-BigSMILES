@@ -16,7 +16,7 @@ authors = [
 ]
 license = { text = "GPL-3.0", files = ["LICENSE.md"] }
 requires-python = ">=3.11"
-dependencies = ["scipy", "numpy", "networkx", "matplotlib", "pytest"]
+dependencies = ["scipy", "numpy", "networkx", "matplotlib", "pytest", "rdkit"]
 dynamic = ["version"]
 
 [tool.setuptools.dynamic]
