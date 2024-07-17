@@ -1,9 +1,8 @@
 # Generative BigSMILES: (G-BigSMILES)
 
-[![CI](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/ci.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/ci.yml)
-[![notebooks](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/notebook.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/notebook.yml)
-[![CI Coverage](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/coverage.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/coverage.yml)
-[![trunk.io](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/trunk.yml/badge.svg)](https://github.com/InnocentBug/bigSMILESgen/actions/workflows/trunk.yml)
+[![CI](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/ci.yml/badge.svg)](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/ci.yml)
+[![notebooks](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/notebook.yml/badge.svg)](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/notebook.yml)
+[![trunk](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/trunk.yml/badge.svg)](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/trunk.yml)
 
 Generator of SMILES string from bigSMILES with extension.
 
