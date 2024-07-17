@@ -38,6 +38,9 @@ lint:
         - tests/test_molecule.py
         - .gitignore
         - src/gbigsmiles/data/*
+    - linters: [yamllint]
+      paths:
+        - .github/workflow/release.yml
 actions:
   enabled:
     - trunk-announce

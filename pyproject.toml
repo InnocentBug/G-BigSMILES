@@ -18,6 +18,7 @@ license = { text = "GPL-3.0", files = ["LICENSE.md"] }
 requires-python = ">=3.11"
 dependencies = ["scipy", "numpy", "networkx", "matplotlib", "pytest", "rdkit"]
 dynamic = ["version"]
+readme = "README.md"
 
 [tool.setuptools.dynamic]
 version = { attr = "gbigsmiles._version.version" }
