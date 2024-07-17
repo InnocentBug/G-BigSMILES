@@ -118,6 +118,8 @@
     "BAFF",
     "fontcolor",
     "gbigsmiles",
-    "pypi"
+    "pypi",
+    "pypa",
+    "dists"
   ]
 }
