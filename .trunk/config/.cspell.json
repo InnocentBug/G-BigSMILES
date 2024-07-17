@@ -120,6 +120,7 @@
     "gbigsmiles",
     "pypi",
     "pypa",
-    "dists"
+    "dists",
+    "startswith"
   ]
 }
