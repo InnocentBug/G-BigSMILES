@@ -19,15 +19,9 @@ The following instructions are designed to be independent of the operating syste
 You may have to slightly adjust the procedure for a differing operating system.
 
 The package is python-only, but it requires a rdkit installation.
-The easiest way to install this dependency is via conda.
-We provide the `environment.yml` file to install the conda packages.
+The easiest way to install this dependency is via pip and pypi.
 
-```shell
-conda env create -f environment.yml
-conda activate bigsmiles
-```
-
-With the rdkit dependency requirement fulfilled, you can install this package via pip.
+You can install this package via pip.
 
 ```shell
 pip install .
@@ -36,7 +30,7 @@ pip install .
 Outside the installation directory, you can test importing the installed package
 
 ```shell
-cd ~ && python -c "import gbigsmiles && cd -"
+cd ~ && python -c "import gbigsmiles" && cd -
 ```
 
 For a more detailed test, you can install and use `pytest`.
