@@ -40,7 +40,7 @@ lint:
         - src/gbigsmiles/data/*
     - linters: [yamllint]
       paths:
-        - .github/workflow/release.yml
+        - .github/workflows/release.yml
 actions:
   enabled:
     - trunk-announce

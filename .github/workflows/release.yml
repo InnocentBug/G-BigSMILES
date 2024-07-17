@@ -1,51 +1,50 @@
 name: Publish Python distribution to PyPI
 permissions: read-all
+on: push
 
-on:
-  push:
-    branches:
-      - main
 jobs:
-  release-build:
+  build:
     name: Build distribution
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.x
-
-      - name: build release distributions
-        run: |
-          # NOTE: put your own distribution build steps here.
-          python -m pip install build
-          python -m build
-
-      - name: upload dists
-        uses: actions/upload-artifact@v4
+          python-version: "3.x"
+      - name: Install pypa/build
+        run: >-
+          python3 -m
+          pip install
+          build
+          --user
+      - name: Build a binary wheel and a source tarball
+        run: python3 -m build
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v3
         with:
-          name: release-dists
+          name: python-package-distributions
           path: dist/
 
-  pypi-publish:
-    name: Publish to PyPI
-    if: startswith(github.ref, 'refs/tags') # only publish to PyPI on tag pushes
+  publish-to-pypi:
+    name: >-
+      Publish Python distribution to PyPI
+    if: startsWith(github.ref, 'refs/tags/') # only publish to PyPI on tag pushes
+    needs:
+      - build
     runs-on: ubuntu-latest
     environment:
-      name: release
-      url: https://pypi.org./p/gbigsmiles
-    needs:
-      - release-build
+      name: pypi
+      url: https://pypi.org/p/gbigsmiles
     permissions:
       id-token: write
 
     steps:
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
+      - name: Download all the dists
+        uses: actions/download-artifact@v3
         with:
-          name: release-dists
+          name: python-package-distributions
           path: dist/
-
-      - name: Publish release distributions to PyPI
+      - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
