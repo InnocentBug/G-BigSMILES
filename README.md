@@ -24,7 +24,7 @@ The easiest way to install this dependency is via pip and pypi.
 You can install this package via pip.
 
 ```shell
-pip install .
+pip install gbigsmiles
 ```
 
 Outside the installation directory, you can test importing the installed package
