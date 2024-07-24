@@ -7,7 +7,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.16.2
+      jupytext_version: 1.16.3
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -60,8 +60,7 @@ def moltosvg(mol, molSize=(450, 150), kekulize=False):
             Chem.Kekulize(mc)
         except:
             mc = Chem.Mol(mol.ToBinary())
-    if not mc.GetNumConformers():
-        rdDepictor.Compute2DCoords(mc)
+    rdDepictor.Compute2DCoords(mc)
     drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
     drawer.DrawMolecule(mc)
     drawer.FinishDrawing()
@@ -856,3 +855,72 @@ if IS_LINUX or not TESTING_ENV:
 ```
 
 Upon juxtaposing the distributions, a noticeable divergence is evident. The molecular weight distribution that's generated skews significantly towards lower molecular weights. This is anticipated since the generation can halt prematurely. While the resultant distribution bears resemblance to a geometric distribution, it isn't a precise match. The inherent Gaussian distribution can also interrupt the generation. Consequently, we detect a peak in higher molecular weights, proximate to the expected mean of the Gaussian distribution.
+
+
+## Stochastic Atom Graphs
+
+When considering G-BigSMILES as graphs, we have several options for graph representation.
+
+### Hierarchical Generation Graph
+
+The first option is the hierarchical generation graph. In this representation, repeating groups, end groups, and connecting groups are depicted as nodes in a graph that illustrates the connections between these molecular fragments. This representation has been previously discussed in the notebook.
+
+```python
+g_big_smi = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br]"
+draw_generation_graph(g_big_smi)
+```
+
+```python
+def draw_stochastic_atom_graph(stochastic_atom_graph):
+    
+
+    
+    graph_dot = gbigsmiles.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
+
+    if pydot:
+        pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
+        graph_svg = pydot_graph.create_svg()
+        return render_svg(graph_svg)
+    else:
+        return ''
+
+mol = gbigsmiles.Molecule(g_big_smi)
+stochastic_atom_graph = mol.gen_stochastic_atom_graph(expect_schulz_zimm_distribution=True)
+draw_stochastic_atom_graph(stochastic_atom_graph)
+```
+
+As we can see, this representation eliminates the need for hierarchy and instead encodes hierarchical information as edge attributes in the graph.
+
+- Black: Connections within a molecular fragment
+- Red: Connections between repeat units
+- Blue: Connections between stochastic elements
+- Arrow: Single bonds
+- Box: Aromatic bonds
+- Number labels: Probability of bond formation
+
+This transformation makes the graphs slightly more complex, but it enables the use of conventional and well-established graph algorithms, such as graph matching, graph edit distance, and machine learning tools like message passing neural networks.
+
+### Full Atom Graphs
+
+The information contained in the stochastic atom graphs remains complete. We can demonstrate this by using the stochastic atom graph to build a full molecule from the ensemble.
+
+```python
+def render_molecule_from_stochastic_atom_graph(stochastic_atom_graph):
+    from gbigsmiles.graph_generate import AtomGraph
+    full_graph = AtomGraph(stochastic_atom_graph, rng=rng)
+    full_graph.generate()
+    atom_dot = gbigsmiles.core.molecule_atom_graph_to_dot_string(full_graph)
+    if pydot:
+        pydot_graph = pydot.graph_from_dot_data(atom_dot)[0]
+        graph_svg = pydot_graph.create_svg()
+        return render_svg(graph_svg)
+    else:
+        return ''
+render_molecule_from_stochastic_atom_graph(stochastic_atom_graph)
+```
+
+```python
+render_molecule_from_stochastic_atom_graph(stochastic_atom_graph)
+```
+
+Just as before, these graphs have too many nodes to be handled efficiently with graph algorithms. Additionally, they differ as they are samples from an ensemble.

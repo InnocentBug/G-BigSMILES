@@ -11,6 +11,31 @@ from .chem_resource import atom_color_mapping, atom_name_mapping
 
 _GLOBAL_RNG = np.random.default_rng()
 
+_BOND_TYPE_TO_ARROW = {
+    "UNSPECIFIED": "none",
+    "SINGLE": "normal",
+    "DOUBLE": "diamond",
+    "TRIPLE": "dot",
+    "QUADRUPLE": "inv",
+    "QUINTUPLE": "odot",
+    "HEXTUPLE": "inv",
+    "ONEANDAHALF": "vee",
+    "TWOANDAHALF": "invodot",
+    "THREEANDAHALF": "crow",
+    "FOURANDAHALF": "tee",
+    "FIVEANDAHALF": "icurve",
+    "AROMATIC": "box",
+    "IONIC": "dot",
+    "HYDROGEN": "odiamond",
+    "THREECENTER": "none",
+    "DATIVEONE": "box",
+    "DATIVE": "curve",
+    "DATIVEL": "lcurve",
+    "DATIVER": "rcurve",
+    "OTHER": "none",
+    "ZERO": "none",
+}
+
 
 def _determine_darkness_from_hex(color):
     """
@@ -135,6 +160,8 @@ def reaction_graph_to_dot_string(graph, bigsmiles=None):
 
 
 def stochastic_atom_graph_to_dot_string(stochastic_atom_graph):
+    bond_type_to_arrow_list = list(_BOND_TYPE_TO_ARROW.values())
+
     graph = stochastic_atom_graph.graph
     dot_str = "strict digraph { \n"
     for node in graph.nodes(data=True):
@@ -149,13 +176,44 @@ def stochastic_atom_graph_to_dot_string(stochastic_atom_graph):
 
     for edge in graph.edges():
         edge_data = graph.get_edge_data(*edge)
-        bond_type = []
-        try:
-            bond_type += [edge_data["bond_type"]]
-        except KeyError:
-            for key in edge_data:
-                bond_type += [edge_data[key]["bond_type"]]
+        for key in edge_data:
+            bond_type = edge_data[key]["bond_type"]
+            color = "black"
+            value = 1.0
+            if edge_data[key]["stochastic_weight"] > 0:
+                value = edge_data[key]["stochastic_weight"]
+                color = "red"
+            elif edge_data[key]["transition_weight"] > 0:
+                value = edge_data[key]["transition_weight"]
+                color = "blue"
+            elif edge_data[key]["termination_weight"]:
+                value = edge_data[key]["termination_weight"]
+                color = "green"
 
-        dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [label="{bond_type}"];\n'
+            dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [arrowhead="{bond_type_to_arrow_list[bond_type]}",label={value},color={color}];\n'
+    dot_str += "}\n"
+    return dot_str
+
+
+def molecule_atom_graph_to_dot_string(atom_graph):
+    bond_type_to_arrow_list = list(_BOND_TYPE_TO_ARROW.values())
+
+    graph = atom_graph.graph
+    dot_str = "strict digraph { \n"
+    for node in graph.nodes(data=True):
+        label = f"{atom_name_mapping[node[1]['atomic_num']]}"
+
+        color = "#" + atom_color_mapping[node[1]["atomic_num"]]
+        extra_attr = f'style=filled, fillcolor="{color}", '
+        if _determine_darkness_from_hex(color):
+            extra_attr += "fontcolor=white,"
+
+        dot_str += f'"{node[0]}" [{extra_attr} label="{label}"];\n'
+
+    for edge in graph.edges():
+        edge_data = graph.get_edge_data(*edge)
+        bond_type = edge_data["bond_type"]
+
+        dot_str += f'"{int(edge[0])}" -> "{int(edge[1])}" [arrowhead="{bond_type_to_arrow_list[bond_type]}"];\n'
     dot_str += "}\n"
     return dot_str

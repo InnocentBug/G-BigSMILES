@@ -121,6 +121,22 @@
     "pypi",
     "pypa",
     "dists",
-    "startswith"
+    "startswith",
+    "odot",
+    "odot",
+    "HEXTUPLE",
+    "TWOANDAHALF",
+    "invodot",
+    "THREEANDAHALF",
+    "FOURANDAHALF",
+    "FIVEANDAHALF",
+    "icurve",
+    "odiamond",
+    "THREECENTER",
+    "DATIVEONE",
+    "DATIVEL",
+    "lcurve",
+    "DATIVER",
+    "rcurve"
   ]
 }
