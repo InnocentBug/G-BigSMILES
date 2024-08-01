@@ -847,7 +847,7 @@ In our demonstration, there's a 1 in 40 probability that the polymer generation 
 if IS_LINUX or not TESTING_ENV:
     mu = 5e3
     sigma = 1e3
-    generative_bigSMILES = "[H]{[>] [<]CC([>|40 0 1|])c1ccccc1 ; [<][H] []}|gauss("+str(mu)+", "+str(sigma)+")|.|1e6|"
+    generative_bigSMILES = "{[] [<]CC([>|40 0 1 0|])c1ccccc1 ; [<|0|][H], [>]N []}|gauss("+str(mu)+", "+str(sigma)+")|.|1e6|"
     normalized_deviation = plot_distribution(generative_bigSMILES, mu, sigma)
     # Let's make sure our expectations are fulfilled (important for automated tests)
     if normalized_deviation < 0.5:
@@ -924,3 +924,96 @@ render_molecule_from_stochastic_atom_graph(stochastic_atom_graph)
 ```
 
 Just as before, these graphs have too many nodes to be handled efficiently with graph algorithms. Additionally, they differ as they are samples from an ensemble.
+
+
+## Molecules with different initiators
+
+If you wish to polymer made of the same repeating monomer, but with different initiators you have at least 2 options available.
+
+Here as example we explore Polystyrene with two different initiators. The first one prefixes the polymer with this.
+
+```python
+draw_molecule("CCOC(=O)[CH0](C)(C)")
+```
+
+Chosen here because it is easy to spot with the oxygen atoms in red in the drawings.
+
+And the second option is this one, chose because we can easily spot the nitrogens in blue.
+
+```python
+draw_molecule("C[CH1](CN)")
+```
+
+
+### Different end groups
+
+The first choice is to not explicitly define an initiator group outside the stochastic element, but use termination molecules to start the initiation.
+
+```python
+generative_bigSMILES = "{[][<]CC([>])c1ccccc1; CCOC(=O)C(C)(C)[>], CC(CN)[>] [<]}|schulz_zimm(1000, 900)|[Br].|5e5|"
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+Depending on our rng luck, you should see both initiators present in the expressed molecules. (If not try generating some more instances of the ensemble.)
+
+Notice how we chose `[<]` as the termination bond descriptor for the stochastic element.
+This is required to be opposite to the initiator groups. This guarantees, that at the end of the generation the chain is incompatible with the initiator groups. Hence they cannot (and should not) terminate the chain. Instead the chain gets terminate by going outside the stochastic element with `[Br]` as intended here.
+
+We can also bias the choice of the initiator group, by assigning a weight. Let's make the oxygen rich initiator 10 more likely to begin a chain then the nitrogen.
+
+```python
+generative_bigSMILES = "{[][<]CC([>])c1ccccc1; CCOC(=O)C(C)(C)[>|10|], CC(CN)[>] [<]}|schulz_zimm(1000, 900)|[Br].|5e5|"
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+### Using a mixture of polymers
+
+The previous example works and may be closer to the chemical reaction, but it requires care and good knowledge of the edge cases in G-BigSMILES notation.
+
+It may be more straight forward to write the situation instead as a mixture of 2 different polymer species, that only differ in their initiating group.
+
+```python
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1 [<]}|schulz_zimm(1000, 900)|[Br].|5e5|CC(CN){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1200, 1100)|[Br].|15e5|"
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_molecule(generative_bigSMILES)
+```
+
+This notation is longer as we have to repeat parts for both polymer species. But it seems more straight forward, and it gives us more control. For example we can now control the molecular weight distribution as a function of the initiator.
+Here I made the nitrogen polymers slightly more molecular weight.
+
+Additionally, we now control the mixture ratio directly over the mixture ratio of the two species with the `.` notation.

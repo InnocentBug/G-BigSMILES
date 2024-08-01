@@ -137,6 +137,8 @@
     "DATIVEL",
     "lcurve",
     "DATIVER",
-    "rcurve"
+    "rcurve",
+    "initiator",
+    "initiators"
   ]
 }
