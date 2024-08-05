@@ -6,7 +6,7 @@
 
 import numpy as np
 from rdkit import Chem
-from rdkit.Chem import AllChem
+from rdkit.Chem import AllChem, rdDepictor
 from rdkit.Chem.Draw import rdMolDraw2D
 
 import gbigsmiles
@@ -69,6 +69,7 @@ bigA = "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}|schulz_zimm(5
 # bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
 bigA = "OC{[>] [<]CC[>], [<|.5|]C(N[>|.1 0 0 0 0 0 0|])C[>]; [<][H], [<]C [<]}|schulz_zimm(5000, 4500)|COOC{[<] [<]COC[>], [<]C(ON)C[>] [>]}|schulz_zimm(5000, 4500)|{[<] [<]COCOC[>], [<]CONOC[>] [>]}|schulz_zimm(1700, 1500)|F"
 
+
 mol = gbigsmiles.Molecule(bigA)
 
 stochastic_atom_graph = mol.gen_stochastic_atom_graph(expect_schulz_zimm_distribution=True)
@@ -81,7 +82,7 @@ rng = np.random.default_rng(45)
 full_graph = AtomGraph(stochastic_atom_graph, rng=rng)
 full_graph.generate()
 print(full_graph.mw, full_graph._mw_draw_map, full_graph.graph)
-atom_dot = gbigsmiles.core.stochastic_atom_graph_to_dot_string(full_graph)
+atom_dot = gbigsmiles.core.molecule_atom_graph_to_dot_string(full_graph)
 with open("atom_graph.dot", "w") as filehandle:
     filehandle.write(atom_dot)
 
@@ -89,25 +90,39 @@ rd_mol = full_graph.to_mol()
 print(Chem.MolToSmiles(rd_mol))
 print(Chem.Descriptors.HeavyAtomMolWt(rd_mol), np.sum(full_graph.mw))
 
-mol_gen = mol.generate()
-print(mol_gen.smiles)
-
 molSize = (2000, 1000)
 my_mol = rd_mol
 AllChem.EmbedMolecule(my_mol)
 mc = Chem.Mol(my_mol.ToBinary())
+rdDepictor.Compute2DCoords(mc)
 drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
 drawer.DrawMolecule(mc)
 drawer.FinishDrawing()
 svg = drawer.GetDrawingText()
-with open("molPlay.svg", "w") as filehandle:
+with open("rd_mol.svg", "w") as filehandle:
     filehandle.write(svg)
-# calc_prob, matches = gbigsmiles.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
-# print(calc_prob)
 
-print(mol.generate_string(True))
-graph = mol.gen_reaction_graph()
-graph_dot = gbigsmiles.reaction_graph_to_dot_string(graph, mol)
 
-with open("graph.dot", "w") as filehandle:
-    filehandle.write(graph_dot)
+# mol_gen = mol.generate()
+# print(mol_gen.smiles)
+
+# molSize = (2000, 1000)
+# my_mol = rd_mol
+# AllChem.EmbedMolecule(my_mol)
+# mc = Chem.Mol(my_mol.ToBinary())
+# rdDepictor.Compute2DCoords(mc)
+# drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0], molSize[1])
+# drawer.DrawMolecule(mc)
+# drawer.FinishDrawing()
+# svg = drawer.GetDrawingText()
+# with open("molPlay.svg", "w") as filehandle:
+#     filehandle.write(svg)
+# # calc_prob, matches = gbigsmiles.mol_prob.get_ensemble_prob(mol_gen.smiles, mol)
+# # print(calc_prob)
+
+# print(mol.generate_string(True))
+# graph = mol.gen_reaction_graph()
+# graph_dot = gbigsmiles.reaction_graph_to_dot_string(graph, mol)
+
+# with open("graph.dot", "w") as filehandle:
+#     filehandle.write(graph_dot)
