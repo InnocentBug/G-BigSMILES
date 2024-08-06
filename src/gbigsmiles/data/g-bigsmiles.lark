@@ -1,10 +1,91 @@
-atom:  bracket_atom
-  | aliphatic_organic
-  | aromatic_organic
+big_smiles: big_smiles_molecule*
+big_smiles_molecule: smiles? _big_smiles_repeat* dot_generation?
+_big_smiles_repeat: stochastic_object* smiles?
+
+stochastic_object: "{" WS_INLINE* terminal_bond_descriptor smiles _monomer_list* end_group? terminal_bond_descriptor "}" stochastic_generation?
+
+atom:  _bracket_atom
+  | _aliphatic_organic
+  | _aromatic_organic
   | "*"
   | bond_descriptor
 
-aliphatic_organic:  "B"
+_bracket_atom: "[" _isotope? _symbol _chiral? _hcount? _charge? _class? "]"
+
+_symbol: _element_symbols
+  | _aromatic_symbols
+  | "*"
+
+bond: "-"
+  | "="
+  | "#"
+  | "$"
+  | ":"
+  | "/"
+  | "\\"
+
+ringbond: bond? DIGIT
+  | bond? "%" DIGIT? DIGIT
+
+_branched_atom: atom ringbond* branch*
+
+branch: "(" bond? big_smiles_molecule* ")"
+
+_atom_assembly: bond? _branched_atom
+smiles: _branched_atom _atom_assembly*
+  | smiles dot smiles
+
+
+_isotope: INT
+
+bond_descriptor_symbol: "$"
+  | ">"
+  | "<"
+
+bond_descriptor_generation: "|" NUMBER "|"
+  | "|" NUMBER _number_list_repeat* "|"
+
+bond_descriptor.-1: "[" bond_descriptor_symbol INT? bond_descriptor_generation? "]"
+terminal_bond_descriptor.-2: "[" bond_descriptor_symbol? "]"
+
+stochastic_generation: "|" stochastic_distribution "|"
+stochastic_distribution: "flory_schulz(" WS_INLINE* NUMBER WS_INLINE* ")"
+  | "schulz_zimm(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+  | "gauss(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+  | "uniform(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+  | "log_normal(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+  | "poisson(" WS_INLINE* NUMBER WS_INLINE* ")"
+
+
+_hcount: "H"
+  | "H" DIGIT
+
+_charge: "-" DIGIT?
+  | "+" DIGIT?
+  | "--"
+  | "++"
+
+_class: ":" INT
+
+
+dot_system_size: "|" WS_INLINE* NUMBER WS_INLINE* "|"
+dot_generation: dot dot_system_size
+dot: "."
+
+_number_list_repeat.-1: " " NUMBER
+
+_monomer_list: WS_INLINE* "," WS_INLINE* smiles
+end_group.-1: ";" WS_INLINE* smiles _monomer_list*
+
+
+%import common.INT
+%import common.SIGNED_NUMBER
+%import common.NUMBER
+%import common.DIGIT
+%import common.WS
+%import common.WS_INLINE
+
+_aliphatic_organic:  "B"
   | "C"
   | "N"
   | "O"
@@ -15,22 +96,35 @@ aliphatic_organic:  "B"
   | "Br"
   | "I"
 
-aromatic_organic: "b"
+_aromatic_organic: "b"
   | "c"
   | "n"
   | "o"
   | "s"
   | "p"
 
-bracket_atom: "[" isotope? symbol chiral? hcount? charge? class? "]"
+_aromatic_symbols: "b"
+  | "c"
+  | "n"
+  | "o"
+  | "p"
+  | "s"
+  | "se"
+  | "as"
 
-symbol: element_symbols
-  | aromatic_symbols
-  | "*"
+_chiral: "@"
+  | "@@"
+  | "@TH1"
+  | "@TH2"
+  | "@AL1"
+  | "@AL2"
+  | "@SP1"
+  | "@SP2"
+  | "@SP3"
+  | "@TB" DIGIT? DIGIT
+  | "@OH" DIGIT? DIGIT
 
-isotope: INT
-
-element_symbols: "H"
+_element_symbols: "H"
   | "He"
   | "Li"
   | "Be"
@@ -144,98 +238,3 @@ element_symbols: "H"
   | "Md"
   | "No"
   | "Lr"
-
-aromatic_symbols: "b"
-  | "c"
-  | "n"
-  | "o"
-  | "p"
-  | "s"
-  | "se"
-  | "as"
-
-chiral: "@"
-  | "@@"
-  | "@TH1"
-  | "@TH2"
-  | "@AL1"
-  | "@AL2"
-  | "@SP1"
-  | "@SP2"
-  | "@SP3"
-  | "@TB" DIGIT? DIGIT
-  | "@OH" DIGIT? DIGIT
-
-hcount: "H"
-  | "H" DIGIT
-
-charge: "-" DIGIT?
-  | "+" DIGIT?
-  | "--"
-  | "++"
-
-class: ":" INT
-
-bond: "-"
-  | "="
-  | "#"
-  | "$"
-  | ":"
-  | "/"
-  | "\\"
-
-ringbond: bond? DIGIT
-  | bond? "%" DIGIT? DIGIT
-
-branched_atom: atom ringbond* branch*
-
-branch: "(" chain ")"
-  | "(" bond chain ")"
-  | "(" dot chain ")"
-
-chain: branched_atom
-  | chain branched_atom
-  | chain bond branched_atom
-  | chain dot branched_atom
-
-dot_system_size: "|" WS_INLINE* NUMBER WS_INLINE* "|"
-dot_generation: dot dot_system_size
-dot: "."
-
-smiles: chain
-
-bond_descriptor_symbol: "$"
-  | ">"
-  | "<"
-
-number_list_repeat: " " NUMBER
-
-bond_descriptor_generation: "|" NUMBER "|"
-  | "|" NUMBER number_list_repeat* "|"
-
-bond_descriptor: "[" bond_descriptor_symbol INT? bond_descriptor_generation? "]"
-terminal_bond_descriptor: "[" bond_descriptor_symbol? "]"
-
-monomer_repeat: WS_INLINE* "," WS_INLINE* smiles
-end_group: ";" WS_INLINE* smiles monomer_repeat*
-
-stochastic_distribution: "flory_schulz(" WS_INLINE* NUMBER WS_INLINE* ")"
-  | "schulz_zimm(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
-  | "gauss(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
-  | "uniform(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
-  | "log_normal(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
-  | "poisson(" WS_INLINE* NUMBER WS_INLINE* ")"
-
-stochastic_generation: "|" stochastic_distribution "|"
-stochastic_object: "{" WS_INLINE* terminal_bond_descriptor smiles monomer_repeat* end_group? terminal_bond_descriptor "}" stochastic_generation?
-
-big_smiles_repeat: stochastic_object* smiles?
-big_smiles_molecule: smiles? big_smiles_repeat* dot_generation
-big_smiles: big_smiles_molecule*
-
-%import common.INT
-%import common.SIGNED_NUMBER
-%import common.NUMBER
-%import common.DIGIT
-%import common.WS
-%import common.WS_INLINE
