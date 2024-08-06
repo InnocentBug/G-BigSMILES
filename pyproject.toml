@@ -16,7 +16,15 @@ authors = [
 ]
 license = { text = "GPL-3.0", files = ["LICENSE.md"] }
 requires-python = ">=3.9"
-dependencies = ["scipy", "numpy", "networkx", "matplotlib", "pytest", "rdkit"]
+dependencies = [
+  "scipy",
+  "numpy",
+  "networkx",
+  "matplotlib",
+  "pytest",
+  "rdkit",
+  "lark",
+]
 dynamic = ["version"]
 readme = "README.md"
 

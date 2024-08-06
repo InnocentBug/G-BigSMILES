@@ -1,0 +1,241 @@
+atom:  bracket_atom
+  | aliphatic_organic
+  | aromatic_organic
+  | "*"
+  | bond_descriptor
+
+aliphatic_organic:  "B"
+  | "C"
+  | "N"
+  | "O"
+  | "S"
+  | "P"
+  | "F"
+  | "Cl"
+  | "Br"
+  | "I"
+
+aromatic_organic: "b"
+  | "c"
+  | "n"
+  | "o"
+  | "s"
+  | "p"
+
+bracket_atom: "[" isotope? symbol chiral? hcount? charge? class? "]"
+
+symbol: element_symbols
+  | aromatic_symbols
+  | "*"
+
+isotope: INT
+
+element_symbols: "H"
+  | "He"
+  | "Li"
+  | "Be"
+  | "B"
+  | "C"
+  | "N"
+  | "O"
+  | "F"
+  | "Ne"
+  | "Na"
+  | "Mg"
+  | "Al"
+  | "Si"
+  | "P"
+  | "S"
+  | "Cl"
+  | "Ar"
+  | "K"
+  | "Ca"
+  | "Sc"
+  | "Ti"
+  | "V"
+  | "Cr"
+  | "Mn"
+  | "Fe"
+  | "Co"
+  | "Ni"
+  | "Cu"
+  | "Zn"
+  | "Ga"
+  | "Ge"
+  | "As"
+  | "Se"
+  | "Br"
+  | "Kr"
+  | "Rb"
+  | "Sr"
+  | "Y"
+  | "Zr"
+  | "Nb"
+  | "Mo"
+  | "Tc"
+  | "Ru"
+  | "Rh"
+  | "Pd"
+  | "Ag"
+  | "Cd"
+  | "In"
+  | "Sn"
+  | "Sb"
+  | "Te"
+  | "I"
+  | "Xe"
+  | "Cs"
+  | "Ba"
+  | "Hf"
+  | "Ta"
+  | "W"
+  | "Re"
+  | "Os"
+  | "Ir"
+  | "Pt"
+  | "Au"
+  | "Hg"
+  | "Tl"
+  | "Pb"
+  | "Bi"
+  | "Po"
+  | "At"
+  | "Rn"
+  | "Fr"
+  | "Ra"
+  | "Rf"
+  | "Db"
+  | "Sg"
+  | "Bh"
+  | "Hs"
+  | "Mt"
+  | "Ds"
+  | "Rg"
+  | "Cn"
+  | "Fl"
+  | "Lv"
+  | "La"
+  | "Ce"
+  | "Pr"
+  | "Nd"
+  | "Pm"
+  | "Sm"
+  | "Eu"
+  | "Gd"
+  | "Tb"
+  | "Dy"
+  | "Ho"
+  | "Er"
+  | "Tm"
+  | "Yb"
+  | "Lu"
+  | "Ac"
+  | "Th"
+  | "Pa"
+  | "U"
+  | "Np"
+  | "Pu"
+  | "Am"
+  | "Cm"
+  | "Bk"
+  | "Cf"
+  | "Es"
+  | "Fm"
+  | "Md"
+  | "No"
+  | "Lr"
+
+aromatic_symbols: "b"
+  | "c"
+  | "n"
+  | "o"
+  | "p"
+  | "s"
+  | "se"
+  | "as"
+
+chiral: "@"
+  | "@@"
+  | "@TH1"
+  | "@TH2"
+  | "@AL1"
+  | "@AL2"
+  | "@SP1"
+  | "@SP2"
+  | "@SP3"
+  | "@TB" DIGIT? DIGIT
+  | "@OH" DIGIT? DIGIT
+
+hcount: "H"
+  | "H" DIGIT
+
+charge: "-" DIGIT?
+  | "+" DIGIT?
+  | "--"
+  | "++"
+
+class: ":" INT
+
+bond: "-"
+  | "="
+  | "#"
+  | "$"
+  | ":"
+  | "/"
+  | "\\"
+
+ringbond: bond? DIGIT
+  | bond? "%" DIGIT? DIGIT
+
+branched_atom: atom ringbond* branch*
+
+branch: "(" chain ")"
+  | "(" bond chain ")"
+  | "(" dot chain ")"
+
+chain: branched_atom
+  | chain branched_atom
+  | chain bond branched_atom
+  | chain dot branched_atom
+
+dot_system_size: "|" WS_INLINE* NUMBER WS_INLINE* "|"
+dot_generation: dot dot_system_size
+dot: "."
+
+smiles: chain
+
+bond_descriptor_symbol: "$"
+  | ">"
+  | "<"
+
+number_list_repeat: " " NUMBER
+
+bond_descriptor_generation: "|" NUMBER "|"
+  | "|" NUMBER number_list_repeat* "|"
+
+bond_descriptor: "[" bond_descriptor_symbol INT? bond_descriptor_generation? "]"
+terminal_bond_descriptor: "[" bond_descriptor_symbol? "]"
+
+monomer_repeat: WS_INLINE* "," WS_INLINE* smiles
+end_group: ";" WS_INLINE* smiles monomer_repeat*
+
+stochastic_distribution: "flory_schulz(" WS_INLINE* NUMBER WS_INLINE* ")"
+  | "schulz_zimm(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+  | "gauss(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+  | "uniform(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+  | "log_normal(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+  | "poisson(" WS_INLINE* NUMBER WS_INLINE* ")"
+
+stochastic_generation: "|" stochastic_distribution "|"
+stochastic_object: "{" WS_INLINE* terminal_bond_descriptor smiles monomer_repeat* end_group? terminal_bond_descriptor "}" stochastic_generation?
+
+big_smiles_repeat: stochastic_object* smiles?
+big_smiles_molecule: smiles? big_smiles_repeat* dot_generation
+big_smiles: big_smiles_molecule*
+
+%import common.INT
+%import common.SIGNED_NUMBER
+%import common.NUMBER
+%import common.DIGIT
+%import common.WS
+%import common.WS_INLINE
