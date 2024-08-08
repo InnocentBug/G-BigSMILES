@@ -51,4 +51,4 @@ omit = [
 ]
 
 [tool.setuptools.package-data]
-gbigsmiles = ["data/ffbonded.itp", "data/ffnonbonded.itp", "data/opls.par"]
+gbigsmiles = ["data/ffbonded.itp", "data/ffnonbonded.itp", "data/opls.par", "data/g-bigsmiles.lark"]

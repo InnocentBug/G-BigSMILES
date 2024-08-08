@@ -1,0 +1,40 @@
+{
+    "chembl_smiles": [
+    "",
+    "O=C(c%12cccc(Cl)c1)c1ccc2n%12CCC2C(=O)O",
+    "CC[C@@H]1C/C=C\\C(=O)[C@@H](O)[C@@H](O)C/C=C/c2cc(OC)cc(O)c2C(=O)O1",
+    "CC(C)(C(=O)O)c1cccnc1Nc1ccc(Cl)cc1",
+    "OC[C@@]1(CCCc2ccccc2)CC2C3Cc4ccc(O)c5c4C2(CCN3CC2CCC2)C(O5)[C@@H]1O",
+    "CCCC(=O)Nc1ccccc1Oc1cccc(OC)c1",
+    "CCCCCCCC(NC(=O)c1cc(-c2ccccc2)nc2ccccc12)c1ccccc1",
+    "CN(C)c1ncnc2c1ncn2Cc1cccc(C#N)c1",
+    "O=C1/C(=C\\c2ccncc2)C(c2ccccc2)Oc2ccccc21",
+    "O=C1C2=CCC[C@@]1(O)C#C/C=C\\C#C[C@@H]2O",
+    "C=C(C)[C@@H]1CC[C@]2(COC(C)=O)CC[C@]3(C)[C@H](CC[C@@H]4[C@@]5(C)CC[C@H](OC(=O)n6ccnc6C)C(C)(C)[C@@H]5CC[C@]43C)[C@@H]12",
+    "COc1ccc2c(c1)c(CCNC(=O)C1CC1)c1n2Cc2ccccc2-1",
+    "CC[C@H]1CCN2CCCC[C@@H]2[C@H]1c1ccc(Cl)c(Cl)c1",
+    "CCCNc1ccc2c(c1)CC(N)(C(=O)O)CC2",
+    "COc1ccccc1S(=O)(=O)Nc1c(C)cc(C)cc1C",
+    "CCCC(CCC)C(=O)[O-].[Na+]",
+    "C#CCN(Cc1cc2c(O)nc(C)nc2cc1C)c1ccc(C(=O)NCc2ccccn2)c(F)c1",
+    "Cn1cc([N+](=O)[O-])cc1C(=O)NNC(=O)Nc1ccc(Cl)cc1",
+    "O=C(C1CCCCN1)N1CCN(Cc2cccnc2)CC1",
+    "CCN(c1nc(C)cc(-c2ccccc2OC)n1)c1c(Br)cc(OC)cc1OC",
+    "c1cncc(O[C@H]2CCNC2)c1",
+    "Cc1ccc(-c2csc(-n3ncc(C(=O)NCCCO)c3C)n2)cc1",
+    "CN(C)CCOc1cc(NC(=O)Nc2cccc([N+](=O)[O-])c2)ccc1I",
+	"C/C=C/C=C/C(=O)O[C@H]1CCCC[C@H](O)[C@H](O)[C@@H](CCC)OC1=O",
+	"CCO.CCS",
+    "C(N)C",
+    "C(C(C))C",
+    "C(C)(C)",
+    "[H]CC[CH2]"
+    ],
+    "big_smiles":
+    [
+	"CCO{[<][<]C(N)C[>|2|][>]}|uniform(500, 600)|{[<][<|0 1|]C(=O)C[>][>]}|uniform(500, 600)|CCN.|2000|",
+    "CC(O{[<][<]C(N)C[>|2|][>]}|uniform(500, 600)|{[<][<|0 1|]C(=O)C[>][>]}|uniform(500, 600)|C)CN.|2000|",
+	"CC(O{[<][<]C(N)C[>][>]}{[<][<]C(=O)C[>][>]}C)CN"
+    ]
+
+}
