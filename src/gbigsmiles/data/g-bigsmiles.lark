@@ -2,7 +2,7 @@ big_smiles: big_smiles_molecule*
 big_smiles_molecule: smiles? _big_smiles_repeat* dot_generation?
 _big_smiles_repeat: stochastic_object* smiles?
 
-stochastic_object: "{" WS_INLINE* terminal_bond_descriptor smiles _monomer_list* end_group? terminal_bond_descriptor "}" stochastic_generation?
+stochastic_object: "{" WS_INLINE* terminal_bond_descriptor WS_INLINE* smiles WS_INLINE* _monomer_list* WS_INLINE* end_group? WS_INLINE* terminal_bond_descriptor "}" stochastic_generation?
 
 atom:  _bracket_atom
   | _aliphatic_organic
@@ -46,7 +46,7 @@ bond_descriptor_generation: "|" NUMBER "|"
   | "|" NUMBER _number_list_repeat* "|"
 
 bond_descriptor.-1: "[" bond_descriptor_symbol INT? bond_descriptor_generation? "]"
-terminal_bond_descriptor.-2: "[" bond_descriptor_symbol? "]"
+terminal_bond_descriptor.-2: "[" bond_descriptor_symbol? INT? "]"
 
 stochastic_generation: "|" stochastic_distribution "|"
 stochastic_distribution: "flory_schulz(" WS_INLINE* NUMBER WS_INLINE* ")"
