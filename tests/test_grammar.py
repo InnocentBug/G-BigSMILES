@@ -49,4 +49,5 @@ def test_invalid_big_smi_grammar(grammar_parser, invalid_big_smi_list):
     for smi in invalid_big_smi_list:
         print(smi)
         with pytest.raises(lark.UnexpectedInput):
-            grammar_parser.parse(smi)
+            tree = grammar_parser.parse(smi)
+            print(tree.pretty())

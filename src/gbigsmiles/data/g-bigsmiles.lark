@@ -1,4 +1,4 @@
-big_smiles: big_smiles_molecule*
+big_smiles: big_smiles_molecule* big_smiles_fragment_definition*
 big_smiles_molecule: smiles? _big_smiles_repeat* dot_generation?
 _big_smiles_repeat: stochastic_object* smiles?
 
@@ -8,6 +8,19 @@ atom:  _bracket_atom
   | _aliphatic_organic
   | _aromatic_organic
   | "*"
+  | big_smiles_fragment_declaration
+
+# Ok, this is not every printable_ascii character as described here: https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#simplifications-and-abbreviations, but it makes parsing so much more easy if we exclude a couple characters here.
+_printable_character: /['?'-Z]/
+  | /['^'-z]/
+  | /[!-']/
+  | /[*-;]/
+  | "~"
+_big_smiles_fragment_name: _printable_character+
+big_smiles_fragment_declaration: "[#" _big_smiles_fragment_name "]"
+
+big_smiles_fragment_definition: ".{#" _big_smiles_fragment_name "=" big_smiles_molecule+ "}"
+
 
 _atom_or_bond_descriptor: atom | bond_descriptor
 
