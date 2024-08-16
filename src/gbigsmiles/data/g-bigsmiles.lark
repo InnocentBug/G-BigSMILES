@@ -8,7 +8,8 @@ atom:  _bracket_atom
   | _aliphatic_organic
   | _aromatic_organic
   | "*"
-  | bond_descriptor
+
+_atom_or_bond_descriptor: atom | bond_descriptor
 
 _bracket_atom: "[" _isotope? _symbol _chiral? _hcount? _charge? _class? "]"
 
@@ -27,7 +28,7 @@ bond: "-"
 ringbond: bond? DIGIT
   | bond? "%" DIGIT? DIGIT
 
-_branched_atom: atom ringbond* branch*
+_branched_atom: _atom_or_bond_descriptor ringbond* branch*
 
 branch: "(" bond? big_smiles_molecule* ")"
 
@@ -45,7 +46,11 @@ bond_descriptor_symbol: "$"
 bond_descriptor_generation: "|" NUMBER "|"
   | "|" NUMBER _number_list_repeat* "|"
 
-bond_descriptor.-1: "[" bond_descriptor_symbol INT? bond_descriptor_generation? "]"
+ladder_bond_descriptor: "[" _inner_bond_descriptor _simple_bond_descriptor INT? "]"
+_inner_bond_descriptor: bond_descriptor_symbol INT? bond_descriptor_generation?
+_simple_bond_descriptor: "[" _inner_bond_descriptor "]"
+bond_descriptor: _simple_bond_descriptor | ladder_bond_descriptor
+
 terminal_bond_descriptor.-2: "[" bond_descriptor_symbol? INT? "]"
 
 stochastic_generation: "|" stochastic_distribution "|"
