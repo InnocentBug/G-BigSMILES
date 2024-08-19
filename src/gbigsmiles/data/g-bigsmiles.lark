@@ -9,6 +9,7 @@ atom:  _bracket_atom
   | _aromatic_organic
   | "*"
   | big_smiles_fragment_declaration
+  | stochastic_object
 
 # Ok, this is not every printable_ascii character as described here: https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#simplifications-and-abbreviations, but it makes parsing so much more easy if we exclude a couple characters here.
 _printable_character: /['?'-Z]/
@@ -59,11 +60,17 @@ bond_descriptor_symbol: "$"
 bond_descriptor_generation: "|" NUMBER "|"
   | "|" NUMBER _number_list_repeat* "|"
 
-ladder_bond_descriptor: "[" _inner_bond_descriptor _simple_bond_descriptor INT? "]"
-_inner_bond_descriptor: bond_descriptor_symbol INT? bond_descriptor_generation?
-_simple_bond_descriptor: "[" _inner_bond_descriptor "]"
-bond_descriptor: _simple_bond_descriptor | ladder_bond_descriptor
+ladder_bond_descriptor: "[" _inner_ambi_covalent_descriptor _simple_bond_descriptor INT? "]"
+  | "[" _inner_ambi_covalent_descriptor non_covalent_bond_descriptor INT? "]"
 
+_inner_bond_descriptor: bond_descriptor_symbol INT? bond_descriptor_generation?
+_inner_non_covalent_descriptor: bond_descriptor_symbol ":" INT? _non_covalent_context?
+_inner_ambi_covalent_descriptor: _inner_bond_descriptor | _inner_non_covalent_descriptor
+
+_simple_bond_descriptor: "[" _inner_bond_descriptor "]"
+non_covalent_bond_descriptor: "[" _inner_non_covalent_descriptor "]"
+
+bond_descriptor: _simple_bond_descriptor | ladder_bond_descriptor | non_covalent_bond_descriptor
 terminal_bond_descriptor.-2: "[" bond_descriptor_symbol? INT? "]"
 
 stochastic_generation: "|" stochastic_distribution "|"
@@ -74,6 +81,14 @@ stochastic_distribution: "flory_schulz(" WS_INLINE* NUMBER WS_INLINE* ")"
   | "log_normal(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
   | "poisson(" WS_INLINE* NUMBER WS_INLINE* ")"
 
+_unary_index_operator: "!"
+_binary_index_operator: "~" | "&"
+_index_statement: INT | _branched_index_expression | _unbranched_index_expression
+_branched_index_expression: "(" WS_INLINE* _index_statement WS_INLINE* _binary_index_operator WS_INLINE* _index_statement WS_INLINE* ")"
+_unbranched_index_expression:  _index_statement WS_INLINE* _binary_index_operator WS_INLINE* _index_statement
+_index_expression: _unary_index_operator? WS_INLINE* _index_statement
+_non_covalent_key_value_pair: WS_INLINE* "," WS_INLINE* _printable_character+ "=" _printable_character+ WS_INLINE*
+_non_covalent_context: WS_INLINE* "|" WS_INLINE* _index_expression _non_covalent_key_value_pair*
 
 _hcount: "H"
   | "H" DIGIT

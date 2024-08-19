@@ -69,7 +69,17 @@
 	"{[][$]CC(C)(C)[$],[$]CC(c1cccc(c1)C{[$][$]CC(C)(C(=O)OC)[$][$]}Br)[$][]}",
 	"C([#Arm])([#Arm])([#Arm])[#Arm].{#Arm=CO{[<][>]CCO[<][>]}}",
 	"OCCCCCC(=O){[>][<]OCCCCCC(=C)[>][<]}OCc1cc([#Arm1])cc([#Arm2])c1.{#Arm1=c2nnn(CC{[$][$]CC(c3ccccc3)[$][$]}CCC)c2}.{#Arm2=c4nnn({[>][<]CCO[>][<]}C)c4}",
-	"C([#A])C(c1ccccc1)CC(c1ccccc1)CC(C(=O)OC(C)(C)C){[$][$]CC(C(=O)OC(C)(C)C)[$][$]}C(C)(C)C(=O)OCC(CC(c1ccccc1)C{[$][$]CC(c1ccccc1)[$][$]}CCCC)(O{[>][<]CCO[>][<]}CCOC(c1ccccc1)).{#A=C(c1ccccc1)CC(c1ccccc1)CC(C(=O)OC(C)(C)C){[$][$]CC(C(=O)OC(C)(C)C)[$][$]}C(C)(C)C(=O)OCC(CC(c1ccccc1)C{[$][$]CC(c1ccccc1)[$][$]}CCCC)(OC{[>][<]CCO[>][<]}CCOC(c1ccccc1))}"
+	"C([#A])C(c1ccccc1)CC(c1ccccc1)CC(C(=O)OC(C)(C)C){[$][$]CC(C(=O)OC(C)(C)C)[$][$]}C(C)(C)C(=O)OCC(CC(c1ccccc1)C{[$][$]CC(c1ccccc1)[$][$]}CCCC)(O{[>][<]CCO[>][<]}CCOC(c1ccccc1)).{#A=C(c1ccccc1)CC(c1ccccc1)CC(C(=O)OC(C)(C)C){[$][$]CC(C(=O)OC(C)(C)C)[$][$]}C(C)(C)C(=O)OCC(CC(c1ccccc1)C{[$][$]CC(c1ccccc1)[$][$]}CCCC)(OC{[>][<]CCO[>][<]}CCOC(c1ccccc1))}",
+	"{[>][<]OCC(C)(C(=O)OCCOC)COC(=O)[>][<]}OCCCCCCOc(cc1)ccc1C(=O)Oc(cc1(C))ccc1OC(=O)c(cc1)ccc1OCCCCCCO{[>][<]C(=O)OCC(C)(C(=O)OCCOC)CO[>][<]}",
+	"{[][<]N=Cc(cc1)ccc1C=NCCC[Si](C)(C)O{[<][>][Si](C)(C)O[<][>]}[Si](C)(C)CCC[>][]}",
+	"{[][$]CC(C(=O)NCC[N+]([<:])(C)(C)C)[$]; [Cl-][>:] []}",
+	"{[][$]CC(O[H])[$], [$]CC(C(=O)[O-][>:])[$]; [Ca++]([>:])[>:][]}",
+	"{[][$]CC(c1ccn([>:])cc1)[$];[H]([>:])Oc1ccccc(c1)CCCCCCCCCCCCCCC[]}",
+	"{[][$]CC([N+]1C=CN(=C1)([<:|1~5, ne=1])CC)[$]; [Br-][>:][]}",
+	"{[][<]c1ccc(s1)([$:|1~5])([$:|1~5])[>][]}",
+	"{[] [Na+][<:] , [Cl-][>:], [<]CCN([H])[$] , [<]CC[N+]([H])([H])([<:])[>], [<]CCN(CCC(=O)O[H])[>], [<]CC[N+]([H])([<:])(CCC(=O)O[H])[>], [<]CC[N+]([H])([<:])(CCC(=O)[O-][>:])[>], [<]CCN(CCC(=O)[O-])[>:][>][]}",
+	"{[][<]CC(C)(C(=O)OC)[>], [<]CC(C)(C(=O)OCCCCOc1cc(c2n([>[>:1]1])cccc2)n([>:2]1)c(c3n([>[>:3]1])cccc3)(c1))[>], [Fe++][<[<:1]1]([<[<:2]1])([<[<:3]1])([<[<:3]1])([<[<:2]1])([<[<:1]1])[]}",
+	"{[][<]CC(C(=O)OCCCC)[>], [<]CC(C)(C(=O)OCCN[H]([<:2])C(=O)N[H]([<:1])c1nc(C)cc(n1([>:2]))=O[>:1])[>][]}"
     ],
     "invalid_big_smiles":
     [
