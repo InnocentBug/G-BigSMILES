@@ -14,16 +14,26 @@ except ImportError as exc:
     raise RuntimeError(
         "Please make sure to install this module correctly via setuptools with setuptools_scm activated to generate a `_version.py` file."
     ) from exc
+
+from .atom import Atom
 from .bond import BondDescriptor
 from .core import _GLOBAL_RNG, BigSMILESbase, reaction_graph_to_dot_string
 from .distribution import Distribution, FlorySchulz, Gauss
+from .exception import (
+    GBigSMILESError,
+    GBigSMILESInitNotEnoughError,
+    GBigSMILESInitTooMuchError,
+    GBigSMILESParsingError,
+)
 from .graph_generate import AtomGraph
 from .mixture import Mixture
 from .mol_prob import get_ensemble_prob
 from .molecule import Molecule
+from .parser import GBigSMILESTransformer
 from .stochastic import Stochastic
 from .system import System
 from .token import SmilesToken
+from .util import camel_to_snake, snake_to_camel
 
 __all__ = [
     "__version__",
@@ -42,4 +52,11 @@ __all__ = [
     "Stochastic",
     "System",
     "SmilesToken",
+    "GBigSMILESError",
+    "GBigSMILESParsingError",
+    "GBigSMILESInitNotEnoughError",
+    "GBigSMILESInitTooMuchError",
+    "camel_to_snake",
+    "snake_to_camel",
+    "GBigSMILESTransformer",
 ]

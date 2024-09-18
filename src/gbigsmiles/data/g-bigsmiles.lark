@@ -4,12 +4,15 @@ _big_smiles_repeat: stochastic_object* smiles?
 
 stochastic_object: "{" WS_INLINE* terminal_bond_descriptor WS_INLINE* smiles WS_INLINE* _monomer_list* WS_INLINE* end_group? WS_INLINE* terminal_bond_descriptor "}" stochastic_generation?
 
+_atom_stand_in: atom
+  | big_smiles_fragment_declaration
+  | stochastic_object
+  | bond_descriptor
+
 atom:  _bracket_atom
   | _aliphatic_organic
   | _aromatic_organic
   | "*"
-  | big_smiles_fragment_declaration
-  | stochastic_object
 
 # Ok, this is not every printable_ascii character as described here: https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#simplifications-and-abbreviations, but it makes parsing so much more easy if we exclude a couple characters here.
 _printable_character: /['?'-Z]/
@@ -23,12 +26,10 @@ big_smiles_fragment_declaration: "[#" _big_smiles_fragment_name "]"
 big_smiles_fragment_definition: ".{#" _big_smiles_fragment_name "=" big_smiles_molecule+ "}"
 
 
-_atom_or_bond_descriptor: atom | bond_descriptor
+_bracket_atom: "[" isotope? atom_symbol _chiral? _hcount? _charge? _class? "]"
 
-_bracket_atom: "[" _isotope? _symbol _chiral? _hcount? _charge? _class? "]"
-
-_symbol: _element_symbols
-  | _aromatic_symbols
+atom_symbol: _element_symbols
+  | aromatic_symbol
   | "*"
 
 bond: "-"
@@ -42,7 +43,7 @@ bond: "-"
 ringbond: bond? DIGIT
   | bond? "%" DIGIT? DIGIT
 
-_branched_atom: _atom_or_bond_descriptor ringbond* branch*
+_branched_atom: _atom_stand_in ringbond* branch*
 
 branch: "(" bond? big_smiles_molecule* ")"
 
@@ -51,7 +52,7 @@ smiles: _branched_atom _atom_assembly*
   | smiles dot smiles
 
 
-_isotope: INT
+isotope: INT
 
 bond_descriptor_symbol: "$"
   | ">"
@@ -136,11 +137,7 @@ _aromatic_organic: "b"
   | "s"
   | "p"
 
-_aromatic_symbols: "b"
-  | "c"
-  | "n"
-  | "o"
-  | "p"
+aromatic_symbol: _aromatic_organic
   | "s"
   | "se"
   | "as"

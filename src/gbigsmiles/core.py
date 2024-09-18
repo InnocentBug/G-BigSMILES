@@ -5,9 +5,17 @@
 from abc import ABC, abstractmethod
 from warnings import warn
 
+import lark
 import numpy as np
 
 from .chem_resource import atom_color_mapping, atom_name_mapping
+from .exception import (
+    GBigSMILESInitNotEnoughError,
+    GBigSMILESInitTooMuchError,
+    GBigSMILESParsingError,
+)
+from .parser import _GLOBAL_PARSER
+from .util import camel_to_snake
 
 _GLOBAL_RNG = np.random.default_rng()
 
@@ -61,15 +69,55 @@ def _determine_darkness_from_hex(color):
     return hsp < 127.5
 
 
+class classproperty(object):
+    def __init__(self, f):
+        self.f = f
+
+    def __get__(self, obj, owner):
+        if obj is None:
+            return self.f(owner)
+        return self.f(obj)
+
+
 class BigSMILESbase(ABC):
 
     bond_descriptors = []
+
+    def __init__(
+        self, text: str | None = None, children: list[lark.Tree | lark.Token] | None = None
+    ):
+        if text is None and children is None:
+            raise GBigSMILESInitNotEnoughError(self.__class__)
+        if text is not None:
+            if children is not None:
+                raise GBigSMILESInitTooMuchError(self.__class__)
+            tree = _GLOBAL_PARSER.parse(text, start=self.token_name_snake_case)
+            if tree.data != self.token_name_snake_case:
+                raise GBigSMILESParsingError(tree.data)
+            children = tree.children
+        self._children = children
+
+    @classproperty
+    def token_name(self):
+        name = type(self).__name__
+        if name == "ABCMeta":
+            name = self.__name__
+        return name
+
+    @classproperty
+    def token_name_snake_case(self):
+        return camel_to_snake(self.token_name)
 
     def __str__(self):
         return self.generate_string(True)
 
     @abstractmethod
     def generate_string(self, extension: bool):
+        pass
+
+    @property
+    @abstractmethod
+    def value(self):
         pass
 
     @property
