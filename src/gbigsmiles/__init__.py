@@ -29,7 +29,7 @@ from .graph_generate import AtomGraph
 from .mixture import Mixture
 from .mol_prob import get_ensemble_prob
 from .molecule import Molecule
-from .parser import GBigSMILESTransformer
+from .transformer import GBigSMILESTransformer
 from .stochastic import Stochastic
 from .system import System
 from .token import SmilesToken
