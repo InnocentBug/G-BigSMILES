@@ -56,31 +56,7 @@ class AtomSymbol(BigSMILESbase):
         self, text: str | None = None, children: list[lark.Tree | lark.Token] | None = None
     ):
         super().__init__(text, children)
-        self._value = str(children[0])
-
-    def generate_string(self, extension):
-        return str(self.value)
-
-    @property
-    def value(self):
-        return self._value
-
-    @property
-    def generable(self):
-        return True
-
-    @property
-    def aromatic(self):
-        return False
-
-
-class AtomSymbol(BigSMILESbase):
-    def __init__(
-        self, text: str | None = None, children: list[lark.Tree | lark.Token] | None = None
-    ):
-        super().__init__(text, children)
-        print("atom_symbol", children)
-        self._value = str(children[0])
+        self._value = str(self._children[0])
 
     def generate_string(self, extension):
         return str(self.value)

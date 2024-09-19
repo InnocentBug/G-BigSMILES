@@ -2,7 +2,7 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 import lark
-from .parser import _GLOBAL_PARSER
+
 from .atom import AromaticSymbol, Atom, AtomSymbol, Isotope
 
 
@@ -37,7 +37,7 @@ class GBigSMILESTransformer(lark.Transformer):
     def WS_INLINE(self, children):
         return lark.DISCARD
 
-    # def big_smiles_fragment_definition(self, chil
+    # def big_smiles_fragment_definition(self, children
 
 
 #    "{[][<]N=Cc(cc1)ccc1C=N[13C@OH1H2+1:3]CC[Si](C)(C)O{[<][>][Si](C)(C)O[<][>]}[Si](C)(C)CCC[>][]}"

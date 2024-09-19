@@ -6,6 +6,15 @@ from gbigsmiles import Atom, GBigSMILESInitNotEnoughError, GBigSMILESInitTooMuch
 def test_core_errors():
     Atom("C")
     with pytest.raises(GBigSMILESInitTooMuchError):
-        Atom("C", ["C"])
+        try:
+            Atom("C", ["C"])
+        except Exception as exc:
+            print(exc)
+            raise exc
+
     with pytest.raises(GBigSMILESInitNotEnoughError):
-        Atom()
+        try:
+            Atom()
+        except Exception as exc:
+            print(exc)
+            raise exc

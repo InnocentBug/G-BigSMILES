@@ -39,9 +39,13 @@ lint:
         - tests/test_molecule.py
         - .gitignore
         - src/gbigsmiles/data/*
+        - tests/smi.json
     - linters: [yamllint]
       paths:
         - .github/workflows/release.yml
+    - linters: [bandit]
+      paths:
+        - tests/**
 actions:
   enabled:
     - trunk-announce

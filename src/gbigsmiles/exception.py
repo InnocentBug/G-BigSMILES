@@ -21,7 +21,7 @@ class GBigSMILESParsingError(GBigSMILESError):
         self.token = token
 
     def __str__(self):
-        return f"Unanticipated error while parsin. Please report and provide the input string. Token: {token} start: {token.start_pos}"
+        return f"Unanticipated error while parsing. Please report and provide the input string. Token: {self.token} start: {self.token.start_pos}"
 
 
 class GBigSMILESInitNotEnoughError(GBigSMILESError):

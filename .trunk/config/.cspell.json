@@ -139,6 +139,8 @@
     "DATIVER",
     "rcurve",
     "initiator",
-    "initiators"
+    "initiators",
+    "chembl",
+    "ringbond"
   ]
 }

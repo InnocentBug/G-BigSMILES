@@ -4,7 +4,6 @@
 
 from importlib.resources import files
 
-import lark
 from lark import Lark
 
 

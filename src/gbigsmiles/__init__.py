@@ -29,10 +29,10 @@ from .graph_generate import AtomGraph
 from .mixture import Mixture
 from .mol_prob import get_ensemble_prob
 from .molecule import Molecule
-from .transformer import GBigSMILESTransformer
 from .stochastic import Stochastic
 from .system import System
 from .token import SmilesToken
+from .transformer import GBigSMILESTransformer
 from .util import camel_to_snake, snake_to_camel
 
 __all__ = [
@@ -45,6 +45,7 @@ __all__ = [
     "Distribution",
     "FlorySchulz",
     "Gauss",
+    "Atom",
     "AtomGraph",
     "Mixture",
     "get_ensemble_prob",
