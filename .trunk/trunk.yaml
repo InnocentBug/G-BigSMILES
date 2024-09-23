@@ -15,8 +15,8 @@ lint:
   enabled:
     - trufflehog@3.82.2
     - bandit@1.7.9
-    - checkov@3.2.254
-    - ruff@0.6.5
+    - checkov@3.2.255
+    - ruff@0.6.7
     - trivy@0.55.2
     - yamllint@1.35.1
     - oxipng@9.1.2
