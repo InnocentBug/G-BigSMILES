@@ -5,16 +5,11 @@
 from abc import ABC, abstractmethod
 from warnings import warn
 
-import lark
 import numpy as np
 
 from .chem_resource import atom_color_mapping, atom_name_mapping
-from .exception import (
-    GBigSMILESInitNotEnoughError,
-    GBigSMILESInitTooMuchError,
-    GBigSMILESParsingError,
-)
 from .parser import _GLOBAL_PARSER
+from .transformer import _GLOBAL_TRANSFORMER
 from .util import camel_to_snake
 
 _GLOBAL_RNG = np.random.default_rng()
@@ -80,21 +75,15 @@ class classproperty(object):
 
 
 class BigSMILESbase(ABC):
-
     bond_descriptors = []
 
-    def __init__(
-        self, text: str | None = None, children: list[lark.Tree | lark.Token] | None = None
-    ):
-        if text is None and children is None:
-            raise GBigSMILESInitNotEnoughError(self.__class__)
-        if text is not None:
-            if children is not None:
-                raise GBigSMILESInitTooMuchError(self.__class__)
-            tree = _GLOBAL_PARSER.parse(text, start=self.token_name_snake_case)
-            if tree.data != self.token_name_snake_case:
-                raise GBigSMILESParsingError(tree.data)
-            children = tree.children
+    @classmethod
+    def make(cls, text: str):
+        tree = _GLOBAL_PARSER.parse(text, start=cls.token_name_snake_case)
+        transformed_tree = _GLOBAL_TRANSFORMER.transform(tree)
+        return transformed_tree
+
+    def __init__(self, children: list):
         self._children = children
 
     @classproperty
@@ -113,11 +102,6 @@ class BigSMILESbase(ABC):
 
     @abstractmethod
     def generate_string(self, extension: bool):
-        pass
-
-    @property
-    @abstractmethod
-    def value(self):
         pass
 
     @property

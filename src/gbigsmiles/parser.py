@@ -40,6 +40,7 @@ def _make_parser(filename=None, start_tokens=None):
             "isotope",
             "atom_symbol",
             "aromatic_symbol",
+            "bracket_atom",
         ]
     parser = Lark(rf"{grammar_text}", start=start_tokens, keep_all_tokens=True)
     return parser

@@ -9,9 +9,9 @@ _atom_stand_in: atom
   | stochastic_object
   | bond_descriptor
 
-atom:  _bracket_atom
-  | _aliphatic_organic
-  | _aromatic_organic
+atom:  bracket_atom
+  | aliphatic_organic
+  | aromatic_organic
   | "*"
 
 # Ok, this is not every printable_ascii character as described here: https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#simplifications-and-abbreviations, but it makes parsing so much more easy if we exclude a couple characters here.
@@ -26,7 +26,7 @@ big_smiles_fragment_declaration: "[#" _big_smiles_fragment_name "]"
 big_smiles_fragment_definition: ".{#" _big_smiles_fragment_name "=" big_smiles_molecule+ "}"
 
 
-_bracket_atom: "[" isotope? atom_symbol _chiral? _hcount? _charge? _class? "]"
+bracket_atom: "[" isotope? atom_symbol chiral? hcount? atom_charge? atom_class? "]"
 
 atom_symbol: _element_symbols
   | aromatic_symbol
@@ -91,15 +91,15 @@ _index_expression: _unary_index_operator? WS_INLINE* _index_statement
 _non_covalent_key_value_pair: WS_INLINE* "," WS_INLINE* _printable_character+ "=" _printable_character+ WS_INLINE*
 _non_covalent_context: WS_INLINE* "|" WS_INLINE* _index_expression _non_covalent_key_value_pair*
 
-_hcount: "H"
+hcount: "H"
   | "H" DIGIT
 
-_charge: "-" DIGIT?
+atom_charge: "-" DIGIT?
   | "+" DIGIT?
   | "--"
   | "++"
 
-_class: ":" INT
+atom_class: ":" INT
 
 
 dot_system_size: "|" WS_INLINE* NUMBER WS_INLINE* "|"
@@ -119,7 +119,7 @@ end_group.-1: ";" WS_INLINE* smiles _monomer_list*
 %import common.WS
 %import common.WS_INLINE
 
-_aliphatic_organic:  "B"
+aliphatic_organic:  "B"
   | "C"
   | "N"
   | "O"
@@ -130,19 +130,18 @@ _aliphatic_organic:  "B"
   | "Br"
   | "I"
 
-_aromatic_organic: "b"
+aromatic_organic: "b"
   | "c"
   | "n"
   | "o"
   | "s"
   | "p"
 
-aromatic_symbol: _aromatic_organic
-  | "s"
+aromatic_symbol: aromatic_organic
   | "se"
   | "as"
 
-_chiral: "@"
+chiral: "@"
   | "@@"
   | "@TH1"
   | "@TH2"

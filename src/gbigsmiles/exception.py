@@ -54,3 +54,16 @@ class GBigSMILESInitTooMuchError(GBigSMILESError):
 
     def __str__(self):
         return f"Attempt to initialize {self.class_name} with tree and text arguments. Initialize objects of {self.class_name} by passing (part of) a G-BigSMILES string."
+
+
+class GBigSMILESTooManyTokens(GBigSMILESError):
+    def __init__(self, class_name, existing_token, new_token):
+        self.class_name = class_name
+        self.existing_token = existing_token
+        self.new_token = new_token
+
+    def __str__(self):
+        string = f"Parsing Error {self.class_name} only expected one token, but got more. "
+        string += f"The existing token is {self.existing_token} which conflicts with the new "
+        string += f"token {self.new_token}. Most likely in implementation error, please report."
+        return string
