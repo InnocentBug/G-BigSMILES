@@ -2,7 +2,6 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-import lark
 
 from .core import BigSMILESbase
 

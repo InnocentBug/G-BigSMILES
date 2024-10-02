@@ -26,6 +26,7 @@ class Atom(BigSMILESbase):
 
         Args:
             children (list): List of child elements.
+
         """
         super().__init__(children)
 
@@ -44,6 +45,7 @@ class Atom(BigSMILESbase):
 
         Returns:
             str: String representation of the atom.
+
         """
         return str(self.symbol)
 
@@ -105,6 +107,7 @@ class BracketAtom(Atom):
 
         Args:
             children (list): List of child elements.
+
         """
         super().__init__(children)
         for child in self._children:
@@ -132,6 +135,7 @@ class BracketAtom(Atom):
 
         Returns:
             str: String representation of the bracketed atom.
+
         """
         string = "["
         if self.isotope:
@@ -167,6 +171,7 @@ class Isotope(BigSMILESbase):
 
         Args:
             children (list): List of child elements.
+
         """
         super().__init__(children)
         self._value = int(self._children[0])
@@ -180,6 +185,7 @@ class Isotope(BigSMILESbase):
 
         Returns:
             str: String representation of the isotope.
+
         """
         return str(self._value)
 
@@ -204,6 +210,7 @@ class AtomSymbol(BigSMILESbase):
 
         Args:
             children (list[lark.Token]): List of child elements.
+
         """
         self._value = str(children[0])
 
@@ -216,6 +223,7 @@ class AtomSymbol(BigSMILESbase):
 
         Returns:
             str: String representation of the atom symbol.
+
         """
         return self._value
 
@@ -240,6 +248,7 @@ class Chiral(BigSMILESbase):
 
         Args:
             children (list): List of child elements.
+
         """
         super().__init__(children)
 
@@ -263,6 +272,7 @@ class Chiral(BigSMILESbase):
 
         Returns:
             str: String representation of the chirality.
+
         """
         return self._symbol
 
@@ -278,6 +288,7 @@ class HCount(BigSMILESbase):
 
         Args:
             children (list): List of child elements.
+
         """
         self._count = None
         super().__init__(children)
@@ -309,6 +320,7 @@ class HCount(BigSMILESbase):
 
         Returns:
             str: String representation of the hydrogen count.
+
         """
         if self._count:
             return f"H{self.num}"
@@ -326,6 +338,7 @@ class AtomCharge(BigSMILESbase):
 
         Args:
             children: List of child elements.
+
         """
         super().__init__(children)
         self._number = False
@@ -356,6 +369,7 @@ class AtomCharge(BigSMILESbase):
 
         Returns:
             str: String representation of the atom charge.
+
         """
         if not self._number:
             if self._sign > 0:
@@ -390,6 +404,7 @@ class AtomClass(BigSMILESbase):
 
         Args:
             children: List of child elements.
+
         """
         super().__init__(children)
         self._class_num = int(self._children[1])
@@ -408,6 +423,7 @@ class AtomClass(BigSMILESbase):
 
         Returns:
             str: String representation of the atom class.
+
         """
         return ":" + str(self._class_num)
 
