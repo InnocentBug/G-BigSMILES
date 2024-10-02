@@ -26,13 +26,13 @@ big_smiles_fragment_declaration: "[#" _big_smiles_fragment_name "]"
 big_smiles_fragment_definition: ".{#" _big_smiles_fragment_name "=" big_smiles_molecule+ "}"
 
 
-bracket_atom: "[" isotope? atom_symbol chiral? hcount? atom_charge? atom_class? "]"
+bracket_atom: "[" isotope? atom_symbol chiral? h_count? atom_charge? atom_class? "]"
 
 atom_symbol: _element_symbols
   | aromatic_symbol
   | "*"
 
-bond: "-"
+bond_symbol: "-"
   | "="
   | "#"
   | "$"
@@ -40,14 +40,14 @@ bond: "-"
   | "/"
   | "\\"
 
-ringbond: bond? DIGIT
-  | bond? "%" DIGIT? DIGIT
+ring_bond: bond_symbol? DIGIT
+  | bond_symbol? "%" INT
 
-_branched_atom: _atom_stand_in ringbond* branch*
+_branched_atom: _atom_stand_in ring_bond* branch*
 
-branch: "(" bond? big_smiles_molecule* ")"
+branch: "(" bond_symbol? big_smiles_molecule* ")"
 
-_atom_assembly: bond? _branched_atom
+_atom_assembly: bond_symbol? _branched_atom
 smiles: _branched_atom _atom_assembly*
   | smiles dot smiles
 
@@ -91,7 +91,7 @@ _index_expression: _unary_index_operator? WS_INLINE* _index_statement
 _non_covalent_key_value_pair: WS_INLINE* "," WS_INLINE* _printable_character+ "=" _printable_character+ WS_INLINE*
 _non_covalent_context: WS_INLINE* "|" WS_INLINE* _index_expression _non_covalent_key_value_pair*
 
-hcount: "H"
+h_count: "H"
   | "H" DIGIT
 
 atom_charge: "-" DIGIT?

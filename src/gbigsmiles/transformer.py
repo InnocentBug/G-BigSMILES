@@ -61,6 +61,11 @@ class GBigSMILESTransformer(lark.Transformer):
 
         return AromaticOrganic(children)
 
+    def bond_symbol(self, children):
+        from .bond import BondSymbol
+
+        return BondSymbol(children)
+
     def bond_descriptor(self, children):
         # Remove the square_brackets
         children = children[1:-1]
