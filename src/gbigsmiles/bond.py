@@ -153,7 +153,7 @@ def _create_compatible_bond_text(bond):
 class BondSymbol(BigSMILESbase):
     def __init__(self, children: list):
         super().__init__(children)
-        self._symbol = str(children[0])
+        self._symbol = str(self._children[0])
 
     @property
     def generable():
@@ -164,7 +164,34 @@ class BondSymbol(BigSMILESbase):
 
 
 class RingBond(BondSymbol):
-    pass
+    def __init__(self, children: list):
+        super().__init__(children)
+
+        num_text = "".join((str(c) for c in self._children[1:]))
+        self._has_dollar = "%" in num_text
+        num_text.strip("%")
+        self._num = int(num_text)
+
+    def generate_string(self, extension):
+        string = ""
+        if self._has_dollar:
+            string += "%"
+        string += str(self._num)
+        return super().generate_string(extension) + string
+
+
+class BondDescriptorSymbol(BigSMILESbase):
+    def __init__(self, children: list):
+        super().__init__(children)
+
+        self._symbol = str(self._children[0])
+
+    def generate_string(self, extension):
+        return self._symbol
+
+    @property
+    def generable():
+        return True
 
 
 class BondDescriptor:

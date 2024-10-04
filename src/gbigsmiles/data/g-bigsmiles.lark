@@ -41,7 +41,7 @@ bond_symbol: "-"
   | "\\"
 
 ring_bond: bond_symbol? DIGIT
-  | bond_symbol? "%" INT
+  | bond_symbol? "%" DIGIT? DIGIT
 
 _branched_atom: _atom_stand_in ring_bond* branch*
 
