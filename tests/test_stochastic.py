@@ -8,6 +8,7 @@ import pytest
 import gbigsmiles
 
 # trunk-disable-all(cspell/error)
+# trunk-ignore-all(bandit/B101)
 
 test_args = [
     (
@@ -54,7 +55,8 @@ def test_stochastic(text, big, ref):
     assert test == 0.5419938930062744
     if stochastic.generable:
         mol = stochastic.generate(rng=rng)
-        mol.smiles
+        smi = mol.smiles
+        assert smi
 
 
 if __name__ == "__main__":

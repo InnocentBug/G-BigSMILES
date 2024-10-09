@@ -2,6 +2,8 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+# trunk-ignore-all(bandit/B101)
+
 import pytest
 
 import gbigsmiles
