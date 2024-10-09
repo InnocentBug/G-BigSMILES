@@ -2,28 +2,29 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+import pytest
+
 import gbigsmiles
 
+test_args = [
+    ("[$0]", 0, "", 5, "[$0]", "[$0]"),
+    ("[<]", 0, "", 5, "[<]", "[<]"),
+    ("[]", 12, "", 5, "[]", "[]"),
+    ("[>|2|]", 1, "", 5, "[>|2.0|]", "[>]"),
+    ("[$|3|]", 0, "-", 5, "[$|3.0|]", "[$]"),
+    ("[<]", 0, "#", 5, "[<]", "[<]"),
+    ("[>]", 1, "=", 5, "[>]", "[>]"),
+    ("[$5| 2.|]", 34, "", 5, "[$5|2.0|]", "[$5]"),
+    ("[<| 21. 234. 2134. 64. 657.|]", 0, "#", 5, "[<|21.0 234.0 2134.0 64.0 657.0|]", "[<]"),
+]
 
-def test_descriptors_str():
 
-    test_args = [
-        ("[$0]", 0, "", 5, "[$0]", "[$0]"),
-        ("[<]", 0, "", 5, "[<]", "[<]"),
-        ("[]", 12, "", 5, "[]", "[]"),
-        ("[>|2|]", 1, "", 5, "[>|2.0|]", "[>]"),
-        ("[$|3|]", 0, "-", 5, "[$|3.0|]", "[$]"),
-        ("[<]", 0, "#", 5, "[<]", "[<]"),
-        ("[>]", 1, "=", 5, "[>]", "[>]"),
-        ("[$5| 2.|]", 34, "", 5, "[$5|2.0|]", "[$5]"),
-        ("[<| 21. 234. 2134. 64. 657.|]", 0, "#", 5, "[<|21.0 234.0 2134.0 64.0 657.0|]", "[<]"),
-    ]
-
-    for text, idx, char, bl, ref, big in test_args:
-        bond = gbigsmiles.BondDescriptor(text, idx, char, bl)
-        assert str(bond) == ref
-        assert bond.generate_string(False) == big
-        assert bond.generable
+@pytest.mark.parametrize(("text", "idx", "char", "bl", "ref", "big"), test_args)
+def test_descriptors_str(text, idx, char, bl, ref, big):
+    bond = gbigsmiles.BondDescriptor(text, idx, char, bl)
+    assert str(bond) == ref
+    assert bond.generate_string(False) == big
+    assert bond.generable
 
 
 def test_descriptors_compatible():
