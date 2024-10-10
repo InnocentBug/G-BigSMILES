@@ -7,27 +7,27 @@ runtimes:
 plugins:
   sources:
     - id: trunk
-      ref: v1.6.2
+      ref: v1.6.3
       uri: https://github.com/trunk-io/plugins
 cli:
-  version: 1.22.5
+  version: 1.22.6
 lint:
   enabled:
-    - trufflehog@3.82.2
-    - bandit@1.7.9
-    - checkov@3.2.255
-    - ruff@0.6.7
-    - trivy@0.55.2
+    - trufflehog@3.82.7
+    - bandit@1.7.10
+    - checkov@3.2.257
+    - ruff@0.6.9
+    - trivy@0.56.1
     - yamllint@1.35.1
     - oxipng@9.1.2
-    - actionlint@1.7.1
+    - actionlint@1.7.3
     - cspell@8.14.4
-    - black@24.8.0
+    - black@24.10.0
     - flake8@7.1.1
     - git-diff-check@SYSTEM
-    - gitleaks@8.19.2
+    - gitleaks@8.20.1
     - isort@5.13.2
-    - markdownlint@0.41.0
+    - markdownlint@0.42.0
     - prettier@3.3.3
     - taplo@0.9.3
   ignore:

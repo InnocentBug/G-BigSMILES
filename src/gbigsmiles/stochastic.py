@@ -193,6 +193,9 @@ class Stochastic(BigSMILESbase):
                         "The open bond descriptor of the prefix is not compatible"
                         " with the left terminal bond descriptor of the stochastic object."
                     )
+                # Respect the transition weights from the left terminal bond descriptor
+                prefix.bond_descriptors[0].transitions = self.left_terminal.transitions
+                prefix.bond_descriptors[0].weight = self.left_terminal.weight
             return my_mol
 
         def generate_repeat_units_and_finalize(my_mol):
@@ -200,14 +203,14 @@ class Stochastic(BigSMILESbase):
                 starting_bond_idx = choose_compatible_weight(my_mol.bond_descriptors, None, rng)
                 starting_bond = my_mol.bond_descriptors[starting_bond_idx]
 
-                connecting_bond_idx = choose_compatible_weight(
-                    self.repeat_bonds, starting_bond, rng
-                )
-
                 # Handle explicit transition probability
                 if starting_bond.transitions is not None:
                     prob = starting_bond.transitions / starting_bond.weight
                     connecting_bond_idx = rng.choice(range(len(prob)), p=prob)
+                else:
+                    connecting_bond_idx = choose_compatible_weight(
+                        self.repeat_bonds, starting_bond, rng
+                    )
 
                 # Find the new token and bond
                 if connecting_bond_idx < len(self.repeat_bonds):

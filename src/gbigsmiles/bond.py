@@ -179,16 +179,6 @@ class RingBond(BondSymbol):
         string += str(self._num)
         return super().generate_string(extension) + string
 
-
-class BondDescriptorSymbol(BigSMILESbase):
-    def __init__(self, children: list):
-        super().__init__(children)
-
-        self._symbol = str(self._children[0])
-
-    def generate_string(self, extension):
-        return self._symbol
-
     @property
     def generable():
         return True
