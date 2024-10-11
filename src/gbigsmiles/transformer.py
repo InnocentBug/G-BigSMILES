@@ -66,14 +66,46 @@ class GBigSMILESTransformer(lark.Transformer):
 
         return BondSymbol(children)
 
+    def ring_bond(self, children):
+        from .bond import RingBond
+
+        return RingBond(children)
+
+    def bond_descriptor_symbol(self, children):
+        from .bond import BondDescriptorSymbol
+
+        return BondDescriptorSymbol(children)
+
+    def bond_descriptor_symbol_idx(self, children):
+        from .bond import BondDescriptorSymbolIdx
+
+        return BondDescriptorSymbolIdx(children)
+
+    def terminal_bond_descriptor(self, children):
+        from .bond import TerminalBondDescriptor
+
+        return TerminalBondDescriptor(children)
+
+    def simple_bond_descriptor(self, children):
+        from .bond import SimpleBondDescriptor
+
+        return SimpleBondDescriptor(children)
+
+    def inner_bond_descriptor(self, children):
+        from .bond import InnerBondDescriptor
+
+        return InnerBondDescriptor(children)
+
+    def bond_descriptor_generation(self, children):
+        from .bond import BondDescriptorGeneration
+
+        return BondDescriptorGeneration(children)
+
     def bond_descriptor(self, children):
-        # Remove the square_brackets
-        children = children[1:-1]
+        from .bond import BondDescriptor
 
-        children[0]
-
-        # return BondDescriptor(
-        print(children)
+        assert isinstance(children[0], BondDescriptor)
+        return children[0]
 
     def NUMBER(self, children):
         return float(children)
@@ -82,7 +114,9 @@ class GBigSMILESTransformer(lark.Transformer):
         return int(children)
 
     def WS_INLINE(self, children):
-        return lark.DISCARD
+        from lark.visitors import Discard
+
+        return Discard
 
     # def big_smiles_fragment_definition(self, children
 

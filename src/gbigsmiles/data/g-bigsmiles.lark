@@ -58,21 +58,23 @@ bond_descriptor_symbol: "$"
   | ">"
   | "<"
 
-bond_descriptor_generation: "|" NUMBER "|"
-  | "|" NUMBER _number_list_repeat* "|"
+bond_descriptor_symbol_idx: bond_descriptor_symbol INT?
 
-ladder_bond_descriptor: "[" _inner_ambi_covalent_descriptor _simple_bond_descriptor INT? "]"
-  | "[" _inner_ambi_covalent_descriptor non_covalent_bond_descriptor INT? "]"
+bond_descriptor_generation: "|" WS_INLINE* NUMBER WS_INLINE* "|"
+  | "|" WS_INLINE* NUMBER  _number_list_repeat* WS_INLINE* "|"
 
-_inner_bond_descriptor: bond_descriptor_symbol INT? bond_descriptor_generation?
-_inner_non_covalent_descriptor: bond_descriptor_symbol ":" INT? _non_covalent_context?
-_inner_ambi_covalent_descriptor: _inner_bond_descriptor | _inner_non_covalent_descriptor
+ladder_bond_descriptor: "[" inner_ambi_covalent_descriptor simple_bond_descriptor INT? "]"
+  | "[" inner_ambi_covalent_descriptor non_covalent_bond_descriptor INT? "]"
 
-_simple_bond_descriptor: "[" _inner_bond_descriptor "]"
-non_covalent_bond_descriptor: "[" _inner_non_covalent_descriptor "]"
+inner_bond_descriptor: bond_descriptor_symbol_idx bond_descriptor_generation?
+inner_non_covalent_descriptor: bond_descriptor_symbol ":" INT? _non_covalent_context?
+inner_ambi_covalent_descriptor: inner_bond_descriptor | inner_non_covalent_descriptor
 
-bond_descriptor: _simple_bond_descriptor | ladder_bond_descriptor | non_covalent_bond_descriptor
-terminal_bond_descriptor.-2: "[" bond_descriptor_symbol? INT? "]"
+simple_bond_descriptor: "[" inner_bond_descriptor "]"
+non_covalent_bond_descriptor: "[" inner_non_covalent_descriptor "]"
+
+bond_descriptor: simple_bond_descriptor | ladder_bond_descriptor | non_covalent_bond_descriptor
+terminal_bond_descriptor: "[" bond_descriptor_symbol_idx? bond_descriptor_generation? "]"
 
 stochastic_generation: "|" stochastic_distribution "|"
 stochastic_distribution: "flory_schulz(" WS_INLINE* NUMBER WS_INLINE* ")"
@@ -106,7 +108,7 @@ dot_system_size: "|" WS_INLINE* NUMBER WS_INLINE* "|"
 dot_generation: dot dot_system_size
 dot: "."
 
-_number_list_repeat.-1: " " NUMBER
+_number_list_repeat.-1: WS_INLINE+ NUMBER
 
 _monomer_list: WS_INLINE* "," WS_INLINE* smiles
 end_group.-1: ";" WS_INLINE* smiles _monomer_list*

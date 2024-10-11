@@ -184,5 +184,210 @@ class RingBond(BondSymbol):
         return True
 
 
-class BondDescriptor:
-    pass
+class BondDescriptorSymbol(BigSMILESbase):
+    def __init__(self, children: list):
+        super().__init__(children)
+
+    def generate_string(self, extension):
+        return str(self._children[0])
+
+    def generable(self):
+        return True
+
+
+class BondDescriptorSymbolIdx(BondDescriptorSymbol):
+    def __init__(self, children):
+        super().__init__(children)
+        self._idx = 0
+        if len(self._children) > 1:
+            self._idx = int(self._children[1])
+
+    @property
+    def idx(self):
+        return self._idx
+
+    def generate_string(self, extension):
+        string = super().generate_string(extension)
+        if self.idx != 0:
+            string += str(self.idx)
+        return string
+
+    def generable(self):
+        return True
+
+    def is_compatible(self, other):
+        if other is None:
+            return False
+        if not isinstance(other, BondDescriptorSymbolIdx):
+            raise RuntimeError(
+                f"Only BondDescriptorSymbolIdx can be compared for compatibility. But 'other' is of type {type(other)}."
+            )
+
+        if self.idx != other.idx:
+            return False
+
+        self_str = str(self._children[0])
+        other_str = str(other._children[0])
+
+        if self_str == "$" and other_str == "$":
+            return True
+
+        if self_str in ("<", ">") and other_str in ("<", ">") and self_str != other_str:
+            return True
+
+        return False
+
+
+class BondDescriptorGeneration(BigSMILESbase):
+    def __init__(self, children):
+        super().__init__(children)
+        self._transition = None
+        self._weight = 1.0
+
+        if len(self._children) > 0:
+            # Strip out the "|"
+            parse = self._children[1:-1]
+            self._weight = float(parse[0])
+            if len(parse) > 1:
+                self._transition = [float(number) for number in parse]
+                self._weight = sum(self.transition)
+
+    @property
+    def transition(self):
+        return self._transition
+
+    @property
+    def weight(self):
+        return self._weight
+
+    def generate_string(self, extension):
+        if extension and (self.weight != 1.0 or self.transition is not None):
+            string = "|"
+            if self.transition:
+                for trans in self.transition:
+                    string += str(trans) + " "
+            else:
+                string += str(self.weight)
+            string = string.strip() + "|"
+            return string
+        return ""
+
+    def generable(self):
+        return True
+
+
+class InnerBondDescriptor(BigSMILESbase):
+    def __init__(self, children):
+        super().__init__(children)
+
+        self._generation = BondDescriptorGeneration([])
+        for child in self._children:
+            if isinstance(child, BondDescriptorSymbolIdx):
+                self._symbol = child
+            if isinstance(child, BondDescriptorGeneration):
+                self._generation = child
+
+    def generate_string(self, extension):
+        string = self._symbol.generate_string(extension)
+        string += self._generation.generate_string(extension)
+        return string
+
+    def generable(self):
+        return True
+
+    @property
+    def idx(self):
+        return self._symbol.idx
+
+    @property
+    def weight(self):
+        return self._generation.weight
+
+    @property
+    def transition(self):
+        return self._generation.transition
+
+
+class BondDescriptor(BigSMILESbase):
+    @property
+    def symbol(self):
+        return None
+
+    def is_compatible(self, other):
+        if other is None:
+            return False
+        if not isinstance(other, BondDescriptor):
+            raise RuntimeError(
+                f"Only BondDescriptors can be compared for compatibility. But 'other' is of type {type(other)}."
+            )
+
+        if self.symbol is None or other.symbol is None:
+            return False
+        return self.symbol.is_compatible(other.symbol)
+
+
+class SimpleBondDescriptor(BondDescriptor):
+    def __init__(self, children):
+        super().__init__(children)
+
+        for child in self._children:
+            if isinstance(child, InnerBondDescriptor):
+                self._inner_bond_descriptor = child
+
+    def generate_string(self, extension):
+        return "[" + self._inner_bond_descriptor.generate_string(extension) + "]"
+
+    def generable(self):
+        return self._inner_bond_descriptor.generable
+
+    @property
+    def idx(self):
+        return self._inner_bond_descriptor.idx
+
+    @property
+    def weight(self):
+        return self._inner_bond_descriptor.weight
+
+    @property
+    def transition(self):
+        return self._inner_bond_descriptor.transition
+
+    @property
+    def symbol(self):
+        return self._inner_bond_descriptor._symbol
+
+
+class TerminalBondDescriptor(BondDescriptor):
+    def __init__(self, children):
+        super().__init__(children)
+        self._symbol = None
+        self._generation = BondDescriptorGeneration([])
+
+        for child in self._children:
+            if isinstance(child, BondDescriptorSymbolIdx):
+                self._symbol = child
+            if isinstance(child, BondDescriptorGeneration):
+                self._generation = child
+
+    @property
+    def weight(self):
+        return self._generation.weight
+
+    @property
+    def transition(self):
+        return self._generation.transition
+
+    def generate_string(self, extension):
+        string = "["
+        if self._symbol is not None:
+            string += self._symbol.generate_string(extension)
+        string += self._generation.generate_string(extension)
+        string += "]"
+        return string
+
+    def generable(self):
+        return True
+
+    @property
+    def symbol(self):
+        return self._symbol

@@ -6,78 +6,61 @@ import pytest
 
 import gbigsmiles
 
-test_args = [
-    ("[$0]", 0, "", 5, "[$0]", "[$0]"),
-    ("[<]", 0, "", 5, "[<]", "[<]"),
-    ("[]", 12, "", 5, "[]", "[]"),
-    ("[>|2|]", 1, "", 5, "[>|2.0|]", "[>]"),
-    ("[$|3|]", 0, "-", 5, "[$|3.0|]", "[$]"),
-    ("[<]", 0, "#", 5, "[<]", "[<]"),
-    ("[>]", 1, "=", 5, "[>]", "[>]"),
-    ("[$5| 2.|]", 34, "", 5, "[$5|2.0|]", "[$5]"),
-    ("[<| 21. 234. 2134. 64. 657.|]", 0, "#", 5, "[<|21.0 234.0 2134.0 64.0 657.0|]", "[<]"),
+test_simple_bond_descriptors = [
+    ("[$0]", 0, "[$]", "[$]"),
+    ("[<]", 0, "[<]", "[<]"),
+    ("[>|2|]", 0, "[>|2.0|]", "[>]"),
+    ("[$|3|]", 0, "[$|3.0|]", "[$]"),
+    ("[<]", 0, "[<]", "[<]"),
+    ("[>]", 0, "[>]", "[>]"),
+    ("[$5| 2.|]", 5, "[$5|2.0|]", "[$5]"),
+    ("[<4| 21. 234. 2134. 64. 657.|]", 4, "[<4|21.0 234.0 2134.0 64.0 657.0|]", "[<4]"),
+    ("[<7| 0.0 1.0 0.0|]", 7, "[<7|0.0 1.0 0.0|]", "[<7]"),
 ]
 
 
-@pytest.mark.parametrize(("text", "idx", "char", "bl", "ref", "big"), test_args)
-def test_descriptors_str(text, idx, char, bl, ref, big):
-    bond = gbigsmiles.BondDescriptor(text, idx, char, bl)
+@pytest.mark.parametrize(("text", "idx", "ref", "big"), test_simple_bond_descriptors)
+def test_simple_bond_descriptors(text, idx, ref, big):
+    bond = gbigsmiles.BondDescriptor.make(text)
+    if idx is not None:
+        assert bond.idx == idx
     assert str(bond) == ref
     assert bond.generate_string(False) == big
     assert bond.generable
 
 
-def test_descriptors_compatible():
-
-    bondA = gbigsmiles.BondDescriptor("[$]", 0, "", 5)
-    bondB = gbigsmiles.BondDescriptor("[$]", 0, "", 5)
-
-    assert bondA.is_compatible(bondB)
-    assert bondB.is_compatible(bondA)
-
-    bondA = gbigsmiles.BondDescriptor("[$0]", 0, "", 5)
-    bondB = gbigsmiles.BondDescriptor("[$0]", 0, "", 5)
-
-    assert bondA.is_compatible(bondB)
-    assert bondB.is_compatible(bondA)
-
-    bondA = gbigsmiles.BondDescriptor("[$0]", 0, "", 5)
-    bondB = gbigsmiles.BondDescriptor("[$1]", 0, "", 5)
-
-    assert not bondA.is_compatible(bondB)
-    assert not bondB.is_compatible(bondA)
-
-    bondA = gbigsmiles.BondDescriptor("[<]", 0, "", 5)
-    bondB = gbigsmiles.BondDescriptor("[<]", 0, "", 5)
-
-    assert not bondA.is_compatible(bondB)
-    assert not bondB.is_compatible(bondA)
-
-    bondA = gbigsmiles.BondDescriptor("[>]", 0, "", 5)
-    bondB = gbigsmiles.BondDescriptor("[>]", 0, "", 5)
-
-    assert not bondA.is_compatible(bondB)
-    assert not bondB.is_compatible(bondA)
-
-    bondA = gbigsmiles.BondDescriptor("[<]", 0, "", 5)
-    bondB = gbigsmiles.BondDescriptor("[>]", 0, "", 5)
-
-    assert bondA.is_compatible(bondB)
-    assert bondB.is_compatible(bondA)
-
-    bondA = gbigsmiles.BondDescriptor("[<]", 0, "=", 5)
-    bondB = gbigsmiles.BondDescriptor("[>]", 0, "", 5)
-
-    assert not bondA.is_compatible(bondB)
-    assert not bondB.is_compatible(bondA)
-
-    bondA = gbigsmiles.BondDescriptor("[<]", 0, "=", 5)
-    bondB = gbigsmiles.BondDescriptor("[>]", 0, "=", 5)
-
-    assert bondA.is_compatible(bondB)
-    assert bondB.is_compatible(bondA)
+test_terminal_bond_descriptors = [
+    ("[]", None, "[]", "[]"),
+    ("[|6|]", None, "[|6.0|]", "[]"),
+    ("[|6. 3. 1 0|]", None, "[|6.0 3.0 1.0 0.0|]", "[]"),
+]
 
 
-if __name__ == "__main__":
-    test_descriptors_str()
-    test_descriptors_compatible()
+@pytest.mark.parametrize(("text", "idx", "ref", "big"), test_terminal_bond_descriptors)
+def test_terminal_bond_descriptors(text, idx, ref, big):
+    bond = gbigsmiles.bond.TerminalBondDescriptor.make(text)
+    if idx is not None:
+        assert bond.idx == idx
+    assert str(bond) == ref
+    assert bond.generate_string(False) == big
+    assert bond.generable
+
+
+compatibility_list = [
+    ("[$]", "[$]", True),
+    ("[$1]", "[$1]", True),
+    ("[$0]", "[$1]", False),
+    ("[<]", "[<]", False),
+    ("[>]", "[>]", False),
+    ("[<]", "[>]", True),
+    ("[>]", "[<]", True),
+]
+
+
+@pytest.mark.parametrize(("textA", "textB", "compatible"), compatibility_list)
+def test_descriptors_compatible(textA, textB, compatible):
+    bondA = gbigsmiles.BondDescriptor.make(textA)
+    bondB = gbigsmiles.BondDescriptor.make(textB)
+
+    assert bondA.is_compatible(bondB) == compatible
+    assert bondB.is_compatible(bondA) == compatible
