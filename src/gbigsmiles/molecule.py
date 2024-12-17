@@ -145,7 +145,9 @@ class Molecule(BigSMILESbase):
             string += self.mixture.generate_string(extension)
         return string
 
-    def generate(self, prefix=None, rng=get_global_rng()):
+    def generate(self, prefix=None, rng=None):
+        if rng is None:
+            rng = get_global_rng()
         my_mol = prefix
         for element in self._elements:
             my_mol = element.generate(my_mol, rng)

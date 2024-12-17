@@ -2,11 +2,43 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+import copy
 import re
 
 import numpy as np
 
 _GLOBAL_RNG: None | np.random.Generator = None
+
+
+class RememberAdd:
+    def __init__(self, value):
+        self._value = value
+        self._previous = 0.0
+
+    @property
+    def value(self):
+        return self._value
+
+    @property
+    def previous(self):
+        return self._previous
+
+    def __iadd__(self, other):
+        old_value = self._value
+        self._value += other
+        self._previous = old_value
+        return self
+
+    def __add__(self, other):
+        tmp = copy(self)
+        tmp += other
+        return tmp
+
+    def _radd__(self, other):
+        return self + other
+
+    def __eq__(self, other):
+        return self.value == other.value and self.previous == other.previous
 
 
 def snake_to_camel(snake_str):

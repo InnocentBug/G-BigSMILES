@@ -47,6 +47,7 @@ def _make_parser(filename=None, start_tokens=None):
             "schulz_zimm",
             "log_normal",
             "gauss",
+            "poisson",
         ]
     parser = Lark(rf"{grammar_text}", start=start_tokens, keep_all_tokens=True)
     return parser

@@ -45,6 +45,7 @@ from .distribution import (
     Gauss,
     LogNormal,
     Poisson,
+    SchulzZimm,
     StochasticDistribution,
     Uniform,
 )
@@ -90,4 +91,11 @@ __all__ = [
     "GBigSMILESTransformer",
     "get_global_transformer",
     "get_global_parser",
+    "FlorySchulz",
+    "SchulzZimm",
+    "Gauss",
+    "LogNormal",
+    "Poisson",
+    "StochasticDistribution",
+    "Uniform",
 ]

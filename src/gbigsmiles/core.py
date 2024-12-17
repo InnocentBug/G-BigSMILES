@@ -1,18 +1,21 @@
 # SPDX-License-Identifier: GPL-3
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
-
-from abc import ABC, abstractmethod
+from abc import ABC
 from warnings import warn
 
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
 import numpy as np
+from lark import ast_utils
 
 from .chem_resource import atom_color_mapping, atom_name_mapping
-from .parser import _GLOBAL_PARSER
-from .transformer import _GLOBAL_TRANSFORMER
-from .util import camel_to_snake
-
-_GLOBAL_RNG = np.random.default_rng()
+from .parser import get_global_parser
+from .transformer import get_global_transformer
+from .util import camel_to_snake, get_global_rng
 
 _BOND_TYPE_TO_ARROW = {
     "UNSPECIFIED": "none",
@@ -74,46 +77,50 @@ class classproperty(object):
         return self.f(obj)
 
 
-class BigSMILESbase(ABC):
+class BigSMILESbase(ABC, ast_utils.Ast, ast_utils.AsList):
     bond_descriptors = []
 
     @classmethod
-    def make(cls, text: str):
-        tree = _GLOBAL_PARSER.parse(text, start=cls.token_name_snake_case)
-        transformed_tree = _GLOBAL_TRANSFORMER.transform(tree)
+    def make(cls, text: str) -> Self:
+        tree = get_global_parser().parse(text, start=cls.token_name_snake_case)
+        transformed_tree = get_global_transformer().transform(tree)
         return transformed_tree
 
     def __init__(self, children: list):
         self._children = children
 
     @classproperty
-    def token_name(self):
+    def token_name(self) -> str:
         name = type(self).__name__
         if name == "ABCMeta":
             name = self.__name__
         return name
 
     @classproperty
-    def token_name_snake_case(self):
+    def token_name_snake_case(self) -> str:
         return camel_to_snake(self.token_name)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.generate_string(True)
 
-    @abstractmethod
-    def generate_string(self, extension: bool):
-        pass
+    def generate_string(self, extension: bool) -> str:
+        raise NotImplementedError(
+            "Base class BigSMILESbase does not implement generate_string. If you see this please report on github."
+        )
 
     @property
-    @abstractmethod
-    def generable(self):
-        pass
+    def generable(self) -> bool:
+        raise NotImplementedError(
+            "Base class BigSMILESbase does not implement generable. If you see this please report on github."
+        )
 
     @property
-    def residues(self):
+    def residues(self) -> list:
         return []
 
-    def generate(self, prefix=None, rng=_GLOBAL_RNG):
+    def generate(self, prefix=None, rng=None):
+        if rng is None:
+            rng = get_global_rng()
         if not self.generable:
             raise RuntimeError("Attempt to generate a non-generable molecule.")
         if prefix:

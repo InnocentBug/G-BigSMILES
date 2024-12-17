@@ -7,6 +7,7 @@ from rdkit.Chem import Descriptors as rdDescriptors
 from .molecule import Molecule
 from .stochastic import Stochastic
 from .token import SmilesToken
+from .util import RememberAdd
 
 
 def get_starting_tokens(smiles, big_mol):
@@ -33,37 +34,6 @@ def get_starting_tokens(smiles, big_mol):
         raise ValueError(f"not enough fragments {start_fragments}")
 
     return start_fragments, start_probabilities
-
-
-class RememberAdd:
-    def __init__(self, value):
-        self._value = value
-        self._previous = 0.0
-
-    @property
-    def value(self):
-        return self._value
-
-    @property
-    def previous(self):
-        return self._previous
-
-    def __iadd__(self, other):
-        old_value = self._value
-        self._value += other
-        self._previous = old_value
-        return self
-
-    def __add__(self, other):
-        tmp = copy(self)
-        tmp += other
-        return tmp
-
-    def _radd__(self, other):
-        return self + other
-
-    def __eq__(self, other):
-        return self.value == other.value and self.previous == other.previous
 
 
 class OpenAtom:

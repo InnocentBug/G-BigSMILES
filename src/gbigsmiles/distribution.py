@@ -2,51 +2,39 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
-from ast import literal_eval as make_tuple
-
 import numpy as np
 from scipy import special, stats
 
-import gbigsmiles
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
-from .core import _GLOBAL_RNG, BigSMILESbase
-
-
-def get_distribution(distribution_text):
-    if "flory_schulz" in distribution_text:
-        return FlorySchulz(distribution_text)
-    if "gauss" in distribution_text:
-        return Gauss(distribution_text)
-    if "uniform" in distribution_text:
-        return Uniform(distribution_text)
-    if "schulz_zimm" in distribution_text:
-        return SchulzZimm(distribution_text)
-    if "log_normal" in distribution_text:
-        return LogNormal(distribution_text)
-    if "poisson" in distribution_text:
-        return Poisson(distribution_text)
-    raise RuntimeError(f"Unknown distribution type {distribution_text}.")
+from .core import BigSMILESbase
+from .exception import UnknownDistribution
+from .util import RememberAdd, get_global_rng
 
 
-class Distribution(BigSMILESbase):
-    """
-    Generic class to generate molecular weight numbers.
-    """
+class StochasticGeneration(BigSMILESbase):
+    def __init__(self, children: list):
+        super().__init__(children)
 
-    def __init__(self, raw_text):
-        """
-        Initialize the generic distribution.
 
-        Arguments:
-        ---------
-        raw_text: str
-             Text representation of the distribution. Example: `flory_schulz(0.01)`
+class StochasticDistribution(StochasticGeneration):
+    _known_distributions: set = set()
 
-        """
-        self._raw_text = raw_text.strip("| \t\n")
-        self._distribution = None
+    def __init__(self, children: list):
+        super().__init__(children)
+        self._distribution: stats.rv_discrete | None = None
 
-    def draw_mw(self, rng=None):
+    @classmethod
+    def make(cls, text: str) -> Self:
+        for known_distr in cls._known_distributions:
+            if known_distr.token_name_snake_case in text:
+                return known_distr.make(text)
+        raise UnknownDistribution(text)
+
+    def draw_mw(self, rng=None, **kwargs):
         """
         Draw a sample from the molecular weight distribution.
 
@@ -54,16 +42,18 @@ class Distribution(BigSMILESbase):
         ---------
         rng: numpy.random.Generator
              Numpy random number generator for the generation of numbers.
+        kwargs: dict
+             Keyword arguments to deliver parameters for the distribution in questions
 
         """
         if self._distribution is None:
             raise NotImplementedError
 
         if rng is None:
-            rng = _GLOBAL_RNG
-        return self._distribution.rvs(random_state=rng)
+            rng = get_global_rng()
+        return self._distribution.rvs(random_state=rng, **kwargs)
 
-    def prob_mw(self, mw):
+    def prob_mw(self, mw, **kwargs):
         """
         Calculate the probability that this mw was from this distribution.
 
@@ -71,18 +61,26 @@ class Distribution(BigSMILESbase):
         ---------
         mw: float
              Integer heavy atom molecular weight.
+        kwargs: dict
+             Keyword arguments to deliver parameters for the distribution in questions
 
         """
         if self._distribution is None:
             raise NotImplementedError
 
-        if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
-            return self._distribution.cdf(mw.value) - self._distribution.cdf(mw.previous)
+        if isinstance(mw, RememberAdd):
+            return self._distribution.cdf(mw.value, **kwargs) - self._distribution.cdf(
+                mw.previous, **kwargs
+            )
 
-        return self._distribution.pdf(mw)
+        if hasattr(self._distribution, "pdf"):
+            return self._distribution.pdf(mw, **kwargs)
+        if hasattr(self._distribution, "pmf"):
+            return self._distribution.pmf(k=int(mw), **kwargs)
+        raise NotImplementedError
 
 
-class FlorySchulz(Distribution):
+class FlorySchulz(StochasticDistribution):
     """
     Flory-Schulz distribution of molecular weights for geometrically distributed chain lengths.
 
@@ -99,26 +97,33 @@ class FlorySchulz(Distribution):
         def _pmf(self, k, a):
             return a**2 * k * (1 - a) ** (k - 1)
 
-    def __init__(self, raw_text):
+    @classmethod
+    def make(cls, text: str) -> Self:
+        # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
+        # then call it with cls as the first argument to ensure child typing.
+        # We do not want to call StochasticDistribution's make function, because it directs here.
+        return BigSMILESbase.make.__func__(cls, text)
+
+    def __init__(self, children: list):
         """
         Initialization of Flory-Schulz distribution object.
 
         Arguments:
         ---------
-        raw_text: str
-             Text representation of the distribution.
-             Has to start with `flory_schulz`.
+        children: list[lark.Token]
+            List of parsed children
 
         """
-        super().__init__(raw_text)
+        super().__init__(children)
 
-        if not self._raw_text.startswith("flory_schulz"):
-            raise RuntimeError(
-                f"Attempt to initialize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'"
-            )
-
-        self._a = float(make_tuple(self._raw_text[len("flory_schulz") :]))
         self._distribution = self.flory_schulz_gen(name="Flory-Schulz")
+
+        a: float | None = None
+        for child in self._children:
+            if isinstance(child, float):
+                a = child
+
+        self._a = a
 
     def generate_string(self, extension):
         if extension:
@@ -127,22 +132,19 @@ class FlorySchulz(Distribution):
 
     @property
     def generable(self):
-        return True
+        return self._distribution is not None
 
     def draw_mw(self, rng=None):
-        if rng is None:
-            rng = _GLOBAL_RNG
-        return self._distribution.rvs(a=self._a, random_state=rng)
+        return super().draw_mw(rng=rng, a=self._a)
 
     def prob_mw(self, mw):
-        if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
-            return self._distribution.cdf(mw.value, a=self._a) - self._distribution.cdf(
-                mw.previous, a=self._a
-            )
-        return self._distribution.pmf(int(mw), a=self._a)
+        return super().prob_mw(mw=mw, a=self._a)
 
 
-class SchulzZimm(Distribution):
+StochasticDistribution._known_distributions.add(FlorySchulz)
+
+
+class SchulzZimm(StochasticDistribution):
     r"""
     Schulz-Zimm distribution of molecular weights for geometrically distributed chain lengths.
 
@@ -161,27 +163,32 @@ class SchulzZimm(Distribution):
         def _pmf(self, M, z, Mn):
             return z ** (z + 1) / special.gamma(z + 1) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn)
 
-    def __init__(self, raw_text):
+    @classmethod
+    def make(cls, text: str) -> Self:
+        # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
+        # then call it with cls as the first argument to ensure child typing.
+        # We do not want to call StochasticDistribution's make function, because it directs here.
+        return BigSMILESbase.make.__func__(cls, text)
+
+    def __init__(self, children: list):
         """
         Initialization of Schulz-Zimm distribution object.
 
         Arguments:
         ---------
-        raw_text: str
-             Text representation of the distribution.
-             Has to start with `schulz_zimm`.
+        children: list[lark.Token]
+            List of parsed children
 
         """
-        super().__init__(raw_text)
+        super().__init__(children)
 
-        if not self._raw_text.startswith("schulz_zimm"):
-            raise RuntimeError(
-                f"Attempt to initialize Schulz-Zimm distribution from text '{raw_text}' that does not start with 'schulz_zimm'"
-            )
+        numbers: list[float] = []
 
-        self._Mw, self._Mn = make_tuple(self._raw_text[len("schulz_zimm") :])
-        self._Mw = float(self._Mw)
-        self._Mn = float(self._Mn)
+        for child in self._children:
+            if isinstance(child, float):
+                numbers.append(child)
+
+        self._Mw, self._Mn = numbers
         self._z = self._Mn / (self._Mw - self._Mn)
         self._distribution = self.schulz_zimm_gen(name="Schulz-Zimm")
 
@@ -195,23 +202,16 @@ class SchulzZimm(Distribution):
         return True
 
     def draw_mw(self, rng=None):
-        if rng is None:
-            rng = _GLOBAL_RNG
-        return self._distribution.rvs(z=self._z, Mn=self._Mn, random_state=rng)
+        return super().draw_mw(rng=rng, z=self._z, Mn=self._Mn)
 
     def prob_mw(self, mw):
-        if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
-            return self._distribution.cdf(
-                mw.value, z=self._z, Mn=self._Mn
-            ) - self._distribution.cdf(mw.previous, z=self._z, Mn=self._Mn)
-        return self._distribution.pmf(
-            int(mw),
-            z=self._z,
-            Mn=self._Mn,
-        )
+        return super().draw_mw(z=self._z, Mn=self._Mn)
 
 
-class Gauss(Distribution):
+StochasticDistribution._known_distributions.add(SchulzZimm)
+
+
+class Gauss(StochasticDistribution):
     r"""
     Gauss distribution of molecular weights for geometrically distributed chain lengths.
 
@@ -222,28 +222,32 @@ class Gauss(Distribution):
     The textual representation of this distribution is: `gauss(\\mu, \\sigma)`
     """
 
-    def __init__(self, raw_text):
+    def __init__(self, children: list):
         """
         Initialization of Gaussian distribution object.
 
         Arguments:
         ---------
-        raw_text: str
-             Text representation of the distribution.
-             Has to start with `gauss`.
+        children: list[lark.Token]
+            List of parsed children
 
         """
-        super().__init__(raw_text)
+        super().__init__(children)
 
-        if not self._raw_text.startswith("gauss"):
-            raise RuntimeError(
-                f"Attempt to initialize Gaussian distribution from text '{raw_text}' that does not start with 'gauss'"
-            )
+        numbers: list[float] = []
+        for child in self._children:
+            if isinstance(child, float):
+                numbers.append(child)
 
-        self._mu, self._sigma = make_tuple(self._raw_text[len("gauss") :])
-        self._mu = float(self._mu)
-        self._sigma = float(self._sigma)
+        self._mu, self._sigma = numbers
         self._distribution = stats.norm(loc=self._mu, scale=self._sigma)
+
+    @classmethod
+    def make(cls, text: str) -> Self:
+        # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
+        # then call it with cls as the first argument to ensure child typing.
+        # We do not want to call StochasticDistribution's make function, because it directs here.
+        return BigSMILESbase.make.__func__(cls, text)
 
     def generate_string(self, extension):
         if extension:
@@ -260,35 +264,42 @@ class Gauss(Distribution):
         return super().prob_mw(mw)
 
 
-class Uniform(Distribution):
+StochasticDistribution._known_distributions.add(Gauss)
+
+
+class Uniform(StochasticDistribution):
     """
     Uniform distribution of different lengths, usually useful for short chains.
 
     The textual representation of this distribution is: `uniform(low, high)`
     """
 
-    def __init__(self, raw_text):
+    def __init__(self, children):
         """
         Initialization of Uniform distribution object.
 
         Arguments:
         ---------
-        raw_text: str
-             Text representation of the distribution.
-             Has to start with `gauss`.
+        children: list[lark.Token]
+            List of parsed children
 
         """
-        super().__init__(raw_text)
+        super().__init__(children)
 
-        if not self._raw_text.startswith("uniform"):
-            raise RuntimeError(
-                f"Attempt to initialize Uniform distribution from text '{raw_text}' that does not start with 'uniform'"
-            )
+        numbers: list[float] = []
+        for child in self._children:
+            if isinstance(child, float):
+                numbers.append(child)
 
-        self._low, self._high = make_tuple(self._raw_text[len("uniform") :])
-        self._low = int(self._low)
-        self._high = int(self._high)
+        self._low, self._high = numbers
         self._distribution = stats.uniform(loc=self._low, scale=(self._high - self._low))
+
+    @classmethod
+    def make(cls, text: str) -> Self:
+        # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
+        # then call it with cls as the first argument to ensure child typing.
+        # We do not want to call StochasticDistribution's make function, because it directs here.
+        return BigSMILESbase.make.__func__(cls, text)
 
     def generate_string(self, extension):
         if extension:
@@ -300,7 +311,10 @@ class Uniform(Distribution):
         return True
 
 
-class LogNormal(Distribution):
+StochasticDistribution._known_distributions.add(Uniform)
+
+
+class LogNormal(StochasticDistribution):
     r"""
     LogNormal distribution of molecular weights for narrowly distributed chain lengths.
 
@@ -323,29 +337,32 @@ class LogNormal(Distribution):
         def _get_support(self, M, D):
             return (0, np.inf)
 
-    def __init__(self, raw_text):
+    def __init__(self, children):
         """
         Initialization of LogNormal distribution object.
 
         Arguments:
         ---------
-        raw_text: str
-             Text representation of the distribution.
-             Has to start with `log_normal`.
+        children: list[lark.Token]
+            List of parsed children
 
         """
-        super().__init__(raw_text)
+        super().__init__(children)
 
-        if not self._raw_text.startswith("log_normal"):
-            raise RuntimeError(
-                f"Attempt to initialize LogNormal distribution from text '{raw_text}' that does not start with 'log_normal'"
-            )
+        numbers: list[float] = []
+        for child in self._children:
+            if isinstance(child, float):
+                numbers.append(child)
 
-        self._M, self._D = make_tuple(self._raw_text[len("log_normal") :])
-        self._M = float(self._M)
-        self._D = float(self._D)
-
+        self._M, self._D = numbers
         self._distribution = self.log_normal_gen(name="Log-Normal")
+
+    @classmethod
+    def make(cls, text: str) -> Self:
+        # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
+        # then call it with cls as the first argument to ensure child typing.
+        # We do not want to call StochasticDistribution's make function, because it directs here.
+        return BigSMILESbase.make.__func__(cls, text)
 
     def generate_string(self, extension):
         if extension:
@@ -357,20 +374,16 @@ class LogNormal(Distribution):
         return True
 
     def draw_mw(self, rng=None):
-        if rng is None:
-            rng = _GLOBAL_RNG
-        return self._distribution.rvs(M=self._M, D=self._D, random_state=rng)
+        return super().draw_mw(rng=rng, M=self._M, D=self._D)
 
     def prob_mw(self, mw):
-        if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
-            return self._distribution.cdf(mw.value, M=self._M, D=self._D) - self._distribution.cdf(
-                mw.previous, M=self._M, D=self._D
-            )
-
-        return self._distribution.pdf(mw, M=self._M, D=self._D)
+        return super().prob_mw(mw, M=self._M, D=self._D)
 
 
-class Poisson(Distribution):
+StochasticDistribution._known_distributions.add(LogNormal)
+
+
+class Poisson(StochasticDistribution):
     """
     Poisson distribution of molecular weights for chain lengths.
     Flory, P. J. Molecular size distribution in ethylene oxide polymers. Journal of the American chemical society 1940, 62, 1561–1565.
@@ -378,26 +391,31 @@ class Poisson(Distribution):
     The textual representation of this distribution is: `poisson(N)`
     """
 
-    def __init__(self, raw_text):
+    def __init__(self, children: list):
         """
         Initialization of Poisson distribution object.
 
         Arguments:
         ---------
-        raw_text: str
-             Text representation of the distribution.
-             Has to start with `poisson`.
+        children: list[lark.Token]
+            List of parsed children
 
         """
-        super().__init__(raw_text)
+        super().__init__(children)
+        N: float | None = None
+        for child in self._children:
+            if isinstance(child, float):
+                N = child
 
-        if not self._raw_text.startswith("poisson"):
-            raise RuntimeError(
-                f"Attempt to initialize Poisson distribution from text '{raw_text}' that does not start with 'poisson'"
-            )
-
-        self._N = float(self._raw_text[len("poisson") + 1 : -1])
+        self._N = N
         self._distribution = stats.poisson(mu=self._N)
+
+    @classmethod
+    def make(cls, text: str) -> Self:
+        # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
+        # then call it with cls as the first argument to ensure child typing.
+        # We do not want to call StochasticDistribution's make function, because it directs here.
+        return BigSMILESbase.make.__func__(cls, text)
 
     def generate_string(self, extension):
         if extension:
@@ -408,8 +426,5 @@ class Poisson(Distribution):
     def generable(self):
         return True
 
-    def prob_mw(self, mw):
-        try:
-            return super().prob_mw(mw)
-        except AttributeError:
-            return self._distribution.pmf(int(mw))
+
+StochasticDistribution._known_distributions.add(Poisson)

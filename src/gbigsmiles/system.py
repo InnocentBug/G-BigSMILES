@@ -155,7 +155,9 @@ class System(BigSMILESbase):
         return string
 
     @property
-    def generator(self, rng=get_global_rng()):
+    def generator(self, rng=None):
+        if rng is None:
+            rng = get_global_rng()
         if not self.generable:
             raise RuntimeError("Generable system required")
 
@@ -172,7 +174,9 @@ class System(BigSMILESbase):
                 raise RuntimeError("We expect a fully generated molecule here.")
             yield mol_gen
 
-    def generate(self, prefix=None, rng=get_global_rng()):
+    def generate(self, prefix=None, rng=None):
+        if rng is None:
+            rng = get_global_rng()
 
         relative_fractions = [mol.mixture.relative_mass for mol in self._molecules]
         mol_idx = rng.choice(
