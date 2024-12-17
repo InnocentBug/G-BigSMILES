@@ -4,6 +4,10 @@
 
 import re
 
+import numpy as np
+
+_GLOBAL_RNG: None | np.random.Generator = None
+
 
 def snake_to_camel(snake_str):
     """
@@ -73,3 +77,11 @@ def camel_to_snake(name):
     # Finally, handle the case where an acronym is at the start of the string
     s3 = re.sub("([A-Z])([A-Z][a-z])", r"\1_\2", s2)
     return s3.lower()
+
+
+def get_global_rng(seed=None):
+    global _GLOBAL_RNG
+    if _GLOBAL_RNG is None:
+        _GLOBAL_RNG = np.random.default_rng(seed)
+
+    return _GLOBAL_RNG

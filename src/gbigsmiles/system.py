@@ -7,9 +7,10 @@ from warnings import warn
 
 import numpy as np
 
-from .core import _GLOBAL_RNG, BigSMILESbase
+from .core import BigSMILESbase
 from .mixture import Mixture
 from .molecule import Molecule
+from .util import get_global_rng
 
 
 def _estimate_system_molecular_weight(molecules, system_molweight):
@@ -154,7 +155,7 @@ class System(BigSMILESbase):
         return string
 
     @property
-    def generator(self, rng=_GLOBAL_RNG):
+    def generator(self, rng=get_global_rng()):
         if not self.generable:
             raise RuntimeError("Generable system required")
 
@@ -171,7 +172,7 @@ class System(BigSMILESbase):
                 raise RuntimeError("We expect a fully generated molecule here.")
             yield mol_gen
 
-    def generate(self, prefix=None, rng=_GLOBAL_RNG):
+    def generate(self, prefix=None, rng=get_global_rng()):
 
         relative_fractions = [mol.mixture.relative_mass for mol in self._molecules]
         mol_idx = rng.choice(

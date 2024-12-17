@@ -5,7 +5,7 @@
 import lark
 
 from .core import BigSMILESbase
-from .exception import GBigSMILESParsingError, GBigSMILESTooManyTokens
+from .exception import ParsingError, TooManyTokens
 
 
 class Atom(BigSMILESbase):
@@ -33,7 +33,7 @@ class Atom(BigSMILESbase):
         for child in self._children:
             if isinstance(child, AtomSymbol):
                 if self._symbol is not None:
-                    raise GBigSMILESTooManyTokens(self.__class__, self._symbol, child)
+                    raise TooManyTokens(self.__class__, self._symbol, child)
                 self._symbol = child
 
     def generate_string(self, extension):
@@ -294,7 +294,7 @@ class HCount(BigSMILESbase):
         super().__init__(children)
 
         if str(self._children[0]) != "H":
-            raise GBigSMILESParsingError(self._children[0])
+            raise ParsingError(self._children[0])
 
         if len(self._children) > 1:
             self._count = int(self._children[1])

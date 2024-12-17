@@ -2,8 +2,13 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 from .core import BigSMILESbase
+from .parser import get_global_parser
 
 
 def _create_compatible_bond_text(bond):
@@ -309,6 +314,12 @@ class InnerBondDescriptor(BigSMILESbase):
 
 
 class BondDescriptor(BigSMILESbase):
+    @classmethod
+    def make(cls, text: str) -> Self:
+        if "$" in text or "<" in text or ">" in text:
+            return SimpleBondDescriptor.make(text)
+        return TerminalBondDescriptor.make(text)
+
     @property
     def symbol(self):
         return None
@@ -333,6 +344,13 @@ class SimpleBondDescriptor(BondDescriptor):
         for child in self._children:
             if isinstance(child, InnerBondDescriptor):
                 self._inner_bond_descriptor = child
+
+    @classmethod
+    def make(cls, text: str) -> Self:
+        # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
+        # then call it with cls as the first argument to ensure child typing.
+        # We do not want to call StochasticDistribution's make function, because it directs here.
+        return BigSMILESbase.make.__func__(cls, text)
 
     def generate_string(self, extension):
         return "[" + self._inner_bond_descriptor.generate_string(extension) + "]"
@@ -368,6 +386,13 @@ class TerminalBondDescriptor(BondDescriptor):
                 self._symbol = child
             if isinstance(child, BondDescriptorGeneration):
                 self._generation = child
+
+    @classmethod
+    def make(cls, text: str) -> Self:
+        # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
+        # then call it with cls as the first argument to ensure child typing.
+        # We do not want to call StochasticDistribution's make function, because it directs here.
+        return BigSMILESbase.make.__func__(cls, text)
 
     @property
     def weight(self):

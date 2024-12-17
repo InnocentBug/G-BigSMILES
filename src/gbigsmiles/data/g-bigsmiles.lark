@@ -40,8 +40,8 @@ bond_symbol: "-"
   | "/"
   | "\\"
 
-ring_bond: bond_symbol? DIGIT
-  | bond_symbol? "%" DIGIT? DIGIT
+ring_bond: bond_symbol? INT
+  | bond_symbol? "%" INT
 
 _branched_atom: _atom_stand_in ring_bond* branch*
 
@@ -77,12 +77,18 @@ bond_descriptor: simple_bond_descriptor | ladder_bond_descriptor | non_covalent_
 terminal_bond_descriptor: "[" bond_descriptor_symbol_idx? bond_descriptor_generation? "]"
 
 stochastic_generation: "|" stochastic_distribution "|"
-stochastic_distribution: "flory_schulz(" WS_INLINE* NUMBER WS_INLINE* ")"
-  | "schulz_zimm(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
-  | "gauss(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
-  | "uniform(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
-  | "log_normal(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
-  | "poisson(" WS_INLINE* NUMBER WS_INLINE* ")"
+flory_schulz: "flory_schulz(" WS_INLINE* NUMBER WS_INLINE* ")"
+schulz_zimm: "schulz_zimm(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+gauss: "gauss(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+uniform: "uniform(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+log_normal: "log_normal(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
+poisson: "poisson(" WS_INLINE* NUMBER WS_INLINE* ")"
+stochastic_distribution: flory_schulz
+  | schulz_zimm
+  | gauss
+  | uniform
+  | log_normal
+  | poisson
 
 _unary_index_operator: "!"
 _binary_index_operator: "~" | "&"
@@ -94,10 +100,10 @@ _non_covalent_key_value_pair: WS_INLINE* "," WS_INLINE* _printable_character+ "=
 _non_covalent_context: WS_INLINE* "|" WS_INLINE* _index_expression _non_covalent_key_value_pair*
 
 h_count: "H"
-  | "H" DIGIT
+  | "H" INT
 
-atom_charge: "-" DIGIT?
-  | "+" DIGIT?
+atom_charge: "-" INT?
+  | "+" INT?
   | "--"
   | "++"
 
@@ -117,7 +123,6 @@ end_group.-1: ";" WS_INLINE* smiles _monomer_list*
 %import common.INT
 %import common.SIGNED_NUMBER
 %import common.NUMBER
-%import common.DIGIT
 %import common.WS
 %import common.WS_INLINE
 
@@ -152,8 +157,8 @@ chiral: "@"
   | "@SP1"
   | "@SP2"
   | "@SP3"
-  | "@TB" DIGIT? DIGIT
-  | "@OH" DIGIT? DIGIT
+  | "@TB" INT
+  | "@OH" INT
 
 _element_symbols: "H"
   | "He"

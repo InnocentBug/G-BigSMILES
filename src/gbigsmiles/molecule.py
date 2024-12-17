@@ -7,11 +7,12 @@ import copy
 import networkx as nx
 
 from .bond import _create_compatible_bond_text
-from .core import _GLOBAL_RNG, BigSMILESbase
+from .core import BigSMILESbase
 from .mixture import Mixture
 from .stochastic import Stochastic
 from .stochastic_atom_graph import StochasticAtomGraph
 from .token import SmilesToken
+from .util import get_global_rng
 
 
 class Molecule(BigSMILESbase):
@@ -144,7 +145,7 @@ class Molecule(BigSMILESbase):
             string += self.mixture.generate_string(extension)
         return string
 
-    def generate(self, prefix=None, rng=_GLOBAL_RNG):
+    def generate(self, prefix=None, rng=get_global_rng()):
         my_mol = prefix
         for element in self._elements:
             my_mol = element.generate(my_mol, rng)

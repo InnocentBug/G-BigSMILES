@@ -30,6 +30,7 @@ def _make_parser(filename=None, start_tokens=None):
             "ladder_bond_descriptor",
             "non_covalent_bond_descriptor",
             "bond_descriptor",
+            "simple_bond_descriptor",
             "terminal_bond_descriptor",
             "stochastic_generation",
             "stochastic_distribution",
@@ -41,9 +42,22 @@ def _make_parser(filename=None, start_tokens=None):
             "atom_symbol",
             "aromatic_symbol",
             "bracket_atom",
+            "flory_schulz",
+            "uniform",
+            "schulz_zimm",
+            "log_normal",
+            "gauss",
         ]
     parser = Lark(rf"{grammar_text}", start=start_tokens, keep_all_tokens=True)
     return parser
 
 
-_GLOBAL_PARSER = _make_parser()
+_GLOBAL_PARSER: None | Lark = None
+
+
+def get_global_parser():
+    global _GLOBAL_PARSER
+    if _GLOBAL_PARSER is None:
+        _GLOBAL_PARSER = _make_parser()
+
+    return _GLOBAL_PARSER

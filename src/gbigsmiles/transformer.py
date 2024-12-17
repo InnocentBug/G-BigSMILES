@@ -2,111 +2,10 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 import lark
+from lark.visitors import Discard
 
 
 class GBigSMILESTransformer(lark.Transformer):
-    def atom(self, children):
-        from .atom import Atom
-
-        a = Atom(children)
-        return a
-
-    def bracket_atom(self, children):
-        from .atom import BracketAtom
-
-        return BracketAtom(children)
-
-    def chiral(self, children):
-        from .atom import Chiral
-
-        return Chiral(children)
-
-    def h_count(self, children):
-        from .atom import HCount
-
-        return HCount(children)
-
-    def atom_charge(self, children):
-        from .atom import AtomCharge
-
-        return AtomCharge(children)
-
-    def atom_class(self, children):
-        from .atom import AtomClass
-
-        return AtomClass(children)
-
-    def isotope(self, children):
-        from .atom import Isotope
-
-        return Isotope(children)
-
-    def atom_symbol(self, children):
-        from .atom import AtomSymbol
-
-        return AtomSymbol(children)
-
-    def aromatic_symbol(self, children):
-        from .atom import AromaticSymbol
-
-        return AromaticSymbol(children)
-
-    def aliphatic_organic(self, children):
-        from .atom import AliphaticOrganic
-
-        return AliphaticOrganic(children)
-
-    def aromatic_organic(self, children):
-        from .atom import AromaticOrganic
-
-        return AromaticOrganic(children)
-
-    def bond_symbol(self, children):
-        from .bond import BondSymbol
-
-        return BondSymbol(children)
-
-    def ring_bond(self, children):
-        from .bond import RingBond
-
-        return RingBond(children)
-
-    def bond_descriptor_symbol(self, children):
-        from .bond import BondDescriptorSymbol
-
-        return BondDescriptorSymbol(children)
-
-    def bond_descriptor_symbol_idx(self, children):
-        from .bond import BondDescriptorSymbolIdx
-
-        return BondDescriptorSymbolIdx(children)
-
-    def terminal_bond_descriptor(self, children):
-        from .bond import TerminalBondDescriptor
-
-        return TerminalBondDescriptor(children)
-
-    def simple_bond_descriptor(self, children):
-        from .bond import SimpleBondDescriptor
-
-        return SimpleBondDescriptor(children)
-
-    def inner_bond_descriptor(self, children):
-        from .bond import InnerBondDescriptor
-
-        return InnerBondDescriptor(children)
-
-    def bond_descriptor_generation(self, children):
-        from .bond import BondDescriptorGeneration
-
-        return BondDescriptorGeneration(children)
-
-    def bond_descriptor(self, children):
-        from .bond import BondDescriptor
-
-        assert isinstance(children[0], BondDescriptor)
-        return children[0]
-
     def NUMBER(self, children):
         return float(children)
 
@@ -114,13 +13,20 @@ class GBigSMILESTransformer(lark.Transformer):
         return int(children)
 
     def WS_INLINE(self, children):
-        from lark.visitors import Discard
-
         return Discard
 
-    # def big_smiles_fragment_definition(self, children
+
+_GLOBAL_TRANSFORMER: None | GBigSMILESTransformer = None
 
 
-#    "{[][<]N=Cc(cc1)ccc1C=N[13C@OH1H2+1:3]CC[Si](C)(C)O{[<][>][Si](C)(C)O[<][>]}[Si](C)(C)CCC[>][]}"
+def get_global_transformer():
+    global _GLOBAL_TRANSFORMER
+    if _GLOBAL_TRANSFORMER is None:
+        import gbigsmiles
 
-_GLOBAL_TRANSFORMER = GBigSMILESTransformer(visit_tokens=True)
+        transformer = lark.ast_utils.create_transformer(
+            ast_module=gbigsmiles, transformer=GBigSMILESTransformer(visit_tokens=True)
+        )
+        _GLOBAL_TRANSFORMER = transformer
+
+    return _GLOBAL_TRANSFORMER
