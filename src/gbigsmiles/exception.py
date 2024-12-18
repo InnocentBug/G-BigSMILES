@@ -45,3 +45,14 @@ class UnknownDistribution(GBigSMILESError):
         string = f"GBigSMILES a distribution with the following text {self.distribution_text} is unknown."
         string += " Typo or not implemented distribution."
         return string
+
+
+class UnsupportedBigSMILES(GBigSMILESError):
+    def __init__(self, token_type: str, other):
+        self.token_type = token_type
+        self.other = other
+
+    def __str__(self):
+        string = f"The provided token {self.token_type} is supported in BigSMILES but not in G-BigSMILES. "
+        string += f"This token was requested by the following parsed text {self.other}."
+        return string

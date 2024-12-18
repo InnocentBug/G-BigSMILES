@@ -23,8 +23,7 @@ _printable_character: /['?'-Z]/
 _big_smiles_fragment_name: _printable_character+
 big_smiles_fragment_declaration: "[#" _big_smiles_fragment_name "]"
 
-big_smiles_fragment_definition: ".{#" _big_smiles_fragment_name "=" big_smiles_molecule+ "}"
-
+big_smiles_fragment_definition: dot "{#" _big_smiles_fragment_name "=" big_smiles_molecule+ "}"
 
 bracket_atom: "[" isotope? atom_symbol chiral? h_count? atom_charge? atom_class? "]"
 
@@ -40,15 +39,15 @@ bond_symbol: "-"
   | "/"
   | "\\"
 
-ring_bond: bond_symbol? INT
-  | bond_symbol? "%" INT
+ring_bond: bond_symbol? DIGIT
+  | bond_symbol? "%" DIGIT? DIGIT
 
-_branched_atom: _atom_stand_in ring_bond* branch*
+branched_atom: _atom_stand_in ring_bond* branch*
 
 branch: "(" bond_symbol? big_smiles_molecule* ")"
 
-_atom_assembly: bond_symbol? _branched_atom
-smiles: _branched_atom _atom_assembly*
+atom_assembly: bond_symbol? branched_atom
+smiles: branched_atom atom_assembly*
   | smiles dot smiles
 
 
@@ -120,6 +119,7 @@ _monomer_list: WS_INLINE* "," WS_INLINE* smiles
 end_group.-1: ";" WS_INLINE* smiles _monomer_list*
 
 
+%import common.DIGIT
 %import common.INT
 %import common.SIGNED_NUMBER
 %import common.NUMBER

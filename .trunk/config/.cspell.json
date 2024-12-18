@@ -141,6 +141,7 @@
     "initiator",
     "initiators",
     "chembl",
-    "chirality"
+    "chirality",
+    "ambi"
   ]
 }

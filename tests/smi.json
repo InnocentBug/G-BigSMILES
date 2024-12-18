@@ -1,6 +1,13 @@
 {
   "chembl_smiles": [
     "",
+    "[H]",
+    "CC",
+    "C=C",
+    "C=Cc1ccccc1",
+    "C(C)C",
+    "C(=C)C",
+    "[H]CC[H]",
     "O=C(c%12cccc(Cl)c1)c1ccc2n%12CCC2C(=O)O",
     "CC[C@@H]1C/C=C\\C(=O)[C@@H](O)[C@@H](O)C/C=C/c2cc(OC)cc(O)c2C(=O)O1",
     "CC(C)(C(=O)O)c1cccnc1Nc1ccc(Cl)cc1",

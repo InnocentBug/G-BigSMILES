@@ -111,7 +111,6 @@ class BracketAtom(Atom):
         """
         super().__init__(children)
         for child in self._children:
-            print(child)
             if isinstance(child, AtomSymbol):
                 pass
             elif isinstance(child, Isotope):
@@ -119,7 +118,6 @@ class BracketAtom(Atom):
             elif isinstance(child, Chiral):
                 self._chiral = child
             elif isinstance(child, HCount):
-                print(child)
                 self._h_count = child
             elif isinstance(child, AtomCharge):
                 self._atom_charge = child
@@ -137,6 +135,7 @@ class BracketAtom(Atom):
             str: String representation of the bracketed atom.
 
         """
+
         string = "["
         if self.isotope:
             string += self.isotope.generate_string(extension)

@@ -26,28 +26,38 @@ class BondSymbol(BigSMILESbase):
         self._symbol = str(self._children[0])
 
     @property
-    def generable():
+    def generable(self):
         return True
 
     def generate_string(self, extension):
         return self._symbol
 
 
-class RingBond(BondSymbol):
+class RingBond(BigSMILESbase):
     def __init__(self, children: list):
         super().__init__(children)
 
-        num_text = "".join((str(c) for c in self._children[1:]))
-        self._has_dollar = "%" in num_text
-        num_text.strip("%")
-        self._num = int(num_text)
+        self._bond_symbol: None | BondSymbol = None
+        self._has_dollar: bool = False
+
+        num_text = ""
+        for child in self._children:
+            if isinstance(child, BondSymbol):
+                self._bond_symbol = child
+            elif str(child) == "%":
+                self._has_dollar = True
+            elif str(child).isdigit():
+                num_text += str(child)
+        self._num: int = int(num_text)
 
     def generate_string(self, extension):
         string = ""
+        if self._bond_symbol is not None:
+            string += self._bond_symbol.generate_string(extension)
         if self._has_dollar:
             string += "%"
         string += str(self._num)
-        return super().generate_string(extension) + string
+        return string
 
     @property
     def generable():

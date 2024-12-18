@@ -78,13 +78,18 @@ class classproperty(object):
 
 
 class BigSMILESbase(ABC, ast_utils.Ast, ast_utils.AsList):
-    bond_descriptors = []
-
     @classmethod
     def make(cls, text: str) -> Self:
         tree = get_global_parser().parse(text, start=cls.token_name_snake_case)
         transformed_tree = get_global_transformer().transform(tree)
         return transformed_tree
+
+    def __new__(cls, children: list):
+        # Special allocation function. For inherited objects.
+        # If the inherited object is already fully created, we do not downgrade the object.
+        if len(children) == 1 and isinstance(children[0], cls):
+            return children[0]
+        return super().__new__(cls)
 
     def __init__(self, children: list):
         self._children = children

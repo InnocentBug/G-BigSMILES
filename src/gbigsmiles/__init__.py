@@ -28,6 +28,7 @@ from .atom import (
     HCount,
     Isotope,
 )
+from .big_smiles import BigSmiles, BigSmilesMolecule, DotGeneration, DotSystemSize
 from .bond import (
     BondDescriptor,
     BondDescriptorGeneration,
@@ -50,6 +51,7 @@ from .distribution import (
     Uniform,
 )
 from .parser import get_global_parser
+from .smiles import AtomAssembly, Branch, BranchedAtom, Dot, Smiles
 from .transformer import GBigSMILESTransformer, get_global_transformer
 from .util import camel_to_snake, get_global_rng, snake_to_camel
 
@@ -98,4 +100,13 @@ __all__ = [
     "Poisson",
     "StochasticDistribution",
     "Uniform",
+    "Branch",
+    "BranchedAtom",
+    "AtomAssembly",
+    "Dot",
+    "Smiles",
+    "BigSmiles",
+    "BigSmilesMolecule",
+    "DotGeneration",
+    "DotSystemSize",
 ]
