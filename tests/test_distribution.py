@@ -113,7 +113,7 @@ def test_schulz_zimm(Mw, factor):
     z = schulz_zimm._z
 
     data = []
-    for i in range(NSTAT):
+    for _i in range(NSTAT):
         data.append(schulz_zimm.draw_mw())
     data = np.asarray(data)
 
@@ -163,7 +163,7 @@ def test_poisson(M):
     assert isinstance(poisson, gbigsmiles.Poisson)
 
     data = []
-    for i in range(NSTAT):
+    for _i in range(NSTAT):
         d = poisson.draw_mw()
         data.append(d)
     data = np.asarray(data)
