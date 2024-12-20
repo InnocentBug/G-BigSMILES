@@ -4,6 +4,8 @@
 from abc import ABC
 from warnings import warn
 
+import networkx as nx
+
 try:
     from typing import Self
 except ImportError:
@@ -13,6 +15,7 @@ import numpy as np
 from lark import ast_utils
 
 from .chem_resource import atom_color_mapping, atom_name_mapping
+from .generating_graph import _PartialGeneratingGraph
 from .parser import get_global_parser
 from .transformer import get_global_transformer
 from .util import camel_to_snake, get_global_rng
@@ -92,6 +95,7 @@ class BigSMILESbase(ABC, ast_utils.Ast, ast_utils.AsList):
         return super().__new__(cls)
 
     def __init__(self, children: list):
+        super().__init__()
         self._children = children
 
     @classproperty
@@ -123,16 +127,29 @@ class BigSMILESbase(ABC, ast_utils.Ast, ast_utils.AsList):
     def residues(self) -> list:
         return []
 
-    def generate(self, prefix=None, rng=None):
-        if rng is None:
-            rng = get_global_rng()
-        if not self.generable:
-            raise RuntimeError("Attempt to generate a non-generable molecule.")
-        if prefix:
-            if len(prefix.bond_descriptors) != 1:
-                raise RuntimeError(
-                    f"Prefixes for generating Mols must have exactly one open bond descriptor found {len(prefix.bond_descriptors)}."
-                )
+
+class GenerationBase(ABC):
+    def __init__(self):
+        super().__init__()
+        self._generating_graph: None | nx = None
+
+    def _generate_partial_graph(self) -> _PartialGeneratingGraph:
+        pass
+
+    @property
+    def generating_graph(self):
+        if self._generating_graph is None:
+            g = self._generate_partial_graph().g
+
+            # Post-process, marking aromatic bonds
+            for edge in g.edges(data=True):
+                node_a = g.nodes()[edge[0]]["obj"]
+                node_b = g.nodes()[edge[0]]["obj"]
+                if node_a.aromatic and node_b.aromatic:
+                    edge[2]["aromatic"] = True
+
+            self._generating_graph = g
+        return self._generating_graph
 
 
 def get_compatible_bond_descriptor_ids(bond_descriptors, bond):

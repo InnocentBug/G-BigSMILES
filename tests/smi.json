@@ -1,10 +1,10 @@
 {
   "chembl_smiles": [
+    "C=Cc1ccccc1",
     "",
     "[H]",
     "CC",
     "C=C",
-    "C=Cc1ccccc1",
     "C(C)C",
     "C(=C)C",
     "[H]CC[H]",

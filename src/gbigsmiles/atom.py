@@ -2,13 +2,17 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+import uuid
+
 import lark
+import networkx as nx
 
-from .core import BigSMILESbase
+from .core import BigSMILESbase, GenerationBase
 from .exception import ParsingError, TooManyTokens
+from .generating_graph import _HalfBond, _PartialGeneratingGraph
 
 
-class Atom(BigSMILESbase):
+class Atom(BigSMILESbase, GenerationBase):
     """
     Represents an atom in a chemical structure.
     """
@@ -48,6 +52,16 @@ class Atom(BigSMILESbase):
 
         """
         return str(self.symbol)
+
+    def _generate_partial_graph(self):
+        g = nx.MultiDiGraph()
+        node_id = uuid.uuid4()
+        g.add_node(node_id, smi_text=str(self), obj=self)
+        partial_graph = _PartialGeneratingGraph(g)
+        partial_graph.left_half_bonds.append(_HalfBond(node_id, {}))
+        partial_graph.right_half_bonds.append(_HalfBond(node_id, {}))
+
+        return partial_graph
 
     @property
     def aromatic(self):

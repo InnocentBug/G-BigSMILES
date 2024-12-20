@@ -24,6 +24,7 @@ dependencies = [
   "pytest",
   "rdkit",
   "lark",
+  "pysmiles",
 ]
 dynamic = ["version"]
 readme = "README.md"

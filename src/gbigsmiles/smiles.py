@@ -1,8 +1,12 @@
+from itertools import product
+
+from .big_smiles import _AbstractIterativeGenerativeClass
 from .bond import BondSymbol, RingBond
-from .core import BigSMILESbase
+from .core import BigSMILESbase, GenerationBase
+from .generating_graph import _PartialGeneratingGraph
 
 
-class Branch(BigSMILESbase):
+class Branch(BigSMILESbase, GenerationBase):
     def __init__(self, children: list):
         super().__init__(children)
 
@@ -36,8 +40,31 @@ class Branch(BigSMILESbase):
             string += element.generate_string(extension)
         return string + ")"
 
+    def _generate_partial_graph(self) -> _PartialGeneratingGraph:
+        partial_graph = self._elements[0]._generate_partial_graph()
+        if self._bond_symbol is not None:
+            for lhb in partial_graph.left_half_bonds:
+                assert "bond_type" not in lhb.bond_attributes
+                lhb.bond_attributes["bond_type"] = self._bond_symbol
 
-class BranchedAtom(BigSMILESbase):
+        for element in self._elements[1:]:
+            element_partial_graph = element._generate_partial_graph()
+            bonds_to_add = product(
+                partial_graph.right_half_bonds, element_partial_graph.left_half_bonds
+            )
+            # Transfer right_half_bonds to new partial graph
+            partial_graph.right_half_bonds = element_partial_graph.right_half_bonds
+            element_partial_graph.right_half_bonds = []
+            element_partial_graph.left_half_bonds = []
+
+            partial_graph.merge(element_partial_graph, bonds_to_add)
+
+        # A branch cannot connect to anything on the right
+        partial_graph.right_half_bonds = []
+        return partial_graph
+
+
+class BranchedAtom(BigSMILESbase, GenerationBase):
     def __init__(self, children):
         super().__init__(children)
 
@@ -71,8 +98,28 @@ class BranchedAtom(BigSMILESbase):
             string += branch.generate_string(extension)
         return string
 
+    def _generate_partial_graph(self) -> _PartialGeneratingGraph:
+        partial_graph = self._atom_stand_in._generate_partial_graph()
+        # Adding ring bonds
+        for ring_idx, half_bond in product(self._ring_bonds, partial_graph.right_half_bonds):
+            partial_graph.add_ring_bond(ring_idx, half_bond)
 
-class AtomAssembly(BigSMILESbase):
+        # Adding branches
+        for branch in self._branches:
+            branch_partial_graph = branch._generate_partial_graph()
+            bonds_to_add = product(
+                partial_graph.right_half_bonds, branch_partial_graph.left_half_bonds
+            )
+            # Branches have empty right hand half bonds, so only resetting left ones.
+            branch_partial_graph.left_half_bonds = []
+
+            partial_graph.merge(branch_partial_graph, bonds_to_add)
+
+        # Not resetting right bonds, because this can bond to more on the right (not a branch)
+        return partial_graph
+
+
+class AtomAssembly(BigSMILESbase, GenerationBase):
     def __init__(self, children: list):
         super().__init__(children)
         self._symbol: None | BondSymbol = None
@@ -102,8 +149,17 @@ class AtomAssembly(BigSMILESbase):
         string += self._branched_atom.generate_string(extension)
         return string
 
+    def _generate_partial_graph(self) -> _PartialGeneratingGraph:
+        partial_graph = self._branched_atom._generate_partial_graph()
+        if self.bond_symbol:
+            for half_bond in partial_graph.left_half_bonds:
+                assert "bond_type" not in half_bond.bond_attributes
+                half_bond.bond_attributes["bond_type"] = self.bond_symbol
 
-class Dot(BigSMILESbase):
+        return partial_graph
+
+
+class Dot(BigSMILESbase, GenerationBase):
     @property
     def generable(self):
         return True
@@ -111,22 +167,9 @@ class Dot(BigSMILESbase):
     def generate_string(self, extension: bool) -> str:
         return "."
 
+    def _generate_partial_graph(self) -> _PartialGeneratingGraph:
+        return _PartialGeneratingGraph()
 
-class Smiles(BigSMILESbase):
-    def __init__(self, children: list):
-        super().__init__(children)
 
-        self._elements = self._children
-
-    @property
-    def generable(self):
-        gen = True
-        for element in self._elements:
-            gen = gen and element.generable
-        return gen
-
-    def generate_string(self, extension: bool) -> str:
-        string: str = ""
-        for element in self._elements:
-            string += element.generate_string(extension)
-        return string
+class Smiles(_AbstractIterativeGenerativeClass):
+    pass
