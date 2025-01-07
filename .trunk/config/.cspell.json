@@ -142,6 +142,11 @@
     "initiators",
     "chembl",
     "chirality",
-    "ambi"
+    "ambi",
+    "molw",
+    "pysmiles",
+    "smis",
+    "pysmi",
+    "PYSMILES"
   ]
 }

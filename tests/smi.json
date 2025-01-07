@@ -1,5 +1,6 @@
 {
   "chembl_smiles": [
+    "CCCC(CCC)C(=O)[O-].[Na+]",
     "C=Cc1ccccc1",
     "",
     "[H]",
@@ -9,8 +10,9 @@
     "C(=C)C",
     "[H]CC[H]",
     "O=C(c%12cccc(Cl)c1)c1ccc2n%12CCC2C(=O)O",
-    "CC[C@@H]1C/C=C\\C(=O)[C@@H](O)[C@@H](O)C/C=C/c2cc(OC)cc(O)c2C(=O)O1",
     "CC(C)(C(=O)O)c1cccnc1Nc1ccc(Cl)cc1",
+    "C(c1ccccc1)C(c2ccccc2)C(c3ccccc3)",
+    "Cc1ccccc1Cc2ccccc2Cc3ccccc3Cc4ccccc4Cc5ccccc5",
     "OC[C@@]1(CCCc2ccccc2)CC2C3Cc4ccc(O)c5c4C2(CCN3CC2CCC2)C(O5)[C@@H]1O",
     "CCCC(=O)Nc1ccccc1Oc1cccc(OC)c1",
     "CCCCCCCC(NC(=O)c1cc(-c2ccccc2)nc2ccccc12)c1ccccc1",
@@ -22,7 +24,6 @@
     "CC[C@H]1CCN2CCCC[C@@H]2[C@H]1c1ccc(Cl)c(Cl)c1",
     "CCCNc1ccc2c(c1)CC(N)(C(=O)O)CC2",
     "COc1ccccc1S(=O)(=O)Nc1c(C)cc(C)cc1C",
-    "CCCC(CCC)C(=O)[O-].[Na+]",
     "C#CCN(Cc1cc2c(O)nc(C)nc2cc1C)c1ccc(C(=O)NCc2ccccn2)c(F)c1",
     "Cn1cc([N+](=O)[O-])cc1C(=O)NNC(=O)Nc1ccc(Cl)cc1",
     "O=C(C1CCCCN1)N1CCN(Cc2cccnc2)CC1",
@@ -35,7 +36,8 @@
     "C(N)C",
     "C(C(C))C",
     "C(C)(C)",
-    "[H]CC[CH2]"
+    "[H]CC[CH2]",
+    "CC[C@@H]1C/C=C\\C(=O)[C@@H](O)[C@@H](O)C/C=C/c2cc(OC)cc(O)c2C(=O)O1"
   ],
   "big_smiles": [
     "CCO{[<][<]C(N)C[>|2|][>]}|uniform(500, 600)|{[<][<|0 1|]C(=O)C[>][>]}|uniform(500, 600)|CCN.|2000|",

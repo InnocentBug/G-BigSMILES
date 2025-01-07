@@ -56,3 +56,17 @@ class UnsupportedBigSMILES(GBigSMILESError):
         string = f"The provided token {self.token_type} is supported in BigSMILES but not in G-BigSMILES. "
         string += f"This token was requested by the following parsed text {self.other}."
         return string
+
+
+class GenerationError(GBigSMILESError):
+    pass
+
+
+class DoubleBondSymbolDefinition(GenerationError):
+    def __init__(self, partial_graph, symbol, bond_attributes):
+        self.partial_graph = partial_graph
+        self.symbol = symbol
+        self.bond_attributes = bond_attributes
+
+    def __str__(self):
+        return f"{self.partial_graph}, {self.symbol}, {self.bond_attributes}"

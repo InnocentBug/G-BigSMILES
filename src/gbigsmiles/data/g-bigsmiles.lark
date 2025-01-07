@@ -1,13 +1,15 @@
-big_smiles: big_smiles_molecule* big_smiles_fragment_definition*
+big_smiles: big_smiles_molecule * big_smiles_fragment_definition*
+
 big_smiles_molecule: smiles? _big_smiles_repeat* dot_generation?
+
 _big_smiles_repeat: stochastic_object* smiles?
 
-stochastic_object: "{" WS_INLINE* terminal_bond_descriptor WS_INLINE* smiles WS_INLINE* _monomer_list* WS_INLINE* end_group? WS_INLINE* terminal_bond_descriptor "}" stochastic_generation?
+stochastic_object: "{" WS_INLINE* terminal_bond_descriptor WS_INLINE* _repeat_units WS_INLINE* _end_group? WS_INLINE* terminal_bond_descriptor "}" stochastic_generation?
 
 _atom_stand_in: atom
-  | big_smiles_fragment_declaration
   | stochastic_object
   | bond_descriptor
+  | big_smiles_fragment_declaration
 
 atom:  bracket_atom
   | aliphatic_organic
@@ -43,9 +45,7 @@ ring_bond: bond_symbol? DIGIT
   | bond_symbol? "%" DIGIT? DIGIT
 
 branched_atom: _atom_stand_in ring_bond* branch*
-
 branch: "(" bond_symbol? big_smiles_molecule* ")"
-
 atom_assembly: bond_symbol? branched_atom
 smiles: branched_atom atom_assembly*
   | smiles dot smiles
@@ -115,8 +115,9 @@ dot: "."
 
 _number_list_repeat.-1: WS_INLINE+ NUMBER
 
-_monomer_list: WS_INLINE* "," WS_INLINE* smiles
-end_group.-1: ";" WS_INLINE* smiles _monomer_list*
+_repeat_units: big_smiles_molecule _monomer_list*
+_monomer_list: WS_INLINE* "," WS_INLINE* big_smiles_molecule
+_end_group.-1: ";" WS_INLINE* big_smiles_molecule _monomer_list*
 
 
 %import common.DIGIT

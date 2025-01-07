@@ -37,7 +37,6 @@ def _make_parser(filename=None, start_tokens=None):
             "dot_system_size",
             "dot_generation",
             "dot",
-            "end_group",
             "isotope",
             "atom_symbol",
             "aromatic_symbol",

@@ -3,6 +3,7 @@ from itertools import product
 from .big_smiles import _AbstractIterativeGenerativeClass
 from .bond import BondSymbol, RingBond
 from .core import BigSMILESbase, GenerationBase
+from .exception import DoubleBondSymbolDefinition
 from .generating_graph import _PartialGeneratingGraph
 
 
@@ -44,7 +45,10 @@ class Branch(BigSMILESbase, GenerationBase):
         partial_graph = self._elements[0]._generate_partial_graph()
         if self._bond_symbol is not None:
             for lhb in partial_graph.left_half_bonds:
-                assert "bond_type" not in lhb.bond_attributes
+                if "bond_type" in lhb.bond_attributes:
+                    raise DoubleBondSymbolDefinition(
+                        partial_graph, self._bond_symbol, lhb.bond_attributes
+                    )
                 lhb.bond_attributes["bond_type"] = self._bond_symbol
 
         for element in self._elements[1:]:
@@ -62,6 +66,13 @@ class Branch(BigSMILESbase, GenerationBase):
         # A branch cannot connect to anything on the right
         partial_graph.right_half_bonds = []
         return partial_graph
+
+    @property
+    def bond_descriptors(self):
+        bond_descriptors = []
+        for element in self._elements:
+            bond_descriptors += element.bond_descriptors
+        return bond_descriptors
 
 
 class BranchedAtom(BigSMILESbase, GenerationBase):
@@ -118,6 +129,16 @@ class BranchedAtom(BigSMILESbase, GenerationBase):
         # Not resetting right bonds, because this can bond to more on the right (not a branch)
         return partial_graph
 
+    @property
+    def bond_descriptors(self):
+        bond_descriptors = []
+        if self._atom_stand_in:
+            bond_descriptors += self._atom_stand_in.bond_descriptors
+        for branch in self._branches:
+            bond_descriptors += branch.bond_descriptors
+
+        return bond_descriptors
+
 
 class AtomAssembly(BigSMILESbase, GenerationBase):
     def __init__(self, children: list):
@@ -153,10 +174,17 @@ class AtomAssembly(BigSMILESbase, GenerationBase):
         partial_graph = self._branched_atom._generate_partial_graph()
         if self.bond_symbol:
             for half_bond in partial_graph.left_half_bonds:
-                assert "bond_type" not in half_bond.bond_attributes
+                if "bond_type" in half_bond.bond_attributes:
+                    raise DoubleBondSymbolDefinition(
+                        partial_graph, self.bond_symbol, half_bond.bond_attributes
+                    )
                 half_bond.bond_attributes["bond_type"] = self.bond_symbol
 
         return partial_graph
+
+    @property
+    def bond_descriptors(self) -> list:
+        return self._branched_atom.bond_descriptors
 
 
 class Dot(BigSMILESbase, GenerationBase):

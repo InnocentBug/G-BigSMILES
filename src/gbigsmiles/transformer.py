@@ -8,6 +8,9 @@ from .exception import UnsupportedBigSMILES
 
 
 class GBigSMILESTransformer(lark.Transformer):
+    def stochastic_generation(self, children):
+        return children[1]
+
     def NUMBER(self, children):
         return float(children)
 

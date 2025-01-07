@@ -40,41 +40,61 @@ def test_smiles_graph(chembl_smi_list):
 
     def node_match(gb_node, pysmi_node):
         return_value = True
-        if str(gb_node["obj"].symbol).upper() != pysmi_node["element"]:
+        if str(gb_node["obj"].symbol).upper() != pysmi_node["element"].upper():
             return_value = False
         if gb_node["obj"].charge != pysmi_node["charge"]:
             return_value = False
         if gb_node["obj"].aromatic != pysmi_node["aromatic"]:
             return_value = False
 
-        print(
-            "node_match",
-            gb_node,
-            pysmi_node,
-            return_value,
-            gb_node["obj"].aromatic != pysmi_node["aromatic"],
-        )
+        # print(
+        #     "node_match",
+        #     gb_node,
+        #     str(gb_node["obj"]),
+        #     gb_node["obj"].aromatic,
+        #     pysmi_node,
+        #     return_value,
+        #     gb_node["obj"].aromatic != pysmi_node["aromatic"],
+        # )
         return return_value
 
     def edge_match(gb_edge, pysmi_edge):
         return_value = True
 
-        bond_type = gb_edge[0].get("bond_type", None)
+        bond_type = gb_edge.get("bond_type", None)
         if bond_type is None and pysmi_edge["order"] != 1:
-            if not (gb_edge[0].get("aromatic", False) and pysmi_edge["order"] == 1.5):
+            if not (gb_edge.get("aromatic", False) and pysmi_edge["order"] == 1.5):
                 return_value = False
         if str(bond_type) == "=" and pysmi_edge["order"] != 2:
             return_value = False
-        print("edge match", gb_edge, pysmi_edge, return_value)
+        if str(bond_type) == "#" and pysmi_edge["order"] != 3:
+            return_value = False
+
+        # print("edge match", gb_edge, pysmi_edge, return_value)
         return return_value
 
     for smi in chembl_smi_list:
         big_smiles = gbigsmiles.BigSmiles.make(smi)
 
-        pysmiles_graph = pysmiles.read_smiles(smi)
+        pysmiles_graph = pysmiles.read_smiles(smi, reinterpret_aromatic=False)
+
+        # PYSMILES and us treat hydrogen differently
+        for node in list(pysmiles_graph.nodes(data=True)):
+            if "H" in node[1]["element"]:
+                pysmiles_graph.remove_node(node[0])
+
+        # Pysmiles adds 0 order bonds to the graph, but we do not.
+        for edge in list(pysmiles_graph.edges(data=True)):
+            if edge[2]["order"] == 0:
+                pysmiles_graph.remove_edge(edge[0], edge[1])
 
         graph = big_smiles.generating_graph
-        graph = nx.to_undirected(graph)
+        graph = nx.Graph(nx.to_undirected(graph))
+
+        # Remove hydrogens from bigsmiles graph for comparison:
+        for node in list(graph.nodes(data=True)):
+            if "H" == str(node[1]["obj"].symbol):
+                graph.remove_node(node[0])
 
         print("\n", smi, pysmiles_graph, graph, "\n")
         assert nx.is_isomorphic(graph, pysmiles_graph, node_match=node_match, edge_match=edge_match)

@@ -64,3 +64,18 @@ def test_descriptors_compatible(textA, textB, compatible):
 
     assert bondA.is_compatible(bondB) == compatible
     assert bondB.is_compatible(bondA) == compatible
+
+
+bd_smiles_list = [
+    ("[C@@H]N(=O)c1ccncc1", []),
+]
+
+
+@pytest.mark.parametrize(("smi", "bd_list"), bd_smiles_list)
+def test_bond_descriptor_recognition(smi, expected_bd_list):
+    big_smi = gbigsmiles.BigSmiles.make(smi)
+
+    assert len(big_smi.bond_descriptors) == len(expected_bd_list)
+
+    for actual, expected in zip(big_smi.bond_descriptors, expected_bd_list):
+        assert str(actual) == expected

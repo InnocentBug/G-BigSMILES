@@ -52,6 +52,7 @@ from .distribution import (
 )
 from .parser import get_global_parser
 from .smiles import AtomAssembly, Branch, BranchedAtom, Dot, Smiles
+from .stochastic import StochasticObject
 from .transformer import GBigSMILESTransformer, get_global_transformer
 from .util import camel_to_snake, get_global_rng, snake_to_camel
 
@@ -59,7 +60,6 @@ from .util import camel_to_snake, get_global_rng, snake_to_camel
 # from .mixture import Mixture
 # from .mol_prob import get_ensemble_prob
 # from .molecule import Molecule
-# from .stochastic import Stochastic
 # from .system import System
 # from .token import SmilesToken
 

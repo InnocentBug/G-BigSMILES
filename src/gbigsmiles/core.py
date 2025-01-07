@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
-from abc import ABC
+from abc import ABC, ABCMeta, abstractmethod
 from warnings import warn
 
 import networkx as nx
@@ -18,7 +18,7 @@ from .chem_resource import atom_color_mapping, atom_name_mapping
 from .generating_graph import _PartialGeneratingGraph
 from .parser import get_global_parser
 from .transformer import get_global_transformer
-from .util import camel_to_snake, get_global_rng
+from .util import camel_to_snake
 
 _BOND_TYPE_TO_ARROW = {
     "UNSPECIFIED": "none",
@@ -80,28 +80,35 @@ class classproperty(object):
         return self.f(obj)
 
 
-class BigSMILESbase(ABC, ast_utils.Ast, ast_utils.AsList):
+class MetaSkipInitIfChildIsInstance(ABCMeta):
+    def __call__(cls, children):
+        # Special allocation function. For inherited objects.
+        # If the inherited object is already fully created, we don't create a new object, but just use that child
+        if len(children) == 1 and isinstance(children[0], cls):
+            return children[0]
+
+        return super().__call__(children)
+
+
+class BigSMILESbase(ABC, ast_utils.Ast, ast_utils.AsList, metaclass=MetaSkipInitIfChildIsInstance):
     @classmethod
     def make(cls, text: str) -> Self:
         tree = get_global_parser().parse(text, start=cls.token_name_snake_case)
         transformed_tree = get_global_transformer().transform(tree)
         return transformed_tree
 
-    def __new__(cls, children: list):
-        # Special allocation function. For inherited objects.
-        # If the inherited object is already fully created, we do not downgrade the object.
-        if len(children) == 1 and isinstance(children[0], cls):
-            return children[0]
-        return super().__new__(cls)
-
     def __init__(self, children: list):
         super().__init__()
+
+        if len(children) > 0 and children[0] is self:
+            return
+
         self._children = children
 
     @classproperty
     def token_name(self) -> str:
         name = type(self).__name__
-        if name == "ABCMeta":
+        if name in ("ABCMeta", "MetaSkipInitIfChildIsInstance"):
             name = self.__name__
         return name
 
@@ -127,12 +134,17 @@ class BigSMILESbase(ABC, ast_utils.Ast, ast_utils.AsList):
     def residues(self) -> list:
         return []
 
+    @property
+    def bond_descriptors(self) -> list:
+        return []
+
 
 class GenerationBase(ABC):
     def __init__(self):
         super().__init__()
         self._generating_graph: None | nx = None
 
+    @abstractmethod
     def _generate_partial_graph(self) -> _PartialGeneratingGraph:
         pass
 

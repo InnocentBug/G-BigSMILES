@@ -3,6 +3,7 @@ from itertools import product
 import networkx as nx
 
 from .core import BigSMILESbase, GenerationBase
+from .exception import ParsingError
 from .generating_graph import _PartialGeneratingGraph
 
 
@@ -19,6 +20,12 @@ class _AbstractIterativeClass(BigSMILESbase):
         for child in self._children:
             string += child.generate_string(extension)
         return string
+
+    @property
+    def bond_descriptors(self) -> list:
+        bond_descriptors = []
+        for child in self._children:
+            bond_descriptors += child.bond_descriptors
 
 
 class _AbstractIterativeGenerativeClass(_AbstractIterativeClass, GenerationBase):
@@ -48,7 +55,8 @@ class BigSmilesMolecule(_AbstractIterativeGenerativeClass):
         self._dot_generation: None | DotGeneration = None
         for child in self._children:
             if isinstance(child, DotGeneration):
-                assert self._dot_generation is None
+                if self._dot_generation is None:
+                    raise ParsingError(self)
                 self._dot_generation = child
 
     @property

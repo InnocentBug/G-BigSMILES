@@ -63,6 +63,10 @@ class RingBond(BigSMILESbase):
     def generable():
         return True
 
+    @property
+    def idx(self) -> int:
+        return self._num
+
 
 class BondDescriptorSymbol(BigSMILESbase):
     def __init__(self, children: list):
