@@ -7,8 +7,6 @@ from .bond import BondDescriptor, TerminalBondDescriptor
 from .core import BigSMILESbase
 from .distribution import StochasticGeneration
 
-# stochastic_object: "{" WS_INLINE* terminal_bond_descriptor WS_INLINE* smiles WS_INLINE* _monomer_list*
-
 
 class StochasticObject(BigSMILESbase):
     def __init__(self, children: list):
@@ -29,7 +27,8 @@ class StochasticObject(BigSMILESbase):
                 if self._left_terminal_bond_d is None:
                     self._left_terminal_bond_d = child
                 else:
-                    assert self._right_terminal_bond_d is None
+                    if self._right_terminal_bond_d is not None:
+                        raise ValueError(f"{self}, {self._children}, {self._right_terminal_bond_d}")
                     self._right_terminal_bond_d = child
 
             if str(child) == ";":
@@ -64,7 +63,5 @@ class StochasticObject(BigSMILESbase):
         return string
 
 
-class Stochastic(StochasticObject):
-    """Deprecated with the grammar based G-BigSMILES, use StochasticObject instead."""
-
-    pass
+"""Deprecated with the grammar based G-BigSMILES, use StochasticObject instead."""
+Stochastic = StochasticObject

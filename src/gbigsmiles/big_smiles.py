@@ -26,6 +26,7 @@ class _AbstractIterativeClass(BigSMILESbase):
         bond_descriptors = []
         for child in self._children:
             bond_descriptors += child.bond_descriptors
+        return bond_descriptors
 
 
 class _AbstractIterativeGenerativeClass(_AbstractIterativeClass, GenerationBase):

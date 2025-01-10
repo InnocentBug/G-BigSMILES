@@ -132,6 +132,7 @@ class BranchedAtom(BigSMILESbase, GenerationBase):
     @property
     def bond_descriptors(self):
         bond_descriptors = []
+
         if self._atom_stand_in:
             bond_descriptors += self._atom_stand_in.bond_descriptors
         for branch in self._branches:

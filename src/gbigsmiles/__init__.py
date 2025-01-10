@@ -99,6 +99,7 @@ __all__ = [
     "LogNormal",
     "Poisson",
     "StochasticDistribution",
+    "StochasticObject",
     "Uniform",
     "Branch",
     "BranchedAtom",

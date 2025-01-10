@@ -68,10 +68,17 @@ def test_descriptors_compatible(textA, textB, compatible):
 
 bd_smiles_list = [
     ("[C@@H]N(=O)c1ccncc1", []),
+    ("[$][C@@H]N(=O)c1ccncc1[$]", ["[$]", "[$]"]),
+    ("[$|3|][C@@H]N(=O)c1ccncc1[$|1 2|]", ["[$|3.0|]", "[$|1.0 2.0|]"]),
+    ("[$|3|][C@@H]N(=[<]O)c1ccncc1[$|1 2|]", ["[$|3.0|]", "[<]", "[$|1.0 2.0|]"]),
+    (
+        "[$|3|][C@@H][>]N(=[<]O)c1cc[<|3|]ncc1[$|1 2|]",
+        ["[$|3.0|]", "[>]", "[<]", "[<|3.0|]", "[$|1.0 2.0|]"],
+    ),
 ]
 
 
-@pytest.mark.parametrize(("smi", "bd_list"), bd_smiles_list)
+@pytest.mark.parametrize(("smi", "expected_bd_list"), bd_smiles_list)
 def test_bond_descriptor_recognition(smi, expected_bd_list):
     big_smi = gbigsmiles.BigSmiles.make(smi)
 

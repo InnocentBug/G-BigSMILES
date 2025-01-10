@@ -215,6 +215,10 @@ class BondDescriptor(BigSMILESbase):
             return False
         return self.symbol.is_compatible(other.symbol)
 
+    @property
+    def bond_descriptors(self):
+        return [self]
+
 
 class SimpleBondDescriptor(BondDescriptor):
     def __init__(self, children):
