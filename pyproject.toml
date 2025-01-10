@@ -15,7 +15,7 @@ authors = [
   { name = "Ludwig Schneider", email = "ludwigschneider@uchicago.edu" },
 ]
 license = { text = "GPL-3.0", files = ["LICENSE.md"] }
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
   "scipy",
   "numpy",
@@ -25,6 +25,7 @@ dependencies = [
   "rdkit",
   "lark",
   "pysmiles",
+  "typing_extensions",
 ]
 dynamic = ["version"]
 readme = "README.md"
