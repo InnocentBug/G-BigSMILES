@@ -80,7 +80,7 @@ bd_smiles_list = [
 
 @pytest.mark.parametrize(("smi", "expected_bd_list"), bd_smiles_list)
 def test_bond_descriptor_recognition(smi, expected_bd_list):
-    big_smi = gbigsmiles.BigSmiles.make(smi)
+    big_smi = gbigsmiles.Smiles.make(smi)
 
     assert len(big_smi.bond_descriptors) == len(expected_bd_list)
 

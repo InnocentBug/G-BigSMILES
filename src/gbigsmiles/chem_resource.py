@@ -110,6 +110,8 @@ atom_name_mapping = {
     109: "Mt",
 }
 
+atom_name_num = dict((v, k) for k, v in atom_name_mapping.items())
+
 atom_color_mapping = {
     1: "FFFFFF",
     2: "D9FFFF",
@@ -427,3 +429,13 @@ default_valence = {
     99: 3,
     100: 3,
 }
+
+smi_bond_mapping = {
+    ".": 0,
+    "-": 1,
+    "=": 2,
+    "#": 3,
+    "$": 4,
+}
+
+bond_num_smi = dict((v, k) for k, v in smi_bond_mapping.items())

@@ -58,8 +58,8 @@ class Atom(BigSMILESbase, GenerationBase):
         node_id = uuid.uuid4()
         g.add_node(node_id, smi_text=str(self), obj=self)
         partial_graph = _PartialGeneratingGraph(g)
-        partial_graph.left_half_bonds.append(_HalfBond(node_id, {}))
-        partial_graph.right_half_bonds.append(_HalfBond(node_id, {}))
+        partial_graph.left_half_bonds.append(_HalfBond(self, node_id, {}))
+        partial_graph.right_half_bonds.append(_HalfBond(self, node_id, {}))
 
         return partial_graph
 

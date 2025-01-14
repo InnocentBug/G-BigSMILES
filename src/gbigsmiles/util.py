@@ -117,3 +117,27 @@ def get_global_rng(seed=None):
         _GLOBAL_RNG = np.random.default_rng(seed)
 
     return _GLOBAL_RNG
+
+
+def _determine_darkness_from_hex(color):
+    """
+    Determine the darkness of a color from its hex string.
+
+    Arguments:
+    ---------
+    color: str
+       7 character string with prefix `#` followed by RGB hex code.
+
+    Returns: bool
+       if the darkness is below half
+
+    """
+    # If hex --> Convert it to RGB: http://gist.github.com/983661
+    if color[0] != "#":
+        raise ValueError(f"{color} is missing '#'")
+    red = int(color[1:3], 16)
+    green = int(color[3:5], 16)
+    blue = int(color[5:7], 16)
+    # HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+    hsp = np.sqrt(0.299 * red**2 + 0.587 * green**2 + 0.114 * blue**2)
+    return hsp < 127.5

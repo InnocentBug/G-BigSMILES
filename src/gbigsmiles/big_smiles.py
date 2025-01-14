@@ -3,7 +3,7 @@ from itertools import product
 import networkx as nx
 
 from .core import BigSMILESbase, GenerationBase
-from .exception import ParsingError
+from .exception import ParsingError, SmilesHasNonZeroBondDescriptors
 from .generating_graph import _PartialGeneratingGraph
 
 
@@ -59,6 +59,13 @@ class BigSmilesMolecule(_AbstractIterativeGenerativeClass):
                 if self._dot_generation is None:
                     raise ParsingError(self)
                 self._dot_generation = child
+
+        self._post_parse_validation()
+
+    def _post_parse_validation(self):
+        for child in self._children:
+            if len(child.bond_descriptors) != 0:
+                raise SmilesHasNonZeroBondDescriptors(child)
 
     @property
     def system_molecular_weight(self) -> float | None:

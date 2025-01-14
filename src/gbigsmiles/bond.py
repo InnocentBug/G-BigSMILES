@@ -2,12 +2,17 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+import uuid
+
+import networkx as nx
+
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
-from .core import BigSMILESbase
+from .core import BigSMILESbase, GenerationBase
+from .generating_graph import _HalfBond, _PartialGeneratingGraph
 
 
 def _create_compatible_bond_text(bond):
@@ -192,7 +197,7 @@ class InnerBondDescriptor(BigSMILESbase):
         return self._generation.transition
 
 
-class BondDescriptor(BigSMILESbase):
+class BondDescriptor(BigSMILESbase, GenerationBase):
     @classmethod
     def make(cls, text: str) -> Self:
         if "$" in text or "<" in text or ">" in text:
@@ -218,6 +223,16 @@ class BondDescriptor(BigSMILESbase):
     @property
     def bond_descriptors(self):
         return [self]
+
+    def _generate_partial_graph(self):
+        g = nx.MultiDiGraph()
+        node_idx = uuid.uuid4()
+        g.add_node(node_idx, smi_text=str(self), obj=self)
+        partial_graph = _PartialGeneratingGraph(g)
+        partial_graph.left_half_bonds.append(_HalfBond(self, node_idx, {}))
+        partial_graph.right_half_bonds.append(_HalfBond(self, node_idx, {}))
+
+        return partial_graph
 
 
 class SimpleBondDescriptor(BondDescriptor):

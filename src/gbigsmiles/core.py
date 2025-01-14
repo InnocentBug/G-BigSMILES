@@ -18,7 +18,7 @@ from .chem_resource import atom_color_mapping, atom_name_mapping
 from .generating_graph import _PartialGeneratingGraph
 from .parser import get_global_parser
 from .transformer import get_global_transformer
-from .util import camel_to_snake
+from .util import _determine_darkness_from_hex, camel_to_snake
 
 _BOND_TYPE_TO_ARROW = {
     "UNSPECIFIED": "none",
@@ -44,30 +44,6 @@ _BOND_TYPE_TO_ARROW = {
     "OTHER": "none",
     "ZERO": "none",
 }
-
-
-def _determine_darkness_from_hex(color):
-    """
-    Determine the darkness of a color from its hex string.
-
-    Arguments:
-    ---------
-    color: str
-       7 character string with prefix `#` followed by RGB hex code.
-
-    Returns: bool
-       if the darkness is below half
-
-    """
-    # If hex --> Convert it to RGB: http://gist.github.com/983661
-    if color[0] != "#":
-        raise ValueError(f"{color} is missing '#'")
-    red = int(color[1:3], 16)
-    green = int(color[3:5], 16)
-    blue = int(color[5:7], 16)
-    # HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-    hsp = np.sqrt(0.299 * red**2 + 0.587 * green**2 + 0.114 * blue**2)
-    return hsp < 127.5
 
 
 class classproperty(object):
@@ -150,17 +126,10 @@ class GenerationBase(ABC):
 
     @property
     def generating_graph(self):
+        from .generating_graph import GeneratingGraph
+
         if self._generating_graph is None:
-            g = self._generate_partial_graph().g
-
-            # Post-process, marking aromatic bonds
-            for edge in g.edges(data=True):
-                node_a = g.nodes()[edge[0]]["obj"]
-                node_b = g.nodes()[edge[0]]["obj"]
-                if node_a.aromatic and node_b.aromatic:
-                    edge[2]["aromatic"] = True
-
-            self._generating_graph = g
+            self._generating_graph = GeneratingGraph(self._generate_partial_graph())
         return self._generating_graph
 
 

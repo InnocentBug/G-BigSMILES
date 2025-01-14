@@ -2,6 +2,7 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+import lark
 import pytest
 
 import gbigsmiles
@@ -50,6 +51,10 @@ def test_stochastic(text, big, ref):
     assert str(stochastic) == ref
     assert stochastic.generate_string(False) == big
 
+    graph = stochastic.generating_graph
+    print(graph)
+    graph.draw_nx()
+
     # rng = np.random.Generator(np.random.MT19937(42))
     # test = rng.uniform()
     # assert test == 0.5419938930062744
@@ -57,6 +62,53 @@ def test_stochastic(text, big, ref):
     #     mol = stochastic.generate(rng=rng)
     #     smi = mol.smiles
     #     assert smi
+
+
+invalid_monomer_stochastic = [
+    "{[] [$]CC []}",
+    "{[] CC []}",
+    "{[] [$]CC[$], CC; [$]Br []}",
+    "{[$] [$]CC[$], [$]CC; [$]Br [$]}",
+    "{[<] [>]CC, [<]C([$])C[>]; [$]Br [>]}",
+]
+
+
+@pytest.mark.parametrize("stochastic_smi", invalid_monomer_stochastic)
+def test_invalid_monomer_stochastic(stochastic_smi):
+    with pytest.raises(gbigsmiles.exception.MonomerHasTwoOrMoreBondDescriptors):
+        try:
+            gbigsmiles.StochasticObject.make(stochastic_smi)
+        except lark.exceptions.VisitError as exc:
+            raise exc.__context__  # trunk-ignore(ruff/B904)
+
+    with pytest.raises(gbigsmiles.exception.IncorrectNumberOfBondDescriptors):
+        try:
+            gbigsmiles.StochasticObject.make(stochastic_smi)
+        except lark.exceptions.VisitError as exc:
+            raise exc.__context__  # trunk-ignore(ruff/B904)
+
+
+invalid_end_stochastic = [
+    "{[] [$]CC[$]; [$]C[$] []}",
+    "{[] [$]CC[$]; C []}",
+    "{[] [$]CC[$]; [$]Br, N []}",
+    "{[$] [$]CC[$], [$]CC[$]; [$]Br, [$]CC[$] [$]}",
+]
+
+
+@pytest.mark.parametrize("stochastic_smi", invalid_end_stochastic)
+def test_invalid_end_stochastic(stochastic_smi):
+    with pytest.raises(gbigsmiles.exception.EndGroupHasOneBondDescriptors):
+        try:
+            gbigsmiles.StochasticObject.make(stochastic_smi)
+        except lark.exceptions.VisitError as exc:
+            raise exc.__context__  # trunk-ignore(ruff/B904)
+
+    with pytest.raises(gbigsmiles.exception.IncorrectNumberOfBondDescriptors):
+        try:
+            gbigsmiles.StochasticObject.make(stochastic_smi)
+        except lark.exceptions.VisitError as exc:
+            raise exc.__context__  # trunk-ignore(ruff/B904)
 
 
 if __name__ == "__main__":
