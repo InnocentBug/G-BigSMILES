@@ -108,11 +108,13 @@ atom_name_mapping = {
     107: "Bh",
     108: "Hs",
     109: "Mt",
+    -1: "*",
 }
 
 atom_name_num = dict((v, k) for k, v in atom_name_mapping.items())
 
 atom_color_mapping = {
+    -1: "FFFFFF",
     1: "FFFFFF",
     2: "D9FFFF",
     3: "CC80FF",

@@ -51,9 +51,7 @@ def test_stochastic(text, big, ref):
     assert str(stochastic) == ref
     assert stochastic.generate_string(False) == big
 
-    graph = stochastic.generating_graph
-    print(graph)
-    graph.draw_nx()
+    graph = stochastic.get_generating_graph()
 
     # rng = np.random.Generator(np.random.MT19937(42))
     # test = rng.uniform()

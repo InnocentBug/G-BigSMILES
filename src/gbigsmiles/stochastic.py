@@ -8,7 +8,12 @@ from .big_smiles import BigSmilesMolecule
 from .bond import BondDescriptor, TerminalBondDescriptor
 from .core import BigSMILESbase, GenerationBase
 from .distribution import StochasticGeneration
-from .exception import EndGroupHasOneBondDescriptors, MonomerHasTwoOrMoreBondDescriptors
+from .exception import (
+    EmptyTerminalBondDescriptorWithoutEndGroups,
+    EndGroupHasOneBondDescriptors,
+    IncorrectNumberOfBondDescriptors,
+    MonomerHasTwoOrMoreBondDescriptors,
+)
 from .generating_graph import (
     _STOCHASTIC_NAME,
     _TERMINATION_NAME,
@@ -63,6 +68,22 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             if len(smi.bond_descriptors) != 1:
                 raise EndGroupHasOneBondDescriptors(smi, self)
 
+        # Empty left bond descriptors need end-groups to start initiation
+        if self._left_terminal_bond_d.symbol is None:
+            if len(self._termination_residues) < 1:
+                raise EmptyTerminalBondDescriptorWithoutEndGroups(self)
+
+        inner_bond_descriptors = []
+        for element in self._repeat_residues + self._termination_residues:
+            inner_bond_descriptors += element.bond_descriptors
+
+        for bd in [
+            self._left_terminal_bond_d,
+            self._right_terminal_bond_d,
+        ] + inner_bond_descriptors:
+            if bd.transition is not None and len(bd.transition) != len(inner_bond_descriptors):
+                raise IncorrectNumberOfBondDescriptors(self, bd, len(inner_bond_descriptors))
+
     def generate_string(self, extension: bool):
         string = "{" + self._left_terminal_bond_d.generate_string(extension) + " "
         if len(self._repeat_residues) > 0:
@@ -109,122 +130,98 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                         bd_idx[bond_descriptors.index(bd[1]["obj"])] = bd[0]
             return bd_idx
 
-        def add_reverse_static_edges(graph):
-            # TODO may require extra thinking for nested stochastic objects
-            for u, v, _k, data in list(graph.edges(keys=True, data=True)):
-                if is_static_edge(data):
-                    graph.add_edge(v, u, **data)
+        def _connect(graph, first_idx, second_idx, full_idx, end_termination):
+            attr_name = _STOCHASTIC_NAME
+            if end_termination:
+                attr_name = _TERMINATION_NAME
+            for bd_idx_a in first_idx:
+                obj_a = graph.nodes[bd_idx_a]["obj"]
+                if obj_a.transition is not None and (not end_termination):
+                    # Note that this spans the end groups
+                    probabilities = obj_a.transition
+                else:
+                    # This does not span the end groups
+                    probabilities = [graph.nodes[bd_idx_b]["obj"].weight for bd_idx_b in second_idx]
 
-            bd_idx = set()
-            for node in graph.nodes(data=True):
-                if isinstance(node[1]["obj"], BondDescriptor):
-                    bd_idx.add(node[0])
+                probabilities = np.asarray(probabilities)
 
-            # Remove edges that are not necessary for traversal from every bond descriptor
-            # This makes this function idem potent
-            necessary_edges = set()
-            for source in bd_idx:
-                edges_this_bd = nx.dfs_edges(G=graph, source=source)
-                necessary_edges |= set(edges_this_bd)
+                # Set weights to zero if bond are incompatible, note different lengths from above.
+                for i in range(len(probabilities)):
+                    bd_idx_b = full_idx[i]
+                    obj_b = graph.nodes[bd_idx_b]["obj"]
+                    if not obj_a.is_compatible(obj_b):
+                        probabilities[i] = 0
+                # Normalizing probabilities
+                if probabilities.sum() > 0:
+                    probabilities /= probabilities.sum()
 
-            for u, v, k, data in list(graph.edges(keys=True, data=True)):
-                if is_static_edge(data):
-                    if (u, v) not in necessary_edges:
-                        graph.remove_edge(u, v, k)
+                # Bond attributes are _STOCHASTIC_NAME
+                for i, prob in enumerate(probabilities):
+                    if prob > 0:
+                        bd_idx_b = full_idx[i]
+                        graph.add_edge(bd_idx_a, bd_idx_b, **dict([(attr_name, prob)]))
             return graph
 
+        def connect_monomers_to_monomers(graph, mono_idx_pos, end_idx_pos):
+            return _connect(graph, mono_idx_pos, mono_idx_pos, mono_idx_pos + end_idx_pos, False)
+
+        def connect_monomers_to_end(graph, mono_idx_pos, end_idx_pos):
+            return _connect(graph, mono_idx_pos, end_idx_pos, mono_idx_pos, True)
+
+        def connect_end_to_monomers(graph, mono_idx_pos, end_idx_pos):
+            return _connect(graph, end_idx_pos, mono_idx_pos, mono_idx_pos + end_idx_pos, False)
+
         # Build graph without any connections between bond descriptors.
-        repeat_subgraphs = [
-            add_reverse_static_edges(monomer._generate_partial_graph().g)
-            for monomer in self._repeat_residues
-        ]
-        terminal_subgraphs = [
-            add_reverse_static_edges(end._generate_partial_graph().g)
-            for end in self._termination_residues
-        ]
+        repeat_subgraphs = [monomer.get_generating_graph().g for monomer in self._repeat_residues]
+        terminal_subgraphs = [end.get_generating_graph().g for end in self._termination_residues]
         graph = nx.union_all(repeat_subgraphs + terminal_subgraphs)
 
         # List of monomer repeat unit bond descriptor IDX
         mono_idx_pos = build_idx(self._repeat_residues, graph)
         # Same for end units
         end_idx_pos = build_idx(self._termination_residues, graph)
-        # We can combine for all bond descriptors
-        bd_idx_pos = mono_idx_pos + end_idx_pos
 
-        # Add bonds between compatible pairs monomer bond descriptors
-        for bd_idx_a in mono_idx_pos:
-            obj_a = graph.nodes[bd_idx_a]["obj"]
-            if obj_a.transition is not None:
-                # Note that this spans the end groups
-                probabilities = obj_a.transition
-            else:
-                # This does not span the end groups
-                probabilities = [graph.nodes[bd_idx_b]["obj"].weight for bd_idx_b in mono_idx_pos]
+        graph = connect_monomers_to_monomers(graph, mono_idx_pos, end_idx_pos)
+        graph = connect_monomers_to_end(graph, mono_idx_pos, end_idx_pos)
 
-            probabilities = np.asarray(probabilities)
-
-            # Set weights to zero if bond are incompatible, note different lengths from above.
-            for i in range(len(probabilities)):
-                bd_idx_b = bd_idx_pos[i]
-                obj_b = graph.nodes[bd_idx_b]["obj"]
-                if not obj_a.is_compatible(obj_b):
-                    probabilities[i] = 0
-            # Normalizing probabilities
-            if probabilities.sum() > 0:
-                probabilities /= probabilities.sum()
-
-            # Bond attributes are _STOCHASTIC_NAME
-            for i, prob in enumerate(probabilities):
-                if prob > 0:
-                    bd_idx_b = bd_idx_pos[i]
-                    graph.add_edge(bd_idx_a, bd_idx_b, **dict([(_STOCHASTIC_NAME, prob)]))
-
-            # Add bonds between monomer/end group bond_descriptors
-            # Termination probs
-            end_probabilities = []
-            for bd_idx_b in end_idx_pos:
-                obj_b = graph.nodes[bd_idx_b]["obj"]
-                if obj_a.is_compatible(obj_b):
-                    end_probabilities.append(obj_b.weight)
-            end_probabilities = np.asarray(end_probabilities)
-            if end_probabilities.sum() > 0:
-                end_probabilities /= end_probabilities.sum()
-
-            for i, prob in enumerate(end_probabilities):
-                if prob > 0:
-                    bd_idx_b = end_idx_pos[i]
-                    graph.add_edge(bd_idx_a, bd_idx_b, **dict([(_TERMINATION_NAME, prob)]))
-
-        # Add edges jumping over the pairs of bond descriptors with correct weights.
-        for bd_idx in bd_idx_pos:
-            for in_edge in list(graph.in_edges(bd_idx, data=True)):
-                in_idx = in_edge[0]
-                in_data = in_edge[2]
-                # Ignore bonds between bond descriptors, chaining them is not allowed. I think
-                if in_idx not in bd_idx_pos:
-                    # Find connected out going bond descriptors
-                    for bd_out_edge in list(graph.out_edges(bd_idx, data=True)):
-                        bd_out_idx = bd_out_edge[1]
-                        bd_out_data = bd_out_edge[2]
-                        if bd_out_idx in bd_idx_pos:  # Only bond descriptors
-                            # Iterate the out-going non-bond-descriptor bonds
-                            for out_edge in list(graph.out_edges(bd_out_idx, data=True)):
-                                out_idx = out_edge[1]
-                                out_data = out_edge[2]
-                                if out_idx not in bd_idx_pos:  # Only non Bond Descriptors
-                                    # Build edge that jumps over both bond descriptors
-                                    # TODO think about raises problem if bd attr don't match
-                                    graph.add_edge(
-                                        in_idx, out_idx, **dict(in_data | bd_out_data | out_data)
-                                    )
+        # If we have an empty left terminal bond descriptor, allow end groups to be initial groups.
+        if self._left_terminal_bond_d.symbol is None:
+            graph = connect_end_to_monomers(graph, mono_idx_pos, end_idx_pos)
 
         partial_graph = _PartialGeneratingGraph(graph)
         # Add left half bonds.
+        if self._left_terminal_bond_d.symbol is None:
+            if self._left_terminal_bond_d.transition is not None:
+                weights = self._left_terminal_bond_d.transition[len(mono_idx_pos) :]
+            else:
+                weights = [graph.nodes[bd_idx]["obj"].weight for bd_idx in end_idx_pos]
+            weights = np.asarray(weights)
+            assert len(weights) == len(end_idx_pos)
+
+            if weights.sum() == 0:
+                weights += 1
+
+            probabilities = weights / weights.sum()
+
+            for i, prob in enumerate(probabilities):
+                if prob > 0:
+                    node_idx = end_idx_pos[i]
+                    node = graph.nodes[node_idx]["obj"]
+                    partial_graph.left_half_bonds.append(
+                        _HalfBond(node, node_idx, dict([(_TRANSITION_NAME, prob)]))
+                    )
+
+        else:
+            left_bd = self._left_terminal_bond_d
+            if left_bd.transition is not None:
+                pass
+            else:
+                pass
 
         # Add right half bonds
-
-        # Remove all bond descriptors from the graph...
-        graph.remove_nodes_from(bd_idx_pos)
+        if self._right_terminal_bond_d.symbol is not None:
+            # TODO add half bonds
+            pass
 
         return partial_graph
 

@@ -106,7 +106,7 @@ class _PartialGeneratingGraph:
         return f"PartialGraph({self.g}, {self.left_half_bonds}, {self.right_half_bonds}, {self.ring_bond_map})"
 
 
-def _docstring_parameter(*args, **kwargs):
+def _docstring_format(*args, **kwargs):
     def dec(obj):
         obj.__doc__ = obj.__doc__.format(*args, **kwargs)
         return obj
@@ -118,20 +118,35 @@ class GeneratingGraph:
     def __init__(self, final_partial_graph: _PartialGeneratingGraph):
         self._partial_graph = final_partial_graph
         self._ml_graph = None
+        self._graph_without_bond_descriptors = None
         self._g = self._partial_graph.g
 
-        self.mark_aromatic_bonds()
+        GeneratingGraph._mark_aromatic_bonds(self.g)
+        self._duplicate_static_edges()
 
-    def mark_aromatic_bonds(self):
+    @staticmethod
+    def _mark_aromatic_bonds(graph):
         from .atom import Atom
 
         # Post-process, marking aromatic bonds
-        for edge in self.g.edges(data=True):
-            node_a = self.g.nodes()[edge[0]]["obj"]
-            node_b = self.g.nodes()[edge[0]]["obj"]
+        for edge in graph.edges(data=True):
+            node_a = graph.nodes()[edge[0]]["obj"]
+            node_b = graph.nodes()[edge[1]]["obj"]
             if isinstance(node_a, Atom) and isinstance(node_b, Atom):
                 if node_a.aromatic and node_b.aromatic:
                     edge[2]["aromatic"] = True
+
+    def _duplicate_static_edges(self):
+        for u, v, _k, d in list(self.g.edges(keys=True, data=True)):
+            if is_static_edge(d):
+                alternate_direction_data = self.g.get_edge_data(v, u)
+                edge_found = False
+                if alternate_direction_data is not None:
+                    for key in alternate_direction_data:
+                        if d == alternate_direction_data[key]:
+                            edge_found = True
+                if not edge_found:
+                    self.g.add_edge(v, u, **d)
 
     def __str__(self):
         return f"GeneratingGraph({self.g}"
@@ -140,14 +155,53 @@ class GeneratingGraph:
     def g(self):
         return self._g
 
-    @property
-    @_docstring_parameter(
+    def get_graph_without_bond_descriptors(self):
+        from .bond import BondDescriptor
+
+        graph = self.g.copy()
+
+        bd_idx_set = set()
+        for node_idx, data in graph.nodes(data=True):
+            if isinstance(data["obj"], BondDescriptor):
+                bd_idx_set.add(node_idx)
+
+        # Add edges jumping over the pairs of bond descriptors with correct weights.
+        for bd_idx in bd_idx_set:
+            for in_edge in list(graph.in_edges(bd_idx, data=True)):
+                in_idx = in_edge[0]
+                in_data = in_edge[2]
+                # Ignore bonds between bond descriptors, chaining them is not allowed. I think
+                if in_idx not in bd_idx_set:
+                    # Find connected out going bond descriptors
+                    for bd_out_edge in list(graph.out_edges(bd_idx, data=True)):
+                        bd_out_idx = bd_out_edge[1]
+                        bd_out_data = bd_out_edge[2]
+                        if bd_out_idx in bd_idx_set:  # Only bond descriptors
+                            # Iterate the out-going non-bond-descriptor bonds
+                            for out_edge in list(graph.out_edges(bd_out_idx, data=True)):
+                                out_idx = out_edge[1]
+                                out_data = out_edge[2]
+                                if out_idx not in bd_idx_set:  # Only non Bond Descriptors
+                                    # Build edge that jumps over both bond descriptors
+                                    # TODO think about raises problem if bd attr don't match
+                                    graph.add_edge(
+                                        in_idx, out_idx, **dict(in_data | bd_out_data | out_data)
+                                    )
+
+        # Remove all bond descriptors from the graph.
+        graph.remove_nodes_from(bd_idx_set)
+
+        GeneratingGraph._mark_aromatic_bonds(graph)
+
+        return graph
+
+    @_docstring_format(
         stochastic_name=_STOCHASTIC_NAME,
         termination_name=_TERMINATION_NAME,
         transition_name=_TRANSITION_NAME,
         smi_bond_mapping=smi_bond_mapping,
     )
-    def ml_graph(self):
+    def get_ml_graph(self, include_bond_descriptors=False):
         r"""
         The ML Graph has well defined properties that do not rely on the specifics of this library.
 
@@ -167,24 +221,41 @@ class GeneratingGraph:
         - **aromatic**: bool Indicates aromatic bonds.
         """
 
-        if self._ml_graph is None:
-            self._ml_graph = self._create_ml_graph()
-        return self._ml_graph
+        if include_bond_descriptors:
+            graph = self.g
+        else:
+            graph = self.get_graph_without_bond_descriptors()
 
-    def _create_ml_graph(self):
         ml_graph = nx.MultiDiGraph()
-        for node, data in self.g.nodes(data=True):
+        for node, data in graph.nodes(data=True):
             obj = data["obj"]
+            try:
+                aromatic = obj.aromatic
+            except AttributeError:
+                aromatic = False
+            atomic_symbol = str(obj.symbol)
+            if aromatic:
+                atomic_symbol = atomic_symbol.upper()
+            try:
+                atomic_num = int(atom_name_num[atomic_symbol])
+            except KeyError:
+                atomic_num = -1
+
+            try:
+                charge = obj.charge
+            except AttributeError:
+                charge = float("nan")
+
             ml_graph.add_node(
                 node,
                 **{
-                    "atomic_num": int(atom_name_num[str(obj.symbol)]),
-                    "aromatic": obj.aromatic,
-                    "charge": obj.charge,
+                    "atomic_num": atomic_num,
+                    "aromatic": aromatic,
+                    "charge": charge,
                 },
             )
 
-        for u, v, _k, d in self.g.edges(keys=True, data=True):
+        for u, v, _k, d in graph.edges(keys=True, data=True):
             d.setdefault("static", is_static_edge(d))
             d.setdefault(_STOCHASTIC_NAME, 0)
             d.setdefault(_TERMINATION_NAME, 0)
@@ -212,14 +283,14 @@ class GeneratingGraph:
         4: "box",
     }
 
-    def get_dot_string(self, edge_colors=None, bond_to_arrow=None):
+    def get_dot_string(self, include_bond_descriptors=False, edge_colors=None, bond_to_arrow=None):
 
         if edge_colors is None:
             edge_colors = self._DEFAULT_EDGE_COLOR
         if bond_to_arrow is None:
             bond_to_arrow = self._DEFAULT_BOND_TO_ARROW
 
-        graph = self.ml_graph
+        graph = self.get_ml_graph(include_bond_descriptors=include_bond_descriptors)
 
         dot_str = "digraph{\n"
         for node in graph.nodes(data=True):

@@ -110,3 +110,25 @@ class EndGroupHasOneBondDescriptors(IncorrectNumberOfBondDescriptors):
 
     def __str__(self) -> str:
         return f"End groups must have exactly {self.expected_number_of_bond_descriptors} bond descriptor. But this object {str(self.obj)} has {len(self.obj.bond_descriptors)} bond descriptors inside this stochastic object {str(self.stochastic_obj)}."
+
+
+class EmptyTerminalBondDescriptorWithoutEndGroups(ParsingError):
+    def __init__(self, stochsatic_object):
+        self.stochsatic_object = stochsatic_object
+
+    def __str__(self) -> str:
+        string = f"The stochastic object {str(self.stochastic_object)} has either, a left or right terminal bond descriptor as an empty '[]' bond descriptor.\n"
+        string += f"In this case, please use end-groups to specify how to initiate (left terminal {str(self.stochastic_object._left_terminal_bond_d)}) or finalize the molecule (right terminal {str(self.stochastic_object._right_terminal_bond_d)}).\n"
+        string += "Consider adding a hydrogen end group '{[] ... ; [$/</>][H] []}' with a matching bond descriptor symbol to your BigSMILES string for clarification."
+        return string
+
+
+class IncorrectNumberOfTransitionWeights(ParsingError):
+    def __init__(self, stochastic_object, bond_descriptor, expected_length):
+        self.stochastic_object = stochastic_object
+        self.bond_descriptor = bond_descriptor
+        self.expected_length = expected_length
+        assert self.bond_descriptor.transition
+
+    def __str__(self):
+        return f"The bond descriptor '{str(self.bond_descriptor)}' from the stochastic object '{str(self.stochastic_object)}' specifies {len(self.bond_descriptor.transition)} transition weights, but the stochastic object has {self.expected_length} bond descriptors. Adjust the transition weights to match the bond descriptors."

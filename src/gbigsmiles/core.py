@@ -118,19 +118,15 @@ class BigSMILESbase(ABC, ast_utils.Ast, ast_utils.AsList, metaclass=MetaSkipInit
 class GenerationBase(ABC):
     def __init__(self):
         super().__init__()
-        self._generating_graph: None | nx = None
 
     @abstractmethod
     def _generate_partial_graph(self) -> _PartialGeneratingGraph:
         pass
 
-    @property
-    def generating_graph(self):
+    def get_generating_graph(self):
         from .generating_graph import GeneratingGraph
 
-        if self._generating_graph is None:
-            self._generating_graph = GeneratingGraph(self._generate_partial_graph())
-        return self._generating_graph
+        return GeneratingGraph(self._generate_partial_graph())
 
 
 def get_compatible_bond_descriptor_ids(bond_descriptors, bond):
