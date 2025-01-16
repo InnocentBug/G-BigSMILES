@@ -22,9 +22,9 @@ test_args = [
         "{[] CC([>])(C[<])C(=O)OCC(O)CSc1c(F)cccc1F, CC([>])(C[<])C(=O)OCC(O)CSC(F)(F)F; [>][H], [<][H] []}|schulz_zimm(4500.0, 3500.0)|",
     ),
     (
-        "{[$][$1]C([$1])C=O,[$1]CC([$1])CO;[$1][H], [$1]O[$]}",
-        "{[$] [$1]C([$1])C=O, [$1]CC([$1])CO; [$1][H], [$1]O [$]}",
-        "{[$] [$1]C([$1])C=O, [$1]CC([$1])CO; [$1][H], [$1]O [$]}",
+        "{[$1][$1]C([$1])C=O,[$1]CC([$1])CO;[$1][H], [$1]O[$1]}",
+        "{[$1] [$1]C([$1])C=O, [$1]CC([$1])CO; [$1][H], [$1]O [$1]}",
+        "{[$1] [$1]C([$1])C=O, [$1]CC([$1])CO; [$1][H], [$1]O [$1]}",
     ),
     (
         "{[][$]C([$])C=O,[$]CC([$])CO;[$][H], [$1]O[]}",
@@ -51,7 +51,7 @@ def test_stochastic(text, big, ref):
     assert str(stochastic) == ref
     assert stochastic.generate_string(False) == big
 
-    graph = stochastic.get_generating_graph()
+    stochastic.get_generating_graph()
 
     # rng = np.random.Generator(np.random.MT19937(42))
     # test = rng.uniform()

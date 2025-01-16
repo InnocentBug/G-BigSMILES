@@ -4,8 +4,6 @@
 from abc import ABC, ABCMeta, abstractmethod
 from warnings import warn
 
-import networkx as nx
-
 try:
     from typing import Self
 except ImportError:

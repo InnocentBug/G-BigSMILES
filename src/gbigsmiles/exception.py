@@ -11,6 +11,15 @@ class GBigSMILESError(Exception):
     pass
 
 
+class GBigSMILESWarning(Exception):
+    """
+    Generic Warning raised by G-BigSMILES.
+    """
+
+    def __init__(self, token):
+        self.token = token
+
+
 class ParsingError(GBigSMILESError):
     """
     Parsing the Grammar went in an unanticipated manner.
@@ -23,6 +32,14 @@ class ParsingError(GBigSMILESError):
 
     def __str__(self):
         return f"Unanticipated error while parsing. Please report and provide the input string. Token: {self.token} start: {self.token.start_pos}"
+
+
+class ParsingWarning(GBigSMILESWarning):
+    """
+    Parsing the your string doesn't invalidate the grammar, but there is something to consider to fix.
+    """
+
+    pass
 
 
 class TooManyTokens(ParsingError):
@@ -112,23 +129,50 @@ class EndGroupHasOneBondDescriptors(IncorrectNumberOfBondDescriptors):
         return f"End groups must have exactly {self.expected_number_of_bond_descriptors} bond descriptor. But this object {str(self.obj)} has {len(self.obj.bond_descriptors)} bond descriptors inside this stochastic object {str(self.stochastic_obj)}."
 
 
-class EmptyTerminalBondDescriptorWithoutEndGroups(ParsingError):
-    def __init__(self, stochsatic_object):
-        self.stochsatic_object = stochsatic_object
+class EmptyTerminalBondDescriptorWithoutEndGroups(ParsingWarning):
+    def __init__(self, stochastic_object):
+        super.__init__(stochastic_object)
 
     def __str__(self) -> str:
-        string = f"The stochastic object {str(self.stochastic_object)} has either, a left or right terminal bond descriptor as an empty '[]' bond descriptor.\n"
-        string += f"In this case, please use end-groups to specify how to initiate (left terminal {str(self.stochastic_object._left_terminal_bond_d)}) or finalize the molecule (right terminal {str(self.stochastic_object._right_terminal_bond_d)}).\n"
+        string = f"The stochastic object {str(self.token)} has either, a left or right terminal bond descriptor as an empty '[]' bond descriptor.\n"
+        string += f"In this case, please use end-groups to specify how to initiate (left terminal {str(self.token._left_terminal_bond_d)}) or finalize the molecule (right terminal {str(self.token._right_terminal_bond_d)}).\n"
         string += "Consider adding a hydrogen end group '{[] ... ; [$/</>][H] []}' with a matching bond descriptor symbol to your BigSMILES string for clarification."
         return string
 
 
 class IncorrectNumberOfTransitionWeights(ParsingError):
-    def __init__(self, stochastic_object, bond_descriptor, expected_length):
-        self.stochastic_object = stochastic_object
+    def __init__(self, token, bond_descriptor, expected_length):
+        super.__init__(token)
         self.bond_descriptor = bond_descriptor
         self.expected_length = expected_length
         assert self.bond_descriptor.transition
 
     def __str__(self):
-        return f"The bond descriptor '{str(self.bond_descriptor)}' from the stochastic object '{str(self.stochastic_object)}' specifies {len(self.bond_descriptor.transition)} transition weights, but the stochastic object has {self.expected_length} bond descriptors. Adjust the transition weights to match the bond descriptors."
+        return f"The bond descriptor '{str(self.bond_descriptor)}' from the stochastic object '{str(self.token)}' specifies {len(self.bond_descriptor.transition)} transition weights, but the stochastic object has {self.expected_length} bond descriptors. Adjust the transition weights to match the bond descriptors."
+
+
+class NoInitiationForStochasticObject(ParsingWarning):
+    def __init__(self, stochastic_obj, partial_graph):
+        super().__init__(stochastic_obj)
+        self.partial_graph = partial_graph
+
+    def __str__(self):
+        return f"The stochastic object {str(self.token)} cannot generate entry points to start initiations. Check if the left terminal bond descriptor is meant to be empty or if you have correct end groups that can act as initiators."
+
+
+class NoLeftTransitions(ParsingWarning):
+    def __init__(self, stochastic_obj, partial_graph):
+        super().__init__(stochastic_obj)
+        self.partial_graph = partial_graph
+
+    def __str__(self):
+        return f"The stochastic object {str(self.token)} cannot generate left connections, check the left terminal bond descriptor and how it relates to monomeric repeat units."
+
+
+class StochasticMissingPath(ParsingWarning):
+    def __init__(self, stochastic_obj, source_bd_pos):
+        super().__init__(self, stochastic_obj)
+        self.source_bd_pos = source_bd_pos
+
+    def __str__(self):
+        return f"The stochastic object {str(self.token)} defines that it can be entered via the bond descriptor in position {str(self.source_bd_pos)} as defined by the left terminal descriptor. However, when entered there there is no path to reach any of the exit bond descriptors as defined by the right terminal bond descriptor."

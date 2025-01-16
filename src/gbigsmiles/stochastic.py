@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-3
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
+import warnings
+
 import networkx as nx
 import numpy as np
 
@@ -11,14 +13,18 @@ from .distribution import StochasticGeneration
 from .exception import (
     EmptyTerminalBondDescriptorWithoutEndGroups,
     EndGroupHasOneBondDescriptors,
-    IncorrectNumberOfBondDescriptors,
+    IncorrectNumberOfTransitionWeights,
     MonomerHasTwoOrMoreBondDescriptors,
+    NoInitiationForStochasticObject,
+    NoLeftTransitions,
+    StochasticMissingPath,
 )
 from .generating_graph import (
     _STOCHASTIC_NAME,
     _TERMINATION_NAME,
+    _TRANSITION_NAME,
+    _HalfBond,
     _PartialGeneratingGraph,
-    is_static_edge,
 )
 from .smiles import Smiles
 
@@ -71,7 +77,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         # Empty left bond descriptors need end-groups to start initiation
         if self._left_terminal_bond_d.symbol is None:
             if len(self._termination_residues) < 1:
-                raise EmptyTerminalBondDescriptorWithoutEndGroups(self)
+                warnings.warn(EmptyTerminalBondDescriptorWithoutEndGroups(self), stacklevel=1)
 
         inner_bond_descriptors = []
         for element in self._repeat_residues + self._termination_residues:
@@ -82,7 +88,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             self._right_terminal_bond_d,
         ] + inner_bond_descriptors:
             if bd.transition is not None and len(bd.transition) != len(inner_bond_descriptors):
-                raise IncorrectNumberOfBondDescriptors(self, bd, len(inner_bond_descriptors))
+                raise IncorrectNumberOfTransitionWeights(self, bd, len(inner_bond_descriptors))
 
     def generate_string(self, extension: bool):
         string = "{" + self._left_terminal_bond_d.generate_string(extension) + " "
@@ -221,7 +227,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             weights = np.asarray(weights)
 
             for i, bd_idx in enumerate(mono_idx_pos):
-                if not left_bd.is_compatible(graph.nodes[bd_idx["obj"]]):
+                if not left_bd.is_compatible(graph.nodes[bd_idx]["obj"]):
                     weights[i] = 0
 
             probabilities = []
@@ -238,10 +244,52 @@ class StochasticObject(BigSMILESbase, GenerationBase):
 
         # Add right half bonds
         if self._right_terminal_bond_d.symbol is not None:
-            # TODO add half bonds
-            pass
+            weights = []
+            for i, bd_idx in enumerate(mono_idx_pos):
+                node = graph.nodes[bd_idx]["obj"]
+                weight = node.weight
+                if self._right_terminal_bond_d.transition is not None:
+                    weight = self._right_terminal_bond_d.transition[i]
+                if not self._right_terminal_bond_d.is_compatible(node):
+                    weight = 0
+
+                weights.append(weight)
+            weights = np.asarray(weights)
+            probabilities = []
+            if weights.sum() > 0:
+                probabilities = weights / weights.sum()
+
+            for i, prob in enumerate(probabilities):
+                if prob > 0:
+                    bd_idx = mono_idx_pos[i]
+                    node = graph.nodes[bd_idx]["obj"]
+                    partial_graph.right_half_bonds.append(
+                        _HalfBond(node, bd_idx, dict([(_TRANSITION_NAME, prob)]))
+                    )
+
+        self._post_validate_partial_graph(partial_graph, mono_idx_pos + end_idx_pos)
 
         return partial_graph
+
+    def _post_validate_partial_graph(self, partial_graph, bd_idx):
+        if len(partial_graph.left_half_bonds) == 0:
+            if self._left_terminal_bond_d.symbol is None:
+                warnings.warn(NoInitiationForStochasticObject(self, partial_graph), stacklevel=1)
+            else:
+                warnings.warn(NoLeftTransitions(self, partial_graph), stacklevel=1)
+
+        # To successfully generate molecules, there needs to be path from each entry point (left half bonds)
+        # to at least one end, right half bonds
+        if len(partial_graph.right_half_bonds) > 0:
+            target_idx = set([rhb.node_id for rhb in partial_graph.right_half_bonds])
+            source_idx = set([lhb.node_id for lhb in partial_graph.left_half_bonds])
+
+            for source in source_idx:
+                tree = nx.dfs_tree(partial_graph.g, source=source)
+                reachable_nodes = set(tree.nodes)
+
+                if target_idx.isdisjoint(reachable_nodes):
+                    warnings.warn(StochasticMissingPath, stacklevel=1)
 
 
 """Deprecated with the grammar based G-BigSMILES, use StochasticObject instead."""
