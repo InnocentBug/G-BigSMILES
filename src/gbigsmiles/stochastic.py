@@ -150,7 +150,6 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                     probabilities = [graph.nodes[bd_idx_b]["obj"].weight for bd_idx_b in second_idx]
 
                 probabilities = np.asarray(probabilities)
-
                 # Set weights to zero if bond are incompatible, note different lengths from above.
                 for i in range(len(probabilities)):
                     bd_idx_b = full_idx[i]
@@ -160,7 +159,6 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 # Normalizing probabilities
                 if probabilities.sum() > 0:
                     probabilities /= probabilities.sum()
-
                 # Bond attributes are _STOCHASTIC_NAME
                 for i, prob in enumerate(probabilities):
                     if prob > 0:
@@ -172,7 +170,8 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             return _connect(graph, mono_idx_pos, mono_idx_pos, mono_idx_pos + end_idx_pos, False)
 
         def connect_monomers_to_end(graph, mono_idx_pos, end_idx_pos):
-            return _connect(graph, mono_idx_pos, end_idx_pos, mono_idx_pos, True)
+            result = _connect(graph, mono_idx_pos, end_idx_pos, end_idx_pos, True)
+            return result
 
         def connect_end_to_monomers(graph, mono_idx_pos, end_idx_pos):
             return _connect(graph, end_idx_pos, mono_idx_pos, mono_idx_pos + end_idx_pos, False)
@@ -194,8 +193,23 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         if self._left_terminal_bond_d.symbol is None:
             graph = connect_end_to_monomers(graph, mono_idx_pos, end_idx_pos)
 
+        left_partial_graph = self._left_terminal_bond_d._generate_partial_graph().g
+        left_idx = list(left_partial_graph.nodes)[0]
+        right_partial_graph = self._right_terminal_bond_d._generate_partial_graph().g
+        right_idx = list(right_partial_graph.nodes)[0]
+
+        # Add terminal bond descriptors to the graph
+        graph = nx.union_all([graph, left_partial_graph, right_partial_graph])
+
         partial_graph = _PartialGeneratingGraph(graph)
-        # Add left half bonds.
+
+        partial_graph.left_half_bonds.append(_HalfBond(self._left_terminal_bond_d, left_idx, {}))
+        if self._right_terminal_bond_d.symbol is not None:
+            partial_graph.right_half_bonds.append(
+                _HalfBond(self._right_terminal_bond_d, right_idx, {})
+            )
+
+        # Add initiating bonds
         if self._left_terminal_bond_d.symbol is None:
             if self._left_terminal_bond_d.transition is not None:
                 weights = self._left_terminal_bond_d.transition[len(mono_idx_pos) :]
@@ -213,10 +227,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 if prob > 0:
                     node_idx = end_idx_pos[i]
                     node = graph.nodes[node_idx]["obj"]
-                    partial_graph.left_half_bonds.append(
-                        _HalfBond(node, node_idx, dict([(_TRANSITION_NAME, prob)]))
-                    )
-
+                    graph.add_edge(left_idx, node_idx, **dict([(_TRANSITION_NAME, prob)]))
         else:
             # With non-empty left bond descriptors we connect first to one of the monomers inside.
             left_bd = self._left_terminal_bond_d
@@ -237,12 +248,9 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             for i, prob in enumerate(probabilities):
                 if prob > 0:
                     node_idx = mono_idx_pos[i]
-                    node = graph.nodes[node_idx]["obj"]
-                    partial_graph.left_half_bonds.append(
-                        _HalfBond(node, node_idx, dict([(_TRANSITION_NAME, prob)]))
-                    )
+                    graph.add_edge(left_idx, node_idx, **dict([(_TRANSITION_NAME, prob)]))
 
-        # Add right half bonds
+        # Add out-going bonds
         if self._right_terminal_bond_d.symbol is not None:
             weights = []
             for i, bd_idx in enumerate(mono_idx_pos):
@@ -262,10 +270,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             for i, prob in enumerate(probabilities):
                 if prob > 0:
                     bd_idx = mono_idx_pos[i]
-                    node = graph.nodes[bd_idx]["obj"]
-                    partial_graph.right_half_bonds.append(
-                        _HalfBond(node, bd_idx, dict([(_TRANSITION_NAME, prob)]))
-                    )
+                    graph.add_edge(bd_idx, right_idx, **dict([(_TRANSITION_NAME, prob)]))
 
         self._post_validate_partial_graph(partial_graph, mono_idx_pos + end_idx_pos)
 

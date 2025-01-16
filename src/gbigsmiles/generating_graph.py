@@ -165,29 +165,37 @@ class GeneratingGraph:
             if isinstance(data["obj"], BondDescriptor):
                 bd_idx_set.add(node_idx)
 
+        edges_to_add = []
         # Add edges jumping over the pairs of bond descriptors with correct weights.
         for bd_idx in bd_idx_set:
-            for in_edge in list(graph.in_edges(bd_idx, data=True)):
+            for in_edge in graph.in_edges(bd_idx, data=True):
                 in_idx = in_edge[0]
                 in_data = in_edge[2]
                 # Ignore bonds between bond descriptors, chaining them is not allowed. I think
                 if in_idx not in bd_idx_set:
                     # Find connected out going bond descriptors
-                    for bd_out_edge in list(graph.out_edges(bd_idx, data=True)):
+                    for bd_out_edge in graph.out_edges(bd_idx, data=True):
                         bd_out_idx = bd_out_edge[1]
                         bd_out_data = bd_out_edge[2]
                         if bd_out_idx in bd_idx_set:  # Only bond descriptors
                             # Iterate the out-going non-bond-descriptor bonds
-                            for out_edge in list(graph.out_edges(bd_out_idx, data=True)):
+                            for out_edge in graph.out_edges(bd_out_idx, data=True):
                                 out_idx = out_edge[1]
                                 out_data = out_edge[2]
                                 if out_idx not in bd_idx_set:  # Only non Bond Descriptors
                                     # Build edge that jumps over both bond descriptors
                                     # TODO think about raises problem if bd attr don't match
-                                    graph.add_edge(
-                                        in_idx, out_idx, **dict(in_data | bd_out_data | out_data)
+                                    edges_to_add.append(
+                                        (in_idx, out_idx, dict(in_data | bd_out_data | out_data))
                                     )
 
+        for bd_idx in bd_idx_set:
+            for in_edge in graph.in_edges(bd_idx, data=True):
+                in_idx = in_edge[0]
+                in_data = in_edge[2]
+
+        for edge in edges_to_add:
+            graph.add_edge(edge[0], edge[1], **edge[2])
         # Remove all bond descriptors from the graph.
         graph.remove_nodes_from(bd_idx_set)
 
