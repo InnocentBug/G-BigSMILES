@@ -212,11 +212,29 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                     )
 
         else:
+            # With non-empty left bond descriptors we connect first to one of the monomers inside.
             left_bd = self._left_terminal_bond_d
             if left_bd.transition is not None:
-                pass
+                weights = left_bd.transition[: len(mono_idx_pos)]
             else:
-                pass
+                weights = [graph.nodes[bd_idx]["obj"].weight for bd_idx in mono_idx_pos]
+            weights = np.asarray(weights)
+
+            for i, bd_idx in enumerate(mono_idx_pos):
+                if not left_bd.is_compatible(graph.nodes[bd_idx["obj"]]):
+                    weights[i] = 0
+
+            probabilities = []
+            if weights.sum() > 0:
+                probabilities = weights / weights.sum()
+
+            for i, prob in enumerate(probabilities):
+                if prob > 0:
+                    node_idx = mono_idx_pos[i]
+                    node = graph.nodes[node_idx]["obj"]
+                    partial_graph.left_half_bonds.append(
+                        _HalfBond(node, node_idx, dict([(_TRANSITION_NAME, prob)]))
+                    )
 
         # Add right half bonds
         if self._right_terminal_bond_d.symbol is not None:
