@@ -219,6 +219,7 @@ class GeneratingGraph:
                             stochastic_keys = set()
                             bd_idx_found = False
                             stochastic_weight_found = False
+                            last_bd = None
                             for edge in path:
                                 if bd_idx in edge:
                                     bd_idx_found = True
@@ -232,6 +233,7 @@ class GeneratingGraph:
                                         stochastic_keys.add(-1)
                                 # TODO secure union
                                 data |= graph.get_edge_data(*edge)
+                                last_bd = edge[0]
                                 if _STOCHASTIC_NAME in data:
                                     stochastic_weight_found = True
                             if bd_idx_found:  # Only consider paths that contain the bd of interest
@@ -254,8 +256,14 @@ class GeneratingGraph:
                                         < 2
                                     ):
                                         if not stochastic_weight_found:
+                                            # if last_bd is not None and graph.nodes[last_bd]["obj"]:
                                             print(
-                                                "A", in_idx, bd_idx, data, len(stochastic_keys) <= 2
+                                                "A",
+                                                in_idx,
+                                                bd_idx,
+                                                data,
+                                                len(stochastic_keys) <= 2,
+                                                last_bd,
                                             )
                                             edges_to_add.append((in_idx, target, data))
 
