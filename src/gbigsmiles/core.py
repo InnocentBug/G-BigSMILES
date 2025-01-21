@@ -95,13 +95,13 @@ class BigSMILESbase(ABC, ast_utils.Ast, ast_utils.AsList, metaclass=MetaSkipInit
 
     def generate_string(self, extension: bool) -> str:
         raise NotImplementedError(
-            "Base class BigSMILESbase does not implement generate_string. If you see this please report on github."
+            f"Base class BigSMILESbase does not implement generate_string. If you see this please report on github. {type(self)}"
         )
 
     @property
     def generable(self) -> bool:
         raise NotImplementedError(
-            "Base class BigSMILESbase does not implement generable. If you see this please report on github."
+            f"Base class BigSMILESbase does not implement generable. If you see this please report on github. {type(self)}"
         )
 
     @property

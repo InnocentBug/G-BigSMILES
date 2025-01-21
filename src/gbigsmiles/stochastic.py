@@ -38,7 +38,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         self._left_terminal_bond_d: None | BondDescriptor = None
         self._right_terminal_bond_d: None | BondDescriptor = None
 
-        self._generation: StochasticGeneration | None = None
+        self._generation: StochasticGeneration = StochasticGeneration([])
 
         # Parse info
         termination_separator_found = False
@@ -271,6 +271,13 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 if prob > 0:
                     bd_idx = mono_idx_pos[i]
                     graph.add_edge(bd_idx, right_idx, **dict([(_TRANSITION_NAME, prob)]))
+
+        # Add mol weight distribution to all nodes
+        for node_idx in partial_graph.g:
+            if (
+                "stochastic_generation" not in graph.nodes[node_idx]
+            ):  # Nested objects have that already
+                graph.nodes[node_idx]["stochastic_generation"] = self._generation
 
         self._post_validate_partial_graph(partial_graph, mono_idx_pos + end_idx_pos)
 
