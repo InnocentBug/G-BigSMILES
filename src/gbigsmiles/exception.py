@@ -11,7 +11,7 @@ class GBigSMILESError(Exception):
     pass
 
 
-class GBigSMILESWarning(Exception):
+class GBigSMILESWarning(Warning):
     """
     Generic Warning raised by G-BigSMILES.
     """
@@ -131,7 +131,7 @@ class EndGroupHasOneBondDescriptors(IncorrectNumberOfBondDescriptors):
 
 class EmptyTerminalBondDescriptorWithoutEndGroups(ParsingWarning):
     def __init__(self, stochastic_object):
-        super.__init__(stochastic_object)
+        super().__init__(stochastic_object)
 
     def __str__(self) -> str:
         string = f"The stochastic object {str(self.token)} has either, a left or right terminal bond descriptor as an empty '[]' bond descriptor.\n"
@@ -142,7 +142,7 @@ class EmptyTerminalBondDescriptorWithoutEndGroups(ParsingWarning):
 
 class IncorrectNumberOfTransitionWeights(ParsingError):
     def __init__(self, token, bond_descriptor, expected_length):
-        super.__init__(token)
+        super().__init__(token)
         self.bond_descriptor = bond_descriptor
         self.expected_length = expected_length
         assert self.bond_descriptor.transition

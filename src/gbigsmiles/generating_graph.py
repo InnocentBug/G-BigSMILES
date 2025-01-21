@@ -71,6 +71,7 @@ class _PartialGeneratingGraph:
                 new_ring_bond_map[ring_bond_idx] = other.ring_bond_map[ring_bond_idx]
 
         self.ring_bond_map = new_ring_bond_map
+
         self.g = nx.union(self.g, other.g)
 
         for self_bond, other_bond in half_bond_tuples:
@@ -104,6 +105,9 @@ class _PartialGeneratingGraph:
 
     def __str__(self):
         return f"PartialGraph({self.g}, {self.left_half_bonds}, {self.right_half_bonds}, {self.ring_bond_map})"
+
+    def __getitem__(self, idx):
+        return self.g.nodes[idx]
 
 
 def _docstring_format(*args, **kwargs):
@@ -149,7 +153,7 @@ class GeneratingGraph:
                     self.g.add_edge(v, u, **d)
 
     def __str__(self):
-        return f"GeneratingGraph({self.g}"
+        return f"GeneratingGraph({self.g})"
 
     @property
     def g(self):
@@ -316,6 +320,7 @@ class GeneratingGraph:
                     atomic_num = extra_graph_info_reverse[string]
                 else:
                     idx = min(extra_graph_info.keys()) - 1
+                    atomic_num = idx
                     extra_graph_info[idx] = string
                     extra_graph_info_reverse[string] = idx
 
@@ -373,8 +378,6 @@ class GeneratingGraph:
         graph, extra_graph_info = self.get_ml_graph(
             include_bond_descriptors=include_bond_descriptors, return_extra_graph_info=True
         )
-
-        print(extra_graph_info)
 
         dot_str = "digraph{\n"
         for node in graph.nodes(data=True):

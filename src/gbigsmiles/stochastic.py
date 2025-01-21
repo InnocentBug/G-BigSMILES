@@ -177,9 +177,18 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             return _connect(graph, end_idx_pos, mono_idx_pos, mono_idx_pos + end_idx_pos, False)
 
         # Build graph without any connections between bond descriptors.
-        repeat_subgraphs = [monomer.get_generating_graph().g for monomer in self._repeat_residues]
-        terminal_subgraphs = [end.get_generating_graph().g for end in self._termination_residues]
-        graph = nx.union_all(repeat_subgraphs + terminal_subgraphs)
+        repeat_subgraphs = [
+            monomer.get_generating_graph()._partial_graph for monomer in self._repeat_residues
+        ]
+        terminal_subgraphs = [
+            end.get_generating_graph()._partial_graph for end in self._termination_residues
+        ]
+        partial_graph = _PartialGeneratingGraph(None)
+        for gen_graph in repeat_subgraphs + terminal_subgraphs:
+            gen_graph.left_half_bonds = []
+            gen_graph.right_half_bonds = []
+            partial_graph.merge(gen_graph, [])
+        graph = partial_graph.g
 
         # List of monomer repeat unit bond descriptor IDX
         mono_idx_pos = build_idx(self._repeat_residues, graph)
@@ -192,22 +201,6 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         # If we have an empty left terminal bond descriptor, allow end groups to be initial groups.
         if self._left_terminal_bond_d.symbol is None:
             graph = connect_end_to_monomers(graph, mono_idx_pos, end_idx_pos)
-
-        left_partial_graph = self._left_terminal_bond_d._generate_partial_graph().g
-        left_idx = list(left_partial_graph.nodes)[0]
-        right_partial_graph = self._right_terminal_bond_d._generate_partial_graph().g
-        right_idx = list(right_partial_graph.nodes)[0]
-
-        # Add terminal bond descriptors to the graph
-        graph = nx.union_all([graph, left_partial_graph, right_partial_graph])
-
-        partial_graph = _PartialGeneratingGraph(graph)
-
-        partial_graph.left_half_bonds.append(_HalfBond(self._left_terminal_bond_d, left_idx, {}))
-        if self._right_terminal_bond_d.symbol is not None:
-            partial_graph.right_half_bonds.append(
-                _HalfBond(self._right_terminal_bond_d, right_idx, {})
-            )
 
         # Add initiating bonds
         if self._left_terminal_bond_d.symbol is None:
@@ -227,8 +220,20 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 if prob > 0:
                     node_idx = end_idx_pos[i]
                     node = graph.nodes[node_idx]["obj"]
-                    graph.add_edge(left_idx, node_idx, **dict([(_TRANSITION_NAME, prob)]))
+                    partial_graph.left_half_bonds.append(
+                        _HalfBond(node, node_idx, dict([(_TRANSITION_NAME, prob)]))
+                    )
         else:
+            left_partial_graph = self._left_terminal_bond_d._generate_partial_graph()
+            left_partial_graph.left_half_bonds = []
+            left_partial_graph.right_half_bonds = []
+            left_idx = list(left_partial_graph.g.nodes)[0]
+            partial_graph.merge(left_partial_graph, [])
+            partial_graph.left_half_bonds.append(
+                _HalfBond(self._left_terminal_bond_d, left_idx, {})
+            )
+            graph = partial_graph.g
+
             # With non-empty left bond descriptors we connect first to one of the monomers inside.
             left_bd = self._left_terminal_bond_d
             if left_bd.transition is not None:
@@ -252,6 +257,17 @@ class StochasticObject(BigSMILESbase, GenerationBase):
 
         # Add out-going bonds
         if self._right_terminal_bond_d.symbol is not None:
+            right_partial_graph = self._right_terminal_bond_d._generate_partial_graph()
+            right_partial_graph.left_half_bonds = []
+            right_partial_graph.right_half_bonds = []
+            right_idx = list(right_partial_graph.g.nodes)[0]
+            partial_graph.merge(right_partial_graph, [])
+            partial_graph.right_half_bonds.append(
+                _HalfBond(self._right_terminal_bond_d, right_idx, {})
+            )
+
+            graph = partial_graph.g
+
             weights = []
             for i, bd_idx in enumerate(mono_idx_pos):
                 node = graph.nodes[bd_idx]["obj"]
