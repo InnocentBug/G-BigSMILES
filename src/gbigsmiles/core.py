@@ -124,7 +124,7 @@ class GenerationBase(ABC):
     def get_generating_graph(self):
         from .generating_graph import GeneratingGraph
 
-        return GeneratingGraph(self._generate_partial_graph())
+        return GeneratingGraph(self._generate_partial_graph(), str(self))
 
 
 def get_compatible_bond_descriptor_ids(bond_descriptors, bond):

@@ -119,11 +119,12 @@ def _docstring_format(*args, **kwargs):
 
 
 class GeneratingGraph:
-    def __init__(self, final_partial_graph: _PartialGeneratingGraph):
+    def __init__(self, final_partial_graph: _PartialGeneratingGraph, text: str = ""):
         self._partial_graph = final_partial_graph
         self._ml_graph = None
         self._graph_without_bond_descriptors = None
         self._g = self._partial_graph.g
+        self.text: str = text
 
         GeneratingGraph._mark_aromatic_bonds(self.g)
         self._duplicate_static_edges()
@@ -201,6 +202,71 @@ class GeneratingGraph:
             if isinstance(data["obj"], BondDescriptor):
                 bd_idx_set.add(node_idx)
 
+        class BondDescriptorPath:
+            def __init__(self, edge_path: list[tuple]):
+                self.edge_path = edge_path
+                node_path = []
+                data_path = []
+                for edge in self.edge_path:
+                    data = graph.get_edge_data(*edge)
+                    data_path.append(data)
+                    for node in edge[:2]:
+                        if len(node_path) < 1:
+                            node_path.append(node)
+                        else:
+                            if node_path[-1] != node:
+                                node_path.append(node)
+                self.node_path = node_path
+                self.data_path = data_path
+
+            @property
+            def combined_attr(self) -> dict:
+                data = self.data_path[0]
+                for d in self.data_path[1:]:
+                    print(d)
+                    data["static"] &= d["static"]
+                    data["bond_type"] = max(data["bond_type"], d["bond_type"])
+                    if not d["static"]:
+                        for key in d:
+                            if key not in ("static", "aromatic", "bond_type"):
+                                data[key] += d[key]
+                print(data, "\n\n")
+                return data
+
+            def __len__(self):
+                return len(self.node_path)
+
+            @property
+            def only_bond_descriptors(self):
+                return len(self.node_path) > 2 and set(self.node_path[1:-1]).issubset(bd_idx_set)
+
+            def contains_bd(self, bd_idx):
+                return bd_idx in self.node_path
+
+            @property
+            def weight(self):
+                attr = self.combined_attr
+                weight = 0
+                for key in attr:
+                    if key not in ("aromatic", "static"):
+                        weight += attr[key]
+                return weight
+
+            def non_zero_weight(self):
+                return self.weight > 0
+
+            def valid(self, bd_idx):
+                return (
+                    self.only_bond_descriptors and self.contains_bd(bd_idx) and self.non_zero_weight
+                )
+
+            def __str__(self):
+                string = str(graph.nodes[self.node_path[0]]["obj"])
+                for edge, data in zip(self.edge_path, self.data_path):
+                    string += str(data)
+                    string += str(graph.nodes[edge[1]]["obj"])
+                return string
+
         edges_to_add = []
         # Add edges jumping over the pairs of bond descriptors with correct weights.
         for bd_idx in bd_idx_set:
@@ -208,69 +274,33 @@ class GeneratingGraph:
                 in_idx = in_edge[0]
                 # Only do it for sources of the bond descriptors that are not bond descriptors themselves. I.e. at the start of a chain.
                 if in_idx not in bd_idx_set:
-
-                    in_data = in_edge[2]
                     non_bond_descriptor_successor = conditional_traversal(
                         graph, in_idx, lambda x: ((x not in bd_idx_set) and (x != in_idx))
                     )
                     for target in non_bond_descriptor_successor:
                         for path in nx.all_simple_edge_paths(graph, in_idx, target):
-                            data = in_data.copy()
-                            stochastic_keys = set()
-                            bd_idx_found = False
-                            stochastic_weight_found = False
-                            last_bd = None
-                            for edge in path:
-                                if bd_idx in edge:
-                                    bd_idx_found = True
-                                for node_idx in edge[:2]:
-                                    stochastic_generation = graph.nodes[node_idx].get(
-                                        "stochastic_generation", None
-                                    )
-                                    if stochastic_generation is not None:
-                                        stochastic_keys.add(stochastic_generation.key)
-                                    else:
-                                        stochastic_keys.add(-1)
-                                # TODO secure union
-                                data |= graph.get_edge_data(*edge)
-                                last_bd = edge[0]
-                                if _STOCHASTIC_NAME in data:
-                                    stochastic_weight_found = True
-                            if bd_idx_found:  # Only consider paths that contain the bd of interest
-                                if (
-                                    len(stochastic_keys) <= 2
-                                ):  # We allow at most one stochastic object in the path
-                                    if (
-                                        len(
-                                            set.intersection(
-                                                set(
-                                                    (
-                                                        _TRANSITION_NAME,
-                                                        _TERMINATION_NAME,
-                                                        _STOCHASTIC_NAME,
-                                                    )
-                                                ),
-                                                set(data.keys()),
-                                            )
-                                        )
-                                        < 2
-                                    ):
-                                        if not stochastic_weight_found:
-                                            # if last_bd is not None and graph.nodes[last_bd]["obj"]:
-                                            print(
-                                                "A",
-                                                in_idx,
-                                                bd_idx,
-                                                data,
-                                                len(stochastic_keys) <= 2,
-                                                last_bd,
-                                            )
-                                            edges_to_add.append((in_idx, target, data))
+                            bond_descriptor_path = BondDescriptorPath(path)
+                            if bond_descriptor_path.valid(bd_idx):
+                                data = bond_descriptor_path.combined_attr
+                                print(data)
+                                edges_to_add.append((in_idx, target, data))
 
         for edge in edges_to_add:
             graph.add_edge(edge[0], edge[1], **edge[2])
         # Remove all bond descriptors from the graph.
         graph.remove_nodes_from(bd_idx_set)
+
+        # Normalize transition weights
+        for node in graph.nodes():
+            total_weight = 0
+            for u, v, _k, d in graph.out_edges(node, keys=True, data=True):
+                if _TRANSITION_NAME in d:
+                    total_weight += d[_TRANSITION_NAME]
+
+            if total_weight > 0:
+                for u, v, k, d in graph.out_edges(node, keys=True, data=True):
+                    if _TRANSITION_NAME in d:
+                        graph.edges[u, v, k][_TRANSITION_NAME] /= total_weight
 
         GeneratingGraph._mark_aromatic_bonds(graph)
 
@@ -376,7 +406,9 @@ class GeneratingGraph:
         4: "box",
     }
 
-    def get_dot_string(self, include_bond_descriptors=False, edge_colors=None, bond_to_arrow=None):
+    def get_dot_string(
+        self, include_bond_descriptors=False, edge_colors=None, bond_to_arrow=None, node_prefix=""
+    ):
 
         if edge_colors is None:
             edge_colors = self._DEFAULT_EDGE_COLOR
@@ -388,6 +420,7 @@ class GeneratingGraph:
         )
 
         dot_str = "digraph{\n"
+        dot_str += f'label="{self.text}";\n'
         for node in graph.nodes(data=True):
             if node[1]["atomic_num"] > 0:
                 label = f"{atom_name_mapping[node[1]['atomic_num']]}"
@@ -400,7 +433,7 @@ class GeneratingGraph:
             if _determine_darkness_from_hex(color):
                 extra_attr += "fontcolor=white,"
 
-            dot_str += f'"{node[0]}" [{extra_attr} label="{label}"];\n'
+            dot_str += f'"{node_prefix}{node[0]}" [{extra_attr} label="{label}"];\n'
 
         for u, v, _k, d in graph.edges(keys=True, data=True):
             bond_type = d["bond_type"]
@@ -414,7 +447,7 @@ class GeneratingGraph:
             if d["aromatic"]:
                 style = "dashed"
 
-            dot_str += f'"{u}" -> "{v}" [arrowhead="{bond_to_arrow[bond_type]}", label="{float(value)}", color="{color}", style="{style}"];\n'
+            dot_str += f'"{node_prefix}{u}" -> "{node_prefix}{v}" [arrowhead="{bond_to_arrow[bond_type]}", label="{float(value)}", color="{color}", style="{style}"];\n'
 
         dot_str += "}\n"
         return dot_str
