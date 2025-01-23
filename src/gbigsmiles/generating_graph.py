@@ -237,7 +237,7 @@ class GeneratingGraph:
 
                     return weight, weight_type
 
-                data = self.data_path[0]
+                data = {"static": True, "aromatic": False, "bond_type": 0}
                 weight = 0.0
                 weight_type = None
                 for d in self.data_path:
@@ -296,10 +296,10 @@ class GeneratingGraph:
                 )
 
             def __str__(self):
-                string = str(graph.nodes[self.node_path[0]]["obj"])
+                string = str(graph.nodes[self.node_path[0]]["obj"]) + " "
                 for edge, data in zip(self.edge_path, self.data_path):
                     string += str(data) + "\n"
-                    string += str(graph.nodes[edge[1]]["obj"])
+                    string += str(graph.nodes[edge[1]]["obj"]) + " "
                 return string
 
         class GraphDecider:
@@ -323,22 +323,8 @@ class GeneratingGraph:
                     )
                     for target in non_bond_descriptor_successor:
                         all_paths = list(nx.all_simple_edge_paths(graph, in_idx, target))
-                        print(
-                            "A",
-                            graph.nodes[in_idx]["obj"],
-                            graph.nodes[target]["obj"],
-                            len(all_paths),
-                        )
                         for path in all_paths:
                             bond_descriptor_path = BondDescriptorPath(path)
-                            print(
-                                "B",
-                                bond_descriptor_path,
-                                "\n",
-                                bond_descriptor_path.valid(bd_idx),
-                                bond_descriptor_path.combined_attr,
-                                "\n",
-                            )
                             if bond_descriptor_path.valid(bd_idx):
                                 data = bond_descriptor_path.combined_attr
                                 edges_to_add.append((in_idx, target, data))

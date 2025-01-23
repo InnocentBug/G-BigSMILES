@@ -134,8 +134,8 @@ class EmptyTerminalBondDescriptorWithoutEndGroups(ParsingWarning):
         super().__init__(stochastic_object)
 
     def __str__(self) -> str:
-        string = f"The stochastic object {str(self.token)} has either, a left or right terminal bond descriptor as an empty '[]' bond descriptor.\n"
-        string += f"In this case, please use end-groups to specify how to initiate (left terminal {str(self.token._left_terminal_bond_d)}) or finalize the molecule (right terminal {str(self.token._right_terminal_bond_d)}).\n"
+        string = f"The stochastic object {str(self.token)} has either, a left or right terminal bond descriptor as an empty '[]' bond descriptor. "
+        string += f"In this case, please use end-groups to specify how to initiate (left terminal {str(self.token._left_terminal_bond_d)}) or finalize the molecule (right terminal {str(self.token._right_terminal_bond_d)}). "
         string += "Consider adding a hydrogen end group '{[] ... ; [$/</>][H] []}' with a matching bond descriptor symbol to your BigSMILES string for clarification."
         return string
 
