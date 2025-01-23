@@ -175,6 +175,7 @@ class GeneratingGraph:
 
             Returns:
                 set: A set of nodes where the traversal stopped.
+
             """
             stopped_nodes = set()
             visited = set()
@@ -205,8 +206,8 @@ class GeneratingGraph:
         class BondDescriptorPath:
             def __init__(self, edge_path: list[tuple]):
                 self.edge_path = edge_path
-                node_path = []
-                data_path = []
+                node_path: list = []
+                data_path: list = []
                 for edge in self.edge_path:
                     data = graph.get_edge_data(*edge)
                     data_path.append(data)
@@ -218,20 +219,52 @@ class GeneratingGraph:
                                 node_path.append(node)
                 self.node_path = node_path
                 self.data_path = data_path
+                self._weight, self._combined_attr = self.create_combined_attr()
 
-            @property
-            def combined_attr(self) -> dict:
+            def create_combined_attr(self) -> dict | None:
+                class IncompatibleBondTypes(Exception):
+                    pass
+
+                def process_attribute(data, attr, weight, weight_type):
+                    if data[attr] > 0:
+                        if weight_type is None:
+                            weight = data[attr]
+                            weight_type = attr
+                        # elif weight_type == attr:
+                        #     weight *= data[attr]
+                        else:
+                            raise IncompatibleBondTypes()
+
+                    return weight, weight_type
+
                 data = self.data_path[0]
-                for d in self.data_path[1:]:
-                    print(d)
+                weight = 0.0
+                weight_type = None
+                for d in self.data_path:
                     data["static"] &= d["static"]
+                    data["aromatic"] |= d["aromatic"]
                     data["bond_type"] = max(data["bond_type"], d["bond_type"])
-                    if not d["static"]:
-                        for key in d:
-                            if key not in ("static", "aromatic", "bond_type"):
-                                data[key] += d[key]
-                print(data, "\n\n")
-                return data
+                    try:
+                        weight, weight_type = process_attribute(
+                            d, _TRANSITION_NAME, weight, weight_type
+                        )
+                        weight, weight_type = process_attribute(
+                            d, _STOCHASTIC_NAME, weight, weight_type
+                        )
+                        weight, weight_type = process_attribute(
+                            d, _TERMINATION_NAME, weight, weight_type
+                        )
+                    except IncompatibleBondTypes:
+                        return 0.0, None
+
+                data[_TRANSITION_NAME] = 0.0
+                data[_TERMINATION_NAME] = 0.0
+                data[_STOCHASTIC_NAME] = 0.0
+
+                if weight > 0:
+                    data[weight_type] = weight
+
+                return weight, data
 
             def __len__(self):
                 return len(self.node_path)
@@ -245,27 +278,37 @@ class GeneratingGraph:
 
             @property
             def weight(self):
-                attr = self.combined_attr
-                weight = 0
-                for key in attr:
-                    if key not in ("aromatic", "static"):
-                        weight += attr[key]
-                return weight
+                return self._weight
+
+            @property
+            def combined_attr(self):
+                return self._combined_attr
 
             def non_zero_weight(self):
                 return self.weight > 0
 
             def valid(self, bd_idx):
                 return (
-                    self.only_bond_descriptors and self.contains_bd(bd_idx) and self.non_zero_weight
+                    self.only_bond_descriptors
+                    and self.contains_bd(bd_idx)
+                    and (self.combined_attr is not None)
+                    and (self.weight > 0)
                 )
 
             def __str__(self):
                 string = str(graph.nodes[self.node_path[0]]["obj"])
                 for edge, data in zip(self.edge_path, self.data_path):
-                    string += str(data)
+                    string += str(data) + "\n"
                     string += str(graph.nodes[edge[1]]["obj"])
                 return string
+
+        class GraphDecider:
+            def __init__(self, bd_idx_set, in_idx):
+                self.bd_idx_set = bd_idx_set
+                self.in_idx = in_idx
+
+            def __call__(self, x):
+                return (x not in self.bd_idx_set) and (x != self.in_idx)
 
         edges_to_add = []
         # Add edges jumping over the pairs of bond descriptors with correct weights.
@@ -274,15 +317,30 @@ class GeneratingGraph:
                 in_idx = in_edge[0]
                 # Only do it for sources of the bond descriptors that are not bond descriptors themselves. I.e. at the start of a chain.
                 if in_idx not in bd_idx_set:
+                    traversal_condition = GraphDecider(bd_idx_set, in_idx)
                     non_bond_descriptor_successor = conditional_traversal(
-                        graph, in_idx, lambda x: ((x not in bd_idx_set) and (x != in_idx))
+                        graph, in_idx, traversal_condition
                     )
                     for target in non_bond_descriptor_successor:
-                        for path in nx.all_simple_edge_paths(graph, in_idx, target):
+                        all_paths = list(nx.all_simple_edge_paths(graph, in_idx, target))
+                        print(
+                            "A",
+                            graph.nodes[in_idx]["obj"],
+                            graph.nodes[target]["obj"],
+                            len(all_paths),
+                        )
+                        for path in all_paths:
                             bond_descriptor_path = BondDescriptorPath(path)
+                            print(
+                                "B",
+                                bond_descriptor_path,
+                                "\n",
+                                bond_descriptor_path.valid(bd_idx),
+                                bond_descriptor_path.combined_attr,
+                                "\n",
+                            )
                             if bond_descriptor_path.valid(bd_idx):
                                 data = bond_descriptor_path.combined_attr
-                                print(data)
                                 edges_to_add.append((in_idx, target, data))
 
         for edge in edges_to_add:
@@ -293,7 +351,7 @@ class GeneratingGraph:
         # Normalize transition weights
         for node in graph.nodes():
             total_weight = 0
-            for u, v, _k, d in graph.out_edges(node, keys=True, data=True):
+            for _u, _v, _k, d in graph.out_edges(node, keys=True, data=True):
                 if _TRANSITION_NAME in d:
                     total_weight += d[_TRANSITION_NAME]
 
