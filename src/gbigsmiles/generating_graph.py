@@ -18,6 +18,9 @@ from .util import _determine_darkness_from_hex
 _STOCHASTIC_NAME = "stochastic_weight"
 _TERMINATION_NAME = "termination_weight"
 _TRANSITION_NAME = "transition_weight"
+_STATIC_NAME = "static"
+_AROMATIC_NAME = "aromatic"
+_BOND_TYPE_NAME = "bond_type"
 _NON_STATIC_ATTR = (_STOCHASTIC_NAME, _TERMINATION_NAME, _TRANSITION_NAME)
 
 
@@ -139,26 +142,26 @@ class GeneratingGraph:
             node_b = graph.nodes()[edge[1]]["obj"]
             if isinstance(node_a, Atom) and isinstance(node_b, Atom):
                 if node_a.aromatic and node_b.aromatic:
-                    edge[2]["aromatic"] = True
+                    edge[2][_AROMATIC_NAME] = True
 
     def _duplicate_static_edges(self):
-        for u, v, _k, d in list(self.g.edges(keys=True, data=True)):
+        for u, v, _k, d in list(self._g.edges(keys=True, data=True)):
             if is_static_edge(d):
-                alternate_direction_data = self.g.get_edge_data(v, u)
+                alternate_direction_data = self._g.get_edge_data(v, u)
                 edge_found = False
                 if alternate_direction_data is not None:
                     for key in alternate_direction_data:
                         if d == alternate_direction_data[key]:
                             edge_found = True
                 if not edge_found:
-                    self.g.add_edge(v, u, **d)
+                    self._g.add_edge(v, u, **d)
 
     def __str__(self):
         return f"GeneratingGraph({self.g})"
 
     @property
     def g(self):
-        return self._g
+        return self._g.copy()
 
     def get_graph_without_bond_descriptors(self):
         from .bond import BondDescriptor
@@ -198,9 +201,6 @@ class GeneratingGraph:
 
         graph = self.g.copy()
 
-        for u, v, k, data in graph.edges(keys=True, data=True):
-            print(data)
-
         bd_idx_set = set()
         for node_idx, data in graph.nodes(data=True):
             if isinstance(data["obj"], BondDescriptor):
@@ -229,7 +229,8 @@ class GeneratingGraph:
                     pass
 
                 def process_attribute(data, attr, weight, weight_type):
-                    if data[attr] > 0:
+
+                    if attr in data and data[attr] > 0:
                         if weight_type is None:
                             weight = data[attr]
                             weight_type = attr
@@ -240,13 +241,26 @@ class GeneratingGraph:
 
                     return weight, weight_type
 
-                data = {"static": True, "aromatic": False, "bond_type": 0}
+                data = {}
                 weight = 0.0
                 weight_type = None
                 for d in self.data_path:
-                    data["static"] &= d["static"]
-                    data["aromatic"] |= d["aromatic"]
-                    data["bond_type"] = max(data["bond_type"], d["bond_type"])
+                    if _STATIC_NAME in d:
+                        if _STATIC_NAME in data:
+                            data[_STATIC_NAME] &= d[_STATIC_NAME]
+                        else:
+                            data[_STATIC_NAME] = d[_STATIC_NAME]
+                    if _AROMATIC_NAME in d:
+                        if _AROMATIC_NAME in data:
+                            data[_AROMATIC_NAME] |= d[_AROMATIC_NAME]
+                        else:
+                            data[_AROMATIC_NAME] = d[_AROMATIC_NAME]
+                    if _BOND_TYPE_NAME in d:
+                        if _BOND_TYPE_NAME in data:
+                            assert str(data[_BOND_TYPE_NAME]) == str(d[_BOND_TYPE_NAME])
+                        else:
+                            data[_BOND_TYPE_NAME] = d[_BOND_TYPE_NAME]
+
                     try:
                         weight, weight_type = process_attribute(
                             d, _TRANSITION_NAME, weight, weight_type
@@ -259,10 +273,6 @@ class GeneratingGraph:
                         )
                     except IncompatibleBondTypes:
                         return 0.0, None
-
-                data[_TRANSITION_NAME] = 0.0
-                data[_TERMINATION_NAME] = 0.0
-                data[_STOCHASTIC_NAME] = 0.0
 
                 if weight > 0:
                     data[weight_type] = weight
@@ -357,6 +367,9 @@ class GeneratingGraph:
         stochastic_name=_STOCHASTIC_NAME,
         termination_name=_TERMINATION_NAME,
         transition_name=_TRANSITION_NAME,
+        static_name=_STOCHASTIC_NAME,
+        aromatic_name=_AROMATIC_NAME,
+        bond_type_name=_BOND_TYPE_NAME,
         smi_bond_mapping=smi_bond_mapping,
     )
     def get_ml_graph(self, include_bond_descriptors=False, return_extra_graph_info=False):
@@ -371,21 +384,24 @@ class GeneratingGraph:
 
         Edges(Bonds) have the following properties:
 
-        - **static**: bool indicating static edges, that are always present.
+        - **{static_name}**: bool indicating static edges, that are always present.
         - **{stochastic_name}**: float Stochastic probability. If bond descriptors are connecting between monomer repeat units inside stochastic objects, this indicates the probability \in [0, 1].
         - **{termination_name}**: float Termination Probabilities. If bond descriptors terminate with end-groups after the molecular weight is reached, this is the probability \in [0, 1].
         - **{transition_name}**: float Transition Probabilities. If transitioning between stochastic objects this is the probability to take.
-        - **bond_type**: int Integer category that maps to different bond_types as follows{smi_bond_mapping}.
-        - **aromatic**: bool Indicates aromatic bonds.
+        - **{bond_type_name}**: int Integer category that maps to different bond_types as follows{smi_bond_mapping}.
+        - **{aromatic_name}**: bool Indicates aromatic bonds.
         """
 
         extra_graph_info = {0: "None"}
         extra_graph_info_reverse = {"None": 0}
 
         if include_bond_descriptors:
-            graph = self.g
+            graph = self.g.copy()
         else:
-            graph = self.get_graph_without_bond_descriptors()
+            graph = self.get_graph_without_bond_descriptors().copy()
+
+        for u, v, k, d in list(graph.edges(keys=True, data=True)):
+            print("F", include_bond_descriptors, d, _BOND_TYPE_NAME in d)
 
         ml_graph = nx.MultiDiGraph()
         for node, data in graph.nodes(data=True):
@@ -418,21 +434,21 @@ class GeneratingGraph:
                 node,
                 **{
                     "atomic_num": atomic_num,
-                    "aromatic": aromatic,
+                    _AROMATIC_NAME: aromatic,
                     "charge": charge,
                 },
             )
 
         for u, v, _k, d in graph.edges(keys=True, data=True):
-            d.setdefault("static", is_static_edge(d))
+            d.setdefault(_STATIC_NAME, is_static_edge(d))
             d.setdefault(_STOCHASTIC_NAME, 0)
             d.setdefault(_TERMINATION_NAME, 0)
             d.setdefault(_TRANSITION_NAME, 0)
-            if "bond_type" in d:
-                d["bond_type"] = smi_bond_mapping.get(str(d["bond_type"]), 1)
+            if _BOND_TYPE_NAME in d:
+                d[_BOND_TYPE_NAME] = smi_bond_mapping.get(str(d[_BOND_TYPE_NAME]), 1)
             else:
-                d["bond_type"] = 1
-            d.setdefault("aromatic", False)
+                d[_BOND_TYPE_NAME] = 1
+            d.setdefault(_AROMATIC_NAME, False)
 
             ml_graph.add_edge(u, v, **d)
 
@@ -441,7 +457,7 @@ class GeneratingGraph:
         return ml_graph
 
     _DEFAULT_EDGE_COLOR = {
-        "static": "#000000",
+        _STATIC_NAME: "#000000",
         _STOCHASTIC_NAME: "#ff0000",
         _TRANSITION_NAME: "#00ff00",
         _TERMINATION_NAME: "#0000ff",
@@ -483,7 +499,7 @@ class GeneratingGraph:
             dot_str += f'"{node_prefix}{node[0]}" [{extra_attr} label="{label}"];\n'
 
         for u, v, _k, d in graph.edges(keys=True, data=True):
-            bond_type = d["bond_type"]
+            bond_type = d[_BOND_TYPE_NAME]
             color = "black"
             value = 1.0
             for key in edge_colors:
@@ -491,7 +507,7 @@ class GeneratingGraph:
                     color = edge_colors[key]
                     value = d[key]
             style = "solid"
-            if d["aromatic"]:
+            if d[_AROMATIC_NAME]:
                 style = "dashed"
 
             dot_str += f'"{node_prefix}{u}" -> "{node_prefix}{v}" [arrowhead="{bond_to_arrow[bond_type]}", label="{float(value)}", color="{color}", style="{style}"];\n'

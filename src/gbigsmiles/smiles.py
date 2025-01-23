@@ -4,7 +4,7 @@ from .big_smiles import _AbstractIterativeGenerativeClass
 from .bond import BondSymbol, RingBond
 from .core import BigSMILESbase, GenerationBase
 from .exception import DoubleBondSymbolDefinition
-from .generating_graph import _PartialGeneratingGraph
+from .generating_graph import _BOND_TYPE_NAME, _PartialGeneratingGraph
 
 
 class Branch(BigSMILESbase, GenerationBase):
@@ -45,11 +45,11 @@ class Branch(BigSMILESbase, GenerationBase):
         partial_graph = self._elements[0]._generate_partial_graph()
         if self._bond_symbol is not None:
             for lhb in partial_graph.left_half_bonds:
-                if "bond_type" in lhb.bond_attributes:
+                if _BOND_TYPE_NAME in lhb.bond_attributes:
                     raise DoubleBondSymbolDefinition(
                         partial_graph, self._bond_symbol, lhb.bond_attributes
                     )
-                lhb.bond_attributes["bond_type"] = self._bond_symbol
+                lhb.bond_attributes[_BOND_TYPE_NAME] = self._bond_symbol
 
         for element in self._elements[1:]:
             element_partial_graph = element._generate_partial_graph()
@@ -175,11 +175,11 @@ class AtomAssembly(BigSMILESbase, GenerationBase):
         partial_graph = self._branched_atom._generate_partial_graph()
         if self.bond_symbol:
             for half_bond in partial_graph.left_half_bonds:
-                if "bond_type" in half_bond.bond_attributes:
+                if _BOND_TYPE_NAME in half_bond.bond_attributes:
                     raise DoubleBondSymbolDefinition(
                         partial_graph, self.bond_symbol, half_bond.bond_attributes
                     )
-                half_bond.bond_attributes["bond_type"] = self.bond_symbol
+                half_bond.bond_attributes[_BOND_TYPE_NAME] = self.bond_symbol
 
         return partial_graph
 
