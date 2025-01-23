@@ -198,6 +198,9 @@ class GeneratingGraph:
 
         graph = self.g.copy()
 
+        for u, v, k, data in graph.edges(keys=True, data=True):
+            print(data)
+
         bd_idx_set = set()
         for node_idx, data in graph.nodes(data=True):
             if isinstance(data["obj"], BondDescriptor):
