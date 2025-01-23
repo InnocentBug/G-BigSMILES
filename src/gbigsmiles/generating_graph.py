@@ -233,25 +233,11 @@ class GeneratingGraph:
                 self._weight, self._combined_attr = self.create_combined_attr()
 
             def create_combined_attr(self) -> dict | None:
-                class IncompatibleBondTypes(Exception):
-                    pass
-
-                def process_attribute(data, attr, weight, weight_type):
-
-                    if attr in data and data[attr] > 0:
-                        if weight_type is None:
-                            weight = data[attr]
-                            weight_type = attr
-                        # elif weight_type == attr:
-                        #     weight *= data[attr]
-                        else:
-                            raise IncompatibleBondTypes()
-
-                    return weight, weight_type
 
                 data = {}
-                weight = 0.0
-                weight_type = None
+                weight = 1.0
+                weight_type_list = []
+                non_static_attribute_list = list(_NON_STATIC_ATTR)
                 for d in self.data_path:
                     if _STATIC_NAME in d:
                         if _STATIC_NAME in data:
@@ -269,18 +255,29 @@ class GeneratingGraph:
                         else:
                             data[_BOND_TYPE_NAME] = d[_BOND_TYPE_NAME]
 
-                    try:
-                        weight, weight_type = process_attribute(
-                            d, _TRANSITION_NAME, weight, weight_type
-                        )
-                        weight, weight_type = process_attribute(
-                            d, _STOCHASTIC_NAME, weight, weight_type
-                        )
-                        weight, weight_type = process_attribute(
-                            d, _TERMINATION_NAME, weight, weight_type
-                        )
-                    except IncompatibleBondTypes:
+                    non_static_weights = [
+                        d[attr] if attr in d else 0 for attr in non_static_attribute_list
+                    ]
+                    if max(non_static_weights) > 0:
+                        for attr, w in zip(non_static_attribute_list, non_static_weights):
+                            if w > 0:
+                                current_type = attr
+                                weight *= w
+                    else:
+                        current_type = _STATIC_NAME
+
+                    weight_type_list.append(current_type)
+
+                last_weight_type = _STATIC_NAME
+                for weight_type in weight_type_list:
+                    if last_weight_type != _STATIC_NAME and weight_type != _STATIC_NAME:
                         return 0.0, None
+                    last_weight_type = weight_type
+
+                weight_type = _STATIC_NAME
+                for attr in [_TRANSITION_NAME, _TERMINATION_NAME, _STOCHASTIC_NAME]:
+                    if attr in weight_type_list:
+                        weight_type = attr
 
                 if weight > 0:
                     data[weight_type] = weight
