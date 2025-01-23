@@ -25,7 +25,15 @@ _NON_STATIC_ATTR = (_STOCHASTIC_NAME, _TERMINATION_NAME, _TRANSITION_NAME)
 
 
 def is_static_edge(edge_data):
-    return all(attr not in edge_data for attr in _NON_STATIC_ATTR)
+    if _STATIC_NAME in edge_data:
+        return edge_data[_STATIC_NAME]
+    weight = 0
+    attr_found = False
+    for attr in _NON_STATIC_ATTR:
+        if attr in edge_data:
+            attr_found = True
+            weight += edge_data[attr]
+    return not weight > 0
 
 
 class _HalfBond:
@@ -341,6 +349,26 @@ class GeneratingGraph:
                             if bond_descriptor_path.valid(bd_idx):
                                 data = bond_descriptor_path.combined_attr
                                 edges_to_add.append((in_idx, target, data))
+
+        # The previous approach does not handle self loops on bond descriptors, since they are cycles.
+        # However, these are important and easy manually address
+        for bd_idx in bd_idx_set:
+            in_edges = set(graph.in_edges(bd_idx, keys=True))
+            out_edges = set(graph.out_edges(bd_idx, keys=True))
+            # A loop to itself is the intersection
+            loop_edges = in_edges.intersection(out_edges)
+            for loop_edge in loop_edges:
+                for in_u, in_v, in_k, in_data in graph.in_edges(bd_idx, keys=True, data=True):
+                    if is_static_edge(in_data):
+                        for out_u, out_v, out_k, out_data in graph.out_edges(
+                            bd_idx, keys=True, data=True
+                        ):
+                            if is_static_edge(out_data):
+                                path = [(in_u, in_v, in_k), loop_edge, (out_u, out_v, out_k)]
+                                bond_descriptor_path = BondDescriptorPath(path)
+                                if bond_descriptor_path.valid(bd_idx):
+                                    data = bond_descriptor_path.combined_attr
+                                    edges_to_add.append((in_u, out_v, data))
 
         for edge in edges_to_add:
             graph.add_edge(edge[0], edge[1], **edge[2])
