@@ -174,7 +174,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             return result
 
         def connect_end_to_monomers(graph, mono_idx_pos, end_idx_pos):
-            return _connect(graph, end_idx_pos, mono_idx_pos, mono_idx_pos + end_idx_pos, False)
+            return _connect(graph, end_idx_pos, mono_idx_pos, mono_idx_pos + end_idx_pos, True)
 
         # Build graph without any connections between bond descriptors.
         repeat_subgraphs = [

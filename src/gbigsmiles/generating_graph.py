@@ -400,9 +400,6 @@ class GeneratingGraph:
         else:
             graph = self.get_graph_without_bond_descriptors().copy()
 
-        for u, v, k, d in list(graph.edges(keys=True, data=True)):
-            print("F", include_bond_descriptors, d, _BOND_TYPE_NAME in d)
-
         ml_graph = nx.MultiDiGraph()
         for node, data in graph.nodes(data=True):
             obj = data["obj"]
