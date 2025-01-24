@@ -137,7 +137,7 @@ class GeneratingGraph:
         self._g = self._partial_graph.g
         self.text: str = text
 
-        GeneratingGraph._mark_aromatic_bonds(self.g)
+        GeneratingGraph._mark_aromatic_bonds(self._g)
         self._duplicate_static_edges()
 
     @staticmethod

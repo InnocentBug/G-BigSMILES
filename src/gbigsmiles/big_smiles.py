@@ -91,10 +91,11 @@ class BigSmiles(_AbstractIterativeGenerativeClass):
     def total_system_molecular_weight(self) -> None | float:
         total_mol_weight: float = 0.0
         for molw in self.mol_molecular_weight_map.values():
-            if molw is None:
-                return None
-            total_mol_weight += molw
-        return total_mol_weight
+            if molw is not None:
+                total_mol_weight += molw
+        if total_mol_weight > 0:
+            return total_mol_weight
+        return None
 
 
 class DotGeneration(_AbstractIterativeGenerativeClass):

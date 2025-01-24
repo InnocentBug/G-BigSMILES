@@ -88,7 +88,7 @@ def test_smiles_graph(chembl_smi_list):
             if edge[2]["order"] == 0:
                 pysmiles_graph.remove_edge(edge[0], edge[1])
 
-        graph = big_smiles.generating_graph
+        graph = big_smiles.get_generating_graph().g
         graph = nx.Graph(nx.to_undirected(graph))
 
         # Remove hydrogens from bigsmiles graph for comparison:
