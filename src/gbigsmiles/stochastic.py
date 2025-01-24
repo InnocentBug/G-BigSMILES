@@ -136,13 +136,18 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                         bd_idx[bond_descriptors.index(bd[1]["obj"])] = bd[0]
             return bd_idx
 
-        def _connect(graph, first_idx, second_idx, full_idx, end_termination):
-            attr_name = _STOCHASTIC_NAME
-            if end_termination:
-                attr_name = _TERMINATION_NAME
+        def _connect(
+            graph,
+            first_idx,
+            second_idx,
+            full_idx,
+            attr_name=_STOCHASTIC_NAME,
+            ignore_transitions=False,
+        ):
+
             for bd_idx_a in first_idx:
                 obj_a = graph.nodes[bd_idx_a]["obj"]
-                if obj_a.transition is not None and (not end_termination):
+                if obj_a.transition is not None and not ignore_transitions:
                     # Note that this spans the end groups
                     probabilities = obj_a.transition
                 else:
@@ -167,14 +172,35 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             return graph
 
         def connect_monomers_to_monomers(graph, mono_idx_pos, end_idx_pos):
-            return _connect(graph, mono_idx_pos, mono_idx_pos, mono_idx_pos + end_idx_pos, False)
+            return _connect(
+                graph,
+                mono_idx_pos,
+                mono_idx_pos,
+                mono_idx_pos + end_idx_pos,
+                ignore_transitions=False,
+                attr_name=_STOCHASTIC_NAME,
+            )
 
         def connect_monomers_to_end(graph, mono_idx_pos, end_idx_pos):
-            result = _connect(graph, mono_idx_pos, end_idx_pos, end_idx_pos, True)
+            result = _connect(
+                graph,
+                mono_idx_pos,
+                end_idx_pos,
+                end_idx_pos,
+                ignore_transitions=True,
+                attr_name=_TERMINATION_NAME,
+            )
             return result
 
         def connect_end_to_monomers(graph, mono_idx_pos, end_idx_pos):
-            return _connect(graph, end_idx_pos, mono_idx_pos, mono_idx_pos + end_idx_pos, True)
+            return _connect(
+                graph,
+                end_idx_pos,
+                mono_idx_pos,
+                mono_idx_pos + end_idx_pos,
+                ignore_transitions=False,
+                attr_name=_TRANSITION_NAME,
+            )
 
         # Build graph without any connections between bond descriptors.
         repeat_subgraphs = [
