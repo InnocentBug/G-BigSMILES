@@ -33,7 +33,7 @@ def _print_license(args):
     print(license_text)
 
 
-SHORT_LICENSE_TEXT = "bigSMILES extension  Copyright (C) 2022  Ludwig Schneider\n\n"
+SHORT_LICENSE_TEXT = "bigSMILES extension  Copyright (C) 2022 - 2025  Ludwig Schneider\n\n"
 SHORT_LICENSE_TEXT += (
     "This program comes with ABSOLUTELY NO WARRANTY; for details type 'license'.\n"
 )

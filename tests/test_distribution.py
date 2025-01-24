@@ -12,6 +12,12 @@ EPSILON = 0.15
 NSTAT = 2000
 
 
+def test_empty_serialize():
+    vector = gbigsmiles.StochasticDistribution.get_empty_serial_vector()
+    instance = gbigsmiles.StochasticDistribution.from_serial_vector(vector)
+    assert instance is None
+
+
 @pytest.mark.parametrize("a", [0.01, 0.05, 0.1, 0.3, 0.5])
 def test_flory_schulz(a):
     def mean(a):
@@ -42,6 +48,10 @@ def test_flory_schulz(a):
     assert str(flory_schulz) == f"|flory_schulz({a})|"
     assert flory_schulz.generable
 
+    serial_vector = flory_schulz.get_serial_vector()
+    new_instance = gbigsmiles.StochasticDistribution.from_serial_vector(serial_vector)
+    assert str(new_instance) == str(flory_schulz)
+
 
 @pytest.mark.parametrize(
     ("mu", "sigma"), [(100.0, 10.0), (200.0, 100.0), (500.0, 1.0), (600.0, 0.0)]
@@ -71,6 +81,10 @@ def test_gauss(mu, sigma):
     assert str(gauss) == f"|gauss({mu}, {sigma})|"
     assert gauss.generable
 
+    serial_vector = gauss.get_serial_vector()
+    new_instance = gbigsmiles.StochasticDistribution.from_serial_vector(serial_vector)
+    assert str(new_instance) == str(gauss)
+
 
 @pytest.mark.parametrize(
     ("low", "high"), [(10.0, 100.0), (200.0, 1000.0), (50.0, 100.0), (0.0, 600.0)]
@@ -97,6 +111,10 @@ def test_uniform(low, high):
 
     assert str(uniform) == f"|uniform({low}, {high})|"
     assert uniform.generable
+
+    serial_vector = uniform.get_serial_vector()
+    new_instance = gbigsmiles.StochasticDistribution.from_serial_vector(serial_vector)
+    assert str(new_instance) == str(uniform)
 
 
 @pytest.mark.parametrize(("Mw", "factor"), [(11.3e3, 1.5)])
@@ -126,6 +144,10 @@ def test_schulz_zimm(Mw, factor):
     assert str(schulz_zimm) == f"|schulz_zimm({Mw}, {Mn})|"
     assert schulz_zimm.generable
 
+    serial_vector = schulz_zimm.get_serial_vector()
+    new_instance = gbigsmiles.StochasticDistribution.from_serial_vector(serial_vector)
+    assert str(new_instance) == str(schulz_zimm)
+
 
 @pytest.mark.parametrize(("M", "D"), [(11.3e3, 1.1), (5.3e3, 1.5), (20.3e3, 2.0)])
 def test_log_normal(M, D):
@@ -150,6 +172,10 @@ def test_log_normal(M, D):
     assert str(log_normal) == f"|log_normal({M}, {D})|"
     assert log_normal.generable
 
+    serial_vector = log_normal.get_serial_vector()
+    new_instance = gbigsmiles.StochasticDistribution.from_serial_vector(serial_vector)
+    assert str(new_instance) == str(log_normal)
+
 
 @pytest.mark.parametrize("M", [11.3e3, 5.3e3, 20.3e3])
 def test_poisson(M):
@@ -172,3 +198,7 @@ def test_poisson(M):
     assert np.abs((np.var(data) - variance(M))) / variance(M) < EPSILON
     assert str(poisson) == f"|poisson({M})|"
     assert poisson.generable
+
+    serial_vector = poisson.get_serial_vector()
+    new_instance = gbigsmiles.StochasticDistribution.from_serial_vector(serial_vector)
+    assert str(new_instance) == str(poisson)

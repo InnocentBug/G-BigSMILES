@@ -38,7 +38,7 @@ class StochasticGeneration(BigSMILESbase):
 
 
 class StochasticDistribution(StochasticGeneration):
-    _known_distributions: set = set()
+    _known_distributions: list = list()
 
     def __init__(self, children: list):
         super().__init__(children)
@@ -98,6 +98,52 @@ class StochasticDistribution(StochasticGeneration):
         if hasattr(self._distribution, "pmf"):
             return self._distribution.pmf(k=int(mw), **kwargs)
         raise NotImplementedError
+
+    @classmethod
+    def _default_serialize(cls, n) -> tuple[float]:
+        return tuple((-1.0 for _ in range(n)))
+
+    @classmethod
+    def default_serialize(cls) -> tuple[float]:
+        return cls._default_serialize(0)
+
+    @classmethod
+    def get_empty_serial_vector(cls):
+        vector = []
+        for distr_type in cls._known_distributions:
+            vector += list(distr_type.default_serialize())
+        return vector
+
+    def get_serial_vector(self):
+        vector = []
+        for distr_type in self._known_distributions:
+            if type(self) is distr_type:
+                vector += list(self.serialize())
+            else:
+                vector += list(distr_type.default_serialize())
+        return vector
+
+    @classmethod
+    def from_serial_vector(cls, vector):
+        candidates = []
+        type_candidates = []
+        for distr_type in cls._known_distributions:
+            default_serial = distr_type.default_serialize()
+            given_serial = tuple((vector.pop(0) for _ in default_serial))
+            if default_serial != given_serial:
+                candidates.append(given_serial)
+                type_candidates.append(distr_type)
+
+        if len(candidates) == 0:
+            return None
+
+        if len(candidates) != 1:
+            raise ValueError(
+                f"The passed vector did not contain only one candidate for the distribution."
+            )
+        distr_type = type_candidates[0]
+        params = candidates[0]
+        return distr_type.make(distr_type.token_name_snake_case + str(params))
 
 
 class FlorySchulz(StochasticDistribution):
@@ -160,8 +206,15 @@ class FlorySchulz(StochasticDistribution):
     def prob_mw(self, mw):
         return super().prob_mw(mw=mw, a=self._a)
 
+    @classmethod
+    def default_serialize(cls) -> tuple[float]:
+        return cls._default_serialize(1)
 
-StochasticDistribution._known_distributions.add(FlorySchulz)
+    def serialize(self) -> tuple[float]:
+        return (self._a,)
+
+
+StochasticDistribution._known_distributions.append(FlorySchulz)
 
 
 class SchulzZimm(StochasticDistribution):
@@ -212,6 +265,13 @@ class SchulzZimm(StochasticDistribution):
         self._z = self._Mn / (self._Mw - self._Mn)
         self._distribution = self.schulz_zimm_gen(name="Schulz-Zimm")
 
+    @classmethod
+    def default_serialize(cls) -> tuple[float]:
+        return cls._default_serialize(2)
+
+    def serialize(self) -> tuple[float]:
+        return (self._Mw, self._Mn)
+
     def generate_string(self, extension):
         if extension:
             return f"|schulz_zimm{self._Mw, self._Mn}|"
@@ -228,7 +288,7 @@ class SchulzZimm(StochasticDistribution):
         return super().draw_mw(z=self._z, Mn=self._Mn)
 
 
-StochasticDistribution._known_distributions.add(SchulzZimm)
+StochasticDistribution._known_distributions.append(SchulzZimm)
 
 
 class Gauss(StochasticDistribution):
@@ -263,6 +323,13 @@ class Gauss(StochasticDistribution):
         self._distribution = stats.norm(loc=self._mu, scale=self._sigma)
 
     @classmethod
+    def default_serialize(cls) -> tuple[float]:
+        return cls._default_serialize(2)
+
+    def serialize(self) -> tuple[float]:
+        return (self._mu, self._sigma)
+
+    @classmethod
     def make(cls, text: str) -> Self:
         # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
         # then call it with cls as the first argument to ensure child typing.
@@ -284,7 +351,7 @@ class Gauss(StochasticDistribution):
         return super().prob_mw(mw)
 
 
-StochasticDistribution._known_distributions.add(Gauss)
+StochasticDistribution._known_distributions.append(Gauss)
 
 
 class Uniform(StochasticDistribution):
@@ -315,6 +382,13 @@ class Uniform(StochasticDistribution):
         self._distribution = stats.uniform(loc=self._low, scale=(self._high - self._low))
 
     @classmethod
+    def default_serialize(cls) -> tuple[float]:
+        return cls._default_serialize(2)
+
+    def serialize(self) -> tuple[float]:
+        return (self._low, self._high)
+
+    @classmethod
     def make(cls, text: str) -> Self:
         # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
         # then call it with cls as the first argument to ensure child typing.
@@ -331,7 +405,7 @@ class Uniform(StochasticDistribution):
         return True
 
 
-StochasticDistribution._known_distributions.add(Uniform)
+StochasticDistribution._known_distributions.append(Uniform)
 
 
 class LogNormal(StochasticDistribution):
@@ -378,6 +452,13 @@ class LogNormal(StochasticDistribution):
         self._distribution = self.log_normal_gen(name="Log-Normal")
 
     @classmethod
+    def default_serialize(cls) -> tuple[float]:
+        return cls._default_serialize(2)
+
+    def serialize(self) -> tuple[float]:
+        return (self._M, self._D)
+
+    @classmethod
     def make(cls, text: str) -> Self:
         # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
         # then call it with cls as the first argument to ensure child typing.
@@ -400,7 +481,7 @@ class LogNormal(StochasticDistribution):
         return super().prob_mw(mw, M=self._M, D=self._D)
 
 
-StochasticDistribution._known_distributions.add(LogNormal)
+StochasticDistribution._known_distributions.append(LogNormal)
 
 
 class Poisson(StochasticDistribution):
@@ -431,6 +512,13 @@ class Poisson(StochasticDistribution):
         self._distribution = stats.poisson(mu=self._N)
 
     @classmethod
+    def default_serialize(cls) -> tuple[float]:
+        return cls._default_serialize(1)
+
+    def serialize(self) -> tuple[float]:
+        return (self._N,)
+
+    @classmethod
     def make(cls, text: str) -> Self:
         # We use BigSMILESbase.make.__func__ to get the underlying function of the class method,
         # then call it with cls as the first argument to ensure child typing.
@@ -447,4 +535,4 @@ class Poisson(StochasticDistribution):
         return True
 
 
-StochasticDistribution._known_distributions.add(Poisson)
+StochasticDistribution._known_distributions.append(Poisson)
