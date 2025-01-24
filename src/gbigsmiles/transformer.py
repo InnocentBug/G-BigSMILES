@@ -33,13 +33,13 @@ class GBigSMILESTransformer(lark.Transformer):
         raise UnsupportedBigSMILES("ladder_bond_descriptor", children)
 
     def inner_non_covalent_descriptor(self, children):
-        raise UnsupportedBigSMILES("inner_non_covalent_descriptor")
+        raise UnsupportedBigSMILES("inner_non_covalent_descriptor", children)
 
     def inner_ambi_covalent_descriptor(self, children):
-        raise UnsupportedBigSMILES("inner_ambi_covalent_descriptor")
+        raise UnsupportedBigSMILES("inner_ambi_covalent_descriptor", children)
 
     def non_covalent_bond_descriptor(self, children):
-        raise UnsupportedBigSMILES("non_covalent_bond_descriptor")
+        raise UnsupportedBigSMILES("non_covalent_bond_descriptor", children)
 
 
 _GLOBAL_TRANSFORMER: None | GBigSMILESTransformer = None

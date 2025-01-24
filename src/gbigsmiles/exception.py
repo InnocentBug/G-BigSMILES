@@ -31,7 +31,7 @@ class ParsingError(GBigSMILESError):
         self.token = token
 
     def __str__(self):
-        return f"Unanticipated error while parsing. Please report and provide the input string. Token: {self.token} start: {self.token.start_pos}"
+        return f"Unanticipated error while parsing. Please report and provide the input string. Token: {self.token}"
 
 
 class ParsingWarning(GBigSMILESWarning):
@@ -171,7 +171,7 @@ class NoLeftTransitions(ParsingWarning):
 
 class StochasticMissingPath(ParsingWarning):
     def __init__(self, stochastic_obj, source_bd_pos):
-        super().__init__(self, stochastic_obj)
+        super().__init__(stochastic_obj)
         self.source_bd_pos = source_bd_pos
 
     def __str__(self):

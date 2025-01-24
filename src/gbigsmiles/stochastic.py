@@ -235,9 +235,10 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             else:
                 weights = [graph.nodes[bd_idx]["obj"].weight for bd_idx in end_idx_pos]
             weights = np.asarray(weights)
-            raise RuntimeError(
-                f"Implementation error, please report on GitHub https://github.com/InnocentBug/G-BigSMILES/issues . {weights} {end_idx_pos}"
-            )
+            if len(weights) != len(end_idx_pos):
+                raise RuntimeError(
+                    f"Implementation error, please report on GitHub https://github.com/InnocentBug/G-BigSMILES/issues . {weights} {end_idx_pos}"
+                )
 
             if weights.sum() == 0:
                 weights += 1
@@ -345,7 +346,10 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 reachable_nodes = set(tree.nodes)
 
                 if target_idx.isdisjoint(reachable_nodes):
-                    warnings.warn(StochasticMissingPath, stacklevel=1)
+                    warnings.warn(
+                        StochasticMissingPath(self, partial_graph.g.nodes[source]["obj"]),
+                        stacklevel=1,
+                    )
 
 
 """Deprecated with the grammar based G-BigSMILES, use StochasticObject instead."""

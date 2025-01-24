@@ -56,7 +56,7 @@ class BigSmilesMolecule(_AbstractIterativeGenerativeClass):
         self._dot_generation: None | DotGeneration = None
         for child in self._children:
             if isinstance(child, DotGeneration):
-                if self._dot_generation is None:
+                if self._dot_generation is not None:
                     raise ParsingError(self)
                 self._dot_generation = child
 
@@ -116,7 +116,7 @@ class DotGeneration(_AbstractIterativeGenerativeClass):
         return self._dot_system_size.molecular_weight
 
 
-class DotSystemSize(BigSMILESbase):
+class DotSystemSize(BigSMILESbase, GenerationBase):
     def __init__(self, children: list):
         super().__init__(children)
 
@@ -136,3 +136,6 @@ class DotSystemSize(BigSMILESbase):
         if extension:
             string += f"|{self.molecular_weight}|"
         return string
+
+    def _generate_partial_graph(self) -> _PartialGeneratingGraph:
+        return _PartialGeneratingGraph()

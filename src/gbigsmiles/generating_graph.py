@@ -1,4 +1,5 @@
 import uuid
+import warnings
 
 import networkx as nx
 
@@ -250,11 +251,12 @@ class GeneratingGraph:
                             data[_AROMATIC_NAME] = d[_AROMATIC_NAME]
                     if _BOND_TYPE_NAME in d:
                         if _BOND_TYPE_NAME in data:
-                            warnings.warn(
-                                IncompatibleBondTypeBondDescriptor(
-                                    str(data[_BOND_TYPE_NAME]), str(d[_BOND_TYPE_NAME])
+                            if str(data[_BOND_TYPE_NAME]) != str(d[_BOND_TYPE_NAME]):
+                                warnings.warn(
+                                    IncompatibleBondTypeBondDescriptor(
+                                        str(data[_BOND_TYPE_NAME]), str(d[_BOND_TYPE_NAME])
+                                    )
                                 )
-                            )
                             return 0.0, None
                         else:
                             data[_BOND_TYPE_NAME] = d[_BOND_TYPE_NAME]

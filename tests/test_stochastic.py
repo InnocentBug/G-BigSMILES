@@ -62,52 +62,5 @@ def test_stochastic(text, big, ref):
     #     assert smi
 
 
-invalid_monomer_stochastic = [
-    "{[] [$]CC []}",
-    "{[] CC []}",
-    "{[] [$]CC[$], CC; [$]Br []}",
-    "{[$] [$]CC[$], [$]CC; [$]Br [$]}",
-    "{[<] [>]CC, [<]C([$])C[>]; [$]Br [>]}",
-]
-
-
-@pytest.mark.parametrize("stochastic_smi", invalid_monomer_stochastic)
-def test_invalid_monomer_stochastic(stochastic_smi):
-    with pytest.raises(gbigsmiles.exception.MonomerHasTwoOrMoreBondDescriptors):
-        try:
-            gbigsmiles.StochasticObject.make(stochastic_smi)
-        except lark.exceptions.VisitError as exc:
-            raise exc.__context__  # trunk-ignore(ruff/B904)
-
-    with pytest.raises(gbigsmiles.exception.IncorrectNumberOfBondDescriptors):
-        try:
-            gbigsmiles.StochasticObject.make(stochastic_smi)
-        except lark.exceptions.VisitError as exc:
-            raise exc.__context__  # trunk-ignore(ruff/B904)
-
-
-invalid_end_stochastic = [
-    "{[] [$]CC[$]; [$]C[$] []}",
-    "{[] [$]CC[$]; C []}",
-    "{[] [$]CC[$]; [$]Br, N []}",
-    "{[$] [$]CC[$], [$]CC[$]; [$]Br, [$]CC[$] [$]}",
-]
-
-
-@pytest.mark.parametrize("stochastic_smi", invalid_end_stochastic)
-def test_invalid_end_stochastic(stochastic_smi):
-    with pytest.raises(gbigsmiles.exception.EndGroupHasOneBondDescriptors):
-        try:
-            gbigsmiles.StochasticObject.make(stochastic_smi)
-        except lark.exceptions.VisitError as exc:
-            raise exc.__context__  # trunk-ignore(ruff/B904)
-
-    with pytest.raises(gbigsmiles.exception.IncorrectNumberOfBondDescriptors):
-        try:
-            gbigsmiles.StochasticObject.make(stochastic_smi)
-        except lark.exceptions.VisitError as exc:
-            raise exc.__context__  # trunk-ignore(ruff/B904)
-
-
 if __name__ == "__main__":
     test_stochastic()

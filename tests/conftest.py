@@ -25,6 +25,11 @@ def big_smi_list(smi_dict):
 
 
 @pytest.fixture(scope="session")
+def big_smi_valid_unsupported(smi_dict):
+    return smi_dict["valid_but_unsupported_big_smiles"]
+
+
+@pytest.fixture(scope="session")
 def invalid_big_smi_list(smi_dict):
     return smi_dict["invalid_big_smiles"]
 
