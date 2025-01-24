@@ -176,3 +176,13 @@ class StochasticMissingPath(ParsingWarning):
 
     def __str__(self):
         return f"The stochastic object {str(self.token)} defines that it can be entered via the bond descriptor in position {str(self.source_bd_pos)} as defined by the left terminal descriptor. However, when entered there there is no path to reach any of the exit bond descriptors as defined by the right terminal bond descriptor."
+
+
+class IncompatibleBondTypeBondDescriptor(ParsingWarning):
+    def __init__(self, bond_type_lhs, bond_type_rhs):
+        super().__init__(None)
+        self.bond_type_lhs = bond_type_lhs
+        self.bond_type_rhs = bond_type_rhs
+
+    def __str__(self):
+        return f"There is a connection between bond descriptors with different bond types, the left is {str(self.bond_type_lhs)} and the right is {str(self.bond_type_rhs)}. There will be no generation path, since the bond type is undefined. This maybe an incorrect input BigSMILES, check the bond types for compatibility around the bond descriptors: connecting bond descriptors have of same type i.e. '[<]=CC[>]' is invalid, since it connects a double bond = with a single bond implicit `-`, correct would be `[<]=CC=[>]`."

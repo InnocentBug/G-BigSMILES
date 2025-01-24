@@ -235,7 +235,9 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             else:
                 weights = [graph.nodes[bd_idx]["obj"].weight for bd_idx in end_idx_pos]
             weights = np.asarray(weights)
-            assert len(weights) == len(end_idx_pos)
+            raise RuntimeError(
+                f"Implementation error, please report on GitHub https://github.com/InnocentBug/G-BigSMILES/issues . {weights} {end_idx_pos}"
+            )
 
             if weights.sum() == 0:
                 weights += 1

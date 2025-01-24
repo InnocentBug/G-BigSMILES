@@ -13,6 +13,7 @@ from .chem_resource import (
     atom_name_num,
     smi_bond_mapping,
 )
+from .exception import IncompatibleBondTypeBondDescriptor
 from .util import _determine_darkness_from_hex
 
 _STOCHASTIC_NAME = "stochastic_weight"
@@ -28,10 +29,8 @@ def is_static_edge(edge_data):
     if _STATIC_NAME in edge_data:
         return edge_data[_STATIC_NAME]
     weight = 0
-    attr_found = False
     for attr in _NON_STATIC_ATTR:
         if attr in edge_data:
-            attr_found = True
             weight += edge_data[attr]
     return not weight > 0
 
@@ -251,7 +250,12 @@ class GeneratingGraph:
                             data[_AROMATIC_NAME] = d[_AROMATIC_NAME]
                     if _BOND_TYPE_NAME in d:
                         if _BOND_TYPE_NAME in data:
-                            assert str(data[_BOND_TYPE_NAME]) == str(d[_BOND_TYPE_NAME])
+                            warnings.warn(
+                                IncompatibleBondTypeBondDescriptor(
+                                    str(data[_BOND_TYPE_NAME]), str(d[_BOND_TYPE_NAME])
+                                )
+                            )
+                            return 0.0, None
                         else:
                             data[_BOND_TYPE_NAME] = d[_BOND_TYPE_NAME]
 
