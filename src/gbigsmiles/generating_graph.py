@@ -137,7 +137,7 @@ class GeneratingGraph:
         self._g = self._partial_graph.g
         self.text: str = text
 
-        GeneratingGraph._mark_aromatic_bonds(self._g)
+        self._g = GeneratingGraph._mark_aromatic_bonds(self.g)
         self._duplicate_static_edges()
 
     @staticmethod
@@ -151,6 +151,8 @@ class GeneratingGraph:
             if isinstance(node_a, Atom) and isinstance(node_b, Atom):
                 if node_a.aromatic and node_b.aromatic:
                     edge[2][_AROMATIC_NAME] = True
+
+        return graph
 
     def _duplicate_static_edges(self):
         for u, v, _k, d in list(self._g.edges(keys=True, data=True)):
@@ -391,7 +393,7 @@ class GeneratingGraph:
                     if _TRANSITION_NAME in d:
                         graph.edges[u, v, k][_TRANSITION_NAME] /= total_weight
 
-        GeneratingGraph._mark_aromatic_bonds(graph)
+        graph = GeneratingGraph._mark_aromatic_bonds(graph)
 
         return graph
 
