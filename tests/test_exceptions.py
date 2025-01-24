@@ -4,7 +4,7 @@ import pytest
 import gbigsmiles
 
 
-@pytest.mark.parametrize("invalid_name", ("asdf", "xkcd"))
+@pytest.mark.parametrize("invalid_name", ("Alfred", "Hitch"))
 def test_unknown_distribution(invalid_name):
     with pytest.raises(lark.exceptions.UnexpectedCharacters):
         gbigsmiles.BigSmiles.make("C{[$] [$]CC[$] [$]}" + f"|{invalid_name}(4, 3)|C")
@@ -44,7 +44,7 @@ def test_invalid_monomer_stochastic(stochastic_smi):
             gbigsmiles.StochasticObject.make(stochastic_smi)
         except lark.exceptions.VisitError as exc:
             raise exc.__context__  # trunk-ignore(ruff/B904)
-        r
+
     with pytest.raises(gbigsmiles.exception.IncorrectNumberOfBondDescriptors):
         try:
             gbigsmiles.StochasticObject.make(stochastic_smi)
@@ -87,8 +87,22 @@ def test_warn_empty_terminal_bond_descriptor_without_end_groups(smi):
         gbigsmiles.BigSmiles.make(smi)
 
 
-@pytest.mark.parametrize("smi", ["{[$] [>]CC[<] [>]"])
+@pytest.mark.parametrize("smi", [])
 def test_warn_no_initiation_for_stochastic_object(smi):
     with pytest.warns(gbigsmiles.exception.NoInitiationForStochasticObject):
+        obj = gbigsmiles.BigSmiles.make(smi)
+        obj.get_generating_graph()
+
+
+@pytest.mark.parametrize("smi", ["{[$] [>]CC[<] [>]}"])
+def test_warn_stochastic_missing_path(smi):
+    with pytest.warns(gbigsmiles.exception.StochasticMissingPath):
+        obj = gbigsmiles.BigSmiles.make(smi)
+        obj.get_generating_graph()
+
+
+@pytest.mark.parametrize("smi", [])
+def test_warn_incompatible_bond_type_bond_descriptors(smi):
+    with pytest.warns(gbigsmiles.exception.IncompatibleBondTypeBondDescriptor):
         obj = gbigsmiles.BigSmiles.make(smi)
         obj.get_generating_graph()

@@ -145,7 +145,10 @@ class IncorrectNumberOfTransitionWeights(ParsingError):
         super().__init__(token)
         self.bond_descriptor = bond_descriptor
         self.expected_length = expected_length
-        assert self.bond_descriptor.transition
+        if self.bond_descriptor.transition is not None:
+            raise RuntimeError(
+                f"Implementation error, please report on GitHub https://github.com/InnocentBug/G-BigSMILES/issues . {str(self.bond_descriptor)} {str(self.token)} "
+            )
 
     def __str__(self):
         return f"The bond descriptor '{str(self.bond_descriptor)}' from the stochastic object '{str(self.token)}' specifies {len(self.bond_descriptor.transition)} transition weights, but the stochastic object has {self.expected_length} bond descriptors. Adjust the transition weights to match the bond descriptors."

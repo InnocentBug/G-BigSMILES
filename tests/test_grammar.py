@@ -29,5 +29,5 @@ def test_big_smi_graph(grammar_parser, big_smi_list):
         print(smi)
         big_smi = gbigsmiles.BigSmiles.make(smi)
         gen_graph = big_smi.get_generating_graph()
-        ml_graph = gen_graph.get_ml_graph(include_bond_descriptors=True)
-        ml_graph = gen_graph.get_ml_graph(include_bond_descriptors=False)
+        gen_graph.get_ml_graph(include_bond_descriptors=True)
+        gen_graph.get_ml_graph(include_bond_descriptors=False)

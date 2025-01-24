@@ -255,7 +255,8 @@ class GeneratingGraph:
                                 warnings.warn(
                                     IncompatibleBondTypeBondDescriptor(
                                         str(data[_BOND_TYPE_NAME]), str(d[_BOND_TYPE_NAME])
-                                    )
+                                    ),
+                                    stacklevel=2,
                                 )
                             return 0.0, None
                         else:
