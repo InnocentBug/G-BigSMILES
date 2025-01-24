@@ -85,3 +85,10 @@ def test_invalid_end_stochastic(stochastic_smi):
 def test_warn_empty_terminal_bond_descriptor_without_end_groups(smi):
     with pytest.warns(gbigsmiles.exception.EmptyTerminalBondDescriptorWithoutEndGroups):
         gbigsmiles.BigSmiles.make(smi)
+
+
+@pytest.mark.parametrize("smi", ["{[$] [>]CC[<] [>]"])
+def test_warn_no_initiation_for_stochastic_object(smi):
+    with pytest.warns(gbigsmiles.exception.NoInitiationForStochasticObject):
+        obj = gbigsmiles.BigSmiles.make(smi)
+        obj.get_generating_graph()
