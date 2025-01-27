@@ -1,8 +1,8 @@
-big_smiles: big_smiles_molecule * big_smiles_fragment_definition*
+big_smiles: big_smiles_molecule* big_smiles_fragment_definition*
 
-big_smiles_molecule: smiles? _big_smiles_repeat* dot_generation?
+big_smiles_molecule: (smiles | smiles? _big_smiles_repeat)+ dot_generation?
 
-_big_smiles_repeat: stochastic_object* smiles?
+_big_smiles_repeat: stochastic_object+ smiles?
 
 stochastic_object: "{" WS_INLINE* terminal_bond_descriptor WS_INLINE* _repeat_units WS_INLINE* _end_group? WS_INLINE* terminal_bond_descriptor "}" stochastic_generation?
 

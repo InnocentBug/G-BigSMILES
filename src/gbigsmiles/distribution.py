@@ -16,25 +16,7 @@ from .util import RememberAdd, get_global_rng
 
 
 class StochasticGeneration(BigSMILESbase):
-    _uniq_key: int = 0
-
-    def __init__(self, children: list):
-        super().__init__(children)
-        self._key = type(self)._uniq_key
-        type(self)._uniq_key += 1
-
-    @property
-    def key(self) -> int:
-        return self._key
-
-    def __eq__(self, other):
-        return self.key == other.key
-
-    def __bool__(self):
-        return False
-
-    def generate_string(self, extension: bool) -> str:
-        return ""
+    pass
 
 
 class StochasticDistribution(StochasticGeneration):
@@ -139,7 +121,7 @@ class StochasticDistribution(StochasticGeneration):
 
         if len(candidates) != 1:
             raise ValueError(
-                f"The passed vector did not contain only one candidate for the distribution."
+                "The passed vector did not contain only one candidate for the distribution."
             )
         distr_type = type_candidates[0]
         params = candidates[0]

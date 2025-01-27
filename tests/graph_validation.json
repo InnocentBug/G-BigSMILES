@@ -1,0 +1,3334 @@
+{
+  "C": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": 1,
+        "id": "ba6689de-4aa7-426a-aadb-e3eabc2c1bb0"
+      }
+    ],
+    "adjacency": [[]]
+  },
+  "CN": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": 1,
+        "id": "0fefff9b-7647-4650-ad1c-90edb4e75fba"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "54e2dfb6-1d46-4963-a897-44157fb8c339"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "54e2dfb6-1d46-4963-a897-44157fb8c339",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0fefff9b-7647-4650-ad1c-90edb4e75fba",
+          "key": 0
+        }
+      ]
+    ]
+  },
+  "CNF": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": 1,
+        "id": "065871d7-42fe-4c18-9b38-367d2a611a3b"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "f43ebebf-fe65-4052-ae16-994b7b492ddb"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "3139caca-d4d1-48eb-b4e1-aa51b18ac361"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "f43ebebf-fe65-4052-ae16-994b7b492ddb",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "3139caca-d4d1-48eb-b4e1-aa51b18ac361",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "065871d7-42fe-4c18-9b38-367d2a611a3b",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "f43ebebf-fe65-4052-ae16-994b7b492ddb",
+          "key": 0
+        }
+      ]
+    ]
+  },
+  "C=N#F": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": 1,
+        "id": "d67ad297-57e1-4e1b-a516-6e79a3eee314"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "13519784-3e5b-4769-b90b-61a385b5a072"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "e85ee954-8ac5-460d-88a5-ceaae08badf8"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "13519784-3e5b-4769-b90b-61a385b5a072",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 3,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "e85ee954-8ac5-460d-88a5-ceaae08badf8",
+          "key": 0
+        },
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "d67ad297-57e1-4e1b-a516-6e79a3eee314",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 3,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "13519784-3e5b-4769-b90b-61a385b5a072",
+          "key": 0
+        }
+      ]
+    ]
+  },
+  "C=N#F.|1234|": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 1234.0,
+        "total_molecular_weight": 1234.0,
+        "init_weight": 1234.0,
+        "id": "d5a6b1b3-bff4-4993-9352-ec978f9750d6"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 1234.0,
+        "total_molecular_weight": 1234.0,
+        "init_weight": -1.0,
+        "id": "80dd2b01-6114-4cee-8c23-4604bb96fe94"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 1234.0,
+        "total_molecular_weight": 1234.0,
+        "init_weight": -1.0,
+        "id": "cb4efdeb-2dfb-4f90-9087-956daeec09ef"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "80dd2b01-6114-4cee-8c23-4604bb96fe94",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 3,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "cb4efdeb-2dfb-4f90-9087-956daeec09ef",
+          "key": 0
+        },
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "d5a6b1b3-bff4-4993-9352-ec978f9750d6",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 3,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "80dd2b01-6114-4cee-8c23-4604bb96fe94",
+          "key": 0
+        }
+      ]
+    ]
+  },
+  "C.|1|N.|2|": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 1.0,
+        "total_molecular_weight": 3.0,
+        "init_weight": 1.0,
+        "id": "0f4fde2d-3f7d-44ba-8c7a-d083a32774a8"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 2.0,
+        "total_molecular_weight": 3.0,
+        "init_weight": 2.0,
+        "id": "dc06309d-08f6-4d3d-8a6e-3b30ee90a8eb"
+      }
+    ],
+    "adjacency": [[], []]
+  },
+  "C-N#F.|1234|O=C=O.|4235|": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 1234.0,
+        "total_molecular_weight": 5469.0,
+        "init_weight": 1234.0,
+        "id": "cf50da78-4e26-4848-b7a3-af03afd23b74"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 1234.0,
+        "total_molecular_weight": 5469.0,
+        "init_weight": -1.0,
+        "id": "7b9186a7-732e-4950-b88b-9b6af5515718"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 1234.0,
+        "total_molecular_weight": 5469.0,
+        "init_weight": -1.0,
+        "id": "7f78d11c-339d-48bd-985b-6423c31e5a60"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 4235.0,
+        "total_molecular_weight": 5469.0,
+        "init_weight": 4235.0,
+        "id": "22ceeffb-fb63-49db-81de-3e788ca5a8e4"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 4235.0,
+        "total_molecular_weight": 5469.0,
+        "init_weight": -1.0,
+        "id": "c4011afd-1258-47c5-957a-e439feebcb9e"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 4235.0,
+        "total_molecular_weight": 5469.0,
+        "init_weight": -1.0,
+        "id": "7e74c795-80ab-4d36-b474-b9a438b3c911"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "bond_type": 1,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "7b9186a7-732e-4950-b88b-9b6af5515718",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 3,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "7f78d11c-339d-48bd-985b-6423c31e5a60",
+          "key": 0
+        },
+        {
+          "bond_type": 1,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "cf50da78-4e26-4848-b7a3-af03afd23b74",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 3,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "7b9186a7-732e-4950-b88b-9b6af5515718",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "c4011afd-1258-47c5-957a-e439feebcb9e",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "7e74c795-80ab-4d36-b474-b9a438b3c911",
+          "key": 0
+        },
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "22ceeffb-fb63-49db-81de-3e788ca5a8e4",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "c4011afd-1258-47c5-957a-e439feebcb9e",
+          "key": 0
+        }
+      ]
+    ]
+  },
+  "C=Cc1ccccc1.|11|C=Cc1c(F)cc(F)cc1": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 11.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": 11.0,
+        "id": "94f98fdd-8fc1-4ecb-8b85-02207e38eef1"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 11.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "2e94cd7f-54a8-41d0-9eb5-3bc1bb562f4c"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 11.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "6b98674f-8694-44f6-8988-04a3aa459a2c"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 11.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "44b46e73-9681-4606-94f5-72f9f924b9db"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 11.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "2cf768f7-b9f1-40e4-9f7e-4091807fd09f"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 11.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "789c4858-9788-417c-91ac-31653f8b7589"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 11.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "febfa6f2-6b85-47ce-9a8e-1fd118305307"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 11.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "f0cc3b5f-edda-460a-96d4-cef57cddccb6"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": 1.0,
+        "id": "b82db2f4-2ce4-4c99-946a-3291133c769e"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "2586a92e-2536-4287-96c9-ad8868bcd4b5"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "8e0b955a-a803-4ae1-aea4-aad9c7593c78"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "ab9df825-24e4-470a-84f6-cb10ddd7ee2f"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "44f5c0e6-2a75-4576-96e8-690c2a0ed218"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "191ab50b-eb25-447b-93a2-f3038ce46913"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "ec2166f9-7767-425d-9818-d480d8ed6ac1"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "a219853b-7252-47fb-a507-16a7c0ac2b26"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "1e82ce71-3a3a-4c67-9709-bdab724d0a14"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": true,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": 11.0,
+        "init_weight": -1.0,
+        "id": "90a33504-5be9-47d8-a613-18fc9c0fc17d"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "2e94cd7f-54a8-41d0-9eb5-3bc1bb562f4c",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "6b98674f-8694-44f6-8988-04a3aa459a2c",
+          "key": 0
+        },
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "94f98fdd-8fc1-4ecb-8b85-02207e38eef1",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "44b46e73-9681-4606-94f5-72f9f924b9db",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "f0cc3b5f-edda-460a-96d4-cef57cddccb6",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "2e94cd7f-54a8-41d0-9eb5-3bc1bb562f4c",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "2cf768f7-b9f1-40e4-9f7e-4091807fd09f",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "6b98674f-8694-44f6-8988-04a3aa459a2c",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "789c4858-9788-417c-91ac-31653f8b7589",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "44b46e73-9681-4606-94f5-72f9f924b9db",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "febfa6f2-6b85-47ce-9a8e-1fd118305307",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "2cf768f7-b9f1-40e4-9f7e-4091807fd09f",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "f0cc3b5f-edda-460a-96d4-cef57cddccb6",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "789c4858-9788-417c-91ac-31653f8b7589",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "6b98674f-8694-44f6-8988-04a3aa459a2c",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "febfa6f2-6b85-47ce-9a8e-1fd118305307",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "2586a92e-2536-4287-96c9-ad8868bcd4b5",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "8e0b955a-a803-4ae1-aea4-aad9c7593c78",
+          "key": 0
+        },
+        {
+          "bond_type": 2,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "aromatic": false,
+          "id": "b82db2f4-2ce4-4c99-946a-3291133c769e",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "ab9df825-24e4-470a-84f6-cb10ddd7ee2f",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "90a33504-5be9-47d8-a613-18fc9c0fc17d",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "2586a92e-2536-4287-96c9-ad8868bcd4b5",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "44f5c0e6-2a75-4576-96e8-690c2a0ed218",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "191ab50b-eb25-447b-93a2-f3038ce46913",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "8e0b955a-a803-4ae1-aea4-aad9c7593c78",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ab9df825-24e4-470a-84f6-cb10ddd7ee2f",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "ec2166f9-7767-425d-9818-d480d8ed6ac1",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "ab9df825-24e4-470a-84f6-cb10ddd7ee2f",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a219853b-7252-47fb-a507-16a7c0ac2b26",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "1e82ce71-3a3a-4c67-9709-bdab724d0a14",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "191ab50b-eb25-447b-93a2-f3038ce46913",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ec2166f9-7767-425d-9818-d480d8ed6ac1",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "90a33504-5be9-47d8-a613-18fc9c0fc17d",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "ec2166f9-7767-425d-9818-d480d8ed6ac1",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "8e0b955a-a803-4ae1-aea4-aad9c7593c78",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "1e82ce71-3a3a-4c67-9709-bdab724d0a14",
+          "key": 0
+        }
+      ]
+    ]
+  },
+  "{[] [$]C[$] []}": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "be837ee5-d2c0-44a4-9bd3-2d44494a1999"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "be837ee5-d2c0-44a4-9bd3-2d44494a1999",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "be837ee5-d2c0-44a4-9bd3-2d44494a1999",
+          "key": 1
+        }
+      ]
+    ]
+  },
+  "{[] [<]CFN[>] []}": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "c3240fe1-ae55-463f-9e1f-f92b7791cb21"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "f92bded1-2daf-4612-8076-4ecd628d9e1a"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "30695c90-e761-4a62-a53e-f3cbda0c467d"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "f92bded1-2daf-4612-8076-4ecd628d9e1a",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "30695c90-e761-4a62-a53e-f3cbda0c467d",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "30695c90-e761-4a62-a53e-f3cbda0c467d",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "c3240fe1-ae55-463f-9e1f-f92b7791cb21",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "f92bded1-2daf-4612-8076-4ecd628d9e1a",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "c3240fe1-ae55-463f-9e1f-f92b7791cb21",
+          "key": 0
+        }
+      ]
+    ]
+  },
+  "[H]{[<] [<]CFN[>] []}": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 1,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": 1.0,
+        "id": "d955bdf7-279f-4117-8b99-50b024572fe7"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "9751e2aa-ce58-47e4-b01f-998fa08c24d3"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "909df50b-fa8a-4a84-b07e-aad3978e1bfe"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "6663b8d6-f069-4f67-a837-95d1b4ef58a9"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "6663b8d6-f069-4f67-a837-95d1b4ef58a9",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "909df50b-fa8a-4a84-b07e-aad3978e1bfe",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "6663b8d6-f069-4f67-a837-95d1b4ef58a9",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "6663b8d6-f069-4f67-a837-95d1b4ef58a9",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "9751e2aa-ce58-47e4-b01f-998fa08c24d3",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "909df50b-fa8a-4a84-b07e-aad3978e1bfe",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "9751e2aa-ce58-47e4-b01f-998fa08c24d3",
+          "key": 0
+        }
+      ]
+    ]
+  },
+  "[H]{[<] [<]CFN[>] [>]}Br": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 1,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": 1.0,
+        "id": "32cc5667-394c-4970-ae7d-57c641033b5f"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "50b94f5d-a5dd-4971-97ac-fdeb7f188596"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "026ba52f-89ab-4a56-916e-940c3143bb10"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "097e142d-f43f-4255-87b6-9e2a66b7a8cf"
+      },
+      {
+        "atomic_num": 35,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "410cb66f-a328-4312-be32-e439c331f36b"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "097e142d-f43f-4255-87b6-9e2a66b7a8cf",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "026ba52f-89ab-4a56-916e-940c3143bb10",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "410cb66f-a328-4312-be32-e439c331f36b",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "097e142d-f43f-4255-87b6-9e2a66b7a8cf",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "097e142d-f43f-4255-87b6-9e2a66b7a8cf",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "50b94f5d-a5dd-4971-97ac-fdeb7f188596",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "026ba52f-89ab-4a56-916e-940c3143bb10",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "50b94f5d-a5dd-4971-97ac-fdeb7f188596",
+          "key": 0
+        }
+      ],
+      []
+    ]
+  },
+  "[H]{[<] [<]CFN[>] [>]}|flory_schulz(3.)|Br.|28|": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 1,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": 28.0,
+        "id": "ace5c641-e728-4c80-8396-7118ff3b1677"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "37b015b0-34bf-495f-8cc8-6ef435192939"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "43d260b7-fe5e-47ec-8f37-fe427093a604"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "6f42fdac-57fa-4048-b350-d4d8b78e823d"
+      },
+      {
+        "atomic_num": 35,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "b3f3ea29-b86e-4f89-b77c-199c7f6c51be"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "6f42fdac-57fa-4048-b350-d4d8b78e823d",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "43d260b7-fe5e-47ec-8f37-fe427093a604",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "6f42fdac-57fa-4048-b350-d4d8b78e823d",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "b3f3ea29-b86e-4f89-b77c-199c7f6c51be",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "6f42fdac-57fa-4048-b350-d4d8b78e823d",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "37b015b0-34bf-495f-8cc8-6ef435192939",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "43d260b7-fe5e-47ec-8f37-fe427093a604",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "37b015b0-34bf-495f-8cc8-6ef435192939",
+          "key": 0
+        }
+      ],
+      []
+    ]
+  },
+  "{[] [<]CFN[>]; [<][H], [>][Br] []}|schulz_zimm(300., 150)|.|2800|": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, 300.0, 150.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 2800.0,
+        "total_molecular_weight": 2800.0,
+        "init_weight": 1400.0,
+        "id": "f1f75ab6-ec39-446d-9037-30ca53d6cc0c"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, 300.0, 150.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 2800.0,
+        "total_molecular_weight": 2800.0,
+        "init_weight": -1.0,
+        "id": "1546a708-70b7-4fdc-bd02-fb27421546d6"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, 300.0, 150.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 2800.0,
+        "total_molecular_weight": 2800.0,
+        "init_weight": 1400.0,
+        "id": "e7fc20de-be1f-4fd8-ba47-85ee94ed967d"
+      },
+      {
+        "atomic_num": 1,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, 300.0, 150.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 2800.0,
+        "total_molecular_weight": 2800.0,
+        "init_weight": 1400.0,
+        "id": "7c311e48-048b-490b-9221-b90e172a3a6b"
+      },
+      {
+        "atomic_num": 35,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, 300.0, 150.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 2800.0,
+        "total_molecular_weight": 2800.0,
+        "init_weight": 1400.0,
+        "id": "d85f99f4-8015-42d1-89c6-a63b22e7a068"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "1546a708-70b7-4fdc-bd02-fb27421546d6",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "e7fc20de-be1f-4fd8-ba47-85ee94ed967d",
+          "key": 0
+        },
+        {
+          "termination_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d85f99f4-8015-42d1-89c6-a63b22e7a068",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "e7fc20de-be1f-4fd8-ba47-85ee94ed967d",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "f1f75ab6-ec39-446d-9037-30ca53d6cc0c",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "1546a708-70b7-4fdc-bd02-fb27421546d6",
+          "key": 0
+        },
+        {
+          "termination_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "7c311e48-048b-490b-9221-b90e172a3a6b",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "f1f75ab6-ec39-446d-9037-30ca53d6cc0c",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "e7fc20de-be1f-4fd8-ba47-85ee94ed967d",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "f1f75ab6-ec39-446d-9037-30ca53d6cc0c",
+          "key": 0
+        }
+      ]
+    ]
+  },
+  "[H]{[<] [<]CFN[>] [>]}|gauss(300., 15)|O{[<] [<]CON[>] [>]}|uniform(500, 600)|Br.|28|": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 1,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": 28.0,
+        "id": "b37c6431-c1eb-475c-8c41-9bfe5d103c40"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 300.0, 15.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "e220f8e4-c97d-412a-b7a4-433f50020237"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 300.0, 15.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "29401a69-5269-4064-804f-aa6fa36b1ad0"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 300.0, 15.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "5b6710d0-73bc-4b73-8659-a6ed759fb1ad"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "a631fdf4-0b15-425d-b299-17759c3e0df3"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, 500.0, 600.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "48ee68dd-270d-415c-8e6b-fbc423bf93e9"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, 500.0, 600.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "d54d0cc0-b403-4d16-9fd8-f6bd59b9b182"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, 500.0, 600.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "a67577e2-57bd-4fc5-b9c5-e23e300d99f2"
+      },
+      {
+        "atomic_num": 35,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 28.0,
+        "total_molecular_weight": 28.0,
+        "init_weight": -1.0,
+        "id": "3c65b5fa-f2c2-499c-87dc-bb94e094a0df"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "5b6710d0-73bc-4b73-8659-a6ed759fb1ad",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "29401a69-5269-4064-804f-aa6fa36b1ad0",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "5b6710d0-73bc-4b73-8659-a6ed759fb1ad",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a631fdf4-0b15-425d-b299-17759c3e0df3",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "5b6710d0-73bc-4b73-8659-a6ed759fb1ad",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "e220f8e4-c97d-412a-b7a4-433f50020237",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "29401a69-5269-4064-804f-aa6fa36b1ad0",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "e220f8e4-c97d-412a-b7a4-433f50020237",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a67577e2-57bd-4fc5-b9c5-e23e300d99f2",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d54d0cc0-b403-4d16-9fd8-f6bd59b9b182",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a67577e2-57bd-4fc5-b9c5-e23e300d99f2",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "3c65b5fa-f2c2-499c-87dc-bb94e094a0df",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a67577e2-57bd-4fc5-b9c5-e23e300d99f2",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "48ee68dd-270d-415c-8e6b-fbc423bf93e9",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d54d0cc0-b403-4d16-9fd8-f6bd59b9b182",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "48ee68dd-270d-415c-8e6b-fbc423bf93e9",
+          "key": 0
+        }
+      ],
+      []
+    ]
+  },
+  "NN{[<] [<]CCC[>], [>]P{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|P[<] [>]}|flory_schulz(3000)|Br.|100|": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": 100.0,
+        "id": "9301b857-c132-49c5-993c-02e167fde96e"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "c38a13f5-2686-4cdd-8791-7d69af02942b"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "0ab5468a-a1eb-4d9a-82c7-28db13f21d31"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "cfe79ba9-7dca-447b-892c-95bfc9effe8a"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "559dc65e-ed31-45d9-aa37-19bc12515db9"
+      },
+      {
+        "atomic_num": 15,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "cf71acc7-fa0d-4934-883f-1dd40444a83b"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, 122.0, 23.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "dd18be27-837f-4d38-b53a-13432cf8a820"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, 122.0, 23.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "c65abb34-108c-406b-8f8a-b12548bfdc70"
+      },
+      {
+        "atomic_num": 15,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "d1254901-5982-410d-a685-44fac4bf8a15"
+      },
+      {
+        "atomic_num": 35,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "7bbf08a4-8b18-4764-b50a-def046282aa0"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "c38a13f5-2686-4cdd-8791-7d69af02942b",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "9301b857-c132-49c5-993c-02e167fde96e",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "559dc65e-ed31-45d9-aa37-19bc12515db9",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "cf71acc7-fa0d-4934-883f-1dd40444a83b",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "cfe79ba9-7dca-447b-892c-95bfc9effe8a",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "7bbf08a4-8b18-4764-b50a-def046282aa0",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "559dc65e-ed31-45d9-aa37-19bc12515db9",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "cf71acc7-fa0d-4934-883f-1dd40444a83b",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "559dc65e-ed31-45d9-aa37-19bc12515db9",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0ab5468a-a1eb-4d9a-82c7-28db13f21d31",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "cfe79ba9-7dca-447b-892c-95bfc9effe8a",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d1254901-5982-410d-a685-44fac4bf8a15",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0ab5468a-a1eb-4d9a-82c7-28db13f21d31",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "c65abb34-108c-406b-8f8a-b12548bfdc70",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "dd18be27-837f-4d38-b53a-13432cf8a820",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d1254901-5982-410d-a685-44fac4bf8a15",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0ab5468a-a1eb-4d9a-82c7-28db13f21d31",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "c65abb34-108c-406b-8f8a-b12548bfdc70",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "c65abb34-108c-406b-8f8a-b12548bfdc70",
+          "key": 1
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d1254901-5982-410d-a685-44fac4bf8a15",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "dd18be27-837f-4d38-b53a-13432cf8a820",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "dd18be27-837f-4d38-b53a-13432cf8a820",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "dd18be27-837f-4d38-b53a-13432cf8a820",
+          "key": 1
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d1254901-5982-410d-a685-44fac4bf8a15",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "c65abb34-108c-406b-8f8a-b12548bfdc70",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "7bbf08a4-8b18-4764-b50a-def046282aa0",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "559dc65e-ed31-45d9-aa37-19bc12515db9",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "cf71acc7-fa0d-4934-883f-1dd40444a83b",
+          "key": 0
+        }
+      ],
+      []
+    ]
+  },
+  "NN{[<] [<]CCC[>], [>]{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|[<] [>]}|flory_schulz(3000)|Br.|100|": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": 100.0,
+        "id": "1b37aba7-ad27-4726-90cf-c7ff56aee672"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "f4ed4f0f-5401-4903-b4d0-9b1ff9cf18d1"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "3730a718-12ad-4c7d-85cf-5b3d1be2eb90"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "4e72dc52-f59d-46e8-b7fc-96ae2ce1e256"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "95a51cb4-5fde-4916-b8ca-e84e23dd4b83"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, 122.0, 23.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "ba385e24-1f97-468c-93a4-34c0f638f2c5"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, 122.0, 23.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "428be623-6078-4027-b6f8-e2c046569cde"
+      },
+      {
+        "atomic_num": 35,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": 100.0,
+        "total_molecular_weight": 100.0,
+        "init_weight": -1.0,
+        "id": "1930cabf-f1b2-4a40-a28a-b266d83e429d"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "f4ed4f0f-5401-4903-b4d0-9b1ff9cf18d1",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "1b37aba7-ad27-4726-90cf-c7ff56aee672",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "95a51cb4-5fde-4916-b8ca-e84e23dd4b83",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.25,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ba385e24-1f97-468c-93a4-34c0f638f2c5",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.25,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "428be623-6078-4027-b6f8-e2c046569cde",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "4e72dc52-f59d-46e8-b7fc-96ae2ce1e256",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "95a51cb4-5fde-4916-b8ca-e84e23dd4b83",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "1930cabf-f1b2-4a40-a28a-b266d83e429d",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.25,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ba385e24-1f97-468c-93a4-34c0f638f2c5",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.25,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "428be623-6078-4027-b6f8-e2c046569cde",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "95a51cb4-5fde-4916-b8ca-e84e23dd4b83",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "3730a718-12ad-4c7d-85cf-5b3d1be2eb90",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "4e72dc52-f59d-46e8-b7fc-96ae2ce1e256",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "3730a718-12ad-4c7d-85cf-5b3d1be2eb90",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "428be623-6078-4027-b6f8-e2c046569cde",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "428be623-6078-4027-b6f8-e2c046569cde",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.125,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "428be623-6078-4027-b6f8-e2c046569cde",
+          "key": 2
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "1930cabf-f1b2-4a40-a28a-b266d83e429d",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.25,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "95a51cb4-5fde-4916-b8ca-e84e23dd4b83",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ba385e24-1f97-468c-93a4-34c0f638f2c5",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ba385e24-1f97-468c-93a4-34c0f638f2c5",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ba385e24-1f97-468c-93a4-34c0f638f2c5",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.125,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ba385e24-1f97-468c-93a4-34c0f638f2c5",
+          "key": 2
+        },
+        {
+          "stochastic_weight": 0.25,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "95a51cb4-5fde-4916-b8ca-e84e23dd4b83",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "1930cabf-f1b2-4a40-a28a-b266d83e429d",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "428be623-6078-4027-b6f8-e2c046569cde",
+          "key": 0
+        }
+      ],
+      []
+    ]
+  },
+  "[H]{[<] [>]CCC[<] [>]}|uniform(3,4)|{[>] [<]NNN[>] [<]}|gauss(400, 39)|Br": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 1,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": 1.0,
+        "id": "e4e31b31-ecab-4088-b166-746ff46473c3"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, 3.0, 4.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "43282b91-8758-49f3-ab91-3e77132ac2a7"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, 3.0, 4.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "9368906e-3d7b-4d25-bdff-22a82e4535ba"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, 3.0, 4.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "a5a8c377-cb72-4ae5-a75c-ce26ca055f16"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 400.0, 39.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "0c8c5059-c90e-4b1b-b343-65fd3834e81e"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 400.0, 39.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "929cf730-2523-4e63-ac97-6fd6792c2de9"
+      },
+      {
+        "atomic_num": 7,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 400.0, 39.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "d0670214-23f4-4600-90b8-b3da61e47977"
+      },
+      {
+        "atomic_num": 35,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "914efdf8-4ed8-47a7-a16d-ac65e212bfc8"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "43282b91-8758-49f3-ab91-3e77132ac2a7",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "9368906e-3d7b-4d25-bdff-22a82e4535ba",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a5a8c377-cb72-4ae5-a75c-ce26ca055f16",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a5a8c377-cb72-4ae5-a75c-ce26ca055f16",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "43282b91-8758-49f3-ab91-3e77132ac2a7",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "9368906e-3d7b-4d25-bdff-22a82e4535ba",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "43282b91-8758-49f3-ab91-3e77132ac2a7",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0c8c5059-c90e-4b1b-b343-65fd3834e81e",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "929cf730-2523-4e63-ac97-6fd6792c2de9",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d0670214-23f4-4600-90b8-b3da61e47977",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d0670214-23f4-4600-90b8-b3da61e47977",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0c8c5059-c90e-4b1b-b343-65fd3834e81e",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "929cf730-2523-4e63-ac97-6fd6792c2de9",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0c8c5059-c90e-4b1b-b343-65fd3834e81e",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "914efdf8-4ed8-47a7-a16d-ac65e212bfc8",
+          "key": 0
+        }
+      ],
+      []
+    ]
+  }
+}

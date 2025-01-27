@@ -68,16 +68,35 @@ class BigSmilesMolecule(_AbstractIterativeGenerativeClass):
                 raise SmilesHasNonZeroBondDescriptors(child)
 
     @property
-    def system_molecular_weight(self) -> float | None:
+    def mol_molecular_weight(self) -> float | None:
         if self._dot_generation:
             return self._dot_generation.molecular_weight
 
     def _generate_partial_graph(self) -> _PartialGeneratingGraph:
         partial_graph = super()._generate_partial_graph()
-        if self.system_molecular_weight:
+        if self.mol_molecular_weight is not None:
             nx.set_node_attributes(
-                partial_graph.g, values=self.system_molecular_weight, name="system_molecular_weight"
+                partial_graph.g, values=self.mol_molecular_weight, name="mol_molecular_weight"
             )
+
+        # Remove previous assignments of init weights
+        for node_idx in list(partial_graph.g.nodes()):
+            try:
+                del partial_graph.g.nodes[node_idx]["init_weight"]
+            except KeyError:
+                pass
+
+        # set weights, if no weight is provided we use 1 as a positive fill
+        init_weight = 1
+        if self.mol_molecular_weight is not None:
+            if len(partial_graph.left_half_bonds) > 0:
+                # Divide by length of possible entry points
+                init_weight = self.mol_molecular_weight / len(partial_graph.left_half_bonds)
+
+        # Open left half bonds are entry points
+        for half_bond in partial_graph.left_half_bonds:
+            partial_graph.g.nodes[half_bond.node_id]["init_weight"] = init_weight
+
         return partial_graph
 
 
@@ -85,10 +104,10 @@ class BigSmiles(_AbstractIterativeGenerativeClass):
 
     @property
     def mol_molecular_weight_map(self) -> dict[BigSmilesMolecule, float | None]:
-        return {mol: mol.system_molecular_weight for mol in self._children}
+        return {mol: mol.mol_molecular_weight for mol in self._children}
 
     @property
-    def total_system_molecular_weight(self) -> None | float:
+    def total_molecular_weight(self) -> None | float:
         total_mol_weight: float = 0.0
         for molw in self.mol_molecular_weight_map.values():
             if molw is not None:
@@ -96,6 +115,15 @@ class BigSmiles(_AbstractIterativeGenerativeClass):
         if total_mol_weight > 0:
             return total_mol_weight
         return None
+
+    def _generate_partial_graph(self) -> _PartialGeneratingGraph:
+        partial_graph = super()._generate_partial_graph()
+        if self.total_molecular_weight is not None:
+            for node_idx in list(partial_graph.g.nodes()):
+                partial_graph.g.nodes[node_idx][
+                    "total_molecular_weight"
+                ] = self.total_molecular_weight
+        return partial_graph
 
 
 class DotGeneration(_AbstractIterativeGenerativeClass):

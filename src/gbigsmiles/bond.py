@@ -226,7 +226,7 @@ class BondDescriptor(BigSMILESbase, GenerationBase):
 
     def _generate_partial_graph(self):
         g = nx.MultiDiGraph()
-        node_idx = uuid.uuid4()
+        node_idx = str(uuid.uuid4())
         g.add_node(node_idx, smi_text=str(self), obj=self)
         partial_graph = _PartialGeneratingGraph(g)
         partial_graph.left_half_bonds.append(_HalfBond(self, node_idx, {}))

@@ -55,7 +55,7 @@ class Atom(BigSMILESbase, GenerationBase):
 
     def _generate_partial_graph(self):
         g = nx.MultiDiGraph()
-        node_id = uuid.uuid4()
+        node_id = str(uuid.uuid4())
         g.add_node(node_id, smi_text=str(self), obj=self)
         partial_graph = _PartialGeneratingGraph(g)
         partial_graph.left_half_bonds.append(_HalfBond(self, node_id, {}))

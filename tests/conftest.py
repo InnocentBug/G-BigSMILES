@@ -3,6 +3,7 @@ import os
 from importlib.resources import files
 
 import lark
+import networkx as nx
 import pytest
 
 
@@ -11,6 +12,17 @@ def smi_dict():
     path = os.path.dirname(__file__)
     with open(os.path.join(path, "smi.json"), "r") as file_handle:
         data = json.load(file_handle)
+    return data
+
+
+@pytest.fixture(scope="session")
+def graph_validation_dict():
+    path = os.path.dirname(__file__)
+    with open(os.path.join(path, "graph_validation.json"), "r") as file_handle:
+        raw_data = json.load(file_handle)
+    data = {}
+    for string in raw_data:
+        data[string] = nx.adjacency_graph(raw_data[string])
     return data
 
 

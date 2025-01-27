@@ -38,7 +38,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         self._left_terminal_bond_d: None | BondDescriptor = None
         self._right_terminal_bond_d: None | BondDescriptor = None
 
-        self._generation: StochasticGeneration = StochasticGeneration([])
+        self._generation: None | StochasticGeneration = None
 
         # Parse info
         termination_separator_found = False

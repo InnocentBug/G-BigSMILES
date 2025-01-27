@@ -1,4 +1,3 @@
-import uuid
 import warnings
 
 import networkx as nx
@@ -37,7 +36,7 @@ def is_static_edge(edge_data):
 
 
 class _HalfBond:
-    def __init__(self, node, node_id: uuid.UUID, bond_attributes: dict):
+    def __init__(self, node, node_id: str, bond_attributes: dict):
         self.node = node
         self.node_id = node_id
         self.bond_attributes = bond_attributes
@@ -217,7 +216,8 @@ class GeneratingGraph:
                 bd_idx_set.add(node_idx)
 
         class BondDescriptorPath:
-            def __init__(self, edge_path: list[tuple]):
+            def __init__(self, edge_path: list[tuple], graph):
+                self.graph = graph
                 self.edge_path = edge_path
                 node_path: list = []
                 data_path: list = []
@@ -329,6 +329,15 @@ class GeneratingGraph:
                     string += str(graph.nodes[edge[1]]["obj"]) + " "
                 return string
 
+            @property
+            def init_weight(self):
+                init_weight = None
+                for node_idx in self.node_path:
+                    node_init_weight = self.graph.nodes[node_idx].get("init_weight", None)
+                    if node_init_weight is not None and node_init_weight > 0:
+                        init_weight = node_init_weight
+                return init_weight
+
         class GraphDecider:
             def __init__(self, bd_idx_set, in_idx):
                 self.bd_idx_set = bd_idx_set
@@ -351,10 +360,14 @@ class GeneratingGraph:
                     for target in non_bond_descriptor_successor:
                         all_paths = list(nx.all_simple_edge_paths(graph, in_idx, target))
                         for path in all_paths:
-                            bond_descriptor_path = BondDescriptorPath(path)
+                            bond_descriptor_path = BondDescriptorPath(path, graph)
                             if bond_descriptor_path.valid(bd_idx):
                                 data = bond_descriptor_path.combined_attr
                                 edges_to_add.append((in_idx, target, data))
+                                if bond_descriptor_path.init_weight is not None:
+                                    graph.nodes[in_idx][
+                                        "init_weight"
+                                    ] = bond_descriptor_path.init_weight
 
         # The previous approach does not handle self loops on bond descriptors, since they are cycles.
         # However, these are important and easy manually address
@@ -371,7 +384,7 @@ class GeneratingGraph:
                         ):
                             if is_static_edge(out_data):
                                 path = [(in_u, in_v, in_k), loop_edge, (out_u, out_v, out_k)]
-                                bond_descriptor_path = BondDescriptorPath(path)
+                                bond_descriptor_path = BondDescriptorPath(path, graph)
                                 if bond_descriptor_path.valid(bd_idx):
                                     data = bond_descriptor_path.combined_attr
                                     edges_to_add.append((in_u, out_v, data))
@@ -415,6 +428,11 @@ class GeneratingGraph:
         - **atomic_num**: int Atomic number, can be converted to Chemical Symbol Name or one-hot encoding.
         - **aromatic**: bool Indicating the aromaticity of the atom.
         - **charge**: float Nominal charge (not partial charge in Force-Fields) in elementary unit *e*.
+        - **stochastic_generation**: vector[float] representing the different molecular weight distributions and their parameters.
+        - **mol_molecular_weight** float Molecular Weight of the total molecular weight in the system from this molecular species. If this is unspecified by the string, negative values are used.
+        - **total_molecular_weight** float Molecular Weight of the entire material system, this is equal to the sum **mol_molecular_weight** of the comprising molecules. If only one molecule species is present, they are identical. If this is unspecified by the string, negative values are used.
+        - **init_weight** float Molecular Weight fractions for entry points into the graph generation. If no molecular weights are specified 1.0 is used. Negative values indicate nodes that are not starting positions for the generation.
+
 
         Edges(Bonds) have the following properties:
 
@@ -425,6 +443,7 @@ class GeneratingGraph:
         - **{bond_type_name}**: int Integer category that maps to different bond_types as follows{smi_bond_mapping}.
         - **{aromatic_name}**: bool Indicates aromatic bonds.
         """
+        from .distribution import StochasticDistribution
 
         extra_graph_info = {0: "None"}
         extra_graph_info_reverse = {"None": 0}
@@ -461,12 +480,33 @@ class GeneratingGraph:
             except AttributeError:
                 charge = float("nan")
 
+            if "stochastic_generation" not in data or data["stochastic_generation"] is None:
+                stochastic_vector = StochasticDistribution.get_empty_serial_vector()
+            else:
+                stochastic_vector = data["stochastic_generation"].get_serial_vector()
+
+            mol_molecular_weight = -1.0
+            if "mol_molecular_weight" in data and data["mol_molecular_weight"] is not None:
+                mol_molecular_weight = data["mol_molecular_weight"]
+
+            total_molecular_weight = -1.0
+            if "total_molecular_weight" in data and data["total_molecular_weight"] is not None:
+                total_molecular_weight = data["total_molecular_weight"]
+
+            init_weight = -1.0
+            if "init_weight" in data and data["init_weight"] is not None:
+                init_weight = data["init_weight"]
+
             ml_graph.add_node(
                 node,
                 **{
                     "atomic_num": atomic_num,
                     _AROMATIC_NAME: aromatic,
                     "charge": charge,
+                    "stochastic_generation": stochastic_vector,
+                    "mol_molecular_weight": mol_molecular_weight,
+                    "total_molecular_weight": total_molecular_weight,
+                    "init_weight": float(init_weight),
                 },
             )
 
