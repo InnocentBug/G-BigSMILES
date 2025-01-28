@@ -585,3 +585,8 @@ class GeneratingGraph:
 
         dot_str += "}\n"
         return dot_str
+
+    def get_atom_graph(self):
+        from .atom_graph import AtomGraph
+
+        return AtomGraph(self.get_ml_graph(include_bond_descriptors=False))

@@ -189,3 +189,23 @@ class IncompatibleBondTypeBondDescriptor(ParsingWarning):
 
     def __str__(self):
         return f"There is a connection between bond descriptors with different bond types, the left is {str(self.bond_type_lhs)} and the right is {str(self.bond_type_rhs)}. There will be no generation path, since the bond type is undefined. This maybe an incorrect input BigSMILES, check the bond types for compatibility around the bond descriptors: connecting bond descriptors have of same type i.e. '[<]=CC[>]' is invalid, since it connects a double bond = with a single bond implicit `-`, correct would be `[<]=CC=[>]`."
+
+
+class UnvalidatedGenerationSource(GBigSMILESWarning):
+    def __init__(self, source, known_source_ids, graph):
+        self.source = source
+        self.known_source_ids = known_source_ids
+        self.graph = graph
+
+    def __str__(self):
+        return f"Attempt to create an atom graph from a generating graph with source node_idx {self.source} but this is not one of the known starting points ({self.known_source_ids}) of the generating graph."
+
+
+class InvalidGenerationSource(GBigSMILESError):
+    def _init__(self, source, nodes, graph):
+        self.source = source
+        self.nodes = nodes
+        self.graph = graph
+
+    def __str__(self):
+        return f"Attemp to create and atom graph from a generating graph with a source node_idx {self.source} but this source is not a valid node idx of the graph. Valid node idx {self.nodes}."
