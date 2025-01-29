@@ -131,7 +131,6 @@ def _docstring_format(*args, **kwargs):
 class GeneratingGraph:
     def __init__(self, final_partial_graph: _PartialGeneratingGraph, text: str = ""):
         self._partial_graph = final_partial_graph
-        self._ml_graph = None
         self._graph_without_bond_descriptors = None
         self._g = self._partial_graph.g
         self.text: str = text
@@ -426,12 +425,13 @@ class GeneratingGraph:
         Node(Atoms) have the following properties:
 
         - **atomic_num**: int Atomic number, can be converted to Chemical Symbol Name or one-hot encoding.
-        - **aromatic**: bool Indicating the aromaticity of the atom.
+        - **{aromatic_name}**: bool Indicating the aromaticity of the atom.
         - **charge**: float Nominal charge (not partial charge in Force-Fields) in elementary unit *e*.
         - **stochastic_generation**: vector[float] representing the different molecular weight distributions and their parameters.
         - **mol_molecular_weight** float Molecular Weight of the total molecular weight in the system from this molecular species. If this is unspecified by the string, negative values are used.
         - **total_molecular_weight** float Molecular Weight of the entire material system, this is equal to the sum **mol_molecular_weight** of the comprising molecules. If only one molecule species is present, they are identical. If this is unspecified by the string, negative values are used.
         - **init_weight** float Molecular Weight fractions for entry points into the graph generation. If no molecular weights are specified 1.0 is used. Negative values indicate nodes that are not starting positions for the generation.
+        - **gen_weight** float Weight to select this atom for the next generation step.
 
 
         Edges(Bonds) have the following properties:
