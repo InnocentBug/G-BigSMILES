@@ -33,7 +33,7 @@ def test_smiles_weight(n, chembl_smi_list):
         big_smiles = gbigsmiles.BigSmiles.make(system_string)
         for mol in big_smiles.mol_molecular_weight_map:
             print("x", mol, big_smiles.mol_molecular_weight_map[mol])
-        assert abs(total_mw - big_smiles.total_system_molecular_weight) < 1e-6
+        assert abs(total_mw - big_smiles.total_molecular_weight) < 1e-6
 
 
 def test_smiles_graph(chembl_smi_list):

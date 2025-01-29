@@ -3330,5 +3330,473 @@
       ],
       []
     ]
+  },
+  "[H]{[<] [<]CC[>], [<]FF[>] [>]}|poisson(2)|{[<] [<]OO[>], [<]PP[>][>]}|gauss(34, 2)|Br": {
+    "directed": true,
+    "multigraph": true,
+    "graph": [],
+    "nodes": [
+      {
+        "atomic_num": 1,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": 1.0,
+        "id": "191f3106-e5cc-46d9-a33c-145bed9014a1"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 2.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "61a0b5ed-91bf-4d51-9f2a-a847cbfaeacb"
+      },
+      {
+        "atomic_num": 6,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 2.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "ea7a2269-ba32-471d-8eb7-33ff6ae61211"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 2.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "5bf4a9d5-5bc7-41a9-ae8f-ebeab8477ad3"
+      },
+      {
+        "atomic_num": 9,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 2.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "04c16700-7801-467c-bb7f-87d6d87b4c24"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 34.0, 2.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "478717cc-6242-4060-82f9-531bf40e13b2"
+      },
+      {
+        "atomic_num": 8,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 34.0, 2.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "35b0345b-db65-4120-b7bb-c0092466ab8e"
+      },
+      {
+        "atomic_num": 15,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 34.0, 2.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "bba4a5aa-9b66-404b-a896-e7d4bce0294c"
+      },
+      {
+        "atomic_num": 15,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, 34.0, 2.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "d3c196cd-8ab1-48e3-b114-01876c9468cb"
+      },
+      {
+        "atomic_num": 35,
+        "aromatic": false,
+        "charge": 0,
+        "stochastic_generation": [
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+        ],
+        "mol_molecular_weight": -1.0,
+        "total_molecular_weight": -1.0,
+        "init_weight": -1.0,
+        "id": "1ed8dad6-e9fa-41a9-9cc7-0ce7965e9154"
+      }
+    ],
+    "adjacency": [
+      [
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ea7a2269-ba32-471d-8eb7-33ff6ae61211",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "04c16700-7801-467c-bb7f-87d6d87b4c24",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ea7a2269-ba32-471d-8eb7-33ff6ae61211",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ea7a2269-ba32-471d-8eb7-33ff6ae61211",
+          "key": 1
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d3c196cd-8ab1-48e3-b114-01876c9468cb",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "04c16700-7801-467c-bb7f-87d6d87b4c24",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "35b0345b-db65-4120-b7bb-c0092466ab8e",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "61a0b5ed-91bf-4d51-9f2a-a847cbfaeacb",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "61a0b5ed-91bf-4d51-9f2a-a847cbfaeacb",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "5bf4a9d5-5bc7-41a9-ae8f-ebeab8477ad3",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "04c16700-7801-467c-bb7f-87d6d87b4c24",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "04c16700-7801-467c-bb7f-87d6d87b4c24",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ea7a2269-ba32-471d-8eb7-33ff6ae61211",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d3c196cd-8ab1-48e3-b114-01876c9468cb",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "35b0345b-db65-4120-b7bb-c0092466ab8e",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "5bf4a9d5-5bc7-41a9-ae8f-ebeab8477ad3",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "5bf4a9d5-5bc7-41a9-ae8f-ebeab8477ad3",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "61a0b5ed-91bf-4d51-9f2a-a847cbfaeacb",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "35b0345b-db65-4120-b7bb-c0092466ab8e",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "35b0345b-db65-4120-b7bb-c0092466ab8e",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d3c196cd-8ab1-48e3-b114-01876c9468cb",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "1ed8dad6-e9fa-41a9-9cc7-0ce7965e9154",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "478717cc-6242-4060-82f9-531bf40e13b2",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "478717cc-6242-4060-82f9-531bf40e13b2",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "bba4a5aa-9b66-404b-a896-e7d4bce0294c",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d3c196cd-8ab1-48e3-b114-01876c9468cb",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "d3c196cd-8ab1-48e3-b114-01876c9468cb",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "35b0345b-db65-4120-b7bb-c0092466ab8e",
+          "key": 0
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "1ed8dad6-e9fa-41a9-9cc7-0ce7965e9154",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "bba4a5aa-9b66-404b-a896-e7d4bce0294c",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "bba4a5aa-9b66-404b-a896-e7d4bce0294c",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "478717cc-6242-4060-82f9-531bf40e13b2",
+          "key": 0
+        }
+      ],
+      []
+    ]
   }
 }
