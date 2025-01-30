@@ -13,7 +13,10 @@ from .chem_resource import (
     atom_name_num,
     smi_bond_mapping,
 )
-from .exception import IncompatibleBondTypeBondDescriptor
+from .exception import (
+    IncompatibleBondTypeBondDescriptor,
+    TooManyBondDescriptorsPerAtomForGeneration,
+)
 from .util import _determine_darkness_from_hex
 
 _STOCHASTIC_NAME = "stochastic_weight"
@@ -140,13 +143,35 @@ class GeneratingGraph:
 
         self._bd_idx_set = self._create_bd_idx_set(self.g)
 
+        self._validate_bond_descriptor_number()
+
     @staticmethod
     def _create_bd_idx_set(graph):
+        from .bond import BondDescriptor
+
         bd_idx_set = set()
         for node_idx, data in graph.nodes(data=True):
             if isinstance(data["obj"], BondDescriptor):
                 bd_idx_set.add(node_idx)
         return bd_idx_set
+
+    def _validate_bond_descriptor_number(self):
+        graph = self.g
+        bd_idx_set = self._bd_idx_set
+
+        for node in graph.nodes():
+
+            if node not in bd_idx_set:  # Regular atoms
+                attached_bd = set()
+                for u, v in graph.out_edges(node):
+                    if v in bd_idx_set:
+                        attached_bd.add(v)
+                if len(attached_bd) > 1:
+                    warnings.warn(
+                        TooManyBondDescriptorsPerAtomForGeneration(
+                            graph, self.text, node, attached_bd
+                        )
+                    )
 
     @staticmethod
     def _mark_aromatic_bonds(graph):
@@ -182,8 +207,6 @@ class GeneratingGraph:
         return self._g.copy()
 
     def get_graph_without_bond_descriptors(self):
-        from .bond import BondDescriptor
-
         def conditional_traversal(graph, source, stop_condition):
             """
             Perform a graph traversal starting from the source node.

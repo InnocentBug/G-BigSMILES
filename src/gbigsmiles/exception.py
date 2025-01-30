@@ -209,3 +209,18 @@ class InvalidGenerationSource(GBigSMILESError):
 
     def __str__(self):
         return f"Attemp to create and atom graph from a generating graph with a source node_idx {self.source} but this source is not a valid node idx of the graph. Valid node idx {self.nodes}."
+
+
+class TooManyBondDescriptorsPerAtomForGeneration(ParsingWarning):
+    def __init__(self, graph, text, atom_idx, bd_idx_set):
+        self.graph = graph
+        self.atom_idx = atom_idx
+        self.bd_idx_set = bd_idx_set
+        self.text = text
+
+        token = self.graph.nodes[atom_idx]["obj"]
+        super().__init__(token)
+        self.bd_objs = [self.graph.nodes[idx]["obj"] for idx in self.bd_idx_set]
+
+    def __str__(self):
+        return f"For generation purposes any atom can only be attached to at most one Bond Descriptor. That atom {self.token} from {self.text} is howver connected to {len(self.bd_idx_set)} bond descriptors {[str(obj) for obj in self.bd_objs]}. This can usual be fixed by rearranging your polymer description."

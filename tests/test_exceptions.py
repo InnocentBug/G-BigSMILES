@@ -106,3 +106,17 @@ def test_warn_incompatible_bond_type_bond_descriptors(smi):
     with pytest.warns(gbigsmiles.exception.IncompatibleBondTypeBondDescriptor):
         obj = gbigsmiles.BigSmiles.make(smi)
         obj.get_generating_graph()
+
+
+@pytest.mark.parametrize(
+    "smi",
+    [
+        "{[] [$]C[$]; [$][H] []}",
+        "{[] [<]C([<2])C[>], [<2]NN[>2]; [>][H], [<][H], [>2][H], [<2][H] []}",
+        "{[] [<]C([<2])C[>], [<2]N[>2]; [>][H], [<][H], [>2][H], [<2][H] []}",
+    ],
+)
+def test_warn_too_many_bd_per_atom(smi):
+    big_smi = gbigsmiles.BigSmiles.make(smi)
+    with pytest.warns(gbigsmiles.exception.TooManyBondDescriptorsPerAtomForGeneration):
+        graph = big_smi.get_generating_graph()
