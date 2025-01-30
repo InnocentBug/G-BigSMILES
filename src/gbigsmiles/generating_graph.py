@@ -138,6 +138,16 @@ class GeneratingGraph:
         self._g = GeneratingGraph._mark_aromatic_bonds(self.g)
         self._duplicate_static_edges()
 
+        self._bd_idx_set = self._create_bd_idx_set(self.g)
+
+    @staticmethod
+    def _create_bd_idx_set(graph):
+        bd_idx_set = set()
+        for node_idx, data in graph.nodes(data=True):
+            if isinstance(data["obj"], BondDescriptor):
+                bd_idx_set.add(node_idx)
+        return bd_idx_set
+
     @staticmethod
     def _mark_aromatic_bonds(graph):
         from .atom import Atom
@@ -209,10 +219,7 @@ class GeneratingGraph:
 
         graph = self.g.copy()
 
-        bd_idx_set = set()
-        for node_idx, data in graph.nodes(data=True):
-            if isinstance(data["obj"], BondDescriptor):
-                bd_idx_set.add(node_idx)
+        bd_idx_set = self._bd_idx_set
 
         class BondDescriptorPath:
             def __init__(self, edge_path: list[tuple], graph):
@@ -367,6 +374,7 @@ class GeneratingGraph:
                                     graph.nodes[in_idx][
                                         "init_weight"
                                     ] = bond_descriptor_path.init_weight
+                                graph.nodes[in_idx]["weight"] = graph.nodes[bd_idx]["obj"].weight
 
         # The previous approach does not handle self loops on bond descriptors, since they are cycles.
         # However, these are important and easy manually address
@@ -476,6 +484,14 @@ class GeneratingGraph:
                     extra_graph_info_reverse[string] = idx
 
             try:
+                gen_weight = obj.weight
+            except AttributeError:
+                try:
+                    gen_weight = data["weight"]
+                except KeyError:
+                    gen_weight = -1
+
+            try:
                 charge = obj.charge
             except AttributeError:
                 charge = float("nan")
@@ -507,6 +523,7 @@ class GeneratingGraph:
                     "mol_molecular_weight": mol_molecular_weight,
                     "total_molecular_weight": total_molecular_weight,
                     "init_weight": float(init_weight),
+                    "gen_weight": float(gen_weight),
                 },
             )
 
