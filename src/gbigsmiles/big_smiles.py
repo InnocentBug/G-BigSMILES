@@ -125,6 +125,11 @@ class BigSmiles(_AbstractIterativeGenerativeClass):
                 ] = self.total_molecular_weight
         return partial_graph
 
+    @property
+    def num_mol_species(self):
+        print(self._children)
+        return len(self._children)
+
 
 class DotGeneration(_AbstractIterativeGenerativeClass):
     def __init__(self, children):
@@ -142,7 +147,9 @@ class DotGeneration(_AbstractIterativeGenerativeClass):
 
     @property
     def molecular_weight(self):
-        return self._dot_system_size.molecular_weight
+        if self._dot_system_size is not None:
+            return self._dot_system_size.molecular_weight
+        return 0.0
 
 
 class DotSystemSize(BigSMILESbase, GenerationBase):

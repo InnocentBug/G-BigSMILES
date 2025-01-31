@@ -9,7 +9,7 @@ import gbigsmiles
 def test_smiles_parsing(chembl_smi_list):
     for smi in chembl_smi_list:
         if len(smi) > 0:
-            smiles_instance = gbigsmiles.Smiles.make(smi)
+            smiles_instance = gbigsmiles.BigSmiles.make(smi)
             assert smi == smiles_instance.generate_string(True)
 
 
@@ -36,7 +36,7 @@ def test_smiles_weight(n, chembl_smi_list):
         assert abs(total_mw - big_smiles.total_molecular_weight) < 1e-6
 
 
-def test_smiles_graph(chembl_smi_list):
+def test_smiles_gen_graph(chembl_smi_list):
 
     def node_match(gb_node, pysmi_node):
         return_value = True
@@ -98,3 +98,58 @@ def test_smiles_graph(chembl_smi_list):
 
         print("\n", smi, pysmiles_graph, graph, "\n")
         assert nx.is_isomorphic(graph, pysmiles_graph, node_match=node_match, edge_match=edge_match)
+
+
+def test_smiles_atom_graph(chembl_smi_list):
+
+    def node_match(gb_node, pysmi_node):
+        return_value = True
+        if gb_node["atomic_num"] != gbigsmiles.chem_resource.atom_name_num[pysmi_node["element"]]:
+            return_value = False
+        if gb_node["charge"] != pysmi_node["charge"]:
+            return_value = False
+        if gb_node["aromatic"] != pysmi_node["aromatic"]:
+            return_value = False
+
+        return return_value
+
+    def edge_match(gb_edge, pysmi_edge):
+        return_value = False
+        if gb_edge["aromatic"] and pysmi_edge["order"] == 1.5:
+            return_value = True
+
+        if gb_edge["bond_type"] == pysmi_edge["order"]:
+            return_value = True
+
+        return return_value
+
+    for smi in chembl_smi_list:
+        big_smiles = gbigsmiles.BigSmiles.make(smi)
+
+        if big_smiles.num_mol_species == 1:
+            pysmiles_graph = pysmiles.read_smiles(smi, reinterpret_aromatic=False)
+
+            # PYSMILES and us treat hydrogen differently
+            for node in list(pysmiles_graph.nodes(data=True)):
+                if "H" in node[1]["element"]:
+                    pysmiles_graph.remove_node(node[0])
+
+            # Pysmiles adds 0 order bonds to the graph, but we do not.
+            for edge in list(pysmiles_graph.edges(data=True)):
+                if edge[2]["order"] == 0:
+                    pysmiles_graph.remove_edge(edge[0], edge[1])
+
+            gen_graph = big_smiles.get_generating_graph()
+            atom_graph = gen_graph.get_atom_graph()
+            mol_graph = atom_graph.sample_mol_graph()
+            graph = mol_graph
+
+            # Remove hydrogens from bigsmiles graph for comparison:
+            for node in list(graph.nodes(data=True)):
+                if node[1]["atomic_num"] == 1:
+                    graph.remove_node(node[0])
+
+            print("\n", smi, pysmiles_graph, graph, "\n")
+            assert nx.is_isomorphic(
+                graph, pysmiles_graph, node_match=node_match, edge_match=edge_match
+            )

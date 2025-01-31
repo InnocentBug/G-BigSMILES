@@ -48,7 +48,6 @@ branched_atom: _atom_stand_in ring_bond* branch*
 branch: "(" bond_symbol? (smiles | big_smiles_molecule)* ")"
 atom_assembly: bond_symbol? branched_atom
 smiles: branched_atom atom_assembly*
-  | smiles dot smiles
 
 
 isotope: INT
@@ -110,7 +109,7 @@ atom_class: ":" INT
 
 
 dot_system_size: "|" WS_INLINE* NUMBER WS_INLINE* "|"
-dot_generation: dot dot_system_size
+dot_generation: dot dot_system_size?
 dot: "."
 
 _number_list_repeat.-1: WS_INLINE+ NUMBER
