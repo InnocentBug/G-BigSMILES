@@ -113,6 +113,10 @@ class StochasticObject(BigSMILESbase, GenerationBase):
     def bond_descriptors(self):
         return []
 
+    @property
+    def stochastic_generation(self):
+        return self._generation
+
     def _generate_partial_graph(self) -> _PartialGeneratingGraph:
         def build_idx(residues, graph):
             """
@@ -319,10 +323,8 @@ class StochasticObject(BigSMILESbase, GenerationBase):
 
         # Add mol weight distribution to all nodes
         for node_idx in partial_graph.g:
-            if (
-                "stochastic_generation" not in graph.nodes[node_idx]
-            ):  # Nested objects have that already
-                graph.nodes[node_idx]["stochastic_generation"] = self._generation
+            if "stochastic_obj" not in graph.nodes[node_idx]:  # Nested objects have that already
+                graph.nodes[node_idx]["stochastic_obj"] = self
 
         self._post_validate_partial_graph(partial_graph, mono_idx_pos + end_idx_pos)
 

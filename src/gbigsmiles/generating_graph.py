@@ -140,6 +140,7 @@ class GeneratingGraph:
 
         self._g = GeneratingGraph._mark_aromatic_bonds(self.g)
         self._duplicate_static_edges()
+        self._assign_stochastic_ids()
 
         self._bd_idx_set = self._create_bd_idx_set(self.g)
 
@@ -154,6 +155,19 @@ class GeneratingGraph:
             if isinstance(data["obj"], BondDescriptor):
                 bd_idx_set.add(node_idx)
         return bd_idx_set
+
+    def _assign_stochastic_ids(self):
+        stochastic_id_map = {-1: -1}
+
+        for node, data in self._g.nodes(data=True):
+
+            if "stochastic_obj" in data:
+                if id(data["stochastic_obj"]) not in stochastic_id_map:
+                    stochastic_id_map[id(data["stochastic_obj"])] = (
+                        max(stochastic_id_map.values()) + 1
+                    )
+                stochastic_id = stochastic_id_map[id(data["stochastic_obj"])]
+                data["stochastic_id"] = stochastic_id
 
     def _validate_bond_descriptor_number(self):
         graph = self.g
@@ -263,6 +277,8 @@ class GeneratingGraph:
                 self.data_path = data_path
                 self._weight, self._combined_attr = self.create_combined_attr()
 
+                self.num_stochastic_transitions
+
             def create_combined_attr(self) -> dict | None:
 
                 data = {}
@@ -349,7 +365,25 @@ class GeneratingGraph:
                     and self.contains_bd(bd_idx)
                     and (self.combined_attr is not None)
                     and (self.weight > 0)
+                    and self.num_stochastic_transitions < 3
                 )
+
+            def get_stochastic_transition_path(self):
+                stochastic_id_list = []
+                for node in self.node_path:
+                    try:
+                        stochastic_id = self.graph.nodes[node]["stochastic_id"]
+                    except KeyError:
+                        stochastic_id = -1
+
+                    if len(stochastic_id_list) == 0 or stochastic_id_list[-1] != stochastic_id:
+                        stochastic_id_list += [stochastic_id]
+
+                return stochastic_id_list
+
+            @property
+            def num_stochastic_transitions(self):
+                return len(self.get_stochastic_transition_path())
 
             def __str__(self):
                 string = str(graph.nodes[self.node_path[0]]["obj"]) + " "
@@ -459,6 +493,7 @@ class GeneratingGraph:
         - **{aromatic_name}**: bool Indicating the aromaticity of the atom.
         - **charge**: float Nominal charge (not partial charge in Force-Fields) in elementary unit *e*.
         - **stochastic_generation**: vector[float] representing the different molecular weight distributions and their parameters.
+        - **stochastic_id": int Identification number that represent seperate stochastic objects in the molecules.
         - **mol_molecular_weight** float Molecular Weight of the total molecular weight in the system from this molecular species. If this is unspecified by the string, negative values are used.
         - **total_molecular_weight** float Molecular Weight of the entire material system, this is equal to the sum **mol_molecular_weight** of the comprising molecules. If only one molecule species is present, they are identical. If this is unspecified by the string, negative values are used.
         - **init_weight** float Molecular Weight fractions for entry points into the graph generation. If no molecular weights are specified 1.0 is used. Negative values indicate nodes that are not starting positions for the generation.
@@ -519,10 +554,13 @@ class GeneratingGraph:
             except AttributeError:
                 charge = float("nan")
 
-            if "stochastic_generation" not in data or data["stochastic_generation"] is None:
+            # TODO
+            if "stochastic_obj" not in data or data["stochastic_obj"].stochastic_generation is None:
                 stochastic_vector = StochasticDistribution.get_empty_serial_vector()
+                stochastic_id = -1
             else:
-                stochastic_vector = data["stochastic_generation"].get_serial_vector()
+                stochastic_vector = data["stochastic_obj"].get_serial_vector()
+                stochastic_id = data["stochastic_id"]
 
             mol_molecular_weight = -1.0
             if "mol_molecular_weight" in data and data["mol_molecular_weight"] is not None:
@@ -547,6 +585,7 @@ class GeneratingGraph:
                     "total_molecular_weight": total_molecular_weight,
                     "init_weight": float(init_weight),
                     "gen_weight": float(gen_weight),
+                    "stochastic_id": stochastic_id,
                 },
             )
 
