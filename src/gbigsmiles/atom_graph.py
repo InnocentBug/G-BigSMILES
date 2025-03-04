@@ -394,7 +394,7 @@ class _PartialAtomGraph:
             self.stochastic_tracker,
             new_sto_atom_id,
         )
-        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(sto_atom_id, selected_target_idx)
+        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(new_sto_atom_id, selected_target_idx)
 
         self.merge(other_graph, transition_bond.atom_idx, other_half_bond_atom_idx, selected_attr)
 
@@ -441,7 +441,7 @@ class _PartialAtomGraph:
             self.stochastic_tracker,
             new_sto_atom_id,
         )
-        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(sto_atom_id, selected_target_idx)
+        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(new_sto_atom_id, selected_target_idx)
 
         self.merge(other_graph, stochastic_bond.atom_idx, other_half_bond_atom_idx, selected_attr)
 
@@ -537,20 +537,15 @@ class AtomGraph:
         del stochastic_object_tracker
 
         while len(partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()) > 0:
-            print(partial_atom_graph._open_half_bond_map)
             active_sto_atom_id = partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
             terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
+
             if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
                 partial_atom_graph = terminated_graph
                 # After termination, there is only one transition bond left
                 active_sto_atom_id = partial_atom_graph.transition_graph(active_sto_atom_id, rng)
+
             else:
                 partial_atom_graph.stochastic_growth(active_sto_atom_id, rng)
-
-        print(
-            partial_atom_graph.atom_graph,
-            partial_atom_graph.stochastic_tracker._sto_atom_id_actual_molw,
-            [str(hb) for hb in partial_atom_graph.get_open_half_bonds(None)],
-        )
 
         return partial_atom_graph.atom_graph
