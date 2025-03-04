@@ -146,9 +146,7 @@ class IncorrectNumberOfTransitionWeights(ParsingError):
         self.bond_descriptor = bond_descriptor
         self.expected_length = expected_length
         if self.bond_descriptor.transition is not None:
-            raise RuntimeError(
-                f"Implementation error, please report on GitHub https://github.com/InnocentBug/G-BigSMILES/issues . {str(self.bond_descriptor)} {str(self.token)} "
-            )
+            raise RuntimeError(f"Implementation error, please report on GitHub https://github.com/InnocentBug/G-BigSMILES/issues . {str(self.bond_descriptor)} {str(self.token)} ")
 
     def __str__(self):
         return f"The bond descriptor '{str(self.bond_descriptor)}' from the stochastic object '{str(self.token)}' specifies {len(self.bond_descriptor.transition)} transition weights, but the stochastic object has {self.expected_length} bond descriptors. Adjust the transition weights to match the bond descriptors."
@@ -208,7 +206,7 @@ class InvalidGenerationSource(GBigSMILESError):
         self.graph = graph
 
     def __str__(self):
-        return f"Attemp to create and atom graph from a generating graph with a source node_idx {self.source} but this source is not a valid node idx of the graph. Valid node idx {self.nodes}."
+        return f"Attempt to create and atom graph from a generating graph with a source node_idx {self.source} but this source is not a valid node idx of the graph. Valid node idx {self.nodes}."
 
 
 class TooManyBondDescriptorsPerAtomForGeneration(ParsingWarning):
@@ -223,4 +221,4 @@ class TooManyBondDescriptorsPerAtomForGeneration(ParsingWarning):
         self.bd_objs = [self.graph.nodes[idx]["obj"] for idx in self.bd_idx_set]
 
     def __str__(self):
-        return f"For generation purposes any atom can only be attached to at most one Bond Descriptor. That atom {self.token} from {self.text} is howver connected to {len(self.bd_idx_set)} bond descriptors {[str(obj) for obj in self.bd_objs]}. This can usual be fixed by rearranging your polymer description."
+        return f"For generation purposes any atom can only be attached to at most one Bond Descriptor. That atom {self.token} from {self.text} is however connected to {len(self.bd_idx_set)} bond descriptors {[str(obj) for obj in self.bd_objs]}. This can usual be fixed by rearranging your polymer description."

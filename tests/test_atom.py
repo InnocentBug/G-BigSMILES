@@ -44,9 +44,7 @@ def test_simple_bracket_atom(string):
     assert a.charge == 0
 
 
-@pytest.mark.parametrize(
-    "string", ["[se@]", "[H@@]", "[He@SP2]", "[Li@TB4]", "[Be@TB14]", "[B@OH3]", "[C@OH45]"]
-)
+@pytest.mark.parametrize("string", ["[se@]", "[H@@]", "[He@SP2]", "[Li@TB4]", "[Be@TB14]", "[B@OH3]", "[C@OH45]"])
 def test_chiral_bracket_atom(string):
     a = BracketAtom.make(string)
     assert str(a) == string

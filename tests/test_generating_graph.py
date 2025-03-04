@@ -18,9 +18,7 @@ def test_generating_ml_graph_generation(graph_validation_dict):
         gen_graph = big.get_generating_graph()
         ml_graph = gen_graph.get_ml_graph(include_bond_descriptors=False)
         print(big)
-        assert nx.is_isomorphic(
-            ml_graph, graph_validation_dict[big_smi], node_match=node_match, edge_match=edge_match
-        )
+        assert nx.is_isomorphic(ml_graph, graph_validation_dict[big_smi], node_match=node_match, edge_match=edge_match)
 
         dot_string_A = gen_graph.get_dot_string(include_bond_descriptors=True)
         dot_string_B = gen_graph.get_dot_string(include_bond_descriptors=False, node_prefix="bd-")

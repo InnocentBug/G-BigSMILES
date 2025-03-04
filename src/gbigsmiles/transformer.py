@@ -50,9 +50,7 @@ def get_global_transformer():
     if _GLOBAL_TRANSFORMER is None:
         import gbigsmiles
 
-        transformer = lark.ast_utils.create_transformer(
-            ast_module=gbigsmiles, transformer=GBigSMILESTransformer(visit_tokens=True)
-        )
+        transformer = lark.ast_utils.create_transformer(ast_module=gbigsmiles, transformer=GBigSMILESTransformer(visit_tokens=True))
         _GLOBAL_TRANSFORMER = transformer
 
     return _GLOBAL_TRANSFORMER

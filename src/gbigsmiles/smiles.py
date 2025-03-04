@@ -46,16 +46,12 @@ class Branch(BigSMILESbase, GenerationBase):
         if self._bond_symbol is not None:
             for lhb in partial_graph.left_half_bonds:
                 if _BOND_TYPE_NAME in lhb.bond_attributes:
-                    raise DoubleBondSymbolDefinition(
-                        partial_graph, self._bond_symbol, lhb.bond_attributes
-                    )
+                    raise DoubleBondSymbolDefinition(partial_graph, self._bond_symbol, lhb.bond_attributes)
                 lhb.bond_attributes[_BOND_TYPE_NAME] = self._bond_symbol
 
         for element in self._elements[1:]:
             element_partial_graph = element._generate_partial_graph()
-            bonds_to_add = product(
-                partial_graph.right_half_bonds, element_partial_graph.left_half_bonds
-            )
+            bonds_to_add = product(partial_graph.right_half_bonds, element_partial_graph.left_half_bonds)
             # Transfer right_half_bonds to new partial graph
             partial_graph.right_half_bonds = element_partial_graph.right_half_bonds
             element_partial_graph.right_half_bonds = []
@@ -118,9 +114,7 @@ class BranchedAtom(BigSMILESbase, GenerationBase):
         # Adding branches
         for branch in self._branches:
             branch_partial_graph = branch._generate_partial_graph()
-            bonds_to_add = product(
-                partial_graph.right_half_bonds, branch_partial_graph.left_half_bonds
-            )
+            bonds_to_add = product(partial_graph.right_half_bonds, branch_partial_graph.left_half_bonds)
             # Branches have empty right hand half bonds, so only resetting left ones.
             branch_partial_graph.left_half_bonds = []
 
@@ -176,9 +170,7 @@ class AtomAssembly(BigSMILESbase, GenerationBase):
         if self.bond_symbol:
             for half_bond in partial_graph.left_half_bonds:
                 if _BOND_TYPE_NAME in half_bond.bond_attributes:
-                    raise DoubleBondSymbolDefinition(
-                        partial_graph, self.bond_symbol, half_bond.bond_attributes
-                    )
+                    raise DoubleBondSymbolDefinition(partial_graph, self.bond_symbol, half_bond.bond_attributes)
                 half_bond.bond_attributes[_BOND_TYPE_NAME] = self.bond_symbol
 
         return partial_graph

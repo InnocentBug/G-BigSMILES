@@ -207,12 +207,8 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             )
 
         # Build graph without any connections between bond descriptors.
-        repeat_subgraphs = [
-            monomer.get_generating_graph()._partial_graph for monomer in self._repeat_residues
-        ]
-        terminal_subgraphs = [
-            end.get_generating_graph()._partial_graph for end in self._termination_residues
-        ]
+        repeat_subgraphs = [monomer.get_generating_graph()._partial_graph for monomer in self._repeat_residues]
+        terminal_subgraphs = [end.get_generating_graph()._partial_graph for end in self._termination_residues]
         partial_graph = _PartialGeneratingGraph(None)
         for gen_graph in repeat_subgraphs + terminal_subgraphs:
             gen_graph.left_half_bonds = []
@@ -240,9 +236,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 weights = [graph.nodes[bd_idx]["obj"].weight for bd_idx in end_idx_pos]
             weights = np.asarray(weights)
             if len(weights) != len(end_idx_pos):
-                raise RuntimeError(
-                    f"Implementation error, please report on GitHub https://github.com/InnocentBug/G-BigSMILES/issues . {weights} {end_idx_pos}"
-                )
+                raise RuntimeError(f"Implementation error, please report on GitHub https://github.com/InnocentBug/G-BigSMILES/issues . {weights} {end_idx_pos}")
 
             if weights.sum() == 0:
                 weights += 1
@@ -253,18 +247,14 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 if prob > 0:
                     node_idx = end_idx_pos[i]
                     node = graph.nodes[node_idx]["obj"]
-                    partial_graph.left_half_bonds.append(
-                        _HalfBond(node, node_idx, dict([(_TRANSITION_NAME, prob)]))
-                    )
+                    partial_graph.left_half_bonds.append(_HalfBond(node, node_idx, dict([(_TRANSITION_NAME, prob)])))
         else:
             left_partial_graph = self._left_terminal_bond_d._generate_partial_graph()
             left_partial_graph.left_half_bonds = []
             left_partial_graph.right_half_bonds = []
             left_idx = list(left_partial_graph.g.nodes)[0]
             partial_graph.merge(left_partial_graph, [])
-            partial_graph.left_half_bonds.append(
-                _HalfBond(self._left_terminal_bond_d, left_idx, {})
-            )
+            partial_graph.left_half_bonds.append(_HalfBond(self._left_terminal_bond_d, left_idx, {}))
             graph = partial_graph.g
 
             # With non-empty left bond descriptors we connect first to one of the monomers inside.
@@ -295,9 +285,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             right_partial_graph.right_half_bonds = []
             right_idx = list(right_partial_graph.g.nodes)[0]
             partial_graph.merge(right_partial_graph, [])
-            partial_graph.right_half_bonds.append(
-                _HalfBond(self._right_terminal_bond_d, right_idx, {})
-            )
+            partial_graph.right_half_bonds.append(_HalfBond(self._right_terminal_bond_d, right_idx, {}))
 
             graph = partial_graph.g
 

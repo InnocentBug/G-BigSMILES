@@ -46,11 +46,7 @@ class OpenAtom:
         return f"OpenAtom({self.handled_atom}, {self.new_atom}, {self.bond_descriptor})"
 
     def __eq__(self, other):
-        if (
-            self.handled_atom == other.handled_atom
-            and self.new_atom == other.new_atom
-            and str(self.bond_descriptor) == str(other.bond_descriptor)
-        ):
+        if self.handled_atom == other.handled_atom and self.new_atom == other.new_atom and str(self.bond_descriptor) == str(other.bond_descriptor):
             return True
         return False
 
@@ -109,14 +105,10 @@ class PossibleMatch:
     def add_handled_atoms(self, substructure):
         for atom in substructure:
             if atom >= self._Nmol_atoms:
-                raise RuntimeError(
-                    f"Attempting to add invalid atom to handled: atom {atom}, substructure {substructure}, Nmol {self._Nmol_atoms}"
-                )
+                raise RuntimeError(f"Attempting to add invalid atom to handled: atom {atom}, substructure {substructure}, Nmol {self._Nmol_atoms}")
             atom_found = self.is_atom_handled(atom)
             if atom_found:
-                raise RuntimeError(
-                    f"Attempting to add atom {atom} that from substructure {substructure} that is already present in handled."
-                )
+                raise RuntimeError(f"Attempting to add atom {atom} that from substructure {substructure} that is already present in handled.")
         self._handled_atoms.append(tuple(substructure))
 
     def _find_open_atoms(self, substructure, token):
@@ -127,15 +119,9 @@ class PossibleMatch:
                 return []
             aoi = self._mol.GetAtomWithIdx(atom_idx)
             for bond in aoi.GetBonds():
-                if (
-                    bond.GetBeginAtomIdx() in substructure
-                    and bond.GetEndAtomIdx() not in substructure
-                ):
+                if bond.GetBeginAtomIdx() in substructure and bond.GetEndAtomIdx() not in substructure:
                     outside_bonds.append((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
-                if (
-                    bond.GetBeginAtomIdx() not in substructure
-                    and bond.GetEndAtomIdx() in substructure
-                ):
+                if bond.GetBeginAtomIdx() not in substructure and bond.GetEndAtomIdx() in substructure:
                     outside_bonds.append((bond.GetEndAtomIdx(), bond.GetBeginAtomIdx()))
         # Consider it only a true match if the number of outside bonds matches the number of bond descriptors
         if len(outside_bonds) != len(token.bond_descriptors):
@@ -182,9 +168,7 @@ class PossibleMatch:
             mol_weight_log_prob = np.log(1.0)
             for i, element in enumerate(self._big.elements):
                 if isinstance(element, Stochastic):
-                    mol_weight_log_prob += np.log(
-                        element.distribution.prob_mw(self._element_weights[i])
-                    )
+                    mol_weight_log_prob += np.log(element.distribution.prob_mw(self._element_weights[i]))
             log_prob = self._log_prob + mol_weight_log_prob
             return log_prob
         return -np.inf
@@ -263,9 +247,7 @@ class PossibleMatch:
             for substructure in match._mol.GetSubstructMatches(pattern):
                 open_atom_idx = id_open_atom(substructure, match, atom.new_atom)
                 if open_atom_idx is not None:
-                    possible_bd = id_bond_descriptor(
-                        open_atom_idx, atom.bond_descriptor, token.bond_descriptors
-                    )
+                    possible_bd = id_bond_descriptor(open_atom_idx, atom.bond_descriptor, token.bond_descriptors)
                     for bd in possible_bd:
                         reaction_prob = get_reaction_prob(atom.bond_descriptor, bd, token)
                         if reaction_prob > 0:

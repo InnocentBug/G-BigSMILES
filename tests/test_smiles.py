@@ -150,6 +150,4 @@ def test_smiles_atom_graph(chembl_smi_list):
                     graph.remove_node(node[0])
 
             print("\n", smi, pysmiles_graph, graph, "\n")
-            assert nx.is_isomorphic(
-                graph, pysmiles_graph, node_match=node_match, edge_match=edge_match
-            )
+            assert nx.is_isomorphic(graph, pysmiles_graph, node_match=node_match, edge_match=edge_match)

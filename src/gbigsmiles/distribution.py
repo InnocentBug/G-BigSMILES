@@ -71,9 +71,7 @@ class StochasticDistribution(StochasticGeneration):
             raise NotImplementedError
 
         if isinstance(mw, RememberAdd):
-            return self._distribution.cdf(mw.value, **kwargs) - self._distribution.cdf(
-                mw.previous, **kwargs
-            )
+            return self._distribution.cdf(mw.value, **kwargs) - self._distribution.cdf(mw.previous, **kwargs)
 
         if hasattr(self._distribution, "pdf"):
             return self._distribution.pdf(mw, **kwargs)
@@ -120,9 +118,7 @@ class StochasticDistribution(StochasticGeneration):
             return None
 
         if len(candidates) != 1:
-            raise ValueError(
-                "The passed vector did not contain only one candidate for the distribution."
-            )
+            raise ValueError("The passed vector did not contain only one candidate for the distribution.")
         distr_type = type_candidates[0]
         params = candidates[0]
         return distr_type.make(distr_type.token_name_snake_case + str(params))

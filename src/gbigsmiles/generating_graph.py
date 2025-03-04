@@ -76,9 +76,7 @@ class _PartialGeneratingGraph:
         new_ring_bond_map = self.ring_bond_map
         for ring_bond_idx in other.ring_bond_map:
             if ring_bond_idx in new_ring_bond_map:
-                half_bond_tuples.append(
-                    (new_ring_bond_map[ring_bond_idx], other.ring_bond_map[ring_bond_idx])
-                )
+                half_bond_tuples.append((new_ring_bond_map[ring_bond_idx], other.ring_bond_map[ring_bond_idx]))
                 del new_ring_bond_map[ring_bond_idx]
             else:
                 new_ring_bond_map[ring_bond_idx] = other.ring_bond_map[ring_bond_idx]
@@ -90,21 +88,13 @@ class _PartialGeneratingGraph:
         for self_bond, other_bond in half_bond_tuples:
             self.add_half_bond_edge(self_bond, other_bond)
 
-    def add_half_bond_edge(
-        self, self_half_bond_edge: _HalfBond, other_half_bond_edge: _HalfBond
-    ) -> None:
-        overlapping_keys = (
-            self_half_bond_edge.bond_attributes.keys() & other_half_bond_edge.bond_attributes.keys()
-        )
+    def add_half_bond_edge(self, self_half_bond_edge: _HalfBond, other_half_bond_edge: _HalfBond) -> None:
+        overlapping_keys = self_half_bond_edge.bond_attributes.keys() & other_half_bond_edge.bond_attributes.keys()
         if len(overlapping_keys) > 0:
             raise ValueError(overlapping_keys)
 
-        new_bond_attributes = (
-            self_half_bond_edge.bond_attributes | other_half_bond_edge.bond_attributes
-        )
-        self.g.add_edge(
-            self_half_bond_edge.node_id, other_half_bond_edge.node_id, **new_bond_attributes
-        )
+        new_bond_attributes = self_half_bond_edge.bond_attributes | other_half_bond_edge.bond_attributes
+        self.g.add_edge(self_half_bond_edge.node_id, other_half_bond_edge.node_id, **new_bond_attributes)
 
     def add_ring_bond(self, ring_bond, half_bond: _HalfBond) -> bool:
 
@@ -163,9 +153,7 @@ class GeneratingGraph:
 
             if "stochastic_obj" in data:
                 if id(data["stochastic_obj"]) not in stochastic_id_map:
-                    stochastic_id_map[id(data["stochastic_obj"])] = (
-                        max(stochastic_id_map.values()) + 1
-                    )
+                    stochastic_id_map[id(data["stochastic_obj"])] = max(stochastic_id_map.values()) + 1
                 stochastic_id = stochastic_id_map[id(data["stochastic_obj"])]
                 data["stochastic_id"] = stochastic_id
 
@@ -182,9 +170,7 @@ class GeneratingGraph:
                         attached_bd.add(v)
                 if len(attached_bd) > 1:
                     warnings.warn(
-                        TooManyBondDescriptorsPerAtomForGeneration(
-                            graph, self.text, node, attached_bd
-                        ),
+                        TooManyBondDescriptorsPerAtomForGeneration(graph, self.text, node, attached_bd),
                         stacklevel=2,
                     )
 
@@ -278,8 +264,6 @@ class GeneratingGraph:
                 self.data_path = data_path
                 self._weight, self._combined_attr = self.create_combined_attr()
 
-                self.num_stochastic_transitions
-
             def create_combined_attr(self) -> dict | None:
 
                 data = {}
@@ -301,18 +285,14 @@ class GeneratingGraph:
                         if _BOND_TYPE_NAME in data:
                             if str(data[_BOND_TYPE_NAME]) != str(d[_BOND_TYPE_NAME]):
                                 warnings.warn(
-                                    IncompatibleBondTypeBondDescriptor(
-                                        str(data[_BOND_TYPE_NAME]), str(d[_BOND_TYPE_NAME])
-                                    ),
+                                    IncompatibleBondTypeBondDescriptor(str(data[_BOND_TYPE_NAME]), str(d[_BOND_TYPE_NAME])),
                                     stacklevel=2,
                                 )
                             return 0.0, None
                         else:
                             data[_BOND_TYPE_NAME] = d[_BOND_TYPE_NAME]
 
-                    non_static_weights = [
-                        d[attr] if attr in d else 0 for attr in non_static_attribute_list
-                    ]
+                    non_static_weights = [d[attr] if attr in d else 0 for attr in non_static_attribute_list]
                     if max(non_static_weights) > 0:
                         for attr, w in zip(non_static_attribute_list, non_static_weights):
                             if w > 0:
@@ -418,9 +398,7 @@ class GeneratingGraph:
                 # Only do it for sources of the bond descriptors that are not bond descriptors themselves. I.e. at the start of a chain.
                 if in_idx not in bd_idx_set:
                     traversal_condition = GraphDecider(bd_idx_set, in_idx)
-                    non_bond_descriptor_successor = conditional_traversal(
-                        graph, in_idx, traversal_condition
-                    )
+                    non_bond_descriptor_successor = conditional_traversal(graph, in_idx, traversal_condition)
                     for target in non_bond_descriptor_successor:
                         all_paths = list(nx.all_simple_edge_paths(graph, in_idx, target))
                         for path in all_paths:
@@ -429,9 +407,7 @@ class GeneratingGraph:
                                 data = bond_descriptor_path.combined_attr
                                 edges_to_add.append((in_idx, target, data))
                                 if bond_descriptor_path.init_weight is not None:
-                                    graph.nodes[in_idx][
-                                        "init_weight"
-                                    ] = bond_descriptor_path.init_weight
+                                    graph.nodes[in_idx]["init_weight"] = bond_descriptor_path.init_weight
                                 graph.nodes[in_idx]["weight"] = graph.nodes[bd_idx]["obj"].weight
 
         # The previous approach does not handle self loops on bond descriptors, since they are cycles.
@@ -444,9 +420,7 @@ class GeneratingGraph:
             for loop_edge in loop_edges:
                 for in_u, in_v, in_k, in_data in graph.in_edges(bd_idx, keys=True, data=True):
                     if is_static_edge(in_data):
-                        for out_u, out_v, out_k, out_data in graph.out_edges(
-                            bd_idx, keys=True, data=True
-                        ):
+                        for out_u, out_v, out_k, out_data in graph.out_edges(bd_idx, keys=True, data=True):
                             if is_static_edge(out_data):
                                 path = [(in_u, in_v, in_k), loop_edge, (out_u, out_v, out_k)]
                                 bond_descriptor_path = BondDescriptorPath(path, graph)
@@ -494,7 +468,7 @@ class GeneratingGraph:
         - **{aromatic_name}**: bool Indicating the aromaticity of the atom.
         - **charge**: float Nominal charge (not partial charge in Force-Fields) in elementary unit *e*.
         - **stochastic_generation**: vector[float] representing the different molecular weight distributions and their parameters.
-        - **stochastic_id": int Identification number that represent seperate stochastic objects in the molecules.
+        - **stochastic_id": int Identification number that represent separate stochastic objects in the molecules.
         - **mol_molecular_weight** float Molecular Weight of the total molecular weight in the system from this molecular species. If this is unspecified by the string, negative values are used.
         - **total_molecular_weight** float Molecular Weight of the entire material system, this is equal to the sum **mol_molecular_weight** of the comprising molecules. If only one molecule species is present, they are identical. If this is unspecified by the string, negative values are used.
         - **init_weight** float Molecular Weight fractions for entry points into the graph generation. If no molecular weights are specified 1.0 is used. Negative values indicate nodes that are not starting positions for the generation.
@@ -620,18 +594,14 @@ class GeneratingGraph:
         4: "box",
     }
 
-    def get_dot_string(
-        self, include_bond_descriptors=False, edge_colors=None, bond_to_arrow=None, node_prefix=""
-    ):
+    def get_dot_string(self, include_bond_descriptors=False, edge_colors=None, bond_to_arrow=None, node_prefix=""):
 
         if edge_colors is None:
             edge_colors = self._DEFAULT_EDGE_COLOR
         if bond_to_arrow is None:
             bond_to_arrow = self._DEFAULT_BOND_TO_ARROW
 
-        graph, extra_graph_info = self.get_ml_graph(
-            include_bond_descriptors=include_bond_descriptors, return_extra_graph_info=True
-        )
+        graph, extra_graph_info = self.get_ml_graph(include_bond_descriptors=include_bond_descriptors, return_extra_graph_info=True)
 
         dot_str = "digraph{\n"
         dot_str += f'label="{self.text}";\n'

@@ -37,9 +37,7 @@ class _AbstractIterativeGenerativeClass(_AbstractIterativeClass, GenerationBase)
 
             for child in self._children[1:]:
                 child_partial_graph = child._generate_partial_graph()
-                bonds_to_add = product(
-                    partial_graph.right_half_bonds, child_partial_graph.left_half_bonds
-                )
+                bonds_to_add = product(partial_graph.right_half_bonds, child_partial_graph.left_half_bonds)
                 # Transfer the child right bond to the partial graph, and reset partial graph
                 partial_graph.right_half_bonds = child_partial_graph.right_half_bonds
                 child_partial_graph.right_half_bonds = []
@@ -75,9 +73,7 @@ class BigSmilesMolecule(_AbstractIterativeGenerativeClass):
     def _generate_partial_graph(self) -> _PartialGeneratingGraph:
         partial_graph = super()._generate_partial_graph()
         if self.mol_molecular_weight is not None:
-            nx.set_node_attributes(
-                partial_graph.g, values=self.mol_molecular_weight, name="mol_molecular_weight"
-            )
+            nx.set_node_attributes(partial_graph.g, values=self.mol_molecular_weight, name="mol_molecular_weight")
 
         # Remove previous assignments of init weights
         for node_idx in list(partial_graph.g.nodes()):
@@ -120,9 +116,7 @@ class BigSmiles(_AbstractIterativeGenerativeClass):
         partial_graph = super()._generate_partial_graph()
         if self.total_molecular_weight is not None:
             for node_idx in list(partial_graph.g.nodes()):
-                partial_graph.g.nodes[node_idx][
-                    "total_molecular_weight"
-                ] = self.total_molecular_weight
+                partial_graph.g.nodes[node_idx]["total_molecular_weight"] = self.total_molecular_weight
         return partial_graph
 
     @property

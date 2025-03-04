@@ -34,9 +34,7 @@ def _print_license(args):
 
 
 SHORT_LICENSE_TEXT = "bigSMILES extension  Copyright (C) 2022 - 2025  Ludwig Schneider\n\n"
-SHORT_LICENSE_TEXT += (
-    "This program comes with ABSOLUTELY NO WARRANTY; for details type 'license'.\n"
-)
+SHORT_LICENSE_TEXT += "This program comes with ABSOLUTELY NO WARRANTY; for details type 'license'.\n"
 SHORT_LICENSE_TEXT += "This is free software, and you are welcome to redistribute it\n"
 SHORT_LICENSE_TEXT += "under certain conditions; type `license' for details.\n"
 
@@ -52,9 +50,7 @@ def main(argv):
         description="bigSMILES generation -- automatic generation of SMILES string a bigSMILES ensemble.",
         prog="gbigsmiles",
     )
-    main_parser.add_argument(
-        "--version", "-v", action="version", version="%(prog)s " + gbigsmiles.__version__
-    )
+    main_parser.add_argument("--version", "-v", action="version", version="%(prog)s " + gbigsmiles.__version__)
     main_parser.set_defaults(func=lambda x: main_parser.print_usage())
 
     subparsers = main_parser.add_subparsers(help="sub-command help")

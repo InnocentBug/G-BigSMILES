@@ -38,7 +38,7 @@ write_to = "src/gbigsmiles/_version.py"
 version_file = "src/gbigsmiles/_version.py"
 
 [tool.black]
-line-length = 100
+line-length = 196
 
 [tool.coverage.run]
 omit = [

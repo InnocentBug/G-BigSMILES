@@ -148,6 +148,7 @@
     "pysmiles",
     "smis",
     "pysmi",
-    "PYSMILES"
+    "PYSMILES",
+    "Unvalidated"
   ]
 }

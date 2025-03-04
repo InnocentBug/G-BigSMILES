@@ -53,9 +53,7 @@ def test_flory_schulz(a):
     assert str(new_instance) == str(flory_schulz)
 
 
-@pytest.mark.parametrize(
-    ("mu", "sigma"), [(100.0, 10.0), (200.0, 100.0), (500.0, 1.0), (600.0, 0.0)]
-)
+@pytest.mark.parametrize(("mu", "sigma"), [(100.0, 10.0), (200.0, 100.0), (500.0, 1.0), (600.0, 0.0)])
 def test_gauss(mu, sigma):
     def mean(mu, sigma):
         return mu
@@ -86,9 +84,7 @@ def test_gauss(mu, sigma):
     assert str(new_instance) == str(gauss)
 
 
-@pytest.mark.parametrize(
-    ("low", "high"), [(10.0, 100.0), (200.0, 1000.0), (50.0, 100.0), (0.0, 600.0)]
-)
+@pytest.mark.parametrize(("low", "high"), [(10.0, 100.0), (200.0, 1000.0), (50.0, 100.0), (0.0, 600.0)])
 def test_uniform(low, high):
     def mean(low, high):
         return 0.5 * (low + high)

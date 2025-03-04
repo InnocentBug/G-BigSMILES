@@ -11,9 +11,7 @@ try:
     from ._version import version as __version__
     from ._version import version_tuple
 except ImportError as exc:
-    raise RuntimeError(
-        "Please make sure to install this module correctly via setuptools with setuptools_scm activated to generate a `_version.py` file."
-    ) from exc
+    raise RuntimeError("Please make sure to install this module correctly via setuptools with setuptools_scm activated to generate a `_version.py` file.") from exc
 
 from .atom import (
     AliphaticOrganic,

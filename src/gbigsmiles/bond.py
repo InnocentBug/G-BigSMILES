@@ -108,9 +108,7 @@ class BondDescriptorSymbolIdx(BondDescriptorSymbol):
         if other is None:
             return False
         if not isinstance(other, BondDescriptorSymbolIdx):
-            raise RuntimeError(
-                f"Only BondDescriptorSymbolIdx can be compared for compatibility. But 'other' is of type {type(other)}."
-            )
+            raise RuntimeError(f"Only BondDescriptorSymbolIdx can be compared for compatibility. But 'other' is of type {type(other)}.")
 
         if self.idx != other.idx:
             return False
@@ -212,9 +210,7 @@ class BondDescriptor(BigSMILESbase, GenerationBase):
         if other is None:
             return False
         if not isinstance(other, BondDescriptor):
-            raise RuntimeError(
-                f"Only BondDescriptors can be compared for compatibility. But 'other' is of type {type(other)}."
-            )
+            raise RuntimeError(f"Only BondDescriptors can be compared for compatibility. But 'other' is of type {type(other)}.")
 
         if self.symbol is None or other.symbol is None:
             return False

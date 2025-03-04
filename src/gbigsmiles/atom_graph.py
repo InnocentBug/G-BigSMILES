@@ -91,7 +91,7 @@ class _StochasticObjectTracker:
     def _register_sto_gen_id(self, sto_gen_id, distribution):
         self._sto_gen_id_distribution[sto_gen_id] = distribution
 
-    def register_new_atom_intance(self, sto_gen_id):
+    def register_new_atom_instance(self, sto_gen_id):
         if sto_gen_id > 0:
             assert self._is_sto_gen_id_known(sto_gen_id)
 
@@ -107,9 +107,7 @@ class _StochasticObjectTracker:
             self._stochastic_gen_id_to_atom_id[sto_gen_id] = {new_sto_atom_id}
 
         if sto_gen_id >= 0:
-            self._sto_atom_id_expected_molw[new_sto_atom_id] = self._sto_gen_id_distribution[
-                sto_gen_id
-            ].draw_mw(self._rng)
+            self._sto_atom_id_expected_molw[new_sto_atom_id] = self._sto_gen_id_distribution[sto_gen_id].draw_mw(self._rng)
         else:
             self._sto_atom_id_expected_molw[new_sto_atom_id] = -1
 
@@ -119,10 +117,7 @@ class _StochasticObjectTracker:
 
     def add_molw(self, sto_atom_id, molw):
         self._sto_atom_id_actual_molw[sto_atom_id] += molw
-        return (
-            self._sto_atom_id_actual_molw[sto_atom_id]
-            >= self._sto_atom_id_expected_molw[sto_atom_id]
-        )
+        return self._sto_atom_id_actual_molw[sto_atom_id] >= self._sto_atom_id_expected_molw[sto_atom_id]
 
     def should_terminate(self, sto_atom_id):
         return self.add_molw(sto_atom_id, 0)
@@ -157,9 +152,7 @@ class _PartialAtomGraph:
     _ATOM_ATTRS = {"atomic_num", _AROMATIC_NAME, "charge"}
     _BOND_ATTRS = {_BOND_TYPE_NAME, _AROMATIC_NAME}
 
-    def __init__(
-        self, generating_graph, static_graph, source_node, stochastic_tracker, sto_atom_id
-    ):
+    def __init__(self, generating_graph, static_graph, source_node, stochastic_tracker, sto_atom_id):
         self._atom_id = 0
         self.generating_graph = generating_graph
         self.static_graph = static_graph
@@ -175,14 +168,14 @@ class _PartialAtomGraph:
         remapping_dict = {idx: idx + self._atom_id for idx in other.atom_graph.nodes}
         other_graph = nx.relabel_nodes(other.atom_graph, remapping_dict, copy=True)
         other_open_half_bond_map = {}
-        for stochstic_id in other._open_half_bond_map:
-            for half_bond in other._open_half_bond_map[stochstic_id]:
+        for stochastic_id in other._open_half_bond_map:
+            for half_bond in other._open_half_bond_map[stochastic_id]:
                 new_half_bond = copy.copy(half_bond)
                 new_half_bond.atom_idx += self._atom_id
                 try:
-                    other_open_half_bond_map[stochstic_id] += [new_half_bond]
+                    other_open_half_bond_map[stochastic_id] += [new_half_bond]
                 except KeyError:
-                    other_open_half_bond_map[stochstic_id] = [new_half_bond]
+                    other_open_half_bond_map[stochastic_id] = [new_half_bond]
 
         other_idx += self._atom_id
 
@@ -251,25 +244,17 @@ class _PartialAtomGraph:
                 v_atom_idx,
                 u_atom_idx,
             ) not in edges_data_map:
-                edges_data_map[(u_atom_idx, v_atom_idx)] = self.gen_edge_attr_to_bond_attr(
-                    self.static_graph.get_edge_data(u, v, k)
-                )
+                edges_data_map[(u_atom_idx, v_atom_idx)] = self.gen_edge_attr_to_bond_attr(self.static_graph.get_edge_data(u, v, k))
 
         for u_atom_idx, v_atom_idx in edges_data_map:
-            self.atom_graph.add_edge(
-                u_atom_idx, v_atom_idx, **edges_data_map[(u_atom_idx, v_atom_idx)]
-            )
+            self.atom_graph.add_edge(u_atom_idx, v_atom_idx, **edges_data_map[(u_atom_idx, v_atom_idx)])
 
-    def gen_node_attr_to_atom_attr(
-        self, attr: dict[str, bool | float | int], keys_to_copy: None | set[str] = None
-    ) -> dict[str, bool | float | int]:
+    def gen_node_attr_to_atom_attr(self, attr: dict[str, bool | float | int], keys_to_copy: None | set[str] = None) -> dict[str, bool | float | int]:
         if keys_to_copy is None:
             keys_to_copy = self._ATOM_ATTRS
         return self._copy_some_dict_attr(attr, keys_to_copy)
 
-    def gen_edge_attr_to_bond_attr(
-        self, attr: dict[str, bool | int], keys_to_copy: None | set[str] = None
-    ) -> dict[str, bool | int]:
+    def gen_edge_attr_to_bond_attr(self, attr: dict[str, bool | int], keys_to_copy: None | set[str] = None) -> dict[str, bool | int]:
         if keys_to_copy is None:
             keys_to_copy = self._BOND_ATTRS
         return self._copy_some_dict_attr(attr, keys_to_copy)
@@ -319,9 +304,7 @@ class _PartialAtomGraph:
             # Select one of them
             if len(transition_idx) > 0:
                 selected_transition_idx = rng.choice(transition_idx, p=transition_prob)
-                transition_half_bond = terminated_graph._open_half_bond_map[sto_atom_id].pop(
-                    selected_transition_idx
-                )
+                transition_half_bond = terminated_graph._open_half_bond_map[sto_atom_id].pop(selected_transition_idx)
             return transition_half_bond
 
         def get_termination_bonds(graph, sto_atom_id):
@@ -342,9 +325,7 @@ class _PartialAtomGraph:
             termination_prob = termination_weight / np.sum(termination_weight)
 
             selected_termination_idx = rng.choice(termination_idx, p=termination_prob)
-            termination_bond = terminated_graph._open_half_bond_map[sto_atom_id].pop(
-                selected_termination_idx
-            )
+            termination_bond = terminated_graph._open_half_bond_map[sto_atom_id].pop(selected_termination_idx)
             return termination_bond
 
         transition_half_bond = pop_random_transition_bond()
@@ -367,9 +348,7 @@ class _PartialAtomGraph:
                 self.stochastic_tracker,
                 sto_atom_id,
             )
-            other_half_bond_atom_idx = other_partial_graph.pop_target_open_half_bond(
-                sto_atom_id, selected_target
-            )
+            other_half_bond_atom_idx = other_partial_graph.pop_target_open_half_bond(sto_atom_id, selected_target)
 
             terminated_graph.merge(
                 other_partial_graph,
@@ -403,17 +382,10 @@ class _PartialAtomGraph:
         target_id = rng.choice(len(target_idx), p=target_prob)
         selected_target_idx = target_idx[target_id]
         selected_attr = self.gen_edge_attr_to_bond_attr(target_attr[target_id])
-        selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx][
-            "stochastic_id"
-        ]
+        selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx]["stochastic_id"]
         if selected_target_sto_gen_id > 0:
-            assert (
-                stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id]
-                != selected_target_sto_gen_id
-            )
-        new_sto_atom_id = self.stochastic_tracker.register_new_atom_intance(
-            selected_target_sto_gen_id
-        )
+            assert self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] != selected_target_sto_gen_id
+        new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id)
 
         other_graph = _PartialAtomGraph(
             self.generating_graph,
@@ -422,16 +394,14 @@ class _PartialAtomGraph:
             self.stochastic_tracker,
             new_sto_atom_id,
         )
-        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(
-            sto_atom_id, selected_target_idx
-        )
+        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(sto_atom_id, selected_target_idx)
 
         self.merge(other_graph, transition_bond.atom_idx, other_half_bond_atom_idx, selected_attr)
 
         return new_sto_atom_id
 
     def stochastic_growth(self, sto_atom_id, rng):
-        def pop_random_stochsatic_bond():
+        def pop_random_stochastic_bond():
             # Find a transition bond
             stochastic_idx = []
             stochastic_weight = []
@@ -446,12 +416,10 @@ class _PartialAtomGraph:
             # Select one of them
             if len(stochastic_idx) > 0:
                 selected_stochastic_idx = rng.choice(stochastic_idx, p=stochastic_prob)
-                stochastic_half_bond = self._open_half_bond_map[sto_atom_id].pop(
-                    selected_stochastic_idx
-                )
+                stochastic_half_bond = self._open_half_bond_map[sto_atom_id].pop(selected_stochastic_idx)
             return stochastic_half_bond
 
-        stochastic_bond = pop_random_stochsatic_bond()
+        stochastic_bond = pop_random_stochastic_bond()
 
         target_attr, target_idx = stochastic_bond.get_mode_bonds(_STOCHASTIC_NAME)
         target_weights = np.asarray([attr[_STOCHASTIC_NAME] for attr in target_attr])
@@ -460,18 +428,11 @@ class _PartialAtomGraph:
         target_id = rng.choice(len(target_idx), p=target_prob)
         selected_target_idx = target_idx[target_id]
         selected_attr = self.gen_edge_attr_to_bond_attr(target_attr[target_id])
-        selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx][
-            "stochastic_id"
-        ]
+        selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx]["stochastic_id"]
 
         new_sto_atom_id = sto_atom_id
-        if (
-            self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id]
-            != selected_target_sto_gen_id
-        ):
-            new_sto_atom_id = self.stochastic_tracker.register_new_atom_intance(
-                selected_target_sto_gen_id
-            )
+        if self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] != selected_target_sto_gen_id:
+            new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id)
 
         other_graph = _PartialAtomGraph(
             self.generating_graph,
@@ -480,9 +441,7 @@ class _PartialAtomGraph:
             self.stochastic_tracker,
             new_sto_atom_id,
         )
-        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(
-            sto_atom_id, selected_target_idx
-        )
+        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(sto_atom_id, selected_target_idx)
 
         self.merge(other_graph, stochastic_bond.atom_idx, other_half_bond_atom_idx, selected_attr)
 
@@ -495,9 +454,7 @@ class AtomGraph:
 
         self._static_graph = self._create_static_graph(self.ml_graph)
 
-        self._starting_node_idx, self._starting_node_weight = self._create_init_weights(
-            self.ml_graph
-        )
+        self._starting_node_idx, self._starting_node_weight = self._create_init_weights(self.ml_graph)
 
     @staticmethod
     def _create_init_weights(graph):
@@ -575,16 +532,12 @@ class AtomGraph:
 
         stochastic_object_tracker = _StochasticObjectTracker(self.ml_graph, rng)
         source_sto_gen_id = self.ml_graph.nodes[source]["stochastic_id"]
-        sto_atom_id = stochastic_object_tracker.register_new_atom_intance(source_sto_gen_id)
-        partial_atom_graph = _PartialAtomGraph(
-            self.ml_graph, self._static_graph, source, stochastic_object_tracker, sto_atom_id
-        )
+        sto_atom_id = stochastic_object_tracker.register_new_atom_instance(source_sto_gen_id)
+        partial_atom_graph = _PartialAtomGraph(self.ml_graph, self._static_graph, source, stochastic_object_tracker, sto_atom_id)
         del stochastic_object_tracker
 
         while len(partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()) > 0:
-            active_sto_atom_id = (
-                partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
-            )
+            active_sto_atom_id = partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
             terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
             if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
                 partial_atom_graph = terminated_graph
