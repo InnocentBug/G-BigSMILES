@@ -537,6 +537,7 @@ class AtomGraph:
         del stochastic_object_tracker
 
         while len(partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()) > 0:
+            print(partial_atom_graph._open_half_bond_map)
             active_sto_atom_id = partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
             terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
             if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
