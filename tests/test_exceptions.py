@@ -119,4 +119,4 @@ def test_warn_incompatible_bond_type_bond_descriptors(smi):
 def test_warn_too_many_bd_per_atom(smi):
     big_smi = gbigsmiles.BigSmiles.make(smi)
     with pytest.warns(gbigsmiles.exception.TooManyBondDescriptorsPerAtomForGeneration):
-        graph = big_smi.get_generating_graph()
+        big_smi.get_generating_graph()

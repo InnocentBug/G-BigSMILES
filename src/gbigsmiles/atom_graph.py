@@ -1,26 +1,24 @@
 import copy
-import json
 import warnings
+from collections import OrderedDict
 from collections.abc import Sequence
-from dataclasses import dataclass
 from typing import Any
 
 import networkx as nx
 import numpy as np
 
-from .chem_resource import atomic_masses
+from .chem_resource import atom_color_mapping, atom_name_mapping, atomic_masses
 from .distribution import StochasticDistribution
 from .exception import InvalidGenerationSource, UnvalidatedGenerationSource
 from .generating_graph import (
     _AROMATIC_NAME,
     _BOND_TYPE_NAME,
     _NON_STATIC_ATTR,
-    _STATIC_NAME,
     _STOCHASTIC_NAME,
     _TERMINATION_NAME,
     _TRANSITION_NAME,
 )
-from .util import get_global_rng
+from .util import _determine_darkness_from_hex, get_global_rng
 
 
 class _HalfAtomBond:
@@ -32,7 +30,7 @@ class _HalfAtomBond:
         self._mode_attr_map = {}
         self._mode_target_map = {}
 
-        for u, v, d in graph.out_edges(node_idx, data=True):
+        for _u, v, d in graph.out_edges(node_idx, data=True):
             if not d["static"]:
                 for k in _NON_STATIC_ATTR:
                     if d[k] > 0:
@@ -67,37 +65,112 @@ class _HalfAtomBond:
         return f"HalfAtomBond({self.atom_idx}, {self.node_idx}, {self.weight}, {self._mode_attr_map}, {self._mode_target_map})"
 
 
+class _StochasticObjectTracker:
+    def __init__(self, generating_graph, rng=None):
+        self._rng = rng
+        # Stochastic **sto_gen_id** is the id of the stochastic object as found in the generative graph.
+        # Stochastic **sto_atom_id** is the id of an instance of that particular stochastic gen id.
+        # In most cases they are the same as we have exactly one instance for each stochastic object.
+        # However, with nested stochastic objects that is not the case.
+        # Consider a linear polymer, where each back-bone monomer has a stochastic side arm like {[] [<]CC({[<] [<]NN[>] [>]}[H])CC[>] []}
+        # From the outer stochastic object we only have one instance. And every "C" has the same `sto_gen_id` and `sto_atom_id` of 0.
+        # But each monomer spawns a new instance of the inner stochastic object. So every "N" has the sto_gen_id of 1, but every monomer has a different stochastic atom id and counting
+        self._stochastic_gen_id_to_atom_id = {}
+        self._stochastic_atom_id_to_gen_id = OrderedDict()
+        self._sto_gen_id_distribution = {}
+        self._sto_atom_id_actual_molw = OrderedDict()
+        self._sto_atom_id_expected_molw = OrderedDict()
+        self._terminated_sto_atom_ids = set()
+
+        for _node_idx, data in generating_graph.nodes(data=True):
+            if data["stochastic_id"] >= 0:
+                stochastic_vector = data["stochastic_generation"]
+                distribution = StochasticDistribution.from_serial_vector(stochastic_vector)
+                self._register_sto_gen_id(data["stochastic_id"], distribution)
+
+    def _register_sto_gen_id(self, sto_gen_id, distribution):
+        self._sto_gen_id_distribution[sto_gen_id] = distribution
+
+    def register_new_atom_intance(self, sto_gen_id):
+        if sto_gen_id > 0:
+            assert self._is_sto_gen_id_known(sto_gen_id)
+
+        try:
+            new_sto_atom_id = max(self._stochastic_atom_id_to_gen_id) + 1
+        except ValueError:
+            new_sto_atom_id = 0
+
+        self._stochastic_atom_id_to_gen_id[new_sto_atom_id] = sto_gen_id
+        try:
+            self._stochastic_gen_id_to_atom_id[sto_gen_id].add(new_sto_atom_id)
+        except KeyError:
+            self._stochastic_gen_id_to_atom_id[sto_gen_id] = {new_sto_atom_id}
+
+        if sto_gen_id >= 0:
+            self._sto_atom_id_expected_molw[new_sto_atom_id] = self._sto_gen_id_distribution[
+                sto_gen_id
+            ].draw_mw(self._rng)
+        else:
+            self._sto_atom_id_expected_molw[new_sto_atom_id] = -1
+
+        self._sto_atom_id_actual_molw[new_sto_atom_id] = 0
+
+        return new_sto_atom_id
+
+    def add_molw(self, sto_atom_id, molw):
+        self._sto_atom_id_actual_molw[sto_atom_id] += molw
+        return (
+            self._sto_atom_id_actual_molw[sto_atom_id]
+            >= self._sto_atom_id_expected_molw[sto_atom_id]
+        )
+
+    def should_terminate(self, sto_atom_id):
+        return self.add_molw(sto_atom_id, 0)
+
+    def _is_sto_gen_id_known(self, sto_gen_id):
+        return sto_gen_id in self._sto_gen_id_distribution
+
+    def is_terminated(self, sto_atom_id):
+        if sto_atom_id not in self._stochastic_atom_id_to_gen_id:
+            raise ValueError("Unknown atom id. it cannot be terminated")
+        return sto_atom_id in self._terminated_sto_atom_ids
+
+    def terminate(self, sto_atom_id):
+        assert not self.is_terminated(sto_atom_id)
+        self._terminated_sto_atom_ids.add(sto_atom_id)
+
+    def draw_mw(self, sto_gen_id, sto_atom_id=None, rng=None) -> None | float:
+        if sto_gen_id is None:
+            sto_gen_id = self._stochastic_atom_id_to_sto_gen_id[sto_atom_id]
+
+        return self._sto_gen_id_distribution[sto_gen_id].draw_mw(rng)
+
+    def get_unterminated_sto_atom_ids(self):
+        unterminated_sto_atom_ids = []
+        for sto_atom_id in reversed(self._stochastic_atom_id_to_gen_id):
+            if sto_atom_id not in self._terminated_sto_atom_ids:
+                unterminated_sto_atom_ids += [sto_atom_id]
+        return unterminated_sto_atom_ids
+
+
 class _PartialAtomGraph:
     _ATOM_ATTRS = {"atomic_num", _AROMATIC_NAME, "charge"}
     _BOND_ATTRS = {_BOND_TYPE_NAME, _AROMATIC_NAME}
 
-    def __init__(self, generating_graph, static_graph, source_node):
+    def __init__(
+        self, generating_graph, static_graph, source_node, stochastic_tracker, sto_atom_id
+    ):
         self._atom_id = 0
         self.generating_graph = generating_graph
         self.static_graph = static_graph
+        self.stochastic_tracker = stochastic_tracker
 
         self.atom_graph = nx.Graph()
         self._open_half_bond_map: dict[int : list[_HalfAtomBond]] = {}
-        self._stochastic_distribution_map: dict[int:StochasticDistribution] = {}
-        self._mol_weight: float = 0.0
-
-        self.add_static_sub_graph(source_node)
-
-    def get_open_half_bonds(stochastic_id: int | tuple[int] | None) -> list[_HalfAtomBond]:
-
-        if stochastic_id is None:
-            fetch_ids: tuple[int] = tuple(self._open_half_bond_map.keys())
-        elif isinstance(stochastic_id, Sequence):
-            fetch_ids: tuple[int] = tuple(stochastic_id)
-        else:
-            fetch_ids: tuple[int] = [int(stochastic_id)]
-
-        open_half_bonds: list[_HalfAtomBond] = []
-        for idx in fetch_ids:
-            open_half_bonds += self._open_half_bond_map[idx]
-        return open_half_bonds
+        self.add_static_sub_graph(source_node, sto_atom_id)
 
     def merge(self, other, self_idx, other_idx, bond_attr):
+        assert self.stochastic_tracker is other.stochastic_tracker
         # relabel other idx
         remapping_dict = {idx: idx + self._atom_id for idx in other.atom_graph.nodes}
         other_graph = nx.relabel_nodes(other.atom_graph, remapping_dict, copy=True)
@@ -124,36 +197,42 @@ class _PartialAtomGraph:
             except KeyError:
                 self._open_half_bond_map[stochastic_id] = other_open_half_bond_map[stochastic_id]
 
-        self._stochastic_distribution_map |= other._stochastic_distribution_map
-        self._mol_weight += other._mol_weight
+    def get_open_half_bonds(self, sto_atom_id: int | tuple[int] | None) -> list[_HalfAtomBond]:
 
-    def add_static_sub_graph(self, source):
+        if sto_atom_id is None:
+            fetch_ids: tuple[int] = tuple(self._open_half_bond_map.keys())
+        elif isinstance(sto_atom_id, Sequence):
+            fetch_ids: tuple[int] = tuple(sto_atom_id)
+        else:
+            fetch_ids: tuple[int] = tuple([int(sto_atom_id)])
+
+        open_half_bonds: list[_HalfAtomBond] = []
+        for idx in fetch_ids:
+            try:
+                open_half_bonds += self._open_half_bond_map[idx]
+            except KeyError:
+                pass
+        return open_half_bonds
+
+    def add_static_sub_graph(self, source, sto_atom_id):
         atom_key_to_gen_key = {}
         gen_key_to_atom_key = {}
 
         def add_node(node_idx):
             data = self.gen_node_attr_to_atom_attr(self.generating_graph.nodes[node_idx])
-            self.atom_graph.add_node(self._atom_id, **(data | {"origin_idx": node_idx}))
+            self.atom_graph.add_node(self._atom_id, **(data | {"origin_idx": str(node_idx)}))
             atom_key_to_gen_key[self._atom_id] = node_idx
             gen_key_to_atom_key[node_idx] = self._atom_id
             half_bond = _HalfAtomBond(self._atom_id, node_idx, self.generating_graph)
 
-            self._mol_weight += atomic_masses[data["atomic_num"]]
+            self.stochastic_tracker.add_molw(sto_atom_id, atomic_masses[data["atomic_num"]])
             self._atom_id += 1
 
             if half_bond.weight > 0 and half_bond.has_any_bonds():
                 try:
-                    stochastic_id = self.generating_graph[source]["stochastic_id"]
+                    self._open_half_bond_map[sto_atom_id] += [half_bond]
                 except KeyError:
-                    stochastic_id = -1
-                try:
-                    self._open_half_bond_map[stochastic_id] += [half_bond]
-                except KeyError:
-                    self._open_half_bond_map[stochastic_id] = [half_bond]
-                stochastic_vector = self.generating_graph.nodes[node_idx]["stochastic_generation"]
-                self._stochastic_distribution_map[stochastic_id] = (
-                    StochasticDistribution.from_serial_vector(stochastic_vector)
-                )
+                    self._open_half_bond_map[sto_atom_id] = [half_bond]
 
         # Initiate with first node
         add_node(source)
@@ -202,47 +281,76 @@ class _PartialAtomGraph:
             new_dict[k] = dictionary[k]
         return new_dict
 
-    def draw_mw(self, stochastic_id, rng=None) -> None | float:
+    def pop_target_open_half_bond(self, sto_atom_idx, target_idx) -> _HalfAtomBond:
+
+        # If we terminate into a regular smiles, there is no open half bonds, but the connection point is guaranteed to be 0
         try:
-            self._stochastic_distribution_map[stochastic_id].draw_mw(rng)
+            if len(self._open_half_bond_map[sto_atom_idx]) == 0:
+                return 0
         except KeyError:
-            return -1
+            return 0
 
-    @property
-    def molw(self):
-        return self._mol_weight
+        found_target_index = None
+        for target_index, half_bond in enumerate(self._open_half_bond_map[sto_atom_idx]):
+            if half_bond.node_idx == target_idx:
+                assert found_target_index is None
+                found_target_index = target_index
+        assert found_target_index is not None
 
-    def terminate_graph(self, stochastic_id, rng):
+        target_half_bond = self._open_half_bond_map[sto_atom_idx].pop(found_target_index)
+        return target_half_bond.atom_idx
+
+    def terminate_graph(self, sto_atom_id, rng):
         terminated_graph = copy.deepcopy(self)
-        # Find a transition bond
-        transition_idx = []
-        transition_weight = []
-        for i, half_bond in enumerate(terminated_graph._open_half_bonds):
-            if half_bond.has_mode_bonds(_TRANSITION_NAME):
-                # TODO carefully check if transition bonds have the right weight here!
-                transition_weight += [half_bond.weight]
-                transition_idx += [i]
-        transition_weight = np.asarray(transition_weight)
-        transition_prob = transition_weight / np.sum(transition_weight)
 
-        transition_half_bond = None
-        # Select one of them
-        if len(transition_idx) > 0:
-            selected_transition_idx = rng.choice(transition_idx, p=transition_prob)
-            transition_half_bond = terminated_graph._open_half_bonds.pop(selected_transition_idx)
+        def pop_random_transition_bond():
+            # Find a transition bond
+            transition_idx = []
+            transition_weight = []
+            for i, half_bond in enumerate(terminated_graph.get_open_half_bonds(sto_atom_id)):
+                if half_bond.has_mode_bonds(_TRANSITION_NAME):
+                    # TODO carefully check if transition bonds have the right weight here!
+                    transition_weight += [half_bond.weight]
+                    transition_idx += [i]
+            transition_weight = np.asarray(transition_weight)
+            transition_prob = transition_weight / np.sum(transition_weight)
 
-        while len(terminated_graph._open_half_bonds) > 0:
+            transition_half_bond = None
+            # Select one of them
+            if len(transition_idx) > 0:
+                selected_transition_idx = rng.choice(transition_idx, p=transition_prob)
+                transition_half_bond = terminated_graph._open_half_bond_map[sto_atom_id].pop(
+                    selected_transition_idx
+                )
+            return transition_half_bond
+
+        def get_termination_bonds(graph, sto_atom_id):
+            termination_bonds = []
+            for half_bond in graph.get_open_half_bonds(sto_atom_id):
+                if half_bond.has_mode_bonds(_TERMINATION_NAME):
+                    termination_bonds += [half_bond]
+            return termination_bonds
+
+        def pop_next_termination_bond():
             termination_idx = []
             termination_weight = []
-            for i, half_bond in enumerate(terminated_graph._open_half_bonds):
-                assert half_bond.has_mode_bonds[_TERMINATION_NAME]
-                termination_idx += [i]
-                termination_weight += [half_bond.weight]
+            for i, half_bond in enumerate(terminated_graph.get_open_half_bonds(sto_atom_id)):
+                if half_bond.has_mode_bonds(_TERMINATION_NAME):
+                    termination_idx += [i]
+                    termination_weight += [half_bond.weight]
             termination_weight = np.asarray(termination_weight)
             termination_prob = termination_weight / np.sum(termination_weight)
 
-            selected_termination_idx = rng.choice(termination_idx, p=termination_weight)
-            termination_bond = terminated_graph._open_half_bonds.pop(selected_termination_idx)
+            selected_termination_idx = rng.choice(termination_idx, p=termination_prob)
+            termination_bond = terminated_graph._open_half_bond_map[sto_atom_id].pop(
+                selected_termination_idx
+            )
+            return termination_bond
+
+        transition_half_bond = pop_random_transition_bond()
+
+        while len(get_termination_bonds(terminated_graph, sto_atom_id)) > 0:
+            termination_bond = pop_next_termination_bond()
 
             target_attributes, target_ids = termination_bond.get_mode_bonds(_TERMINATION_NAME)
             target_weight = np.asarray([attr[_TERMINATION_NAME] for attr in target_attributes])
@@ -253,10 +361,14 @@ class _PartialAtomGraph:
             selected_attr = self.gen_edge_attr_to_bond_attr(target_attributes[selected_target_idx])
 
             other_partial_graph = _PartialAtomGraph(
-                terminated_graph.generating_graph, terminated_graph.static_graph, selected_target
+                terminated_graph.generating_graph,
+                terminated_graph.static_graph,
+                selected_target,
+                self.stochastic_tracker,
+                sto_atom_id,
             )
             other_half_bond_atom_idx = other_partial_graph.pop_target_open_half_bond(
-                selected_target
+                sto_atom_id, selected_target
             )
 
             terminated_graph.merge(
@@ -267,18 +379,21 @@ class _PartialAtomGraph:
             )
 
         if transition_half_bond is not None:
-            terminated_graph._open_half_bonds = [transition_half_bond]
+            terminated_graph._open_half_bond_map[sto_atom_id] = [transition_half_bond]
+        else:
+            terminated_graph._open_half_bond_map[sto_atom_id] = []
+
+        terminated_graph.stochastic_tracker.terminate(sto_atom_id)
 
         return terminated_graph
 
-    def transition_graph(self, rng):
+    def transition_graph(self, sto_atom_id, rng):
         # Early exit if no transition necessary
-        if len(self._open_half_bonds) == 0:
-            return self
+        if len(self.get_open_half_bonds(sto_atom_id)) == 0:
+            return sto_atom_id
 
-        transitioned_graph = copy.deepcopy(self)
-        assert len(transitioned_graph._open_half_bonds) == 1
-        transition_bond = transitioned_graph._open_half_bonds.pop()
+        assert len(self.get_open_half_bonds(sto_atom_id)) == 1
+        transition_bond = self._open_half_bond_map[sto_atom_id].pop(0)
         assert transition_bond.has_mode_bonds(_TRANSITION_NAME)
 
         target_attr, target_idx = transition_bond.get_mode_bonds(_TRANSITION_NAME)
@@ -288,48 +403,90 @@ class _PartialAtomGraph:
         target_id = rng.choice(len(target_idx), p=target_prob)
         selected_target_idx = target_idx[target_id]
         selected_attr = self.gen_edge_attr_to_bond_attr(target_attr[target_id])
+        selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx][
+            "stochastic_id"
+        ]
+        if selected_target_sto_gen_id > 0:
+            assert (
+                stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id]
+                != selected_target_sto_gen_id
+            )
+        new_sto_atom_id = self.stochastic_tracker.register_new_atom_intance(
+            selected_target_sto_gen_id
+        )
 
         other_graph = _PartialAtomGraph(
-            self.generating_graph, self.static_graph, selected_target_idx
+            self.generating_graph,
+            self.static_graph,
+            selected_target_idx,
+            self.stochastic_tracker,
+            new_sto_atom_id,
         )
-        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(selected_target_idx)
-
-        transitioned_graph.merge(
-            other_graph, transition_bond.atom_idx, other_half_bond_atom_idx, selected_attr
+        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(
+            sto_atom_id, selected_target_idx
         )
 
-        return transitioned_graph
+        self.merge(other_graph, transition_bond.atom_idx, other_half_bond_atom_idx, selected_attr)
 
-    def pop_target_open_half_bond(self, target_idx) -> int:
+        return new_sto_atom_id
 
-        # If we terminate into a regular smiles, there is no open half bonds, but the connection point is guaranteed to be 0
-        if len(self._open_half_bonds) == 0:
-            return 0
+    def stochastic_growth(self, sto_atom_id, rng):
+        def pop_random_stochsatic_bond():
+            # Find a transition bond
+            stochastic_idx = []
+            stochastic_weight = []
+            for i, half_bond in enumerate(self.get_open_half_bonds(sto_atom_id)):
+                if half_bond.has_mode_bonds(_STOCHASTIC_NAME):
+                    # TODO carefully check if stochastic bonds have the right weight here!
+                    stochastic_weight += [half_bond.weight]
+                    stochastic_idx += [i]
+            stochastic_weight = np.asarray(stochastic_weight)
+            stochastic_prob = stochastic_weight / np.sum(stochastic_weight)
+            stochastic_half_bond = None
+            # Select one of them
+            if len(stochastic_idx) > 0:
+                selected_stochastic_idx = rng.choice(stochastic_idx, p=stochastic_prob)
+                stochastic_half_bond = self._open_half_bond_map[sto_atom_id].pop(
+                    selected_stochastic_idx
+                )
+            return stochastic_half_bond
 
-        found_target_index = None
-        for target_index, half_bond in enumerate(self._open_half_bonds):
-            if half_bond.node_idx == target_idx:
-                assert found_target_index is None
-                found_target_index = target_index
-        assert found_target_index is not None
+        stochastic_bond = pop_random_stochsatic_bond()
 
-        target_half_bond = self._open_half_bonds.pop(found_target_index)
-        return target_half_bond.atom_idx
+        target_attr, target_idx = stochastic_bond.get_mode_bonds(_STOCHASTIC_NAME)
+        target_weights = np.asarray([attr[_STOCHASTIC_NAME] for attr in target_attr])
+        target_prob = target_weights / np.sum(target_weights)
 
-    def has_stochastic_bonds(self):
-        for half_bond in self._open_half_bonds:
-            if half_bond.has_mode_bonds(_STOCHASTIC_NAME):
-                return True
-        return False
+        target_id = rng.choice(len(target_idx), p=target_prob)
+        selected_target_idx = target_idx[target_id]
+        selected_attr = self.gen_edge_attr_to_bond_attr(target_attr[target_id])
+        selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx][
+            "stochastic_id"
+        ]
 
+        new_sto_atom_id = sto_atom_id
+        if (
+            self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id]
+            != selected_target_sto_gen_id
+        ):
+            new_sto_atom_id = self.stochastic_tracker.register_new_atom_intance(
+                selected_target_sto_gen_id
+            )
 
-class _MolWeightTracker:
-    def __init__(self):
-        self._target_mw = {}
-        self._starting_mw = {}
+        other_graph = _PartialAtomGraph(
+            self.generating_graph,
+            self.static_graph,
+            selected_target_idx,
+            self.stochastic_tracker,
+            new_sto_atom_id,
+        )
+        other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(
+            sto_atom_id, selected_target_idx
+        )
 
-    # def stop_stochastic(self, partial_graph):
-    #     if partial_graph.
+        self.merge(other_graph, stochastic_bond.atom_idx, other_half_bond_atom_idx, selected_attr)
+
+        return new_sto_atom_id
 
 
 class AtomGraph:
@@ -375,6 +532,30 @@ class AtomGraph:
     def _get_random_start_node(self, rng):
         return rng.choice(self._starting_node_idx, p=self._starting_node_weight)
 
+    @staticmethod
+    def get_dot_string(atom_graph, bond_type_colors=None, prefix="") -> str:
+        if bond_type_colors is None:
+            bond_type_colors = {1: "black", 2: "red", 3: "green", 4: "blue"}
+        dot_str = "graph{\n"
+        for node, data in atom_graph.nodes(data=True):
+            label = atom_name_mapping[data["atomic_num"]]
+            color = "#" + atom_color_mapping[data["atomic_num"]]
+
+            extra_attr = f'style="filled", fillcolor="{color}", '
+            if _determine_darkness_from_hex(color):
+                extra_attr += "fontcolor=white, "
+            dot_str += f'"{prefix}{node}" [{extra_attr} label="{label}"];\n'
+
+        for u, v, d in atom_graph.edges(data=True):
+            bond_type = d["bond_type"]
+            color = bond_type_colors[bond_type]
+            style = "solid"
+            if d["aromatic"]:
+                style = "dashed"
+            dot_str += f'"{prefix}{u}" -- "{prefix}{v}" [color="{color}", style="{style}"];\n'
+        dot_str += "}\n"
+        return dot_str
+
     def sample_mol_graph(self, source: str = None, rng=None):
 
         if rng is None:
@@ -388,22 +569,34 @@ class AtomGraph:
 
         if source not in self._starting_node_idx:
             warnings.warn(
-                UnvalidatedGenerationSource(source, self._starting_node_idx, self.ml_graph)
+                UnvalidatedGenerationSource(source, self._starting_node_idx, self.ml_graph),
+                stacklevel=2,
             )
 
-        partial_atom_graph = _PartialAtomGraph(self.ml_graph, self._static_graph, source)
-        while len(partial_atom_graph._open_half_bonds) > 0:
-            terminated_graph = partial_atom_graph.terminate_graph(rng)
+        stochastic_object_tracker = _StochasticObjectTracker(self.ml_graph, rng)
+        source_sto_gen_id = self.ml_graph.nodes[source]["stochastic_id"]
+        sto_atom_id = stochastic_object_tracker.register_new_atom_intance(source_sto_gen_id)
+        partial_atom_graph = _PartialAtomGraph(
+            self.ml_graph, self._static_graph, source, stochastic_object_tracker, sto_atom_id
+        )
+        del stochastic_object_tracker
 
-            if not partial_atom_graph.has_stochastic_bonds():
-                partial_atom_graph = terminated_graph.transition_graph(rng)
+        while len(partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()) > 0:
+            active_sto_atom_id = (
+                partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
+            )
+            terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
+            if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
+                partial_atom_graph = terminated_graph
+                # After termination, there is only one transition bond left
+                active_sto_atom_id = partial_atom_graph.transition_graph(active_sto_atom_id, rng)
             else:
-                break
+                partial_atom_graph.stochastic_growth(active_sto_atom_id, rng)
 
         print(
             partial_atom_graph.atom_graph,
-            partial_atom_graph.molw,
-            [str(hb) for hb in partial_atom_graph._open_half_bonds],
+            partial_atom_graph.stochastic_tracker._sto_atom_id_actual_molw,
+            [str(hb) for hb in partial_atom_graph.get_open_half_bonds(None)],
         )
 
         return partial_atom_graph.atom_graph

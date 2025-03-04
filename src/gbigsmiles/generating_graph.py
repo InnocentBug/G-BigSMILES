@@ -159,7 +159,7 @@ class GeneratingGraph:
     def _assign_stochastic_ids(self):
         stochastic_id_map = {-1: -1}
 
-        for node, data in self._g.nodes(data=True):
+        for _node, data in self._g.nodes(data=True):
 
             if "stochastic_obj" in data:
                 if id(data["stochastic_obj"]) not in stochastic_id_map:
@@ -177,14 +177,15 @@ class GeneratingGraph:
 
             if node not in bd_idx_set:  # Regular atoms
                 attached_bd = set()
-                for u, v in graph.out_edges(node):
+                for _u, v in graph.out_edges(node):
                     if v in bd_idx_set:
                         attached_bd.add(v)
                 if len(attached_bd) > 1:
                     warnings.warn(
                         TooManyBondDescriptorsPerAtomForGeneration(
                             graph, self.text, node, attached_bd
-                        )
+                        ),
+                        stacklevel=2,
                     )
 
     @staticmethod
@@ -365,7 +366,7 @@ class GeneratingGraph:
                     and self.contains_bd(bd_idx)
                     and (self.combined_attr is not None)
                     and (self.weight > 0)
-                    and self.num_stochastic_transitions < 3
+                    # and self.num_stochastic_transitions < 3
                 )
 
             def get_stochastic_transition_path(self):
@@ -559,7 +560,7 @@ class GeneratingGraph:
                 stochastic_vector = StochasticDistribution.get_empty_serial_vector()
                 stochastic_id = -1
             else:
-                stochastic_vector = data["stochastic_obj"].get_serial_vector()
+                stochastic_vector = data["stochastic_obj"].stochastic_generation.get_serial_vector()
                 stochastic_id = data["stochastic_id"]
 
             mol_molecular_weight = -1.0
