@@ -337,7 +337,7 @@ class _PartialAtomGraph:
             target_weight = np.asarray([attr[_TERMINATION_NAME] for attr in target_attributes])
             target_prob = target_weight / np.sum(target_weight)
 
-            selected_target_idx = np.choice(len(target_weight), p=target_prob)
+            selected_target_idx = rng.choice(len(target_weight), p=target_prob)
             selected_target = target_ids[selected_target_idx]
             selected_attr = self.gen_edge_attr_to_bond_attr(target_attributes[selected_target_idx])
 
