@@ -85,6 +85,7 @@ class _StochasticObjectTracker:
         self._sto_atom_id_actual_molw = OrderedDict()
         self._sto_atom_id_expected_molw = OrderedDict()
         self._terminated_sto_atom_ids = set()
+        self._sto_atom_id_child_map = {}
 
         for _node_idx, data in generating_graph.nodes(data=True):
             if data["stochastic_id"] >= 0:
@@ -95,7 +96,7 @@ class _StochasticObjectTracker:
     def _register_sto_gen_id(self, sto_gen_id, distribution):
         self._sto_gen_id_distribution[sto_gen_id] = distribution
 
-    def register_new_atom_instance(self, sto_gen_id):
+    def register_new_atom_instance(self, sto_gen_id, old_sto_atom_id):
         if sto_gen_id > 0:
             assert self._is_sto_gen_id_known(sto_gen_id)
 
@@ -103,6 +104,8 @@ class _StochasticObjectTracker:
             new_sto_atom_id = max(self._stochastic_atom_id_to_gen_id) + 1
         except ValueError:
             new_sto_atom_id = 0
+
+        self._sto_atom_id_child_map[new_sto_atom_id] = old_sto_atom_id
 
         self._stochastic_atom_id_to_gen_id[new_sto_atom_id] = sto_gen_id
         try:
@@ -136,6 +139,14 @@ class _StochasticObjectTracker:
 
     def terminate(self, sto_atom_id):
         assert not self.is_terminated(sto_atom_id)
+
+        # For nest stochastic objects, add the child to the parent MolW
+        parent_sto_atom_id = self._sto_atom_id_child_map[sto_atom_id]
+        while parent_sto_atom_id is not None and self.is_terminated(parent_sto_atom_id):
+            parent_sto_atom_id = self._sto_atom_id_child_map[parent_sto_atom_id]
+        if parent_sto_atom_id is not None:
+            self._sto_atom_id_actual_molw[parent_sto_atom_id] += self._sto_atom_id_actual_molw[sto_atom_id]
+
         self._terminated_sto_atom_ids.add(sto_atom_id)
 
     def draw_mw(self, sto_gen_id, sto_atom_id=None, rng=None) -> None | float:
@@ -389,7 +400,7 @@ class _PartialAtomGraph:
         selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx]["stochastic_id"]
         if selected_target_sto_gen_id > 0:
             assert self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] != selected_target_sto_gen_id
-        new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id)
+        new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id, sto_atom_id)
 
         other_graph = _PartialAtomGraph(
             self.generating_graph,
@@ -438,7 +449,7 @@ class _PartialAtomGraph:
 
         new_sto_atom_id = sto_atom_id
         if self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] != selected_target_sto_gen_id:
-            new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id)
+            new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id, sto_atom_id)
 
         other_graph = _PartialAtomGraph(
             self.generating_graph,
@@ -539,7 +550,7 @@ class AtomGraph:
         stochastic_object_tracker = _StochasticObjectTracker(self.ml_graph, rng)
 
         source_sto_gen_id = self.ml_graph.nodes[source]["stochastic_id"]
-        sto_atom_id = stochastic_object_tracker.register_new_atom_instance(source_sto_gen_id)
+        sto_atom_id = stochastic_object_tracker.register_new_atom_instance(source_sto_gen_id, None)
         partial_atom_graph = _PartialAtomGraph(self.ml_graph, self._static_graph, source, stochastic_object_tracker, sto_atom_id)
         partial_atom_graph.transition_graph(sto_atom_id, rng)  # Attempt a transition
 
@@ -550,10 +561,12 @@ class AtomGraph:
             terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
 
             if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
+                print("pre-terminate", active_sto_atom_id, partial_atom_graph.stochastic_tracker._sto_atom_id_actual_molw, partial_atom_graph.stochastic_tracker._sto_atom_id_child_map)
+
                 partial_atom_graph = terminated_graph
+                print("terminate", active_sto_atom_id, partial_atom_graph.stochastic_tracker._sto_atom_id_actual_molw, partial_atom_graph.stochastic_tracker._sto_atom_id_child_map)
                 # After termination, there is only one transition bond left
                 active_sto_atom_id = partial_atom_graph.transition_graph(active_sto_atom_id, rng)
-
             else:
                 try:
                     partial_atom_graph.stochastic_growth(active_sto_atom_id, rng)

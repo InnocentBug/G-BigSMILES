@@ -233,7 +233,7 @@ class IncompleteStochasticGeneration(GBigSMILESError):
     def num_open_bonds(self):
         num_bonds = 0
         for sto_atom_id in self._partial_atom_graph._open_half_bond_map:
-            for bond in self._partial_atom_graph._open_half_bond_map[sto_atom_id]:
+            for _bond in self._partial_atom_graph._open_half_bond_map[sto_atom_id]:
                 num_bonds += 1
         return num_bonds
 
@@ -241,4 +241,4 @@ class IncompleteStochasticGeneration(GBigSMILESError):
         num_bonds = self.num_open_bonds
         if num_bonds == 0:
             return f"Incomplete Stochastic Generation: since there are {num_bonds} open bonds this may be intended. You can catch this exception and use the `atom_graph` property as a result."
-        return f"Incomplete Stochastic Generation: {num_bonds} are still unaccounted for this is likely an unprecise G-BigSMILES string or a bug."
+        return f"Incomplete Stochastic Generation: {num_bonds} are still unaccounted for this is likely an imprecise G-BigSMILES string or a bug."
