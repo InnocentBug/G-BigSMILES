@@ -371,12 +371,13 @@ class _PartialAtomGraph:
 
     def transition_graph(self, sto_atom_id, rng):
         # Early exit if no transition necessary
-        if len(self.get_open_half_bonds(sto_atom_id)) == 0:
+        if len(self.get_open_half_bonds(sto_atom_id)) != 1:
             return sto_atom_id
 
-        assert len(self.get_open_half_bonds(sto_atom_id)) == 1
         transition_bond = self._open_half_bond_map[sto_atom_id].pop(0)
-        assert transition_bond.has_mode_bonds(_TRANSITION_NAME)
+        if not transition_bond.has_mode_bonds(_TRANSITION_NAME):
+            self._open_half_bond_map[sto_atom_id].push(transition_bond)
+            return sto_atom_id
 
         target_attr, target_idx = transition_bond.get_mode_bonds(_TRANSITION_NAME)
         target_weights = np.asarray([attr[_TRANSITION_NAME] for attr in target_attr])
@@ -540,6 +541,8 @@ class AtomGraph:
         source_sto_gen_id = self.ml_graph.nodes[source]["stochastic_id"]
         sto_atom_id = stochastic_object_tracker.register_new_atom_instance(source_sto_gen_id)
         partial_atom_graph = _PartialAtomGraph(self.ml_graph, self._static_graph, source, stochastic_object_tracker, sto_atom_id)
+        partial_atom_graph.transition_graph(sto_atom_id, rng)  # Attempt a transition
+
         del stochastic_object_tracker
 
         while len(partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()) > 0:
@@ -555,7 +558,6 @@ class AtomGraph:
                 try:
                     partial_atom_graph.stochastic_growth(active_sto_atom_id, rng)
                 except IncompleteStochasticGeneration as exc:
-                    print(exc)
                     if exc.num_open_bonds <= tolerate_incomplete_stochastic_generation_with_no_more_than_X_open_bonds:
                         return exc.atom_graph
                     raise exc from exc

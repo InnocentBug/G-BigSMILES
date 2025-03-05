@@ -376,7 +376,9 @@ class GeneratingGraph:
             @property
             def init_weight(self):
                 init_weight = None
-                for node_idx in self.node_path:
+                # for node_idx in self.node_path:
+                if len(self.node_path) > 1:
+                    node_idx = self.node_path[1]
                     node_init_weight = self.graph.nodes[node_idx].get("init_weight", None)
                     if node_init_weight is not None and node_init_weight > 0:
                         init_weight = node_init_weight

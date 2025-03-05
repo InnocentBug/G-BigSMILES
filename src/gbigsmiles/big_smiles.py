@@ -121,7 +121,6 @@ class BigSmiles(_AbstractIterativeGenerativeClass):
 
     @property
     def num_mol_species(self):
-        print(self._children)
         return len(self._children)
 
 
