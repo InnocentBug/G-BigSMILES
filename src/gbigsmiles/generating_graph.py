@@ -265,7 +265,6 @@ class GeneratingGraph:
                 self._weight, self._combined_attr = self.create_combined_attr()
 
             def create_combined_attr(self) -> dict | None:
-
                 data = {}
                 weight = 1.0
                 weight_type_list = []
@@ -288,7 +287,7 @@ class GeneratingGraph:
                                     IncompatibleBondTypeBondDescriptor(str(data[_BOND_TYPE_NAME]), str(d[_BOND_TYPE_NAME])),
                                     stacklevel=2,
                                 )
-                            return 0.0, None
+                                return 0.0, None
                         else:
                             data[_BOND_TYPE_NAME] = d[_BOND_TYPE_NAME]
 
@@ -393,6 +392,7 @@ class GeneratingGraph:
                 return (x not in self.bd_idx_set) and (x != self.in_idx)
 
         edges_to_add = []
+
         # Add edges jumping over the pairs of bond descriptors with correct weights.
         for bd_idx in bd_idx_set:
             for in_edge in graph.in_edges(bd_idx, data=True):
