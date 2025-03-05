@@ -9,7 +9,11 @@ import numpy as np
 
 from .chem_resource import atom_color_mapping, atom_name_mapping, atomic_masses
 from .distribution import StochasticDistribution
-from .exception import InvalidGenerationSource, UnvalidatedGenerationSource
+from .exception import (
+    IncompleteStochasticGeneration,
+    InvalidGenerationSource,
+    UnvalidatedGenerationSource,
+)
 from .generating_graph import (
     _AROMATIC_NAME,
     _BOND_TYPE_NAME,
@@ -163,7 +167,6 @@ class _PartialAtomGraph:
         self.add_static_sub_graph(source_node, sto_atom_id)
 
     def merge(self, other, self_idx, other_idx, bond_attr):
-        assert self.stochastic_tracker is other.stochastic_tracker
         # relabel other idx
         remapping_dict = {idx: idx + self._atom_id for idx in other.atom_graph.nodes}
         other_graph = nx.relabel_nodes(other.atom_graph, remapping_dict, copy=True)
@@ -420,6 +423,8 @@ class _PartialAtomGraph:
             return stochastic_half_bond
 
         stochastic_bond = pop_random_stochastic_bond()
+        if stochastic_bond is None:
+            raise IncompleteStochasticGeneration(self)
 
         target_attr, target_idx = stochastic_bond.get_mode_bonds(_STOCHASTIC_NAME)
         target_weights = np.asarray([attr[_STOCHASTIC_NAME] for attr in target_attr])
@@ -513,7 +518,7 @@ class AtomGraph:
         dot_str += "}\n"
         return dot_str
 
-    def sample_mol_graph(self, source: str = None, rng=None):
+    def sample_mol_graph(self, source: str = None, rng=None, tolerate_incomplete_stochastic_generation_with_no_more_than_X_open_bonds=0):
 
         if rng is None:
             rng = get_global_rng()
@@ -531,6 +536,7 @@ class AtomGraph:
             )
 
         stochastic_object_tracker = _StochasticObjectTracker(self.ml_graph, rng)
+
         source_sto_gen_id = self.ml_graph.nodes[source]["stochastic_id"]
         sto_atom_id = stochastic_object_tracker.register_new_atom_instance(source_sto_gen_id)
         partial_atom_graph = _PartialAtomGraph(self.ml_graph, self._static_graph, source, stochastic_object_tracker, sto_atom_id)
@@ -546,6 +552,12 @@ class AtomGraph:
                 active_sto_atom_id = partial_atom_graph.transition_graph(active_sto_atom_id, rng)
 
             else:
-                partial_atom_graph.stochastic_growth(active_sto_atom_id, rng)
+                try:
+                    partial_atom_graph.stochastic_growth(active_sto_atom_id, rng)
+                except IncompleteStochasticGeneration as exc:
+                    print(exc)
+                    if exc.num_open_bonds <= tolerate_incomplete_stochastic_generation_with_no_more_than_X_open_bonds:
+                        return exc.atom_graph
+                    raise exc from exc
 
         return partial_atom_graph.atom_graph

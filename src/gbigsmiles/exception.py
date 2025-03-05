@@ -222,3 +222,23 @@ class TooManyBondDescriptorsPerAtomForGeneration(ParsingWarning):
 
     def __str__(self):
         return f"For generation purposes any atom can only be attached to at most one Bond Descriptor. That atom {self.token} from {self.text} is however connected to {len(self.bd_idx_set)} bond descriptors {[str(obj) for obj in self.bd_objs]}. This can usual be fixed by rearranging your polymer description."
+
+
+class IncompleteStochasticGeneration(GBigSMILESError):
+    def __init__(self, partial_atom_graph):
+        self._partial_atom_graph = partial_atom_graph
+        self.atom_graph = partial_atom_graph.atom_graph
+
+    @property
+    def num_open_bonds(self):
+        num_bonds = 0
+        for sto_atom_id in self._partial_atom_graph._open_half_bond_map:
+            for bond in self._partial_atom_graph._open_half_bond_map[sto_atom_id]:
+                num_bonds += 1
+        return num_bonds
+
+    def __str__(self):
+        num_bonds = self.num_open_bonds
+        if num_bonds == 0:
+            return f"Incomplete Stochastic Generation: since there are {num_bonds} open bonds this may be intended. You can catch this exception and use the `atom_graph` property as a result."
+        return f"Incomplete Stochastic Generation: {num_bonds} are still unaccounted for this is likely an unprecise G-BigSMILES string or a bug."
