@@ -432,6 +432,7 @@ class _PartialAtomGraph:
             if len(stochastic_idx) > 0:
                 selected_stochastic_idx = rng.choice(stochastic_idx, p=stochastic_prob)
                 stochastic_half_bond = self._open_half_bond_map[sto_atom_id].pop(selected_stochastic_idx)
+
             return stochastic_half_bond
 
         stochastic_bond = pop_random_stochastic_bond()
@@ -449,7 +450,16 @@ class _PartialAtomGraph:
 
         new_sto_atom_id = sto_atom_id
         if self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] != selected_target_sto_gen_id:
-            new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id, sto_atom_id)
+
+            for existing_atom_id in reversed(self.stochastic_tracker.get_unterminated_sto_atom_ids()):
+                if self.stochastic_tracker._stochastic_atom_id_to_gen_id[existing_atom_id] == selected_target_sto_gen_id:
+                    new_sto_atom_id = existing_atom_id
+                    break
+
+            if new_sto_atom_id == sto_atom_id:
+                new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id, sto_atom_id)
+
+            self.stochastic_tracker.terminate(sto_atom_id)
 
         other_graph = _PartialAtomGraph(
             self.generating_graph,
@@ -552,12 +562,13 @@ class AtomGraph:
         source_sto_gen_id = self.ml_graph.nodes[source]["stochastic_id"]
         sto_atom_id = stochastic_object_tracker.register_new_atom_instance(source_sto_gen_id, None)
         partial_atom_graph = _PartialAtomGraph(self.ml_graph, self._static_graph, source, stochastic_object_tracker, sto_atom_id)
-        partial_atom_graph.transition_graph(sto_atom_id, rng)  # Attempt a transition
-
         del stochastic_object_tracker
+
+        partial_atom_graph.transition_graph(sto_atom_id, rng)  # Attempt a transition
 
         while len(partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()) > 0:
             active_sto_atom_id = partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
+            print(active_sto_atom_id, partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids(), partial_atom_graph._open_half_bond_map)
             terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
 
             if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
