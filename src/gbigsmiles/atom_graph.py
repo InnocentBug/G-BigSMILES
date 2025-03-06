@@ -30,6 +30,7 @@ class _HalfAtomBond:
         self.atom_idx: int = atom_idx
         self.node_idx: str = node_idx
         self.weight: float = graph.nodes[node_idx]["gen_weight"]
+        self._graph = graph
 
         self._mode_attr_map = {}
         self._mode_target_map = {}
@@ -46,6 +47,25 @@ class _HalfAtomBond:
                             self._mode_target_map[k] += [v]
                         except KeyError:
                             self._mode_target_map[k] = [v]
+
+        self._special = None
+
+    def _check_bond_special(self):
+        if not self.has_mode_bonds(_TRANSITION_NAME):
+            return False
+
+        starting_gen_id = self._graph.nodes[self.node_idx]["stochastic_id"]
+        for node in nx.dfs_tree(self._graph, source=self.node_idx).nodes():
+            if node != self.node_idx and starting_gen_id == self._graph.nodes[node]["stochastic_id"]:
+                return True
+        return False
+
+    @property
+    def special(self) -> bool:
+        if self._special is None:
+            self._special = self._check_bond_special()
+        return self._special
+
 
     def has_any_bonds(self):
         has_bonds = False
@@ -231,6 +251,7 @@ class _PartialAtomGraph:
             atom_key_to_gen_key[self._atom_id] = node_idx
             gen_key_to_atom_key[node_idx] = self._atom_id
             half_bond = _HalfAtomBond(self._atom_id, node_idx, self.generating_graph)
+            print(half_bond, half_bond.special)
 
             self.stochastic_tracker.add_molw(sto_atom_id, atomic_masses[data["atomic_num"]])
             self._atom_id += 1
@@ -568,7 +589,6 @@ class AtomGraph:
 
         while len(partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()) > 0:
             active_sto_atom_id = partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
-            print(active_sto_atom_id, partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids(), partial_atom_graph._open_half_bond_map)
             terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
 
             if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
