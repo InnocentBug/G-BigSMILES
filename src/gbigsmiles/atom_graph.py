@@ -120,7 +120,7 @@ class _StochasticObjectTracker:
 
         for _node_idx, data in generating_graph.nodes(data=True):
             if data["stochastic_id"] >= 0:
-                stochastic_vector = data["stochastic_generation"]
+                stochastic_vector = data["stochastic_generation"].copy()
                 distribution = StochasticDistribution.from_serial_vector(stochastic_vector)
                 self._register_sto_gen_id(data["stochastic_id"], distribution)
 
@@ -523,7 +523,6 @@ class _PartialAtomGraph:
         while find_special_half_bonds() is not None:
             sto_atom_id, idx = find_special_half_bonds()
             special_bond = self._open_half_bond_map[sto_atom_id].pop(idx)
-            print(special_bond)
             assert special_bond.special
 
             target_attr, target_idx = special_bond.get_mode_bonds(_TRANSITION_NAME)
@@ -654,10 +653,10 @@ class AtomGraph:
             terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
 
             if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
-                print("pre-terminate", active_sto_atom_id, partial_atom_graph.stochastic_tracker._sto_atom_id_actual_molw, partial_atom_graph.stochastic_tracker._sto_atom_id_child_map)
+                # print("pre-terminate", active_sto_atom_id, partial_atom_graph.stochastic_tracker._sto_atom_id_actual_molw, partial_atom_graph.stochastic_tracker._sto_atom_id_child_map)
 
                 partial_atom_graph = terminated_graph
-                print("terminate", active_sto_atom_id, partial_atom_graph.stochastic_tracker._sto_atom_id_actual_molw, partial_atom_graph.stochastic_tracker._sto_atom_id_child_map)
+                # print("terminate", active_sto_atom_id, partial_atom_graph.stochastic_tracker._sto_atom_id_actual_molw, partial_atom_graph.stochastic_tracker._sto_atom_id_child_map)
                 # After termination, there is only one transition bond left
                 active_sto_atom_id = partial_atom_graph.transition_graph(active_sto_atom_id, rng)
             else:
