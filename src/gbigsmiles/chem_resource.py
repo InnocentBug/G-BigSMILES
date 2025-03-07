@@ -108,9 +108,21 @@ atom_name_mapping = {
     107: "Bh",
     108: "Hs",
     109: "Mt",
+    -1: "*",
 }
 
+atom_name_num = dict((v, k) for k, v in atom_name_mapping.items())
+# Add aromatic versions
+atom_name_num["c"] = atom_name_num["C"]
+atom_name_num["b"] = atom_name_num["B"]
+atom_name_num["n"] = atom_name_num["N"]
+atom_name_num["o"] = atom_name_num["O"]
+atom_name_num["s"] = atom_name_num["S"]
+atom_name_num["p"] = atom_name_num["P"]
+
+
 atom_color_mapping = {
+    -1: "FFFFFF",
     1: "FFFFFF",
     2: "D9FFFF",
     3: "CC80FF",
@@ -427,3 +439,13 @@ default_valence = {
     99: 3,
     100: 3,
 }
+
+smi_bond_mapping = {
+    ".": 0,
+    "-": 1,
+    "=": 2,
+    "#": 3,
+    "$": 4,
+}
+
+bond_num_smi = dict((v, k) for k, v in smi_bond_mapping.items())

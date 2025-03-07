@@ -2,6 +2,7 @@
   "words": [
     "bigsmiles",
     "asarray",
+    "multigraph",
     "NSTAT",
     "absm",
     "relm",
@@ -139,6 +140,15 @@
     "DATIVER",
     "rcurve",
     "initiator",
-    "initiators"
+    "initiators",
+    "chembl",
+    "chirality",
+    "ambi",
+    "molw",
+    "pysmiles",
+    "smis",
+    "pysmi",
+    "PYSMILES",
+    "Unvalidated"
   ]
 }

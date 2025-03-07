@@ -15,8 +15,18 @@ authors = [
   { name = "Ludwig Schneider", email = "ludwigschneider@uchicago.edu" },
 ]
 license = { text = "GPL-3.0", files = ["LICENSE.md"] }
-requires-python = ">=3.9"
-dependencies = ["scipy", "numpy", "networkx", "matplotlib", "pytest", "rdkit"]
+requires-python = ">=3.10"
+dependencies = [
+  "scipy",
+  "numpy",
+  "networkx",
+  "matplotlib",
+  "pytest",
+  "rdkit",
+  "lark",
+  "pysmiles",
+  "typing_extensions",
+]
 dynamic = ["version"]
 readme = "README.md"
 
@@ -28,7 +38,7 @@ write_to = "src/gbigsmiles/_version.py"
 version_file = "src/gbigsmiles/_version.py"
 
 [tool.black]
-line-length = 100
+line-length = 196
 
 [tool.coverage.run]
 omit = [
@@ -43,4 +53,9 @@ omit = [
 ]
 
 [tool.setuptools.package-data]
-gbigsmiles = ["data/ffbonded.itp", "data/ffnonbonded.itp", "data/opls.par"]
+gbigsmiles = [
+  "data/ffbonded.itp",
+  "data/ffnonbonded.itp",
+  "data/opls.par",
+  "data/g-bigsmiles.lark",
+]
