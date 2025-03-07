@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3
+# Copyright (c) 2022-2025: Ludwig Schneider
+# See LICENSE for details
 import warnings
 
 import networkx as nx

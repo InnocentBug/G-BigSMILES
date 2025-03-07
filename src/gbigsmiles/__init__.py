@@ -48,6 +48,7 @@ from .distribution import (
     StochasticDistribution,
     Uniform,
 )
+from .nx_rdkit_mol import mol_graph_to_rdkit_mol
 from .parser import get_global_parser
 from .smiles import AtomAssembly, Branch, BranchedAtom, Dot, Smiles
 from .stochastic import StochasticObject
@@ -108,4 +109,5 @@ __all__ = [
     "BigSmilesMolecule",
     "DotGeneration",
     "DotSystemSize",
+    "mol_graph_to_rdkit_mol",
 ]
