@@ -206,6 +206,7 @@ class InvalidGenerationSource(GBigSMILESError):
         self.graph = graph
 
     def __str__(self):
+        return str(self.__dict__)
         return f"Attempt to create and atom graph from a generating graph with a source node_idx {self.source} but this source is not a valid node idx of the graph. Valid node idx {self.nodes}."
 
 
