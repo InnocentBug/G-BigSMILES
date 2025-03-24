@@ -96,14 +96,8 @@ class FlorySchulz(Distribution):
     class flory_schulz_gen(stats.rv_discrete):
         """Flory Schulz distribution."""
 
-        # def _pmf(self, k, a):
-        #     return a**2 * k * (1 - a) ** (k - 1)
-
-        def _logpmf(self, k, a):
-            return 2 * np.log(a) + np.log(k) - np.log(1 - a) + k * np.log(1 - a)
-
         def _pmf(self, k, a):
-            return np.exp(self._logpmf(k, a))
+            return np.where(k < 1e-6, 0, a**2 * k * (1 - a) ** (k - 1))
 
     def __init__(self, raw_text):
         """
@@ -167,15 +161,14 @@ class SchulzZimm(Distribution):
         # def _pmf(self, M, z, Mn):
         #     return z ** (z + 1) / special.gamma(z + 1, dtype=np.float64) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn)
 
-        def _logpmf(self, M, z, Mn):
-            A = np.log((z ** (z + 1)) / special.gamma(z + 1))
-            B = (z - 1) * np.log(M)
-            C = -z * np.log(Mn)
-            D = -z * M / Mn
-            return A + B + C + D
-
         def _pmf(self, M, z, Mn):
-            return np.exp(self._logpmf(M, z, Mn))
+            # Ensure M=0 results in 0 without calculating the PMF
+            pmf = np.where(
+                M < 1e-6,
+                0,
+                z ** (z + 1) / special.gamma(z + 1) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn),
+            )
+            return pmf
 
     def __init__(self, raw_text):
         """
