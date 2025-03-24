@@ -139,6 +139,7 @@
     "DATIVER",
     "rcurve",
     "initiator",
+    "logpmf",
     "initiators"
   ]
 }

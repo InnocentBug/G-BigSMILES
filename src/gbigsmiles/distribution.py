@@ -96,8 +96,14 @@ class FlorySchulz(Distribution):
     class flory_schulz_gen(stats.rv_discrete):
         """Flory Schulz distribution."""
 
+        # def _pmf(self, k, a):
+        #     return a**2 * k * (1 - a) ** (k - 1)
+
+        def _logpmf(self, k, a):
+            return 2 * np.log(a) + np.log(k) - np.log(1 - a) + k * np.log(1 - a)
+
         def _pmf(self, k, a):
-            return a**2 * k * (1 - a) ** (k - 1)
+            return np.exp(self._logpmf(k, a))
 
     def __init__(self, raw_text):
         """
@@ -158,8 +164,18 @@ class SchulzZimm(Distribution):
     class schulz_zimm_gen(stats.rv_discrete):
         """Flory Schulz distribution."""
 
+        # def _pmf(self, M, z, Mn):
+        #     return z ** (z + 1) / special.gamma(z + 1, dtype=np.float64) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn)
+
+        def _logpmf(self, M, z, Mn):
+            A = np.log((z ** (z + 1)) / special.gamma(z + 1))
+            B = (z - 1) * np.log(M)
+            C = -z * np.log(Mn)
+            D = -z * M / Mn
+            return A + B + C + D
+
         def _pmf(self, M, z, Mn):
-            return z ** (z + 1) / special.gamma(z + 1) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn)
+            return np.exp(self._logpmf(M, z, Mn))
 
     def __init__(self, raw_text):
         """
@@ -183,7 +199,14 @@ class SchulzZimm(Distribution):
         self._Mw = float(self._Mw)
         self._Mn = float(self._Mn)
         self._z = self._Mn / (self._Mw - self._Mn)
-        self._distribution = self.schulz_zimm_gen(name="Schulz-Zimm")
+        # Ensure valid inputs
+        if self._z <= 0 or self._Mn <= 0:
+            raise ValueError("z and Mn must be positive.")
+
+        self._distribution = self.schulz_zimm_gen(
+            name="Schulz-Zimm",
+            a=0,
+        )
 
     def generate_string(self, extension):
         if extension:
