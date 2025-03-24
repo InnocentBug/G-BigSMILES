@@ -96,8 +96,8 @@ class FlorySchulz(Distribution):
     class flory_schulz_gen(stats.rv_discrete):
         """Flory Schulz distribution."""
 
-        def _pmf(self, k, a):
-            return np.where(k < 1e-6, 0, a**2 * k * (1 - a) ** (k - 1))
+        def _pmf(self, fls_k, fls_a):
+            return np.where(fls_k < 1e-6, 0, fls_a**2 * fls_k * (1 - fls_a) ** (fls_k - 1))
 
     def __init__(self, raw_text):
         """
@@ -117,12 +117,12 @@ class FlorySchulz(Distribution):
                 f"Attempt to initialize Flory-Schulz distribution from text '{raw_text}' that does not start with 'flory_schulz'"
             )
 
-        self._a = float(make_tuple(self._raw_text[len("flory_schulz") :]))
-        self._distribution = self.flory_schulz_gen(name="Flory-Schulz")
+        self._fls_a = float(make_tuple(self._raw_text[len("flory_schulz") :]))
+        self._distribution = self.flory_schulz_gen(name="Flory-Schulz", a=1)
 
     def generate_string(self, extension):
         if extension:
-            return f"|flory_schulz({self._a})|"
+            return f"|flory_schulz({self._fls_a})|"
         return ""
 
     @property
@@ -132,14 +132,14 @@ class FlorySchulz(Distribution):
     def draw_mw(self, rng=None):
         if rng is None:
             rng = _GLOBAL_RNG
-        return self._distribution.rvs(a=self._a, random_state=rng)
+        return self._distribution.rvs(fls_a=self._fls_a, random_state=rng)
 
     def prob_mw(self, mw):
         if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
-            return self._distribution.cdf(mw.value, a=self._a) - self._distribution.cdf(
-                mw.previous, a=self._a
+            return self._distribution.cdf(mw.value, fls_a=self._fls_a) - self._distribution.cdf(
+                mw.previous, fls_a=self._fls_a
             )
-        return self._distribution.pmf(int(mw), a=self._a)
+        return self._distribution.pmf(int(mw), fls_a=self._fls_a)
 
 
 class SchulzZimm(Distribution):
@@ -166,7 +166,7 @@ class SchulzZimm(Distribution):
             pmf = np.where(
                 M < 1e-6,
                 0,
-                z ** (z + 1) / special.gamma(z + 1) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn),
+                z ** (z + 1) / special.gamma(z + 1) * (M ** (z - 1) / Mn**z) * np.exp(-z * M / Mn),
             )
             return pmf
 
@@ -191,14 +191,16 @@ class SchulzZimm(Distribution):
         self._Mw, self._Mn = make_tuple(self._raw_text[len("schulz_zimm") :])
         self._Mw = float(self._Mw)
         self._Mn = float(self._Mn)
+        if self._Mw - self._Mn < 1.5:
+            raise ValueError("Mw has to be bigger then Mn")
         self._z = self._Mn / (self._Mw - self._Mn)
         # Ensure valid inputs
-        if self._z <= 0 or self._Mn <= 0:
+        if self._z <= 0 or self._Mn < 1.5:
             raise ValueError("z and Mn must be positive.")
 
         self._distribution = self.schulz_zimm_gen(
             name="Schulz-Zimm",
-            a=0,
+            a=1,
         )
 
     def generate_string(self, extension):
