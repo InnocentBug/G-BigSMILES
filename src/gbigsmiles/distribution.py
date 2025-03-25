@@ -5,7 +5,7 @@
 from ast import literal_eval as make_tuple
 
 import numpy as np
-from scipy import special, stats
+from scipy import integrate, special, stats
 
 import gbigsmiles
 
@@ -93,11 +93,17 @@ class FlorySchulz(Distribution):
     The textual representation of this distribution is: `flory_schulz(a)`
     """
 
-    class flory_schulz_gen(stats.rv_discrete):
+    class flory_schulz_gen(stats.rv_continuous):
         """Flory Schulz distribution."""
 
-        def _pmf(self, fls_k, fls_a):
-            return np.where(fls_k < 1e-6, 0, fls_a**2 * fls_k * (1 - fls_a) ** (fls_k - 1))
+        def __init__(self, fls_a, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fls_a = fls_a
+            self.discrete_function = lambda k: self.fls_a**2 * k * (1 - self.fls_a) ** (k - 1)
+            self.norm = integrate.quad(self.discrete_function, 0, np.inf)[0]
+
+        def _pdf(self, fls_k):
+            return self.discrete_function(fls_k) / self.norm
 
     def __init__(self, raw_text):
         """
@@ -118,7 +124,7 @@ class FlorySchulz(Distribution):
             )
 
         self._fls_a = float(make_tuple(self._raw_text[len("flory_schulz") :]))
-        self._distribution = self.flory_schulz_gen(name="Flory-Schulz", a=1)
+        self._distribution = self.flory_schulz_gen(name="Flory-Schulz", fls_a=self._fls_a, a=0)
 
     def generate_string(self, extension):
         if extension:
@@ -132,14 +138,13 @@ class FlorySchulz(Distribution):
     def draw_mw(self, rng=None):
         if rng is None:
             rng = _GLOBAL_RNG
-        return self._distribution.rvs(fls_a=self._fls_a, random_state=rng)
+        return self._distribution.rvs(random_state=rng)
 
     def prob_mw(self, mw):
         if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
-            return self._distribution.cdf(mw.value, fls_a=self._fls_a) - self._distribution.cdf(
-                mw.previous, fls_a=self._fls_a
-            )
-        return self._distribution.pmf(int(mw), fls_a=self._fls_a)
+            return self._distribution.cdf(mw.value) - self._distribution.cdf(mw.previous)
+
+        return self._distribution.pdf(mw)
 
 
 class SchulzZimm(Distribution):
@@ -155,20 +160,26 @@ class SchulzZimm(Distribution):
     The textual representation of this distribution is: `schulz_zimm(Mw, Mn)`
     """
 
-    class schulz_zimm_gen(stats.rv_discrete):
+    class schulz_zimm_gen(stats.rv_continuous):
         """Flory Schulz distribution."""
+
+        def __init__(self, z, Mn, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.z = z
+            self.Mn = Mn
+            self.prefactor = self.z ** (self.z + 1) / special.gamma(self.z + 1)
+            self.discrete_function = (
+                lambda M: self.prefactor
+                * (M ** (self.z - 1) / self.Mn**self.z)
+                * np.exp(-self.z * M / self.Mn)
+            )
+            self.norm = integrate.quad(self.discrete_function, 0, np.inf)[0]
 
         # def _pmf(self, M, z, Mn):
         #     return z ** (z + 1) / special.gamma(z + 1, dtype=np.float64) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn)
 
-        def _pmf(self, M, z, Mn):
-            # Ensure M=0 results in 0 without calculating the PMF
-            pmf = np.where(
-                M < 1e-6,
-                0,
-                z ** (z + 1) / special.gamma(z + 1) * (M ** (z - 1) / Mn**z) * np.exp(-z * M / Mn),
-            )
-            return pmf
+        def _pdf(self, M):
+            return self.discrete_function(M) / self.norm
 
     def __init__(self, raw_text):
         """
@@ -198,10 +209,7 @@ class SchulzZimm(Distribution):
         if self._z <= 0 or self._Mn < 1.5:
             raise ValueError("z and Mn must be positive.")
 
-        self._distribution = self.schulz_zimm_gen(
-            name="Schulz-Zimm",
-            a=1,
-        )
+        self._distribution = self.schulz_zimm_gen(name="Schulz-Zimm", z=self._z, Mn=self._Mn, a=0)
 
     def generate_string(self, extension):
         if extension:
@@ -215,18 +223,15 @@ class SchulzZimm(Distribution):
     def draw_mw(self, rng=None):
         if rng is None:
             rng = _GLOBAL_RNG
-        return self._distribution.rvs(z=self._z, Mn=self._Mn, random_state=rng)
+        return self._distribution.rvs(random_state=rng)
 
     def prob_mw(self, mw):
         if isinstance(mw, gbigsmiles.mol_prob.RememberAdd):
-            return self._distribution.cdf(
-                mw.value, z=self._z, Mn=self._Mn
-            ) - self._distribution.cdf(mw.previous, z=self._z, Mn=self._Mn)
-        return self._distribution.pmf(
-            int(mw),
-            z=self._z,
-            Mn=self._Mn,
-        )
+            return self._distribution.cdf(mw.value) - self._distribution.cdf(
+                mw.previous,
+            )
+
+        return self._distribution.pdf(mw)
 
 
 class Gauss(Distribution):
