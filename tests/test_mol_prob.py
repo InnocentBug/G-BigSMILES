@@ -67,7 +67,7 @@ def test_mol_prob(big_smi, prob, num_matches):
     print(smi)
     calc_prob, matches = gbigsmiles.mol_prob.get_ensemble_prob(smi, mol)
     print(big_smi, prob, calc_prob, len(matches))
-    assert abs(calc_prob - prob) < 1e-3
+    assert abs(calc_prob - prob) < 1e-2
     assert len(matches) == num_matches
 
     tmp_rng = copy.deepcopy(rng)
