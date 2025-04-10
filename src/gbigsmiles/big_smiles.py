@@ -15,6 +15,13 @@ class _AbstractIterativeClass(BigSMILESbase):
             gen = gen and child.generable
         return gen
 
+    def _set_stochastic_parent(self, parent):
+        for child in self._children:
+            try:
+                child._set_stochastic_parent(parent)
+            except AttributeError:
+                print("A", child)
+
     def generate_string(self, extension: bool) -> str:
         string = ""
         for child in self._children:

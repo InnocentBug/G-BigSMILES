@@ -150,14 +150,14 @@ class GeneratingGraph:
         return bd_idx_set
 
     def _assign_stochastic_ids(self):
-        stochastic_id_map = {-1: -1}
+        self._stochastic_id_map = {-1: -1}
 
         for _node, data in self._g.nodes(data=True):
 
             if "stochastic_obj" in data:
-                if id(data["stochastic_obj"]) not in stochastic_id_map:
-                    stochastic_id_map[id(data["stochastic_obj"])] = max(stochastic_id_map.values()) + 1
-                stochastic_id = stochastic_id_map[id(data["stochastic_obj"])]
+                if id(data["stochastic_obj"]) not in self._stochastic_id_map:
+                    self._stochastic_id_map[id(data["stochastic_obj"])] = max(self._stochastic_id_map.values()) + 1
+                stochastic_id = self._stochastic_id_map[id(data["stochastic_obj"])]
                 data["stochastic_id"] = stochastic_id
 
     def _validate_bond_descriptor_number(self):
@@ -202,6 +202,31 @@ class GeneratingGraph:
                             edge_found = True
                 if not edge_found:
                     self._g.add_edge(v, u, **d)
+
+    # @staticmethod
+    # def _remove_unnecessary_static_edges(graph):
+    #     init_nodes = {}
+    #     for node, data in graph.nodes(data=True):
+    #         if "init_weight" in data and data["init_weight"] is not None:
+    #             init_nodes[node] = set(nx.bfs_tree(graph, source=node).nodes())
+
+    #     if len(init_nodes) > 0:
+    #         for node in list(graph.nodes()):
+    #             for u, v, k, d in graph.edges(node, keys=True, data=True):
+    #                 if is_static_edge(d):
+    #                     tmp_graph = graph.copy()
+    #                     tmp_graph.remove_edge(u,v,k)
+
+    #                     accept_graph = True
+    #                     for start_node in init_nodes:
+    #                         new_set = set(nx.bfs_tree(tmp_graph, source=start_node).nodes())
+    #                         if new_set != init_nodes[start_node]:
+    #                             accept_graph = False
+    #                             break
+    #                     if accept_graph:
+    #                         print(u,v,k,d)
+    #                         graph = tmp_graph
+    #     return graph
 
     def __str__(self):
         return f"GeneratingGraph({self.g})"
@@ -478,6 +503,7 @@ class GeneratingGraph:
         - **total_molecular_weight** float Molecular Weight of the entire material system, this is equal to the sum **mol_molecular_weight** of the comprising molecules. If only one molecule species is present, they are identical. If this is unspecified by the string, negative values are used.
         - **init_weight** float Molecular Weight fractions for entry points into the graph generation. If no molecular weights are specified 1.0 is used. Negative values indicate nodes that are not starting positions for the generation.
         - **gen_weight** float Weight to select this atom for the next generation step.
+        - **parent_stochastic_id**: int Identification of the parent stochastic structure if node is part of a nested stochastic object. -1 if not a stochastic object, -2 if not a nested object
 
 
         Edges(Bonds) have the following properties:
@@ -534,7 +560,6 @@ class GeneratingGraph:
             except AttributeError:
                 charge = float("nan")
 
-            # TODO
             if "stochastic_obj" not in data or data["stochastic_obj"].stochastic_generation is None:
                 stochastic_vector = StochasticDistribution.get_empty_serial_vector()
                 stochastic_id = -1
@@ -554,6 +579,12 @@ class GeneratingGraph:
             if "init_weight" in data and data["init_weight"] is not None:
                 init_weight = data["init_weight"]
 
+            parent_stochastic = -1
+            if stochastic_id != -1:
+                parent_stochastic = -2
+                if "stochastic_obj" in data and data["stochastic_obj"].stochastic_parent is not None:
+                    parent_stochastic = self._stochastic_id_map[id(data["stochastic_obj"].stochastic_parent)]
+
             ml_graph.add_node(
                 node,
                 **{
@@ -566,6 +597,7 @@ class GeneratingGraph:
                     "init_weight": float(init_weight),
                     "gen_weight": float(gen_weight),
                     "stochastic_id": stochastic_id,
+                    "parent_stochastic": parent_stochastic,
                 },
             )
 

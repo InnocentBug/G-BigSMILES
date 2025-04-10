@@ -39,6 +39,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         self._right_terminal_bond_d: None | BondDescriptor = None
 
         self._generation: None | StochasticGeneration = None
+        self._stochastic_parent: None | StochasticObject = None
 
         # Parse info
         termination_separator_found = False
@@ -64,6 +65,21 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 self._generation = child
 
         self._post_parse_validation()
+
+        # Set the parent of child stochastic objects
+        for child in self._children:
+            try:
+                child._set_stochastic_parent(self)
+            except AttributeError:
+                print("B", child)
+
+    @property
+    def stochastic_parent(self):
+        return self._stochastic_parent
+
+    def _set_stochastic_parent(self, parent):
+        assert self._stochastic_parent is None
+        self._stochastic_parent = parent
 
     def _post_parse_validation(self):
         for smi in self._repeat_residues:
