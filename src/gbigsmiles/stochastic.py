@@ -71,7 +71,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
             try:
                 child._set_stochastic_parent(self)
             except AttributeError:
-                print("B", child)
+                pass
 
     @property
     def stochastic_parent(self):

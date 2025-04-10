@@ -20,7 +20,7 @@ class _AbstractIterativeClass(BigSMILESbase):
             try:
                 child._set_stochastic_parent(parent)
             except AttributeError:
-                print("A", child)
+                pass
 
     def generate_string(self, extension: bool) -> str:
         string = ""

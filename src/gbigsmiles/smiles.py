@@ -87,6 +87,13 @@ class BranchedAtom(BigSMILESbase, GenerationBase):
             if isinstance(child, Branch):
                 self._branches.append(child)
 
+    def _set_stochastic_parent(self, parent):
+        for child in self._children:
+            try:
+                child._set_stochastic_parent(parent)
+            except AttributeError:
+                pass
+
     @property
     def generable(self):
         gen = self._atom_stand_in.generable
@@ -146,6 +153,9 @@ class AtomAssembly(BigSMILESbase, GenerationBase):
                 self._symbol = child
             elif isinstance(child, BranchedAtom):
                 self._branched_atom = child
+
+    def _set_stochastic_parent(self, parent):
+        self._branched_atom._set_stochastic_parent(parent)
 
     @property
     def bond_symbol(self) -> None | BondSymbol:
