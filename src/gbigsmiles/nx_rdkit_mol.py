@@ -20,7 +20,7 @@ def mol_graph_to_rdkit_mol(mol_graph):
         if bond_attr["bond_type"] == 3:
             return Chem.BondType.TRIPLE
         if bond_attr["bond_type"] == 4:
-            return Chem.BondType.QUARDUPLE
+            return Chem.BondType.QUADRUPLE
 
     mol = Chem.RWMol()
     graph_idx_to_mol_idx = {}
