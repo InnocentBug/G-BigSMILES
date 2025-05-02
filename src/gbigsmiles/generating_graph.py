@@ -597,7 +597,7 @@ class GeneratingGraph:
                     "init_weight": float(init_weight),
                     "gen_weight": float(gen_weight),
                     "stochastic_id": stochastic_id,
-                    "parent_stochastic": parent_stochastic,
+                    "parent_stochastic_id": parent_stochastic,
                 },
             )
 
