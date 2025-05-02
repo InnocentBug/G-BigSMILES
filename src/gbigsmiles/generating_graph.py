@@ -337,7 +337,7 @@ class GeneratingGraph:
                     last_weight_type = weight_type
 
                 weight_type = _STATIC_NAME
-                for attr in [_TRANSITION_NAME, _TERMINATION_NAME, _STOCHASTIC_NAME]:
+                for attr in [_TERMINATION_NAME, _STOCHASTIC_NAME, _TRANSITION_NAME]:
                     if attr in weight_type_list:
                         weight_type = attr
 
