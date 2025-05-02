@@ -82,6 +82,11 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         self._stochastic_parent = parent
 
     def _post_parse_validation(self):
+        for element in self._repeat_residues + self._termination_residues:
+            gengraph = element.GeneratingGraph()
+            "iterate over nodes that are bd and check if they're connected to other bd"
+            raise TwoConsecutiveBondDescriptors(...)
+
         for smi in self._repeat_residues:
             if len(smi.bond_descriptors) < 2:
                 raise MonomerHasTwoOrMoreBondDescriptors(smi, self)
