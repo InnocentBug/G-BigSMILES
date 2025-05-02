@@ -13,7 +13,6 @@ of these atom components and to contribute to the generation of a molecular grap
 import uuid
 from typing import TYPE_CHECKING, List, Optional, Union
 
-import lark
 import networkx as nx
 
 from .core import BigSMILESbase, GenerationBase

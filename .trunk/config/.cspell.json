@@ -149,6 +149,11 @@
     "smis",
     "pysmi",
     "PYSMILES",
+    "polydispersity",
+    "ndarray",
+    "Gervasio",
+    "bigsmart",
+    "quadruple",
     "Unvalidated"
   ]
 }

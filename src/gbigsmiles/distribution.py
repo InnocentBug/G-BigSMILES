@@ -833,4 +833,4 @@ class Poisson(StochasticDistribution):
 
 StochasticDistribution._known_distributions.append(Poisson)
 
-## Gervasio: Define and implement your new distribution here. Don't forget StochasticDistribution._known_distributions.append(...) since that ensure that the stochastic vector includes your new distrution as well
+## Gervasio: Define and implement your new distribution here. Don't forget StochasticDistribution._known_distributions.append(...) since that ensure that the stochastic vector includes your new distribution as well

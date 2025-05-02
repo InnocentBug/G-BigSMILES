@@ -2,6 +2,6 @@
 select = ["B", "D3", "D4", "E", "F"]
 
 # Never enforce `E501` (line length violations). This should be handled by formatters.
-ignore = ["E501", "D401"]
+ignore = ["E501", "D401", "D413", "F811", "D404"]
 
 line-length = 196
