@@ -2,6 +2,14 @@
 # Copyright (c) 2022: Ludwig Schneider
 # See LICENSE for details
 
+"""
+This module defines classes representing atoms and their properties
+as parsed from a BigSMILES string. It includes handling for regular atoms,
+bracketed atoms with isotopes, chirality, hydrogen counts, charges, and atom classes.
+The module also provides functionality to generate string representations
+of these atom components and to contribute to the generation of a molecular graph.
+"""
+
 import uuid
 
 import lark
@@ -29,8 +37,7 @@ class Atom(BigSMILESbase, GenerationBase):
         Initializes an Atom object.
 
         Args:
-            children (list): List of child elements.
-
+            children (list): List of child elements parsed by Lark.
         """
         super().__init__(children)
 
@@ -49,11 +56,17 @@ class Atom(BigSMILESbase, GenerationBase):
 
         Returns:
             str: String representation of the atom.
-
         """
         return str(self.symbol)
 
     def _generate_partial_graph(self):
+        """
+        Generates a partial NetworkX graph representing this atom.
+
+        Returns:
+            _PartialGeneratingGraph: A partial graph with the atom as a node
+                                     and initialized left/right half-bonds.
+        """
         g = nx.MultiDiGraph()
         node_id = str(uuid.uuid4())
         g.add_node(node_id, smi_text=str(self), obj=self)
@@ -75,13 +88,14 @@ class Atom(BigSMILESbase, GenerationBase):
 
     @property
     def charge(self):
-        """Returns the charge of the atom."""
+        """Returns the charge of the atom (default is 0)."""
         return 0
 
 
 class BracketAtom(Atom):
     """
-    Represents a bracketed atom in a chemical structure.
+    Represents a bracketed atom in a chemical structure, allowing for
+    specification of isotopes, chirality, hydrogen count, charge, and class.
     """
 
     _isotope = None
@@ -92,27 +106,27 @@ class BracketAtom(Atom):
 
     @property
     def isotope(self):
-        """Returns the isotope of the atom."""
+        """Returns the isotope of the atom, if specified."""
         return self._isotope
 
     @property
     def chiral(self):
-        """Returns the chirality of the atom."""
+        """Returns the chirality of the atom, if specified."""
         return self._chiral
 
     @property
     def h_count(self):
-        """Returns the hydrogen count of the atom."""
+        """Returns the hydrogen count of the atom, if specified."""
         return self._h_count
 
     @property
     def atom_charge(self):
-        """Returns the charge of the atom."""
+        """Returns the charge of the atom, if specified."""
         return self._atom_charge
 
     @property
     def atom_class(self):
-        """Returns the class of the atom."""
+        """Returns the class of the atom, if specified."""
         return self._atom_class
 
     def __init__(self, children: list):
@@ -120,13 +134,12 @@ class BracketAtom(Atom):
         Initializes a BracketAtom object.
 
         Args:
-            children (list): List of child elements.
-
+            children (list): List of child elements parsed by Lark.
         """
         super().__init__(children)
         for child in self._children:
             if isinstance(child, AtomSymbol):
-                pass
+                pass  # Symbol is handled by the parent class
             elif isinstance(child, Isotope):
                 self._isotope = child
             elif isinstance(child, Chiral):
@@ -143,11 +156,10 @@ class BracketAtom(Atom):
         Generates a string representation of the bracketed atom.
 
         Args:
-            extension: Extension parameter.
+            extension: Extension parameter (unused in this method).
 
         Returns:
             str: String representation of the bracketed atom.
-
         """
 
         string = "["
@@ -167,7 +179,7 @@ class BracketAtom(Atom):
 
     @property
     def charge(self):
-        """Returns the charge of the atom."""
+        """Returns the charge of the atom, considering the AtomCharge if present."""
         if self.atom_charge:
             return self.atom_charge.charge
         return super().charge
@@ -175,7 +187,7 @@ class BracketAtom(Atom):
 
 class Isotope(BigSMILESbase):
     """
-    Represents an isotope of an atom.
+    Represents an isotope specification for an atom within brackets.
     """
 
     def __init__(self, children: list):
@@ -183,38 +195,36 @@ class Isotope(BigSMILESbase):
         Initializes an Isotope object.
 
         Args:
-            children (list): List of child elements.
-
+            children (list): List containing the Lark token for the isotope number.
         """
         super().__init__(children)
         self._value = int(self._children[0])
 
     def generate_string(self, extension: bool):
         """
-        Generates a string representation of the isotope.
+        Generates a string representation of the isotope number.
 
         Args:
             extension (bool): Extension parameter (unused in this method).
 
         Returns:
-            str: String representation of the isotope.
-
+            str: String representation of the isotope number.
         """
         return str(self._value)
 
     def generable(self):
-        """Returns whether the isotope can be generated."""
+        """Returns whether the isotope specification can be generated."""
         return True
 
     @property
     def num_nuclei(self):
-        """Returns the number of nuclei in the isotope."""
+        """Returns the integer value of the isotope number."""
         return int(self._value)
 
 
 class AtomSymbol(BigSMILESbase):
     """
-    Represents the symbol of an atom.
+    Represents the symbol of an atom (e.g., 'C', 'O', 'n', 's').
     """
 
     def __init__(self, children: list[lark.Token]):
@@ -222,8 +232,7 @@ class AtomSymbol(BigSMILESbase):
         Initializes an AtomSymbol object.
 
         Args:
-            children (list[lark.Token]): List of child elements.
-
+            children (list[lark.Token]): List containing the Lark token for the atom symbol.
         """
         self._value = str(children[0])
 
@@ -236,13 +245,12 @@ class AtomSymbol(BigSMILESbase):
 
         Returns:
             str: String representation of the atom symbol.
-
         """
         return self._value
 
     @property
     def aromatic(self):
-        """Returns whether the atom is aromatic."""
+        """Returns whether the atom symbol represents an aromatic atom (default is False)."""
         return False
 
     def generable(self):
@@ -252,7 +260,8 @@ class AtomSymbol(BigSMILESbase):
 
 class Chiral(BigSMILESbase):
     """
-    Represents the chirality of an atom.
+    Represents the chirality specification of an atom within brackets
+    (e.g., '@', '@@', '@TH1', etc.).
     """
 
     def __init__(self, children: list):
@@ -260,39 +269,34 @@ class Chiral(BigSMILESbase):
         Initializes a Chiral object.
 
         Args:
-            children (list): List of child elements.
-
+            children (list): List of Lark tokens representing the chirality symbol.
         """
         super().__init__(children)
 
-        self._symbol = str(self._children[0])
-        if len(self._children) > 1:
-            self._symbol += str(self._children[1])
-        if len(self._children) > 2:
-            self._symbol += str(self._children[2])
+        self._symbol = "".join(str(child) for child in self._children)
 
     @property
     def generable(self):
-        """Returns whether the chirality can be generated."""
+        """Returns whether the chirality specification can be generated."""
         return True
 
     def generate_string(self, extension):
         """
-        Generates a string representation of the chirality.
+        Generates a string representation of the chirality symbol.
 
         Args:
             extension: Extension parameter (unused in this method).
 
         Returns:
-            str: String representation of the chirality.
-
+            str: String representation of the chirality symbol.
         """
         return self._symbol
 
 
 class HCount(BigSMILESbase):
     """
-    Represents the hydrogen count of an atom.
+    Represents the hydrogen count specification for an atom within brackets
+    (e.g., 'H', 'H2').
     """
 
     def __init__(self, children: list):
@@ -300,8 +304,7 @@ class HCount(BigSMILESbase):
         Initializes an HCount object.
 
         Args:
-            children (list): List of child elements.
-
+            children (list): List of Lark tokens representing the hydrogen count.
         """
         self._count = None
         super().__init__(children)
@@ -321,7 +324,7 @@ class HCount(BigSMILESbase):
 
     @property
     def generable(self):
-        """Returns whether the hydrogen count can be generated."""
+        """Returns whether the hydrogen count specification can be generated."""
         return True
 
     def generate_string(self, extension):
@@ -333,7 +336,6 @@ class HCount(BigSMILESbase):
 
         Returns:
             str: String representation of the hydrogen count.
-
         """
         if self._count:
             return f"H{self.num}"
@@ -342,7 +344,8 @@ class HCount(BigSMILESbase):
 
 class AtomCharge(BigSMILESbase):
     """
-    Represents the charge of an atom.
+    Represents the charge specification for an atom within brackets
+    (e.g., '+', '++', '-', '--', '+2', '-3').
     """
 
     def __init__(self, children):
@@ -350,8 +353,7 @@ class AtomCharge(BigSMILESbase):
         Initializes an AtomCharge object.
 
         Args:
-            children: List of child elements.
-
+            children: List of Lark tokens representing the charge.
         """
         super().__init__(children)
         self._number = False
@@ -370,7 +372,7 @@ class AtomCharge(BigSMILESbase):
 
     @property
     def generable(self):
-        """Returns whether the atom charge can be generated."""
+        """Returns whether the atom charge specification can be generated."""
         return True
 
     def generate_string(self, extension):
@@ -382,7 +384,6 @@ class AtomCharge(BigSMILESbase):
 
         Returns:
             str: String representation of the atom charge.
-
         """
         if not self._number:
             if self._sign > 0:
@@ -402,13 +403,14 @@ class AtomCharge(BigSMILESbase):
 
     @property
     def charge(self):
-        """Returns the charge value."""
+        """Returns the integer value of the charge."""
         return self._sign * self._value
 
 
 class AtomClass(BigSMILESbase):
     """
-    Represents the class of an atom.
+    Represents the atom class specification for an atom within brackets
+    (e.g., ':1', ':10').
     """
 
     def __init__(self, children):
@@ -416,15 +418,14 @@ class AtomClass(BigSMILESbase):
         Initializes an AtomClass object.
 
         Args:
-            children: List of child elements.
-
+            children: List of Lark tokens representing the atom class.
         """
         super().__init__(children)
         self._class_num = int(self._children[1])
 
     @property
     def generable(self):
-        """Returns whether the atom class can be generated."""
+        """Returns whether the atom class specification can be generated."""
         return True
 
     def generate_string(self, extension):
@@ -436,44 +437,45 @@ class AtomClass(BigSMILESbase):
 
         Returns:
             str: String representation of the atom class.
-
         """
         return ":" + str(self._class_num)
 
     @property
     def num(self):
-        """Returns the class number."""
+        """Returns the integer value of the atom class number."""
         return self._class_num
 
 
 class AromaticSymbol(AtomSymbol):
     """
-    Represents an aromatic atom symbol.
+    Represents an aromatic atom symbol (lowercase, e.g., 'c', 'o', 'n').
     """
 
     @property
     def aromatic(self):
-        """Returns whether the atom is aromatic."""
+        """Returns whether the atom is aromatic (True for AromaticSymbol)."""
         return True
 
 
 class AliphaticOrganic(AtomSymbol):
     """
-    Represents an aliphatic organic atom symbol.
+    Represents an aliphatic organic atom symbol (uppercase, e.g., 'C', 'O', 'N').
     """
 
     @property
     def aromatic(self):
-        """Returns whether the atom is aromatic."""
+        """Returns whether the atom is aromatic (False for AliphaticOrganic)."""
         return False
 
 
 class AromaticOrganic(AtomSymbol):
     """
-    Represents an aromatic organic atom symbol.
+    Represents an aromatic organic atom symbol (lowercase, e.g., 'c', 'o', 'n').
+    This class is redundant as AromaticSymbol already covers this.
+    It is kept for potential distinction in parsing or future extensions.
     """
 
     @property
     def aromatic(self):
-        """Returns whether the atom is aromatic."""
+        """Returns whether the atom is aromatic (True for AromaticOrganic)."""
         return True
