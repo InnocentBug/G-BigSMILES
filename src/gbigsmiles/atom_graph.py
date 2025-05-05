@@ -68,7 +68,7 @@ class _HalfAtomBond:
         return len(self._mode_attr_map[mode]) > 0
 
     def stochastic_growth_suitable(self):
-        return self.has_mode_bonds(_STOCHASTIC_NAME) or (self.parent_stochastic_id >= 0 and self.has_mode_bonds(_TRANSITION_NAME))
+        return self.has_mode_bonds(_STOCHASTIC_NAME)
 
     def get_mode_bonds(self, mode):
         try:
@@ -128,7 +128,8 @@ class _StochasticObjectTracker:
             self._stochastic_gen_id_to_atom_id[sto_gen_id] = {new_sto_atom_id}
 
         if sto_gen_id >= 0:
-            self._sto_atom_id_expected_molw[new_sto_atom_id] = self._sto_gen_id_distribution[sto_gen_id].draw_mw(self._rng)
+            new_molw = self._sto_gen_id_distribution[sto_gen_id].draw_mw(self._rng)
+            self._sto_atom_id_expected_molw[new_sto_atom_id] = new_molw
         else:
             self._sto_atom_id_expected_molw[new_sto_atom_id] = -1
 
@@ -356,7 +357,7 @@ class _PartialAtomGraph:
         def pop_next_termination_bond():
             termination_idx = []
             termination_weight = []
-            for i, half_bond in terminated_graph.get_open_half_bonds(sto_atom_id):
+            for i, half_bond in zip(*terminated_graph.get_open_half_bonds(sto_atom_id)):
                 if half_bond.has_mode_bonds(_TERMINATION_NAME):
                     termination_idx += [i]
                     termination_weight += [half_bond.weight]
@@ -476,9 +477,6 @@ class _PartialAtomGraph:
 
         target_attr, target_idx = stochastic_bond.get_mode_bonds(_STOCHASTIC_NAME)
         target_weights = np.asarray([attr[_STOCHASTIC_NAME] for attr in target_attr])
-        if len(target_attr) == len(target_idx) == 0:  # Stochastic growth with parent ones, nested case
-            target_attr, target_idx = stochastic_bond.get_mode_bonds(_TRANSITION_NAME)
-            target_weights = np.asarray([attr[_TRANSITION_NAME] for attr in target_attr])
         target_prob = target_weights / np.sum(target_weights)
 
         target_id = rng.choice(len(target_idx), p=target_prob)
@@ -534,6 +532,7 @@ class AtomGraph:
         starting_node_weight = np.asarray(starting_node_weight)
         starting_node_weight /= np.sum(starting_node_weight)
 
+        print(starting_node_idx, starting_node_weight)
         return starting_node_idx, starting_node_weight
 
     @staticmethod
@@ -603,11 +602,12 @@ class AtomGraph:
         partial_atom_graph = _PartialAtomGraph(self.ml_graph, self._static_graph, source, stochastic_object_tracker, sto_atom_id)
         del stochastic_object_tracker
 
-        partial_atom_graph.transition_graph(sto_atom_id, rng)  # Attempt a transition
-        while len(partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()) > 0:
+        while len(partial_atom_graph.get_open_half_bonds(None)[0]) > 0:
+            # print(partial_atom_graph._open_half_bond_map, partial_atom_graph.get_open_half_bonds(None)[0])
 
             active_sto_atom_id = partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
             terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
+            # print("terminated", terminated_graph, terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id), terminated_graph.stochastic_tracker._sto_atom_id_expected_molw)
 
             if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
 

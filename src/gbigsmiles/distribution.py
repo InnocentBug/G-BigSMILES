@@ -101,7 +101,7 @@ class StochasticDistribution(StochasticGeneration):
 
         if rng is None:
             rng = get_global_rng()
-        return self._distribution.rvs(random_state=rng, **kwargs)
+        return max(0, float(self._distribution.rvs(random_state=rng, **kwargs)))
 
     def prob_mw(self, mw: Union[float, "RememberAdd"], **kwargs: Any) -> float:
         """
