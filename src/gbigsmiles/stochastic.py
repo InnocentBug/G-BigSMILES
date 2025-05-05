@@ -78,7 +78,8 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         return self._stochastic_parent
 
     def _set_stochastic_parent(self, parent):
-        assert self._stochastic_parent is None
+        if self._stochastic_parent is not None:
+            raise RuntimeError("A stochastic parent can only be set once. If this most likely a bug, please report it on github.")
         self._stochastic_parent = parent
 
     def _post_parse_validation(self):

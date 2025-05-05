@@ -5,10 +5,9 @@
 
 def mol_graph_to_rdkit_mol(mol_graph):
     try:
-        import rdkit
+        from rdkit import Chem
     except ImportError as exc:
         raise RuntimeError("RDKit is  an optional dependency, but to generate RDKit molecules it is required. Please install RDKit for example with `pip install rdkit`.") from exc
-    from rdkit import Chem
 
     def convert_bond_type(bond_attr):
         if bond_attr["aromatic"]:

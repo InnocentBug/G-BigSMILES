@@ -106,7 +106,8 @@ class _StochasticObjectTracker:
 
                 if data["stochastic_id"] >= 0 and data["parent_stochastic_id"] >= 0:
                     if data["stochastic_id"] in self._parent_map:
-                        assert self._parent_map[data["stochastic_id"]] == data["parent_stochastic_id"]
+                        if self._parent_map[data["stochastic_id"]] != data["parent_stochastic_id"]:
+                            raise RuntimeError("Error in the stochastic parent map. This is a bug, please report on github")
                     self._parent_map[data["stochastic_id"]] = data["parent_stochastic_id"]
 
     def _register_sto_gen_id(self, sto_gen_id, distribution):
@@ -114,7 +115,8 @@ class _StochasticObjectTracker:
 
     def register_new_atom_instance(self, sto_gen_id):
         if sto_gen_id > 0:
-            assert self._is_sto_gen_id_known(sto_gen_id)
+            if not self._is_sto_gen_id_known(sto_gen_id):
+                raise RuntimeError("You cannot register the an already known atomic instance as new. Please report on github.")
 
         try:
             new_sto_atom_id = max(self._stochastic_atom_id_to_gen_id) + 1
@@ -159,7 +161,8 @@ class _StochasticObjectTracker:
         return sto_atom_id in self._terminated_sto_atom_ids
 
     def terminate(self, sto_atom_id):
-        assert not self.is_terminated(sto_atom_id)
+        if self.is_terminated(sto_atom_id):
+            raise RuntimeError("You cannot terminate an already terminated stochastic ID. This is a bug, please report on github.")
 
         self._terminated_sto_atom_ids.add(sto_atom_id)
 
@@ -311,14 +314,17 @@ class _PartialAtomGraph:
         try:
             for target_index, half_bond in enumerate(self._open_half_bond_map[sto_atom_idx]):
                 if half_bond.node_idx == target_idx:
-                    assert found_target_index is None
+                    if found_target_index is not None:
+                        raise RuntimeError("A matching target index was found twice, that is a bug. Please report on github.")
+
                     found_target_index = target_index
         except KeyError:
             pass
 
         if found_target_index is None:
             possible_connections = self._find_origin_to_atom(target_idx)
-            assert len(possible_connections) == 1
+            if len(possible_connections) != 1:
+                raise RuntimeError("There should only be one possible connection left. Please report this bug on github.")
             return possible_connections[0]
 
         target_half_bond = self._open_half_bond_map[sto_atom_idx].pop(found_target_index)
@@ -432,7 +438,9 @@ class _PartialAtomGraph:
         selected_attr = self.gen_edge_attr_to_bond_attr(target_attr[target_id])
         selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx]["stochastic_id"]
         if selected_target_sto_gen_id > 0:
-            assert self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] != selected_target_sto_gen_id
+            if self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] == selected_target_sto_gen_id:
+                raise RuntimeError("New stochastic IDs need to be new.")
+
         new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id)
 
         other_graph = _PartialAtomGraph(
