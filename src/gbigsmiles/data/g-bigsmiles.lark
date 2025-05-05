@@ -1,6 +1,6 @@
 big_smiles: big_smiles_molecule* big_smiles_fragment_definition*
 
-big_smiles_molecule: (smiles | smiles? _big_smiles_repeat)+ dot_generation?
+big_smiles_molecule.-1: (smiles | smiles? _big_smiles_repeat)+ dot_generation?
 
 _big_smiles_repeat: stochastic_object+ smiles?
 
