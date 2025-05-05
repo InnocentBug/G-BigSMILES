@@ -6,7 +6,7 @@ import copy
 import warnings
 from collections import OrderedDict
 from collections.abc import Sequence
-from typing import Any
+from typing import Any, Optional
 
 import networkx as nx
 import numpy as np
@@ -532,7 +532,6 @@ class AtomGraph:
         starting_node_weight = np.asarray(starting_node_weight)
         starting_node_weight /= np.sum(starting_node_weight)
 
-        print(starting_node_idx, starting_node_weight)
         return starting_node_idx, starting_node_weight
 
     @staticmethod
@@ -578,7 +577,7 @@ class AtomGraph:
         dot_str += "}\n"
         return dot_str
 
-    def sample_mol_graph(self, source: str = None, rng=None, tolerate_incomplete_stochastic_generation_with_no_more_than_X_open_bonds=0):
+    def sample_mol_graph(self, source: Optional[str] = None, rng=None, tolerate_incomplete_stochastic_generation_with_no_more_than_X_open_bonds=0):
 
         if rng is None:
             rng = get_global_rng()
@@ -602,6 +601,7 @@ class AtomGraph:
         partial_atom_graph = _PartialAtomGraph(self.ml_graph, self._static_graph, source, stochastic_object_tracker, sto_atom_id)
         del stochastic_object_tracker
 
+        partial_atom_graph.transition_graph(sto_atom_id, rng)
         while len(partial_atom_graph.get_open_half_bonds(None)[0]) > 0:
             # print(partial_atom_graph._open_half_bond_map, partial_atom_graph.get_open_half_bonds(None)[0])
 

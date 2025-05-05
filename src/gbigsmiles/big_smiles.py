@@ -98,7 +98,6 @@ class BigSmilesMolecule(_AbstractIterativeGenerativeClass):
 
         # Open left half bonds are entry points
         for half_bond in partial_graph.left_half_bonds:
-            print(half_bond)
             partial_graph.g.nodes[half_bond.node_id]["init_weight"] = init_weight
 
         return partial_graph
