@@ -7,7 +7,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.16.3
+      jupytext_version: 1.17.1
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -30,13 +30,13 @@ from IPython.display import SVG
 pydot = None
 try:
     import pydot
-except:
-    pass
+except ImportError:
+    print("You don't have the optional `pydot` dependency installed. As a result, the graphs cannot be displayed.")
+    
 from rdkit.Chem import rdDepictor
 from rdkit.Chem.Draw import rdMolDraw2D
 
 import gbigsmiles
-from gbigsmiles import System, mol_prob, Molecule, System
 
 # Consistent random numbers also across calls
 rng = np.random.default_rng(42)
@@ -72,15 +72,18 @@ def draw_molecule(molecule_string):
     global rng
     # Generate the abstract python object, parsing bigSMILES
     # Try it as a system first
-    bigSMILESmol = System(molecule_string)
-    mol = bigSMILESmol.generate(rng=rng)
-    return render_svg(moltosvg(mol.mol))
+    bigSMILESmol = gbigsmiles.BigSmiles.make(molecule_string)
+    generating_graph = bigSMILESmol.get_generating_graph()
+    atom_graph = generating_graph.get_atom_graph()
+    mol_graph = atom_graph.sample_mol_graph(rng=rng)
+    mol = gbigsmiles.mol_graph_to_rdkit_mol(mol_graph)
+    return render_svg(moltosvg(mol))
 
 
 def draw_generation_graph(molecule_string):
-    bigSMILESmol = Molecule(molecule_string)
-    graph = bigSMILESmol.gen_reaction_graph()
-    graph_dot = gbigsmiles.reaction_graph_to_dot_string(graph, bigSMILESmol)
+    bigSMILESmol = gbigsmiles.BigSmiles.make(molecule_string)
+    gen_graph = bigSMILESmol.get_generating_graph()
+    graph_dot = gen_graph.get_dot_string()
     if pydot:
         pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
         graph_svg = pydot_graph.create_svg()
@@ -145,31 +148,36 @@ def update_progress(progress):
         text = "Progress: [{0}] {1:.1f}%".format( "#" * block + "-" * (bar_length - block), progress * 100)
         print(text)
     
-def count_PS_PMMA_monomers(gen_mol):
+def count_PS_PMMA_monomers(atom_graph):
     # Since the =O is unique to the PMMA and head group we can count the '=' in the smiles string to determine the number of PMMA.
-    n_PMMA = gen_mol.smiles.count("=")
+    mol_graph = atom_graph.sample_mol_graph()
+    mol = gbigsmiles.mol_graph_to_rdkit_mol(mol_graph)
+    smi = rdkit.Chem.MolToSmiles(mol)
+    n_PMMA = smi.count("=")
     # subtract the head group double bond
     n_PMMA -= 1
 
     # Only PS has exactly one aromatic ring, so we can determine the number of PS monomers
-    n_PS = rdDescriptors.CalcNumAromaticCarbocycles(gen_mol.mol)
+    n_PS = rdDescriptors.CalcNumAromaticCarbocycles(mol)
 
-    return n_PMMA, n_PS
+    return n_PMMA, n_PS, rdDescriptors.CalcExactMolWt(mol)
 
 # In testing environments only run on the linux systems:
 if IS_LINUX or not TESTING_ENV:
     # Use a full ensemble system determine the ration of PS to PMMA
-    system = gbigsmiles.System(generative_bigSMILES)
+    system = gbigsmiles.BigSmiles.make(generative_bigSMILES)
     total_PMMA = 0
     total_PS = 0
     total_weight = 0
+    generating_graph = system.get_generating_graph()
+    atom_graph = generating_graph.get_atom_graph()
     # Iterate the molecules of a full system
-    for gen_mol in system.generator:
-        n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
+    while total_weight < system.total_molecular_weight:
+        n_PMMA, n_PS, molw = count_PS_PMMA_monomers(atom_graph)
         total_PMMA += n_PMMA
         total_PS += n_PS
-        total_weight += gen_mol.weight
-        update_progress(total_weight/system.system_mass)
+        total_weight += molw
+        update_progress(total_weight/system.total_molecular_weight)
     
     ratio = total_PMMA/(total_PS + total_PMMA)
     print(ratio, total_PMMA, total_PS)
@@ -207,17 +215,19 @@ draw_generation_graph(generative_bigSMILES)
 # In testing environments only run on the linux systems:
 if IS_LINUX or not TESTING_ENV:
     # Use a full ensemble system determine the ration of PS to PMMA
-    system = gbigsmiles.System(generative_bigSMILES)
+    system = gbigsmiles.BigSmiles.make(generative_bigSMILES)
     total_PMMA = 0
     total_PS = 0
     total_weight = 0
+    generating_graph = system.get_generating_graph()
+    atom_graph = generating_graph.get_atom_graph()
     # Iterate the molecules of a full system
-    for gen_mol in system.generator:
-        n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
+    while total_weight < system.total_molecular_weight:
+        n_PMMA, n_PS, molw = count_PS_PMMA_monomers(atom_graph)
         total_PMMA += n_PMMA
         total_PS += n_PS
-        total_weight += gen_mol.weight
-        update_progress(total_weight/system.system_mass)
+        total_weight += molw
+        update_progress(total_weight/system.total_molecular_weight)
 
     ratio = total_PMMA/(total_PS+total_PMMA)
     expected_ratio = 0.2
@@ -254,17 +264,19 @@ draw_generation_graph(generative_bigSMILES)
 # In testing environments only run on the linux systems:
 if IS_LINUX or not TESTING_ENV:
     # Use a full ensemble system determine the ration of PS to PMMA
-    system = gbigsmiles.System(generative_bigSMILES)
+    system = gbigsmiles.BigSmiles.make(generative_bigSMILES)
     total_PMMA = 0
     total_PS = 0
     total_weight = 0
+    generating_graph = system.get_generating_graph()
+    atom_graph = generating_graph.get_atom_graph()
     # Iterate the molecules of a full system
-    for gen_mol in system.generator:
-        n_PMMA, n_PS = count_PS_PMMA_monomers(gen_mol)
+    while total_weight < system.total_molecular_weight:
+        n_PMMA, n_PS, molw = count_PS_PMMA_monomers(atom_graph)
         total_PMMA += n_PMMA
         total_PS += n_PS
-        total_weight += gen_mol.weight
-        update_progress(total_weight/system.system_mass)
+        total_weight += molw
+        update_progress(total_weight/system.total_molecular_weight)
 
     ratio = total_PMMA/(total_PS + total_PMMA)
     expected_ratio = 0.5
@@ -407,14 +419,18 @@ The enhanced notation, strongly recommended for mixtures, leads to the same mole
 
 This applies universally to mixtures such as polymers in solution, even though we're showcasing a mixture of two homopolymers here.
 
-
+<!-- #region -->
 ## Polymer Tacticity with Generative BigSMILES
 
 Polymer tacticity is an essential aspect that significantly influences their properties. We'll delve into some examples to understand this concept better using generative BigSMILES notation.
 
+
+***Tacticity is not supported at the moment***
+
 ### Atactic Polypropylene (PP)
 
 For atactic polymers, there is no need to explicitly mention tacticity.
+<!-- #endregion -->
 
 ```python
 generative_bigSMILES = "C{[>][<]CC(C)[>][<]}|poisson(900)|[H]"
@@ -651,6 +667,7 @@ draw_molecule(generative_bigSMILES)
 draw_generation_graph(generative_bigSMILES)
 ```
 
+<!-- #region -->
 ### Regulating Arm Molecular Weight
 
 There may be situations where it's necessary to control the molecular weight of each individual arm in a polymer. While this can be accomplished with nested stochastic objects, such functionality isn't supported by this reference implementation. Nevertheless, generative BigSMILES can still perform this task as long as the arms originate from separate atoms.
@@ -670,6 +687,10 @@ To ensure smooth generation with generative BigSMILES, we need to make a few mod
 This approach allows for the independent control of the molecular weight of each arm.
 
 
+***This example needs to be debugged***
+
+<!-- #endregion -->
+
 ```python
 generative_bigSMILES = "C{[$] [$]C(CC[<])C[$2|0|], [>]CC[<]; [>][H] [$2]}|uniform(100,101)|"
 generative_bigSMILES += "C{[$] [$]C(CC[<])C[$2|0|], [>]CC[<]; [>]O [$2]}|schulz_zimm(200,150)|"
@@ -681,14 +702,25 @@ draw_molecule(generative_bigSMILES)
 draw_generation_graph(generative_bigSMILES)
 ```
 
-<!-- #region -->
 ## Ring Polymer
 
 A stochastic ring polymer can be represented in BigSMILES using connection notation `1` across a stochastic object, like so: `C1{[>][<]CCO[>][<]}CO1`. Here, the first carbon atom and the last oxygen atom complete the ring with a covalent bond, each labeled with `1`.
 
 This can be replicated in generative BigSMILES: `C1{[>][<]CCO[>][<]}|poisson(1000)|CO1`. However, the current reference implementation doesn't support connection across a stochastic object.
 
-_Note_: The reasoning behind this lack of support is that every SMILES token must be a valid SMILES string for a molecule. Neither the prefix `C1` nor the suffix `CO1` are valid SMILES strings for molecule generation.
+***This still doesn't quite work, but we are a step closer now.***
+
+
+```python
+generative_bigSMILES = "C1{[>][<]CCO[>][<]}|poisson(1000)|CO1"
+# draw_molecule(generative_bigSMILES)
+```
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+<!-- #region -->
 
 
 ## Hyper-Branched Polymer: Poly-Ethylene
@@ -749,15 +781,19 @@ from IPython.display import clear_output
 
 def plot_distribution(bigsmiles, expected_mu, expected_sigma, bins=25):
     # Generate the ensemble of molecules
-    bigsmiles_system = gbigsmiles.System(bigsmiles)
+    bigsmiles_system = gbigsmiles.BigSmiles.make(bigsmiles)
     generated_weights = []
     total_weight = 0
-    for gen_mol in bigsmiles_system.generator:
-        mol_weight = gen_mol.weight
+    generating_graph = bigsmiles_system.get_generating_graph()
+    atom_graph = generating_graph.get_atom_graph()
+    # Iterate the molecules of a full system
+    while total_weight < bigsmiles_system.total_molecular_weight:
+        mol_graph = atom_graph.sample_mol_graph()
+        mol = gbigsmiles.mol_graph_to_rdkit_mol(mol_graph)
+        mol_weight = rdDescriptors.CalcExactMolWt(mol)
         generated_weights += [mol_weight]
         total_weight += mol_weight
-        update_progress(total_weight/bigsmiles_system.system_mass)
-
+        update_progress(total_weight/bigsmiles_system.total_molecular_weight)
 
     hist, bin_edges = np.histogram(generated_weights, bins=bins, density=True)
     mw = bin_edges[:-1] + (bin_edges[1]-bin_edges[0])/2
@@ -857,72 +893,6 @@ if IS_LINUX or not TESTING_ENV:
 Upon juxtaposing the distributions, a noticeable divergence is evident. The molecular weight distribution that's generated skews significantly towards lower molecular weights. This is anticipated since the generation can halt prematurely. While the resultant distribution bears resemblance to a geometric distribution, it isn't a precise match. The inherent Gaussian distribution can also interrupt the generation. Consequently, we detect a peak in higher molecular weights, proximate to the expected mean of the Gaussian distribution.
 
 
-## Stochastic Atom Graphs
-
-When considering G-BigSMILES as graphs, we have several options for graph representation.
-
-### Hierarchical Generation Graph
-
-The first option is the hierarchical generation graph. In this representation, repeating groups, end groups, and connecting groups are depicted as nodes in a graph that illustrates the connections between these molecular fragments. This representation has been previously discussed in the notebook.
-
-```python
-g_big_smi = "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br]"
-draw_generation_graph(g_big_smi)
-```
-
-```python
-def draw_stochastic_atom_graph(stochastic_atom_graph):
-    
-
-    
-    graph_dot = gbigsmiles.core.stochastic_atom_graph_to_dot_string(stochastic_atom_graph)
-
-    if pydot:
-        pydot_graph = pydot.graph_from_dot_data(graph_dot)[0]
-        graph_svg = pydot_graph.create_svg()
-        return render_svg(graph_svg)
-    else:
-        return ''
-
-mol = gbigsmiles.Molecule(g_big_smi)
-stochastic_atom_graph = mol.gen_stochastic_atom_graph(expect_schulz_zimm_distribution=True)
-draw_stochastic_atom_graph(stochastic_atom_graph)
-```
-
-As we can see, this representation eliminates the need for hierarchy and instead encodes hierarchical information as edge attributes in the graph.
-
-- Black: Connections within a molecular fragment
-- Red: Connections between repeat units
-- Blue: Connections between stochastic elements
-- Arrow: Single bonds
-- Box: Aromatic bonds
-- Number labels: Probability of bond formation
-
-This transformation makes the graphs slightly more complex, but it enables the use of conventional and well-established graph algorithms, such as graph matching, graph edit distance, and machine learning tools like message passing neural networks.
-
-### Full Atom Graphs
-
-The information contained in the stochastic atom graphs remains complete. We can demonstrate this by using the stochastic atom graph to build a full molecule from the ensemble.
-
-```python
-def render_molecule_from_stochastic_atom_graph(stochastic_atom_graph):
-    from gbigsmiles.graph_generate import AtomGraph
-    full_graph = AtomGraph(stochastic_atom_graph, rng=rng)
-    full_graph.generate()
-    atom_dot = gbigsmiles.core.molecule_atom_graph_to_dot_string(full_graph)
-    if pydot:
-        pydot_graph = pydot.graph_from_dot_data(atom_dot)[0]
-        graph_svg = pydot_graph.create_svg()
-        return render_svg(graph_svg)
-    else:
-        return ''
-render_molecule_from_stochastic_atom_graph(stochastic_atom_graph)
-```
-
-```python
-render_molecule_from_stochastic_atom_graph(stochastic_atom_graph)
-```
-
 Just as before, these graphs have too many nodes to be handled efficiently with graph algorithms. Additionally, they differ as they are samples from an ensemble.
 
 
@@ -1014,6 +984,6 @@ draw_molecule(generative_bigSMILES)
 ```
 
 This notation is longer as we have to repeat parts for both polymer species. But it seems more straight forward, and it gives us more control. For example we can now control the molecular weight distribution as a function of the initiator.
-Here I made the nitrogen polymers slightly more molecular weight.
+Here I made the molecular weight of the polymers containing nitrogen slightly higher.
 
 Additionally, we now control the mixture ratio directly over the mixture ratio of the two species with the `.` notation.
