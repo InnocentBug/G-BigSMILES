@@ -18,7 +18,7 @@ from .exception import (
     NoInitiationForStochasticObject,
     NoLeftTransitions,
     StochasticMissingPath,
-    TwoConsecutiveBondDescriptors    
+    TwoConsecutiveBondDescriptors,
 )
 from .generating_graph import (
     _STOCHASTIC_NAME,

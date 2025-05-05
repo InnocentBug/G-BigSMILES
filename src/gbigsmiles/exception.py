@@ -98,7 +98,7 @@ class TwoConsecutiveBondDescriptors(ParsingError):
         self.stochastic_obj = stochastic_obj
 
     def __str__(self):
-        return f"The object {self.obj} in stochastic object {self.stochastic_obj} has two consecutive bond descriptors which is forbidden by BigSmiles grammar."  
+        return f"The object {self.obj} in stochastic object {self.stochastic_obj} has two consecutive bond descriptors which is forbidden by BigSmiles grammar."
 
 
 class IncorrectNumberOfBondDescriptors(ParsingError):

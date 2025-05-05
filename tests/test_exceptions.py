@@ -36,6 +36,22 @@ invalid_monomer_stochastic = [
     "{[<] [>]CC, [<]C([$])C[>]; [$]Br [>]}",
 ]
 
+invalid_bond_descriptor_sequence = [
+    "{[] [>]CC[>][<] []}",
+    "{[] [<]N(CC[>][<])N[>], [>]CC[<]; [$][H], [<]Br []}",
+    "{[<] [<]NN[>], [$]CC[$][$]; [$][H], [<]Br [>]}",
+    "{[<] [<]NN[>], [>]CC[<]; [$][$][H], [<]Br [>]}",
+]
+
+
+@pytest.mark.parametrize("stochastic_smi", invalid_bond_descriptor_sequence)
+def test_bond_descriptor_sequence(stochastic_smi):
+    with pytest.raises(gbigsmiles.exception.TwoConsecutiveBondDescriptors):
+        try:
+            gbigsmiles.StochasticObject.make(stochastic_smi)
+        except lark.exceptions.VisitError as exc:
+            raise exc.__context__  # trunk-ignore(ruff/B904)
+
 
 @pytest.mark.parametrize("stochastic_smi", invalid_monomer_stochastic)
 def test_invalid_monomer_stochastic(stochastic_smi):
