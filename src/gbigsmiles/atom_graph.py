@@ -110,6 +110,26 @@ class _StochasticObjectTracker:
                             raise RuntimeError("Error in the stochastic parent map. This is a bug, please report on github")
                     self._parent_map[data["stochastic_id"]] = data["parent_stochastic_id"]
 
+    def has_sto_gen_id_unterminated_sto_ids(self, sto_gen_id: int):
+        if sto_gen_id not in self._stochastic_gen_id_to_atom_id:
+            return False
+        found = False
+        for sto_atom_id in self._stochastic_gen_id_to_atom_id[sto_gen_id]:
+            if not self.is_terminated(sto_atom_id):
+                found = True
+                break
+        return found
+
+    def has_parent(self, sto_gen_id: int, parent_id: int):
+        tmp_id = sto_gen_id
+        if tmp_id == parent_id:
+            return True
+        while tmp_id in self._parent_map:
+            tmp_id = self._parent_map[tmp_id]
+            if tmp_id == parent_id:
+                return True
+        return False
+
     def _register_sto_gen_id(self, sto_gen_id, distribution):
         self._sto_gen_id_distribution[sto_gen_id] = distribution
 
@@ -431,15 +451,27 @@ class _PartialAtomGraph:
 
         target_attr, target_idx = transition_bond.get_mode_bonds(_TRANSITION_NAME)
         target_weights = np.asarray([attr[_TRANSITION_NAME] for attr in target_attr])
+
+        if transition_bond.parent >= 0:
+            if self.stochastic_tracker.has_sto_gen_id_unterminated_sto_ids(transition_bond.parent):
+
+                temp_weight = target_weights.copy()
+                for i, stochastic_id in enumerate([self.generating_graph.nodes[idx]["stochastic_id"] for idx in target_idx]):
+                    if not self.stochastic_tracker(stochastic_id, transition_bond.parent):
+                        temp_weight[i] *= 0
+
+                if temp_weight.sum() > 0:
+                    target_weights = temp_weight
+
         target_prob = target_weights / np.sum(target_weights)
 
         target_id = rng.choice(len(target_idx), p=target_prob)
         selected_target_idx = target_idx[target_id]
         selected_attr = self.gen_edge_attr_to_bond_attr(target_attr[target_id])
         selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx]["stochastic_id"]
-        if selected_target_sto_gen_id > 0:
-            if self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] == selected_target_sto_gen_id:
-                raise RuntimeError("New stochastic IDs need to be new.")
+        # if selected_target_sto_gen_id > 0:
+        #     if self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] == selected_target_sto_gen_id:
+        #         raise RuntimeError("New stochastic IDs need to be new.")
 
         new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id)
 

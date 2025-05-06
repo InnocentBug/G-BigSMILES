@@ -91,7 +91,8 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 if node in gengraph._bd_idx_set:
                     for _u, v in gengraph.g.out_edges(node):
                         if v in gengraph._bd_idx_set:
-                            raise TwoConsecutiveBondDescriptors(element, self)
+                            # raise TwoConsecutiveBondDescriptors(element, self)
+                            pass
 
         for smi in self._repeat_residues:
             if len(smi.bond_descriptors) < 2:
