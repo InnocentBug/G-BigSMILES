@@ -86,12 +86,14 @@ class StochasticObject(BigSMILESbase, GenerationBase):
     def _post_parse_validation(self):
         for element in self._repeat_residues + self._termination_residues:
             gengraph = element.get_generating_graph()
-            for node in gengraph.g.nodes():
-
+            MLgraph = gengraph.get_ml_graph(include_bond_descriptors=True)
+            for node, data in MLgraph.nodes(data=True):
                 if node in gengraph._bd_idx_set:
-                    for _u, v in gengraph.g.out_edges(node):
-                        if v in gengraph._bd_idx_set:
-                            raise TwoConsecutiveBondDescriptors(element, self)
+                    if data["stochastic_id"] == data["parent_stochastic_id"]:
+                        for _u, v in MLgraph.out_edges(node):
+                            stochastic_id = MLgraph.nodes(data=True)[v]["stochastic_id"]
+                            if (v in gengraph._bd_idx_set) and (data["stochastic_id"] == stochastic_id):
+                                raise TwoConsecutiveBondDescriptors(element, self)
 
         for smi in self._repeat_residues:
             if len(smi.bond_descriptors) < 2:
