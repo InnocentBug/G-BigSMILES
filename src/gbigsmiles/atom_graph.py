@@ -40,7 +40,9 @@ class _HalfAtomBond:
         self._mode_attr_map = {}
         self._mode_target_map = {}
 
-        for _u, v, d in graph.out_edges(node_idx, data=True):
+        self._special_target = None
+
+        for u, v, d in graph.out_edges(node_idx, data=True):
             if not d["static"]:
                 for k in _NON_STATIC_ATTR:
                     if d[k] > 0:
@@ -52,6 +54,15 @@ class _HalfAtomBond:
                             self._mode_target_map[k] += [v]
                         except KeyError:
                             self._mode_target_map[k] = [v]
+
+                if d[_TRANSITION_NAME] > 0:
+                    current_stochastic_id = graph.nodes[u]["stochastic_id"]
+                    target_stochastic_id = graph.nodes[v]["stochastic_id"]
+                    parent_target_stochastic_id = graph.nodes[v]["parent_stochastic_id"]
+                    if current_stochastic_id != target_stochastic_id and parent_target_stochastic_id == current_stochastic_id:
+                        if self._special_target is not None:
+                            raise RuntimeError("There should only be one nested special target per bond.")
+                        self._special_target = (v, d)
 
         self._special = None
 
@@ -167,7 +178,6 @@ class _StochasticObjectTracker:
         while tmp_id in self._parent_map:
             tmp_id = self._parent_map[tmp_id]
             self._sto_atom_id_actual_molw[tmp_id] += molw
-
         return self._sto_atom_id_actual_molw[sto_atom_id] >= self._sto_atom_id_expected_molw[sto_atom_id]
 
     def should_terminate(self, sto_atom_id):
@@ -442,13 +452,13 @@ class _PartialAtomGraph:
 
     def transition_graph(self, sto_atom_id, rng):
         # Early exit if no transition necessary
-        if len(self.get_open_half_bonds(sto_atom_id)[0]) != 1:
+        if len(self.get_open_half_bonds(sto_atom_id)[0]) < 1:
             return sto_atom_id, False
 
         transition_bond = self._open_half_bond_map[sto_atom_id].pop(0)
         if not transition_bond.has_mode_bonds(_TRANSITION_NAME):
-            self._open_half_bond_map[sto_atom_id].push(transition_bond)
-            return sto_atom_id
+            self._open_half_bond_map[sto_atom_id] += [transition_bond]
+            return sto_atom_id, False
 
         target_attr, target_idx = transition_bond.get_mode_bonds(_TRANSITION_NAME)
         target_weights = np.asarray([attr[_TRANSITION_NAME] for attr in target_attr])
@@ -560,6 +570,50 @@ class _PartialAtomGraph:
 
         return new_sto_atom_id
 
+    def nested_transition(self, sto_atom_id):
+        def pop_nested_bonds():
+            if sto_atom_id not in self._open_half_bond_map:
+                return []
+
+            # Find a transition bond
+            normal_bonds = []
+            special_bonds = []
+
+            for half_bond in self._open_half_bond_map[sto_atom_id]:
+                if half_bond._special_target is not None:
+                    special_bonds += [half_bond]
+                else:
+                    normal_bonds += [half_bond]
+            self._open_half_bond_map[sto_atom_id] = normal_bonds
+
+            return special_bonds
+
+        for nested_transition_bond in pop_nested_bonds():
+            selected_target_idx, selected_attr = nested_transition_bond._special_target
+            selected_target_sto_gen_id = self.generating_graph.nodes[selected_target_idx]["stochastic_id"]
+
+            new_sto_atom_id = sto_atom_id
+            if self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] != selected_target_sto_gen_id:
+                for existing_atom_id in reversed(self.stochastic_tracker.get_unterminated_sto_atom_ids()):
+                    if self.stochastic_tracker._stochastic_atom_id_to_gen_id[existing_atom_id] == selected_target_sto_gen_id:
+                        new_sto_atom_id = existing_atom_id
+                        break
+
+                if new_sto_atom_id == sto_atom_id:
+                    new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id)
+
+            other_graph = _PartialAtomGraph(
+                self.generating_graph,
+                self.static_graph,
+                selected_target_idx,
+                self.stochastic_tracker,
+                new_sto_atom_id,
+            )
+
+            other_half_bond_atom_idx = other_graph.pop_target_open_half_bond(new_sto_atom_id, selected_target_idx)
+
+            self.merge(other_graph, nested_transition_bond.atom_idx, other_half_bond_atom_idx, selected_attr)
+
 
 class AtomGraph:
     def __init__(self, ml_graph):
@@ -627,7 +681,6 @@ class AtomGraph:
         return dot_str
 
     def sample_mol_graph(self, source: Optional[str] = None, rng=None, tolerate_incomplete_stochastic_generation_with_no_more_than_X_open_bonds=0):
-
         if rng is None:
             rng = get_global_rng()
 
@@ -651,13 +704,12 @@ class AtomGraph:
         del stochastic_object_tracker
 
         partial_atom_graph.transition_graph(sto_atom_id, rng)
-        while len(partial_atom_graph.get_open_half_bonds(None)[0]) > 0:
-            # print(partial_atom_graph._open_half_bond_map, partial_atom_graph.get_open_half_bonds(None)[0])
-
+        while len(partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()) > 0:
             active_sto_atom_id = partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
-            terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
-            # print("terminated", terminated_graph, terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id), terminated_graph.stochastic_tracker._sto_atom_id_expected_molw)
+            partial_atom_graph.nested_transition(active_sto_atom_id)
+            active_sto_atom_id = partial_atom_graph.stochastic_tracker.get_unterminated_sto_atom_ids()[0]
 
+            terminated_graph = partial_atom_graph.terminate_graph(active_sto_atom_id, rng)
             if terminated_graph.stochastic_tracker.should_terminate(active_sto_atom_id):
 
                 partial_atom_graph = terminated_graph

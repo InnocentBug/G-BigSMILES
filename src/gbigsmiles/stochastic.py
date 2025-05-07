@@ -18,7 +18,6 @@ from .exception import (
     NoInitiationForStochasticObject,
     NoLeftTransitions,
     StochasticMissingPath,
-    TwoConsecutiveBondDescriptors,
 )
 from .generating_graph import (
     _STOCHASTIC_NAME,
@@ -85,12 +84,12 @@ class StochasticObject(BigSMILESbase, GenerationBase):
 
     def _post_parse_validation(self):
         for element in self._repeat_residues + self._termination_residues:
-            gengraph = element.get_generating_graph()
-            for node in gengraph.g.nodes():
+            generative_graph = element.get_generating_graph()
+            for node in generative_graph.g.nodes():
 
-                if node in gengraph._bd_idx_set:
-                    for _u, v in gengraph.g.out_edges(node):
-                        if v in gengraph._bd_idx_set:
+                if node in generative_graph._bd_idx_set:
+                    for _u, v in generative_graph.g.out_edges(node):
+                        if v in generative_graph._bd_idx_set:
                             # raise TwoConsecutiveBondDescriptors(element, self)
                             pass
 
