@@ -1,7 +1,9 @@
 name: Publish Python distribution to PyPI
 permissions: read-all
-on: push
-
+on:
+  push:
+    branches:
+      - main
 jobs:
   build:
     name: Build distribution
