@@ -1016,8 +1016,12 @@ Another application are stochastic blocks. If you have randomly distributed bloc
 
 
 ```python
-generative_bigSMILES = "CCOC(=O)C(C)(C){[>] [<]CC{[<] [<]CC([>])c1ccccc1 [>]}|gauss(120, 10)|CC[>], [<]CC{[<] [<]CC([>])C(=O)OC [>]}|gauss(240,10)|CC[>] [<]}|schulz_zimm(500, 400)|[Br].|5e5|"
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>] [<]{[<] [<]CC([>])c1ccccc1 [>]}|gauss(600, 10)|[>], [<]{[<] [<]CC([>])C(=O)OC [>]}|gauss(540,10)|[>] [<]}|schulz_zimm(2500, 2400)|[Br].|5e5|"
 draw_molecule(generative_bigSMILES)
 ```
 
-This is random PS-r-PMMA, but the blocks are not identically distributed, instead we have PS blocks Gaussian distributed with a mean of $120g/mol$ and PMMA blocks Gaussian distributed with a mean of $240 g/mol$. 
+This is random PS-r-PMMA, but the blocks are not identically distributed, instead we have PS blocks Gaussian distributed with a mean of $600g/mol$ and PMMA blocks Gaussian distributed with a mean of $540 g/mol$.
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
