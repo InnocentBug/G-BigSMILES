@@ -474,13 +474,14 @@ class _PartialAtomGraph:
         #     if self.stochastic_tracker._stochastic_atom_id_to_gen_id[sto_atom_id] == selected_target_sto_gen_id:
         #         raise RuntimeError("New stochastic IDs need to be new.")
 
-        for a in self.stochastic_tracker._stochastic_gen_id_to_atom_id[selected_target_sto_gen_id]:
-            print(
-                "asdf",
-                a,
-            )
-
-        new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id)
+        new_sto_atom_id = None
+        if selected_target_sto_gen_id in self.stochastic_tracker._stochastic_gen_id_to_atom_id:
+            for a in self.stochastic_tracker._stochastic_gen_id_to_atom_id[selected_target_sto_gen_id]:
+                if not self.stochastic_tracker.is_terminated(a):
+                    new_sto_atom_id = a
+                    break
+        if new_sto_atom_id is None:
+            new_sto_atom_id = self.stochastic_tracker.register_new_atom_instance(selected_target_sto_gen_id)
 
         other_graph = _PartialAtomGraph(
             self.generating_graph,
