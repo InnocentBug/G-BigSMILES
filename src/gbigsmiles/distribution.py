@@ -9,7 +9,7 @@ from abc import abstractmethod
 from typing import Any, ClassVar, List, Optional, Tuple, Type, TypeVar, Union
 
 import numpy as np
-from scipy import special, stats
+from scipy import integrate, special, stats
 
 try:
     from typing import Self
@@ -244,12 +244,17 @@ class FlorySchulz(StochasticDistribution):
     The textual representation of this distribution is: `flory_schulz(a)`
     """
 
-    class flory_schulz_gen(stats.rv_discrete):
+    class flory_schulz_gen(stats.rv_continuous):
         """Flory Schulz distribution."""
 
-        def _pmf(self, k: np.ndarray, a: float) -> np.ndarray:
-            """Probability mass function."""
-            return a**2 * k * (1 - a) ** (k - 1)
+        def __init__(self, fls_a, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fls_a = fls_a
+            self.discrete_function = lambda k: self.fls_a**2 * k * (1 - self.fls_a) ** (k - 1)
+            self.norm = integrate.quad(self.discrete_function, 0, np.inf)[0]
+
+        def _pdf(self, fls_k):
+            return self.discrete_function(fls_k) / self.norm
 
     _a: Optional[float] = None
 
@@ -278,6 +283,7 @@ class FlorySchulz(StochasticDistribution):
         """
         super().__init__(children)
 
+
         self._distribution = self.flory_schulz_gen(name="Flory-Schulz")
 
         a: Optional[float] = None
@@ -298,7 +304,7 @@ class FlorySchulz(StochasticDistribution):
             str: The textual representation, e.g., '|flory_schulz(0.9)|'.
         """
         if extension:
-            return f"|flory_schulz({self._a})|"
+            return f"|flory_schulz({self._fls_a})|"
         return ""
 
     @property
@@ -307,18 +313,6 @@ class FlorySchulz(StochasticDistribution):
         Returns True if the distribution is initialized (i.e., the 'a' parameter is set).
         """
         return self._distribution is not None
-
-    def draw_mw(self, rng: Optional[np.random.Generator] = None) -> Any:
-        """
-        Draws a sample from the Flory-Schulz distribution.
-        """
-        return super().draw_mw(rng=rng, a=self._a)
-
-    def prob_mw(self, mw: Union[float, "RememberAdd"]) -> float:
-        """
-        Calculates the probability for a given molecular weight using the Flory-Schulz distribution.
-        """
-        return super().prob_mw(mw=mw, a=self._a)
 
     @classmethod
     def default_serialize(cls) -> Tuple[float, ...]:
@@ -332,7 +326,12 @@ class FlorySchulz(StochasticDistribution):
         Serializes the 'a' parameter of the FlorySchulz distribution.
         """
         return (self._a,)
+    
+    def draw_mw(self, rng=None):
+        return super().draw_mw(rng=rng, z=self._z, Mn=self._Mn)
 
+    def prob_mw(self, mw):
+        return super().draw_mw(z=self._z, Mn=self._Mn)
 
 StochasticDistribution._known_distributions.append(FlorySchulz)
 
@@ -351,12 +350,26 @@ class SchulzZimm(StochasticDistribution):
     The textual representation of this distribution is: `schulz_zimm(Mw, Mn)`
     """
 
-    class schulz_zimm_gen(stats.rv_discrete):
-        """Schulz-Zimm distribution."""
+    class schulz_zimm_gen(stats.rv_continuous):
+        """Flory Schulz distribution."""
 
-        def _pmf(self, M: np.ndarray, z: float, Mn: float) -> np.ndarray:
-            """Probability mass function."""
-            return z ** (z + 1) / special.gamma(z + 1) * (M / Mn) ** (z - 1) * (1 / Mn) * np.exp(-z * M / Mn)
+        def __init__(self, z, Mn, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.z = z
+            self.Mn = Mn
+            self.prefactor = self.z ** (self.z + 1) / special.gamma(self.z + 1)
+            self.discrete_function = (
+                lambda M: self.prefactor
+                * (M ** (self.z - 1) / self.Mn**self.z)
+                * np.exp(-self.z * M / self.Mn)
+            )
+            self.norm = integrate.quad(self.discrete_function, 0, np.inf)[0]
+
+        # def _pmf(self, M, z, Mn):
+        #     return z ** (z + 1) / special.gamma(z + 1, dtype=np.float64) * M ** (z - 1) / Mn**z * np.exp(-z * M / Mn)
+
+        def _pdf(self, M):
+            return self.discrete_function(M) / self.norm
 
     _Mw: Optional[float] = None
     _Mn: Optional[float] = None
