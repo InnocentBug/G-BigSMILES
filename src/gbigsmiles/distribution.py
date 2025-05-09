@@ -256,7 +256,7 @@ class FlorySchulz(StochasticDistribution):
         def _pdf(self, fls_k):
             return self.discrete_function(fls_k) / self.norm
 
-    _a: Optional[float] = None
+    _fls_a: Optional[float] = None
 
     @classmethod
     def make(cls: Type[Self], text: str) -> Self:
@@ -283,15 +283,13 @@ class FlorySchulz(StochasticDistribution):
         """
         super().__init__(children)
 
-
-        self._distribution = self.flory_schulz_gen(name="Flory-Schulz")
-
-        a: Optional[float] = None
+        fls_a: Optional[float] = None
         for child in self._children:
             if isinstance(child, float):
-                a = child
+                fls_a = child
 
-        self._a = a
+        self._fls_a = fls_a
+        self._distribution = self.flory_schulz_gen(name="Flory-Schulz", fls_a=self._fls_a, a=0)
 
     def generate_string(self, extension: bool) -> str:
         """
@@ -325,13 +323,14 @@ class FlorySchulz(StochasticDistribution):
         """
         Serializes the 'a' parameter of the FlorySchulz distribution.
         """
-        return (self._a,)
-    
+        return (self._fls_a,)
+
     def draw_mw(self, rng=None):
-        return super().draw_mw(rng=rng, z=self._z, Mn=self._Mn)
+        return super().draw_mw(rng=rng)
 
     def prob_mw(self, mw):
-        return super().draw_mw(z=self._z, Mn=self._Mn)
+        return super().prob_mw(mw)
+
 
 StochasticDistribution._known_distributions.append(FlorySchulz)
 
@@ -358,11 +357,7 @@ class SchulzZimm(StochasticDistribution):
             self.z = z
             self.Mn = Mn
             self.prefactor = self.z ** (self.z + 1) / special.gamma(self.z + 1)
-            self.discrete_function = (
-                lambda M: self.prefactor
-                * (M ** (self.z - 1) / self.Mn**self.z)
-                * np.exp(-self.z * M / self.Mn)
-            )
+            self.discrete_function = lambda M: self.prefactor * (M ** (self.z - 1) / self.Mn**self.z) * np.exp(-self.z * M / self.Mn)
             self.norm = integrate.quad(self.discrete_function, 0, np.inf)[0]
 
         # def _pmf(self, M, z, Mn):
