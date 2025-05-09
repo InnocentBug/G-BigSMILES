@@ -1,0 +1,14 @@
+name: Test Upload Artifact
+on: [push]
+jobs:
+  test_upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create a test file
+        run: mkdir -p test_dir && echo "hello" > test_dir/test.txt
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.2.0
+        with:
+          name: test-artifact
+          path: test_dir/

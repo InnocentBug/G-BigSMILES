@@ -23,13 +23,14 @@ jobs:
       - name: Install pypa/build
         run: |
           python3 -m pip install --user --upgrade build
+          ls ./dist/
       - name: Build a binary wheel and a source tarball
         run: python3 -m build
       - name: Store the distribution packages
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.0
         with:
           name: python-package-distributions
-          path: dist/
+          path: ./dist/
 
   publish-to-pypi:
     name: Publish Python distribution to PyPI
