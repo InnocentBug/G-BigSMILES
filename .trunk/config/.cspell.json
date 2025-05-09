@@ -156,6 +156,8 @@
     "quadruple",
     "Unvalidated",
     "logpmf",
+    "EBNF",
+    "Naur",
     "initiators"
   ]
 }
