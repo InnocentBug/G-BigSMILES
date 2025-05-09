@@ -154,6 +154,8 @@
     "Gervasio",
     "bigsmart",
     "quadruple",
-    "Unvalidated"
+    "Unvalidated",
+    "logpmf",
+    "initiators"
   ]
 }

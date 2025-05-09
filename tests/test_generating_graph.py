@@ -14,10 +14,10 @@ def edge_match(edge1_attrs, edge2_attrs):
 
 def test_generating_ml_graph_generation(graph_validation_dict):
     for big_smi in graph_validation_dict:
+        print(big_smi)
         big = gbigsmiles.BigSmiles.make(big_smi)
         gen_graph = big.get_generating_graph()
         ml_graph = gen_graph.get_ml_graph(include_bond_descriptors=False)
-        print(big)
         assert nx.is_isomorphic(ml_graph, graph_validation_dict[big_smi], node_match=node_match, edge_match=edge_match)
 
         dot_string_A = gen_graph.get_dot_string(include_bond_descriptors=True)

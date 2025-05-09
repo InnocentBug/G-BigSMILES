@@ -90,6 +90,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                 if node in generative_graph._bd_idx_set:
                     for _u, v in generative_graph.g.out_edges(node):
                         if v in generative_graph._bd_idx_set:
+                            # @Gervasio reactivate, once fixed
                             # raise TwoConsecutiveBondDescriptors(element, self)
                             pass
 
