@@ -402,7 +402,7 @@ class SchulzZimm(StochasticDistribution):
 
         self._Mw, self._Mn = numbers
         self._z = self._Mn / (self._Mw - self._Mn) if self._Mw > self._Mn else None
-        self._distribution = self.schulz_zimm_gen(name="Schulz-Zimm")
+        self._distribution = self.schulz_zimm_gen(name="Schulz-Zimm", z=self._z, Mn=self._Mn, a=0)
 
     @classmethod
     def default_serialize(cls) -> Tuple[float, ...]:
@@ -442,13 +442,13 @@ class SchulzZimm(StochasticDistribution):
         """
         Draws a sample from the Schulz-Zimm distribution.
         """
-        return super().draw_mw(rng=rng, z=self._z, Mn=self._Mn)
+        return super().draw_mw(rng=rng)
 
     def prob_mw(self, mw: Union[float, "RememberAdd"]) -> float:
         """
         Calculates the probability for a given molecular weight using the Schulz-Zimm distribution.
         """
-        return super().prob_mw(mw=mw, z=self._z, Mn=self._Mn)
+        return super().prob_mw(mw)
 
 
 StochasticDistribution._known_distributions.append(SchulzZimm)
