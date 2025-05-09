@@ -4,279 +4,237 @@
 [![notebooks](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/notebook.yml/badge.svg)](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/notebook.yml)
 [![trunk](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/trunk.yml/badge.svg)](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/trunk.yml)
 
-Generator of SMILES string from bigSMILES with extension.
+This code provides a parser for an extended version of the original [bigSMILES notation](https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#the-bigsmiles-line-notation). The parsing process leverages an Extended Backus–Naur Form (EBNF) grammar implemented with LARK, followed by additional semantic validation.
 
-This code implements a parser for an extension of the original [bigSMILES notation](https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#the-bigsmiles-line-notation).
-The extension is designed to add details into the line notation that enable the generation of molecules from that specific ensemble.
-The syntax of the extension of bigSMILES can be removed if everything between the `|` symbols and the `|` symbols is removed from the string.
+The key innovation of this extension is the inclusion of specific details within the line notation. These details enable the generative modeling of molecules from a defined ensemble. Notably, the standard bigSMILES notation can be recovered by simply removing any content enclosed between the `|` symbols (inclusive).
 
-The corresponding peer-reviewed journal article can be found published in RSC Digital Discoveries [here](https://doi.org/10.1039/D3DD00147D).
-Please cite this article if you are using this code. Thank you.
+**Publication:**
+
+The scientific basis and details of this work are described in our peer-reviewed article published in RSC Digital Discoveries: [Generative BigSMILES: an extension for polymer informatics, computer simulations & ML/AI](https://doi.org/10.1039/D3DD00147D).
+
+```text
+@article{schneider2024generative,
+  title={Generative BigSMILES: an extension for polymer informatics, computer simulations \& ML/AI},
+  author={Schneider, Ludwig and Walsh, Dylan and Olsen, Bradley and de Pablo, Juan},
+  journal={Digital Discovery},
+  volume={3},
+  number={1},
+  pages={51--61},
+  year={2024},
+  publisher={Royal Society of Chemistry}
+}
+```
+
+Please cite the above article if you utilize this code in your work. Your acknowledgment is greatly appreciated.
+
+## Updates and Versioning
+
+This version represents an advancement over the published work. Significant improvements include enhanced parsing through EBNF, support for nested stochastic objects, and the generation of machine learning-ready generative graphs.
+
+Please be aware that certain features present in the older version are not yet implemented in this updated release. If your workflow currently relies on these features, you can revert to version 0.2.2 for the previous functionality.
 
 ## Installation
 
-The following instructions are designed to be independent of the operating system, but are tested for debian-linux systems only.
-You may have to slightly adjust the procedure for a differing operating system.
+The installation procedure outlined below is generally applicable across operating systems but has been primarily tested on Debian-based Linux distributions. You might need to make slight adjustments for other operating systems.
 
-The package is python-only, but it requires a rdkit installation.
-The easiest way to install this dependency is via pip and pypi.
+This package is implemented entirely in Python. However, it has a dependency on RDKit. The recommended and easiest method for installing RDKit is via pip and PyPI.
 
-You can install this package via pip.
+To install this package itself, use pip:
 
 ```shell
 pip install gbigsmiles
 ```
 
-Outside the installation directory, you can test importing the installed package
+To verify the installation, you can try importing the package from a directory outside the installation location:
 
 ```shell
 cd ~ && python -c "import gbigsmiles" && cd -
 ```
 
-For a more detailed test, you can install and use `pytest`.
+For a more comprehensive test, you can install and run pytest:
 
 ```shell
-python -m pytest
+python -m pytest ./tests/
 ```
 
-Should execute our automated test and succeed if the installation was successful.
-Examining the tests in `./test` can also help to get an overview of this package's capabilities.
+Successful execution of the automated tests located in the ./tests directory indicates a successful installation. Examining the test files can also provide valuable insights into the package's capabilities and usage.
+Running the Jupyter Notebook SI.ipynb
 
-### Running the Jupyter Notebook SI.ipynb
+To execute the supplementary information Jupyter notebook:
 
-Follow the above described steps (the pytest step can be omitted).
-Then start the jupyter notebook server from inside the conda environment:
+1. Follow the installation steps described above (the pytest step is optional for this).
+2. Navigate to the directory containing SI.ipynb.
+3. Start the Jupyter Notebook server from within your Python environment:
 
 ```shell
 jupyter-notebook SI.ipynb
 ```
 
-The shell should either print out instructions of how to connect to the notebook with your browser or open it the browser automatically.
+The terminal should display instructions on how to access the notebook in your web browser, or the browser might open automatically.
 
-Note that the jupyter notebook is designed to be execute from the top, without skipping entries.
+Important: The SI.ipynb notebook is designed to be executed sequentially from top to bottom without skipping any cells.
+Notation Details and Examples
 
-## Notation of details and Examples
+This section details the user-facing classes of the package, the specific parts of the G-BigSMILES notation they implement, and illustrative examples of their usage. For a more formal and complete definition of the syntax, please refer to the EBNF grammar for G-BigSMILES.
+User Interface
 
-In this section, we discuss the user-facing classes of this package, which part of the notation it implements, and how it can be used.
+The package exposes four primary classes for direct user interaction. The following subsections provide descriptions and usage examples for each. More in-depth explanations of the notation and features can be found in the subsequent "Details" section.
+Stochastic Object (gbigsmiles.BigSmiles)
 
-### User interface
-
-Four classes are directly facing the user.
-Here we describe the objects we usable examples, for more details on notation and features, check the more detailed sections later on.
-
-#### Stochastic object
-
-The `gbigsmiles.Stochastic` object takes as user input a single string of a bigSMILES stochastic object.
+The gbigsmiles.BigSmiles class is initialized with a single string representing a bigSMILES stochastic object.
 
 ```python
-stochastic = gbigsmiles.Stochastic("{[][$]C([$])C=O,[$]CC([$])CO;[$][H], [$]O[]}|flory_schulz(0.0011)|"}
+smi = "{[][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC; CC(C)[>], CC(C)[>], [<][Br][]}|schulz_zimm(700, 600)|"
+stochastic = gbigsmiles.BigSmiles.make(smi)
 ```
 
-Because this stochastic object defines its molecular weight distribution explicitly and both terminal bond descriptors are empty it can generate a full molecule.
+To generate a molecular representation from this stochastic object, we first obtain the generative graph:
 
 ```python
-assert stochastic.generable
+graph = stochastic.get_generating_graph()
 ```
 
-To generate this molecule we can call the `generate()` function.
+Then, we derive the atom graph:
 
 ```python
-generated_molecule = stochastic.generate()
+atom_graph = graph.get_atom_graph()
 ```
 
-The resulting object is a wrapped `rdkit` molecule `MolGen`.
-
-#### MolGen object
-
-`gbigsmiles.MolGen` objects are the resulting molecules from the generation of bigSMILES strings.
-It can contain partially generated molecules and fully generated molecules.
-Only fully generated molecules are chemically meaningful, so we can ensure this:
+From the AtomGraph object, we can sample individual molecules:
 
 ```python
-assert generated_molecule.fully_generated
+mol_graph = atom_graph.sample_mol_graph()
 ```
 
-For fully generated molecules we can obtain the underlying `rdkit.mol` object.
+At this stage, mol_graph represents a polymer molecule as a networkx graph. These graphs have not yet undergone valence checking. To obtain a chemically valid representation, we can convert the networkx graph to an RDKit Mol object:
 
 ```python
-mol = generated_molecule.mol
+from rdkit import Chem
+mol = gbigsmiles.mol_graph_to_rdkit_mol(mol_graph)
+print(Chem.MolToSmiles(mol))
 ```
 
-This enables you to do all the operations with the generated molecule that `rdkit` offers.
-So calculating the SMILES string, various chemical properties, structure matching, and saving in various formats is possible.
+This conversion to an RDKit molecule automatically performs valence checks, ensuring the generated molecule's validity.
 
-For convenience, we offer direct access to the molecular weight of all heavy atoms and the SMILES string.
+## Details
 
-```python
-print(generated_molecule.weight)
-print(generated_molecule.smiles)
+This section provides a detailed explanation of the G-BigSMILES notation and the corresponding Python objects within this package. For a precise definition of the syntax, please consult the EBNF grammar for G-BigSMILES.
+
+### BondDescriptor (BondDescriptor)
+
+The BondDescriptor class handles the parsing of bond descriptors as defined in the bigSMILES specification. A bond descriptor adheres to the following structure:
+
+```text
+[ + Symbol + ID + | + weights +| +]
 ```
 
-#### Molecule object
+Where:
 
-The `gbigsmiles.Stochastic` object was only generable without prefixes and suffixes, so the `gbigsmiles.Molecule` object offers more flexibility.
-It allows the prefixes and suffixes to combine different stochastic objects.
+- Symbol: Represents the type of bond connection. Possible values are $, <, or >.
+- ID: An optional positive integer specifying the identifier of the bond descriptor.
+- |: Optional delimiters used to enclose weight information. If weights are not specified, these delimiters must be omitted.
+  - weights: Can be a single positive floating-point number or an array of positive floating-point numbers separated by spaces.
+    A single float represents the general reactivity weight of this bond descriptor within a molecule.
+    An array of floats is used within stochastic objects. The number of elements in the array must match the number of bond descriptors in the stochastic object. Each number corresponds to the weight of reaction between this bond descriptor and the bond descriptor at the same position in the other units. Note that Symbol and ID take precedence over these weights. The sum of the weights in the list serves a similar purpose to the single float weight, influencing the overall reactivity of the bond descriptor.
 
-```python
-molecule = gbigsmiles.Molecule("NC{[$][$]C[$][$]}|uniform(12, 72)|COOC{[$][$]C[$][$]}|uniform(12, 72)|CO")
+The single weight functionality can be used to bias the representation of different monomers within a stochastic object (e.g., a 90%/10% mixture).
+
+The empty bond descriptor [] has a special meaning and is only allowed in terminal groups of a stochastic object.
+
+Weights are an extension introduced by G-BigSMILES and are optional. If omitted, the weight is assumed to be equivalent to |1.0|.
+
+### Distribution Object (Distribution)
+
+A Distribution object describes the stochastic molecular weight distribution of a BigSmiles object. The syntax for specifying a distribution follows immediately after the stochastic object:
+
+```text
+| + name + ( + parameter + , + ... + ) + |
 ```
 
-Similar to before we can ensure that this molecule is generable and subsequently generate the molecule.
+Where:
 
-```python
-assert molecule.generable
-generated_molecule = molecule.generate()
+- name: Specifies the name of the distribution function.
+- parameter: Represents the floating-point parameters of the distribution, separated by commas.
+
+Currently, the following distribution functions are implemented (details can be found in distribution.py):
+
+1.  Flory-Schulz
+2.  Gaussian
+3.  Uniform
+4.  Poisson
+5.  LogNormal
+
+Distribution objects are an extension of bigSMILES introduced by G-BigSMILES and are optional. If omitted, the molecular weight is not explicitly controlled by a distribution.
+
+### Stochastic Object Syntax
+
+A stochastic object in G-BigSMILES is defined by the following elements:
+
+```text
+{ + terminal bond descriptor + repeat unit token + , + ... ; + end group token + ... terminal bond descriptor + } + | + distribution text + |
 ```
 
-#### System object
+Where:
 
-If it is desired to generate not just a single molecule but a full ensemble system with one or more different types of molecules, this can be expressed with a `gbigsmiles.System` object.
+- terminal bond descriptors: These can be empty ([]) but must be non-empty if the stochastic object is preceded or followed by other components in a Molecule string.
+- repeat unit tokens: These are Token objects that typically contain two or more bond descriptors (more than two for branching structures). Multiple repeat units can be listed, separated by commas (,).
+- end group tokens: These are Token objects containing a single bond descriptor, usually terminating a branch. Multiple end groups can be listed, separated by commas (,).
+- distribution text: As described above, this optional part specifies the molecular weight distribution.
 
-This can be a simple system with just a single molecule type, where only the total molecular weight is specified like this one:
+The process of generating molecules from a stochastic object is implemented as follows:
 
-```python
-system = gbigsmiles.System("NC{[$][$]C[$][$]}|uniform(12, 72)|COOC{[$][$]C[$][$]}|uniform(12, 72)|CO.|1000|")
+1.  Determine the target heavy atom molecular weight for the stochastic molecule based on the specified distribution.
+    If a prefix molecule exists, select a BondDescriptor from the repeat units that matches the open bond descriptor of the prefix, weighted by the reactivity weights of all repeat units.
+    If no prefix exists, select a BondDescriptor from the end group tokens, weighted by their respective bond descriptor weights.
+2.  Generate the molecular fragment corresponding to the selected token and add it to the growing molecule. If a prefix was involved, connect the prefix to the generated fragment using the selected bond descriptor.
+3.  In the partially generated molecule, select a random open bond descriptor based on the weights of all currently open bond descriptors.
+    If the selected bond descriptor has a list of weights: select the next bond descriptor from the repeat or end units according to these listed weights.
+    If the selected bond descriptor has a single weight: select the next bond descriptor from the repeat units (excluding end groups) according to their bond descriptor weights.
+4.  Generate the molecular fragment of the selected unit and connect it to the partially generated molecule using the two chosen bond descriptors.
+5.  Repeat steps 3 and 4 until either no open bond descriptors remain or the heavy atom molecular weight of the generated molecule is greater than or equal to the target molecular weight.
+6.  If the right terminal bond descriptor is not empty, select one matching open bond descriptor in the partially generated molecule to remain open.
+7.  Close all other remaining open bond descriptors:
+    1.  Pick a random open bond descriptor based on its weight.
+    2.  Pick a matching bond descriptor from the end groups based on their weights.
+    3.  Add the corresponding end group to the generated molecule and connect it using the two selected bond descriptors.
+    4.  Repeat until all open bond descriptors (except the one potentially left open in step 6) are closed.
+
+### Molecule Object Syntax
+
+The syntax for a Molecule object is:
+
+```text
+prefix + stochastic object + connector + ... + stochastic object + suffix
 ```
 
-Or a more complicated situation that covers for example a polymer and a solvent.
+Any of these elements can be omitted. A molecule string can contain multiple stochastic objects, optionally connected by connector tokens.
+System Object Syntax
 
-```python
-system = gbigsmiles.System("C1CCOC1.|10%|{[][$]C([$])c1ccccc1; [$][H][]]}|gauss(400,20)|.|500|")
+A System object defines an ensemble of molecules, rather than a single molecule. The total heavy atom molecular weight for the ensemble can be specified after a Molecule object:
+
+```text
+molecule + . + | + mol_weight + |
 ```
 
-We can still generate these systems as before, but now it returns a random `MolGen` from the ensemble.
+Where mol_weight represents the total heavy atom molecular weight of all molecules in the system.
 
-```python
-generated_molecule = system.generate()
+A system can also describe a mixture of different molecule types by concatenating multiple molecule specifications:
+
+```text
+moleculeA + . + | + mol_weightA + ``| + moleculeB+`.`+`|`+`mol_weightB`+`|` + ...
 ```
 
-If we want to generate the entire ensemble completely and collect generated molecules in a list, we can use the generator function of the system.
+In the case of mixtures, all but one of the mol_weight specifications can be relative, indicating a percentage of the total system weight rather than an absolute molecular weight. In such cases, mol_weight should be a positive floating-point number less than 100, followed by the % symbol (e.g., 10%). Ensure that the sum of specified percentages is less than 100%.
+Limitations
 
-```python
-generated_molecule_list = []
-for mol in system.generator:
-   print(mol.smiles)
-```
+The G-BigSMILES notation introduced here has certain inherent limitations:
 
-### Details
+1. Uniqueness: A given molecular system might not have a unique G-BigSMILES representation.
+2. Crosslinking: Stochastic connections that define network structures, including rings formed through stochastic bonds, are not currently supported.
+3. Compactness: Some users might find the notation less compact than desired for certain systems.
+4. Reaction Kinetics: The describable reaction kinetics within this notation remain relatively simple. Complex, time- or spatially-dependent reaction scenarios cannot be represented.
 
-This section lists details about the notation as well as other python objects this package supports.
+Furthermore, the current implementation of this syntax also has limitations:
 
-#### BondDescriptor
-
-A `BondDescriptor` implements the parsing of a bond descriptor as described in bigSMILES.
-In particular, a bond descriptor has the following elements
-
-`[` + `Symbol` + `ID` + `|` + `weights` +`|` +`]`
-
-- `Symbol` can be `$`, `<`, or `>` indicating the type of bond connection.
-- `ID` is an optional positive integer indicating the ID of the bond descriptor
-- `|` is optional to describe the weight of this bond descriptor.
-- if not used, everything between the `|` and the `|` has to be omitted.
-- `weights` can be a single positive float number of an array of positive float numbers separated by spaces.
-- a single float number represents the weight of how likely this bond descriptor reacts in a molecule.
-- if an array of float numbers is listed, the number of elements has to be equal to the number of bond descriptors in the stochastic it is a part of. Each of the numbers represents the weight this bond descriptor reacts with the bond descriptor it corresponds to. `Symbol` and `ID` take precedence over this weight. The sum of all weights in the list plays the equivalent role of a single float number: weighting the bond descriptor for reactions.
-
-The weight functionality (single) can be used to weigh monomers in a stochastic object.
-This allows the specification of for example a 90%/10% representation of monomers in a molecule.
-
-The empty bond descriptor `[]` is special and only permitted in a terminal group of a stochastic object.
-Weights are part of the bigSMILES extension and can be omitted. If omitted it is assumed to be equivalent to `|1.0|`.
-
-#### Token
-
-A token describes a short smiles string that can contain fragments of SMILES strings as well as bond descriptors.
-Tokens have two functions, they serve as repeat and end units inside the stochastic object as well as prefixes, suffixes, and connectors surrounding stochastic objects.
-
-In standard bigSMILES, the prefix, suffix, and connectors token are not supposed to have bond descriptors.
-In this implementation, however, bond descriptors are supported and they are determined by the corresponding terminal bond descriptors.
-
-#### Distribution object
-
-A distribution object describes the stochastic molecular weight of a stochastic object.
-The syntax is that it follows immediately after a stochastic object and takes the following form:
-
-`|` + `name` + `(` + `parameter` + `,` + ... + `)` + `|`
-
-- `name` specifies the name of the distribution
-  ` and it is followed by the parameters (float) of the distribution
-
-Currently, there are 3 distributions implemented, Flory-Schulz, Gaussian, and uniform.
-For more details on the distributions, check them out in `distribution.py`.
-
-Distribution objects are part of the bigSMILES extension and can be omitted.
-
-#### Stochastic object syntax
-
-A stochastic is comprised of the following elements
-
-`{` + `terminal bond descriptor` + `repeat unit token` + `,` + ... `;` + `end group token` + ... `terminal bond descriptor` + `}` + `|` + `distribution text` + `|`
-
-- `terminal bond descriptors` can be empty `[]` but must not be empty if there is something in front (or after) the stochastic object
-- `repeat unit tokens` are tokens that usually contain 2 or more bond descriptors. (more than 2 for branching).
-  - you can list as many repeat units as necessary, separated by `,`
-- `end group tokens` are tokens with a single bond descriptor, usually terminating a branch.
-  - you can list as many end groups as necessary separated by `,`
-- the distribution text is explained above and may be omitted.
-
-The generation of stochastic objects is implemented as follows:
-
-1. Determine the heavy atom molecular weight of this stochastic molecule according to the specified distribution.
-   1. If a there is an existing molecule (i.e. prefix) is present select a bond descriptor that matches the open bond descriptor from the prefix according to the weight of all repeat units.
-   1. If there is no prefix, select a bond descriptor from the end group tokens according to the weight of bond descriptors of the end groups.
-1. Generate the molecule fraction of the selected token and add it to the generating molecule. In case of a prefix, react the prefix with the selected bond descriptor.
-1. In the partially generated molecule, select a random bond descriptor according to the weight of all open bond descriptors present.
-   1. In case the selected bond descriptor has a list of weights: select the next bond descriptor from the repeat- or end-units according to the listed weights.
-   1. In case of a single weight: select the next bond descriptor from the repeat unit (not end group) according to the weight of the bond descriptors.
-1. Generate the selected unit and react with the two selected bond descriptors.
-1. Repeat until no bond descriptors are open or the heavy atom molecular weight of the partially generated molecule is bigger or equal to the pre-determined heavyweight molecular weight of the stochastic object.
-1. If the right terminal bond descriptor is not empty, select one matching open bond descriptor from the partially generated molecule to be left open.
-1. Close all other remaining open bond descriptors.
-   1. Pick a random open bond descriptor according to its bond descriptor weight.
-   1. Pick a matching bond descriptor from the end groups according to the weight of their bond descriptors.
-   1. Add the end group to the generated molecule and react with the two bond descriptors.
-   1. Repeat until all open bond descriptors (except the one selected previously) are closed.
-
-#### Molecule object syntax
-
-The syntax for a molecule object is as follows:
-
-`prefix` + `stochastic object` + `connector` + ... + `stochastic object` + `suffix`
-
-Any of the elements can be omitted.
-And the molecule can contain as many stochastic objects as necessary that can optionally be connected by `connector tokens`.
-
-#### System object syntax
-
-A system defines an ensemble of molecules instead of just a single molecule from the ensemble.
-To determine the number of molecules the total molecular weight can be specified after a molecule.
-
-`molecule` + `.` + `|` + `mol_weight` + `|`
-
-where `mol_weight` is the total molecular weight of heavy atoms that of all molecules.
-
-A system can also contain more than just one molecule type, but suffixing multiple molecules in a string:
-
-`moleculeA` + `.` + `|` + `mol_weightA` + ``| + `moleculeB`+`.`+`|`+`mol_weightB`+`|` + ...
-
-In this case, a mixture of molecules is generated.
-In the case of mixtures, all but one of the `mol_weight` specifiers can be relatively specifying a percentage rather than molecular weight.
-In that case, `mol_weight` is a positive floating point literally smaller than 100 followed by `%`.
-Make sure that the number of specified percentages is below 100%.
-
-## Limitations
-
-The notation we introduce here has some limitations.
-Here we are listing the known limitations:
-
-- Uniqueness: there is not necessarily a unique bigSMILES for a given system.
-- Crosslinking: stochastic connections that define a network (including rings) are not supported.
-- Compact notation: some might find this notation not compact enough.
-- Time or spatial-dependent reaction kinetics. The describable reaction kinetics of this notation remains simple. Complicated situations cannot be represented.
-
-Further, the implementation of this syntax has limitations too. These are the known limitations of the implementation:
-
-- Rings: Defining large rings that include stochastic objects is not possible
-- Ladder polymers: not supported
-- Nested stochastic objects: bigSMILES does support nested objects, but they are not supported here.
-- Chemically valid tokens: Every token has to be chemically valid for molecule generation.
+1. Rings: Defining large rings that incorporate stochastic objects is not yet possible.
+2. Ladder Polymers: The representation and generation of ladder polymers are not currently supported.
