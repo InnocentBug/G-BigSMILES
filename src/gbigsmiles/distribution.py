@@ -288,6 +288,9 @@ class FlorySchulz(StochasticDistribution):
             if isinstance(child, float):
                 fls_a = child
 
+        if not 0 < fls_a < 1:
+            raise RuntimeError(f"The Flory-Schulz distribution needs an a parameter between 0, and 1. But got {fls_a}.")
+
         self._fls_a = fls_a
         self._distribution = self.flory_schulz_gen(name="Flory-Schulz", fls_a=self._fls_a, a=0)
 
@@ -682,7 +685,6 @@ class LogNormal(StochasticDistribution):
                 numbers.append(child)
 
         self._M, self._D = numbers
-        print("asdf", self._M, self._D)
         if self._M is not None and self._D is not None and self._D > 0:
             self._distribution = self.log_normal_gen(name="Log-Normal")
         else:
