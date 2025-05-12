@@ -92,6 +92,14 @@ class DoubleBondSymbolDefinition(GenerationError):
         return f"{self.partial_graph}, {self.symbol}, {self.bond_attributes}"
 
 
+class NoDefinedDistribution(GenerationError):
+    def __init__(self, stochastic_obj):
+        self.stochastic_obj = stochastic_obj
+
+    def __str__(self):
+        return f"The stochastic distribution of the stochastic object {self.stochastic_obj} is not defined. The creation of the generative graph requires that the distribution is defined for each stochastic object."
+
+
 class TwoConsecutiveBondDescriptors(ParsingError):
     def __init__(self, obj, stochastic_obj):
         self.obj = obj
