@@ -11,15 +11,15 @@ from .bond import BondDescriptor, TerminalBondDescriptor
 from .core import BigSMILESbase, GenerationBase
 from .distribution import StochasticGeneration
 from .exception import (
+    ConcatenatedBondDescriptors,
     EmptyTerminalBondDescriptorWithoutEndGroups,
     EndGroupHasOneBondDescriptors,
     IncorrectNumberOfTransitionWeights,
     MonomerHasTwoOrMoreBondDescriptors,
-    NoDefinedDistribution,
     NoInitiationForStochasticObject,
     NoLeftTransitions,
     StochasticMissingPath,
-    TwoConsecutiveBondDescriptors,
+    UndefinedDistribution,
 )
 from .generating_graph import (
     _STOCHASTIC_NAME,
@@ -96,8 +96,8 @@ class StochasticObject(BigSMILESbase, GenerationBase):
                             for _u, v in MLgraph.out_edges(node):
                                 stochastic_id = MLgraph.nodes(data=True)[v]["stochastic_id"]
                                 if (v in gengraph._bd_idx_set) and (data["stochastic_id"] == stochastic_id):
-                                    raise TwoConsecutiveBondDescriptors(element, self)
-        except NoDefinedDistribution:
+                                    raise ConcatenatedBondDescriptors(element, self)
+        except UndefinedDistribution:
             pass
 
         for smi in self._repeat_residues:
@@ -154,7 +154,7 @@ class StochasticObject(BigSMILESbase, GenerationBase):
     def _generate_partial_graph(self) -> _PartialGeneratingGraph:
 
         if self.stochastic_generation is None:
-            raise NoDefinedDistribution(self)
+            raise UndefinedDistribution(self)
 
         def build_idx(residues, graph):
             """
