@@ -560,6 +560,7 @@ class GeneratingGraph:
             except AttributeError:
                 charge = float("nan")
 
+            # @Gervasio This is the spot where the serialized distributions are added to the generative graph. It should not require modification
             if "stochastic_obj" not in data or data["stochastic_obj"].stochastic_generation is None:
                 stochastic_vector = StochasticDistribution.get_empty_serial_vector()
                 stochastic_id = -1

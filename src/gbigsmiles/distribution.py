@@ -96,6 +96,9 @@ class StochasticDistribution(StochasticGeneration):
         Raises:
             NotImplementedError: If the `_distribution` attribute is None.
         """
+        # @Gervasio This assumes that all distributions are expressed as SciPy distribution objects.
+        # For weird distributions that might not be possible. In that case, just overwrite custom `draw_mw` and `prob_mw`
+        # member functions for your distributions.
         if self._distribution is None:
             raise NotImplementedError
 
@@ -119,6 +122,7 @@ class StochasticDistribution(StochasticGeneration):
         Raises:
             NotImplementedError: If the `_distribution` attribute is None.
         """
+        # @Gervasio, see comment in draw_mw method
         if self._distribution is None:
             raise NotImplementedError
 
@@ -145,19 +149,14 @@ class StochasticDistribution(StochasticGeneration):
         return tuple((-1.0 for _ in range(n)))
 
     @classmethod
-    def default_serialize(cls: Type["StochasticDistribution"]) -> Tuple[float, ...]:
-        """
-        Returns the default serialization vector for this distribution type (an empty tuple).
-        """
-        return cls._default_serialize(0)
-
-    @classmethod
     def get_empty_serial_vector(cls: Type["StochasticDistribution"]) -> List[float]:
         """
         Returns an empty serialization vector with the correct length to hold
         the default serialization of all known stochastic distributions.
         """
         vector: List[float] = []
+        # @Gervasio as long as you add your new distribution to the _known_distributions (end of file) this should work,
+        # and automatically give you a longer serialized vector (which will be added to the graph features)
         for distr_type in cls._known_distributions:
             vector += list(distr_type.default_serialize())
         return vector
@@ -170,6 +169,7 @@ class StochasticDistribution(StochasticGeneration):
         serialization values for other known distribution types.
         """
         vector: List[float] = []
+        # @Gervasio, same as get_empty_serial_vector
         for distr_type in self._known_distributions:
             if type(self) is distr_type:
                 vector += list(self.serialize())
@@ -200,6 +200,9 @@ class StochasticDistribution(StochasticGeneration):
         """
         candidates: List[Tuple[float, ...]] = []
         type_candidates: List[Type[_T]] = []
+        # @Gervasio, I believe that this should work. However a fixed number of parameters per distribution is required.
+        # If the vector is shorter than currently (for example because you added a new distribution in the mean time)
+        # it should still be able to identify this as before. Not sure though, you may have to adjust the iteration scheme slightly.
         for distr_type in cls._known_distributions:
             default_serial = distr_type.default_serialize()
             given_serial = tuple((vector.pop(0) for _ in default_serial))
@@ -221,6 +224,7 @@ class StochasticDistribution(StochasticGeneration):
         """
         Abstract method to serialize the parameters of this distribution into a tuple of floats.
         """
+        # @Gervasio both of these functions have to be implement by the actual inheriting distribution classes
         raise NotImplementedError
 
     @classmethod
@@ -843,4 +847,8 @@ class Poisson(StochasticDistribution):
 
 StochasticDistribution._known_distributions.append(Poisson)
 
-## Gervasio: Define and implement your new distribution here. Don't forget StochasticDistribution._known_distributions.append(...) since that ensure that the stochastic vector includes your new distribution as well
+# @Gervasio: Define and implement your new distribution here. Don't forget StochasticDistribution._known_distributions.append(...) since that ensure that the stochastic vector includes your new distribution as well.
+# I thought about more flexible distributions, like defining a distribution via the nth-moments (easy to approximate, but hard to sample from) or as a sum of weighted Gaussian (easy to sample from, but hard to approximate).
+# In principle for both approaches the grammar and parsing would support a variable number of arguments. So that allows arbitrary precision. However, the serialization of distributions into vectors for the graph features requires a fixed number of parameters.
+# So you will need to define a max. number of parameters in practice only for the vector and initialize unused ones with 0. (And the more parameters you use, the more you will need to train, because your training set needs to span the entire input space of parameters.)
+# To parse from the grammar, I would recommend to you take one of the existing __init__ functions as a template

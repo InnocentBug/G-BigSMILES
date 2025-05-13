@@ -117,6 +117,8 @@ class _StochasticObjectTracker:
 
         for _node_idx, data in generating_graph.nodes(data=True):
             if data["stochastic_id"] >= 0:
+                # @Gervasio this is where the atom_graph reads the stochastic vector from the generating graph and reconstructs the distribution object.
+                # It should work automatically, but I am not sure when extended with a new kind of distribution
                 stochastic_vector = data["stochastic_generation"].copy()
                 distribution = StochasticDistribution.from_serial_vector(stochastic_vector)
                 self._register_sto_gen_id(data["stochastic_id"], distribution)

@@ -81,12 +81,17 @@ gauss: "gauss(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")
 uniform: "uniform(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
 log_normal: "log_normal(" WS_INLINE* NUMBER WS_INLINE* "," WS_INLINE* NUMBER WS_INLINE* ")"
 poisson: "poisson(" WS_INLINE* NUMBER WS_INLINE* ","? WS_INLINE* ")"
+# @Gervasio Here you define the way a new distribution is parsed.
+
+
 stochastic_distribution: flory_schulz
   | schulz_zimm
   | gauss
   | uniform
   | log_normal
   | poisson
+# @Gervasio and here you add your distribution as an option for stochastic distributions
+
 
 _unary_index_operator: "!"
 _binary_index_operator: "~" | "&"
