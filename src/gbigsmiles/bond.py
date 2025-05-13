@@ -126,6 +126,9 @@ class BondDescriptorSymbolIdx(BondDescriptorSymbol):
 
 
 class BondDescriptorGeneration(BigSMILESbase):
+    # @Gervasio This is the class that defines how weight and transition are to be interpreted.
+    # It will need a new parsing and possibly new functions to understand time (or size) dependent transitions.
+    # For example weight and transition should probably take an argument for that (with a default to restore old behavior.)
     def __init__(self, children):
         super().__init__(children)
         self._transition = None

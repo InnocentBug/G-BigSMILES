@@ -33,6 +33,7 @@ class _HalfAtomBond:
     def __init__(self, atom_idx: int, node_idx: str, graph, rng):
         self.atom_idx: int = atom_idx
         self.node_idx: str = node_idx
+        # @Gervasio, with a vector for `gen_weight` this needs to be a vector too
         self.weight: float = graph.nodes[node_idx]["gen_weight"]
         self.parent: int = graph.nodes[node_idx]["parent_stochastic_id"]
         self._graph = graph
@@ -63,11 +64,13 @@ class _HalfAtomBond:
                     parent_target_stochastic_id = graph.nodes[v]["parent_stochastic_id"]
                     if current_stochastic_id != target_stochastic_id and parent_target_stochastic_id == current_stochastic_id:
                         special_target_list += [(v, d)]
+                        # @Gervasio these are the termination transition probabilities. And you will need to write a size dependent interpretation. To get the right numbers. Note the normalization
                         special_target_weight += [d[_TRANSITION_NAME]]
                         # if self._special_target is not None:
                         #     raise RuntimeError("There should only be one nested special target per bond.")
 
         if len(special_target_weight) > 0:
+            # @Gervasio this might need a re-implementation, because we determine a target before we know the size of the molecule.
             special_target_prob = special_target_weight / np.sum(special_target_weight)
             self._special_target = rng.choice(special_target_list, p=special_target_prob)
 
@@ -289,6 +292,7 @@ class _PartialAtomGraph:
             self.stochastic_tracker.add_molw(sto_atom_id, atomic_masses[data["atomic_num"]])
             self._atom_id += 1
 
+            # @Gervasio, maybe you need to implement something to check non-zero in a more general way with vector
             if half_bond.weight > 0 and half_bond.has_any_bonds():
                 try:
                     self._open_half_bond_map[sto_atom_id] += [half_bond]
@@ -365,7 +369,7 @@ class _PartialAtomGraph:
 
             for i, half_bond in zip(*terminated_graph.get_open_half_bonds(sto_atom_id)):
                 if half_bond.has_mode_bonds(_TRANSITION_NAME):
-                    # TODO carefully check if transition bonds have the right weight here!
+                    # @Gervasio, here you need to implement that you interpret the new weight vector into a number (you should be able to pull the `size` from the stochastic object tracker.
                     transition_weight += [half_bond.weight]
                     transition_idx += [i]
             transition_weight = np.asarray(transition_weight)
@@ -391,6 +395,7 @@ class _PartialAtomGraph:
             for i, half_bond in zip(*terminated_graph.get_open_half_bonds(sto_atom_id)):
                 if half_bond.has_mode_bonds(_TERMINATION_NAME):
                     termination_idx += [i]
+                    # @Gervasio, same here interpret vector to number based on size (possibly as a function of _HalfAtomBond) for simplification and modularization
                     termination_weight += [half_bond.weight]
             termination_weight = np.asarray(termination_weight)
             termination_prob = termination_weight / np.sum(termination_weight)
@@ -405,6 +410,7 @@ class _PartialAtomGraph:
             termination_bond = pop_next_termination_bond()
 
             target_attributes, target_ids = termination_bond.get_mode_bonds(_TERMINATION_NAME)
+            # @Gervasio these are the termination transition probabilities. And you will need to write a size dependent interpretation. To get the right numbers. Note the normalization
             target_weight = np.asarray([attr[_TERMINATION_NAME] for attr in target_attributes])
             target_prob = target_weight / np.sum(target_weight)
 
@@ -449,6 +455,7 @@ class _PartialAtomGraph:
             return sto_atom_id, False
 
         target_attr, target_idx = transition_bond.get_mode_bonds(_TRANSITION_NAME)
+        # @Gervasio these are the TRANSITION transition probabilities. And you will need to write a size dependent interpretation. To get the right numbers. Note the normalization
         target_weights = np.asarray([attr[_TRANSITION_NAME] for attr in target_attr])
 
         target_prob = target_weights / np.sum(target_weights)
@@ -485,7 +492,7 @@ class _PartialAtomGraph:
             stochastic_weight = []
             for i, half_bond in zip(*self.get_open_half_bonds(sto_atom_id, prefer_parent=prefer_parent_bonds)):
                 if half_bond.stochastic_growth_suitable:
-                    # TODO carefully check if stochastic bonds have the right weight here!
+                    # @Gervasio, same here weight needs to be interpreted
                     stochastic_weight += [half_bond.weight]
                     stochastic_idx += [i]
 
@@ -506,6 +513,7 @@ class _PartialAtomGraph:
             raise IncompleteStochasticGeneration(self)
 
         target_attr, target_idx = stochastic_bond.get_mode_bonds(_STOCHASTIC_NAME)
+        # @Gervasio these are the STOCHASTIC transition probabilities. And you will need to write a size dependent interpretation. To get the right numbers. Note the normalization
         target_weights = np.asarray([attr[_STOCHASTIC_NAME] for attr in target_attr])
         target_prob = target_weights / np.sum(target_weights)
 

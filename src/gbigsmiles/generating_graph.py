@@ -203,6 +203,10 @@ class GeneratingGraph:
                 if not edge_found:
                     self._g.add_edge(v, u, **d)
 
+    # @Gervasio, this was my attempt to remove extra edges. But it doesn't work.
+    # A working approach needs to extent to more than static bonds and make sure all paths (and bonds) are respected.
+    # A challenge with this graph traversal approach is that we do not want to break aromatic rings (even though, at least one bond doesn't need to be traversed.)
+    #
     # @staticmethod
     # def _remove_unnecessary_static_edges(graph):
     #     init_nodes = {}
@@ -463,6 +467,11 @@ class GeneratingGraph:
         # Remove all bond descriptors from the graph.
         graph.remove_nodes_from(bd_idx_set)
 
+        # @Gervasio this normalization on the graph, may be challenging for time changing transition probabilities.
+        # You may need to remove it, and work with unnormalized weights.
+        # It should be fine for the following atom_graph generation code, (we normalize there as well).
+        # But visually it is less appealing unnormalized, and ML models may react differently to unnormalized weights compared to probabilities.
+        #
         # Normalize transition weights
         for node in graph.nodes():
             total_weight = 0
@@ -548,6 +557,7 @@ class GeneratingGraph:
                     extra_graph_info_reverse[string] = idx
 
             try:
+                # @Gervasio for time and size dependent weights, you will have to adjust this here. Probably put a vector instead of a scalar, so that it can be interpreted correctly
                 gen_weight = obj.weight
             except AttributeError:
                 try:
@@ -603,6 +613,11 @@ class GeneratingGraph:
             )
 
         for u, v, _k, d in graph.edges(keys=True, data=True):
+            # @Gervasio, this is where the edge attributes are added to the ML graph
+            # At the moment, it is just a single number per probability type.
+            # For type (size) dependent transitions, you may need to expand this to hold a vector of parameters instead.
+            # If you want to make this backward compatible, be careful how this is interpreted.
+            # This part probably needs a complete overhaul
             d.setdefault(_STATIC_NAME, is_static_edge(d))
             d.setdefault(_STOCHASTIC_NAME, 0)
             d.setdefault(_TERMINATION_NAME, 0)
@@ -663,6 +678,7 @@ class GeneratingGraph:
             value = 1.0
             for key in edge_colors:
                 if d[key] > 0:
+                    # @ Gervasio, this is likely to break with more sophisticated weights too. But it is only visualization, and should be easy to fix
                     color = edge_colors[key]
                     value = d[key]
             style = "solid"

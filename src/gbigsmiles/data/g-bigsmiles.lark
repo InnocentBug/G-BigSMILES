@@ -60,6 +60,10 @@ bond_descriptor_symbol_idx: bond_descriptor_symbol INT?
 
 bond_descriptor_generation: "|" WS_INLINE* NUMBER WS_INLINE* "|"
   | "|" WS_INLINE* NUMBER  _number_list_repeat* WS_INLINE* "|"
+# @Geravsio, this is how probabilities (and weights) are currently parsed for bond descriptors.
+# If you need something size (or time) dependend, you will need to add the options here.
+# Keep in mind it needs to define weight and transition for a bond descriptor
+
 
 ladder_bond_descriptor: "[" inner_ambi_covalent_descriptor simple_bond_descriptor INT? "]"
   | "[" inner_ambi_covalent_descriptor non_covalent_bond_descriptor INT? "]"
