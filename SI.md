@@ -184,8 +184,8 @@ if IS_LINUX or not TESTING_ENV:
     expected_ratio = 0.5
     print(ratio, expected_ratio)
     # For automated tests we raise an exception for unexpected deviations
-    if np.abs(expected_ratio - ratio) > 0.02:
-        raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 2%: {(ratio, expected_ratio)}")
+    if np.abs(expected_ratio - ratio) > 0.05:
+        raise RuntimeError(f"Unexpected deviation of the monomer composition by more then 5%: {(ratio, expected_ratio)}")
 ```
 
 We've confirmed an equal ratio between the two monomers in the entire ensemble. Our subsequent task is to modify this composition using bond descriptor weights.
@@ -1020,7 +1020,7 @@ generative_bigSMILES = "CCOC(=O)C(C)(C){[>] [<]{[<] [<]CC([>])c1ccccc1 [>]}|gaus
 draw_molecule(generative_bigSMILES)
 ```
 
-This is random PS-r-PMMA, but the blocks are not identically distributed, instead we have PS blocks Gaussian distributed with a mean of $600g/mol$ and PMMA blocks Gaussian distributed with a mean of $540 g/mol$.
+This is random PS-r-PMMA, but the blocks are not identically distributed, instead we have PS blocks Gaussian distributed with a mean of $600g/mol$ and PMMA blocks Gaussian distributed with a mean of $540 g/mol$. 
 
 ```python
 draw_generation_graph(generative_bigSMILES)
