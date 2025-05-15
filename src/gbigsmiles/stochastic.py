@@ -88,14 +88,14 @@ class StochasticObject(BigSMILESbase, GenerationBase):
 
         try:
             for element in [self] + self._repeat_residues + self._termination_residues:
-                gengraph = element.get_generating_graph()
-                MLgraph = gengraph.get_ml_graph(include_bond_descriptors=True)
+                gen_graph = element.get_generating_graph()
+                MLgraph = gen_graph.get_ml_graph(include_bond_descriptors=True)
                 for node, data in MLgraph.nodes(data=True):
-                    if node in gengraph._bd_idx_set:
+                    if node in gen_graph._bd_idx_set:
                         if data["stochastic_id"] == data["parent_stochastic_id"]:
                             for _u, v in MLgraph.out_edges(node):
                                 stochastic_id = MLgraph.nodes(data=True)[v]["stochastic_id"]
-                                if (v in gengraph._bd_idx_set) and (data["stochastic_id"] == stochastic_id):
+                                if (v in gen_graph._bd_idx_set) and (data["stochastic_id"] == stochastic_id):
                                     raise ConcatenatedBondDescriptors(element, self)
         except UndefinedDistribution:
             pass
