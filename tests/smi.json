@@ -42,10 +42,10 @@
   "big_smiles": [
     "CCO{[<][<]C(N)C[>|2|][>]}|uniform(500, 600)|{[<][<|0 1|]C(=O)C[>][>]}|uniform(500, 600)|CCN.|2000|",
     "CC(O{[<][<]C(N)C[>|2|][>]}|uniform(500, 600)|{[<][<|0 1|]C(=O)C[>][>]}|uniform(500, 600)|C)CN.|2000|",
-    "CC(O{[<][<]C(N)C[>][>]}{[<][<]C(=O)C[>][>]}C)CN",
-    "{[] [$][C-][$]; [$][H] []}",
-    "{[][$][C-][$]; [$][H] []}",
-    "{[] [$][C-][$]; [$][H][]}",
+    "CC(O{[<][<]C(N)C[>][>]}|uniform(500, 600)|{[<][<]C(=O)C[>][>]}|uniform(400,600)|C)CN",
+    "{[] [$][C-][$]; [$][H] []}|gauss(2000., 20.)|",
+    "{[][$][C-][$]; [$][H] []}|gauss(2000,20)|",
+    "{[] [$][C-][$]; [$][H][]}|gauss(2000.0,20)|",
     "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1, [<]CC([>])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br].|5e5|",
     "CCOC(=O)C(C)(C){[>][<|8|]CC([>|8|])c1ccccc1, [<|2|]CC([>|2|])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br].|5e5|",
     "CCOC(=O)C(C)(C){[>][<|0 7 0 3|]CC([>|7 0 3 0|])c1ccccc1, [<|0 3 0 7|]CC([>|3 0 7 0|])C(=O)OC [<]}|schulz_zimm(1500, 1400)|[Br].|5e5|",
@@ -72,9 +72,9 @@
     "{[][<]CC([>])c1ccccc1; CCOC(=O)C(C)(C)[>], CC(CN)[>] [<]}|schulz_zimm(1000, 900)|[Br].|5e5|",
     "{[][<]CC([>])c1ccccc1; CCOC(=O)C(C)(C)[>|10|], CC(CN)[>] [<]}|schulz_zimm(1000, 900)|[Br].|5e5|",
     "CCOC(=O)C(C)(C){[>][<]CC([>])c1ccccc1 [<]}|schulz_zimm(1000, 900)|[Br].|5e5|CC(CN){[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1200, 1100)|[Br].|15e5|",
-    "{[][$]CC(C)(C)[$],[$]CC(c1cccc(c1)C{[$][$]CC(C)(C(=O)OC)[$][$]}Br)[$]; [$][H][]}",
-    "{[>][<]OCC(C)(C(=O)OCCOC)COC(=O)[>][<]}OCCCCCCOc(cc1)ccc1C(=O)Oc(cc1(C))ccc1OC(=O)c(cc1)ccc1OCCCCCCO{[>][<]C(=O)OCC(C)(C(=O)OCCOC)CO[>][<]}",
-    "{[][<]N=Cc(cc1)ccc1C=NCCC[Si](C)(C)O{[<][>][Si](C)(C)O[<][>]}[Si](C)(C)CCC[>]; [<][H], [>][H][]}"
+    "{[][$]CC(C)(C)[$],[$]CC(c1cccc(c1)C{[$][$]CC(C)(C(=O)OC)[$][$]}|poisson(100)|Br)[$]; [$][H][]}|flory_schulz(0.2)|",
+    "{[>][<]OCC(C)(C(=O)OCCOC)COC(=O)[>][<]}|uniform(200,300)|OCCCCCCOc(cc1)ccc1C(=O)Oc(cc1(C))ccc1OC(=O)c(cc1)ccc1OCCCCCCO{[>][<]C(=O)OCC(C)(C(=O)OCCOC)CO[>][<]}|schulz_zimm(2000, 1000)|",
+    "{[][<]N=Cc(cc1)ccc1C=NCCC[Si](C)(C)O{[<][>][Si](C)(C)O[<][>]}|gauss(400,30)|[Si](C)(C)CCC[>]; [<][H], [>][H][]}|poisson(100)|"
   ],
   "invalid_big_smiles": [
     "C{[$][$|-0.1|]CC(CC[$|.1|])(CC[$|.1|]),[$]CC[$]; [$][H][$]}|flory_schulz(5e-3)|[H]",
