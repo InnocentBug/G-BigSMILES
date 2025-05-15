@@ -11,6 +11,7 @@ from .bond import BondDescriptor, TerminalBondDescriptor
 from .core import BigSMILESbase, GenerationBase
 from .distribution import StochasticGeneration
 from .exception import (
+    ConcatenatedBondDescriptors,
     EmptyTerminalBondDescriptorWithoutEndGroups,
     EndGroupHasOneBondDescriptors,
     IncorrectNumberOfTransitionWeights,
@@ -18,6 +19,7 @@ from .exception import (
     NoInitiationForStochasticObject,
     NoLeftTransitions,
     StochasticMissingPath,
+    UndefinedDistribution,
 )
 from .generating_graph import (
     _STOCHASTIC_NAME,
@@ -83,16 +85,19 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         self._stochastic_parent = parent
 
     def _post_parse_validation(self):
-        for element in self._repeat_residues + self._termination_residues:
-            generative_graph = element.get_generating_graph()
-            for node in generative_graph.g.nodes():
-
-                if node in generative_graph._bd_idx_set:
-                    for _u, v in generative_graph.g.out_edges(node):
-                        if v in generative_graph._bd_idx_set:
-                            # @Gervasio reactivate, once fixed
-                            # raise TwoConsecutiveBondDescriptors(element, self)
-                            pass
+        try:
+            for element in [self] + self._repeat_residues + self._termination_residues:
+                gen_graph = element.get_generating_graph()
+                MLgraph = gen_graph.get_ml_graph(include_bond_descriptors=True)
+                for node, data in MLgraph.nodes(data=True):
+                    if node in gen_graph._bd_idx_set:
+                        if data["stochastic_id"] == data["parent_stochastic_id"]:
+                            for _u, v in MLgraph.out_edges(node):
+                                stochastic_id = MLgraph.nodes(data=True)[v]["stochastic_id"]
+                                if (v in gen_graph._bd_idx_set) and (data["stochastic_id"] == stochastic_id):
+                                    raise ConcatenatedBondDescriptors(element, self)
+        except UndefinedDistribution:
+            pass
 
         for smi in self._repeat_residues:
             if len(smi.bond_descriptors) < 2:
@@ -146,6 +151,10 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         return self._generation
 
     def _generate_partial_graph(self) -> _PartialGeneratingGraph:
+
+        if self.stochastic_generation is None:
+            raise UndefinedDistribution(self)
+
         def build_idx(residues, graph):
             """
             Build a list that maps uuid of all bond_descriptors to their position in the string.

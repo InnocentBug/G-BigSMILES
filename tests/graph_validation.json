@@ -17,7 +17,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "bc0e98f2-472e-40c5-9853-3e3c4c1c4190"
+        "id": "eb1585e2-467a-4495-a52b-f52984001034"
       }
     ],
     "adjacency": [[]]
@@ -40,7 +40,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "f6a4c072-4a6f-488a-a59a-e8bab546e984"
+        "id": "032ec165-a211-4f2e-b105-201f9e5bd3f8"
       },
       {
         "atomic_num": 7,
@@ -55,7 +55,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "a1898888-02a6-4308-951f-612d8613afa2"
+        "id": "660b0fb8-0602-4586-908b-b6a9a02d0fbc"
       }
     ],
     "adjacency": [
@@ -67,7 +67,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "a1898888-02a6-4308-951f-612d8613afa2",
+          "id": "660b0fb8-0602-4586-908b-b6a9a02d0fbc",
           "key": 0
         }
       ],
@@ -79,7 +79,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "f6a4c072-4a6f-488a-a59a-e8bab546e984",
+          "id": "032ec165-a211-4f2e-b105-201f9e5bd3f8",
           "key": 0
         }
       ]
@@ -103,7 +103,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "1a0c86e5-2271-4ed5-b8d3-ba86c55a7f5d"
+        "id": "b1b3923d-3ae5-481e-ae5c-3cbf928d19b2"
       },
       {
         "atomic_num": 7,
@@ -118,7 +118,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "891f3469-90b1-4f18-8f82-8c70531bee23"
+        "id": "a03e7d52-1423-4e79-a8ca-78d77b8e2b32"
       },
       {
         "atomic_num": 9,
@@ -133,7 +133,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "c3db13f2-12ba-4948-add2-b8a451fcdc6a"
+        "id": "a76d773f-bc1c-48d1-8a4f-fa413f93e288"
       }
     ],
     "adjacency": [
@@ -145,7 +145,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "891f3469-90b1-4f18-8f82-8c70531bee23",
+          "id": "a03e7d52-1423-4e79-a8ca-78d77b8e2b32",
           "key": 0
         }
       ],
@@ -157,7 +157,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "c3db13f2-12ba-4948-add2-b8a451fcdc6a",
+          "id": "a76d773f-bc1c-48d1-8a4f-fa413f93e288",
           "key": 0
         },
         {
@@ -167,7 +167,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "1a0c86e5-2271-4ed5-b8d3-ba86c55a7f5d",
+          "id": "b1b3923d-3ae5-481e-ae5c-3cbf928d19b2",
           "key": 0
         }
       ],
@@ -179,7 +179,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "891f3469-90b1-4f18-8f82-8c70531bee23",
+          "id": "a03e7d52-1423-4e79-a8ca-78d77b8e2b32",
           "key": 0
         }
       ]
@@ -203,7 +203,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "f62a1f5b-5585-4280-8ba6-a3b18ddcf177"
+        "id": "21a172b5-78c9-499d-9985-b2e7084f731e"
       },
       {
         "atomic_num": 7,
@@ -218,7 +218,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "aed242f4-0289-444f-a4b4-4e2172914423"
+        "id": "c80b329d-c1ae-4bc6-9455-f88856079bd0"
       },
       {
         "atomic_num": 9,
@@ -233,7 +233,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "f759eeb4-e4cc-4327-ad91-13915db3650e"
+        "id": "0bfa5804-645f-44e9-aa41-655c08347d8c"
       }
     ],
     "adjacency": [
@@ -245,7 +245,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "aed242f4-0289-444f-a4b4-4e2172914423",
+          "id": "c80b329d-c1ae-4bc6-9455-f88856079bd0",
           "key": 0
         }
       ],
@@ -257,7 +257,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "f759eeb4-e4cc-4327-ad91-13915db3650e",
+          "id": "0bfa5804-645f-44e9-aa41-655c08347d8c",
           "key": 0
         },
         {
@@ -267,7 +267,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "f62a1f5b-5585-4280-8ba6-a3b18ddcf177",
+          "id": "21a172b5-78c9-499d-9985-b2e7084f731e",
           "key": 0
         }
       ],
@@ -279,7 +279,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "aed242f4-0289-444f-a4b4-4e2172914423",
+          "id": "c80b329d-c1ae-4bc6-9455-f88856079bd0",
           "key": 0
         }
       ]
@@ -303,7 +303,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "903f84f1-2c2b-449c-a120-f47df4988fdd"
+        "id": "d24892ab-500a-4558-8aff-862603cc58da"
       },
       {
         "atomic_num": 7,
@@ -318,7 +318,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "da4eaf57-088e-4ce2-bf8b-2bc2aa84d6d2"
+        "id": "e498d59a-0396-4211-876c-b0d8e26ecd61"
       },
       {
         "atomic_num": 9,
@@ -333,7 +333,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "b038ccd3-525d-48a8-a446-76fb641118ea"
+        "id": "d8d2f422-8d64-4c28-a865-bc7d98fd546e"
       }
     ],
     "adjacency": [
@@ -345,7 +345,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "da4eaf57-088e-4ce2-bf8b-2bc2aa84d6d2",
+          "id": "e498d59a-0396-4211-876c-b0d8e26ecd61",
           "key": 0
         }
       ],
@@ -357,7 +357,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "b038ccd3-525d-48a8-a446-76fb641118ea",
+          "id": "d8d2f422-8d64-4c28-a865-bc7d98fd546e",
           "key": 0
         },
         {
@@ -367,7 +367,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "903f84f1-2c2b-449c-a120-f47df4988fdd",
+          "id": "d24892ab-500a-4558-8aff-862603cc58da",
           "key": 0
         }
       ],
@@ -379,7 +379,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "da4eaf57-088e-4ce2-bf8b-2bc2aa84d6d2",
+          "id": "e498d59a-0396-4211-876c-b0d8e26ecd61",
           "key": 0
         }
       ]
@@ -403,7 +403,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "64a6c826-20b7-4f43-87a2-6904a4fb6a8f"
+        "id": "0ab30239-23d9-4b7a-adb1-2f642a79f00e"
       },
       {
         "atomic_num": 7,
@@ -418,7 +418,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "ae9b0169-896e-44d9-b3a0-83db2c69837d"
+        "id": "3835de97-444a-45ed-8d54-ab5fb65edfd4"
       }
     ],
     "adjacency": [[], []]
@@ -441,7 +441,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "ddb9481e-50fc-4464-82e4-a797b3a588d1"
+        "id": "4b31553c-aaf4-49ae-b0d6-9344b4c8f065"
       },
       {
         "atomic_num": 7,
@@ -456,7 +456,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "8a1a6f18-b2a4-4a4e-af73-c657fdd8ce64"
+        "id": "1d27c522-3061-40ab-9bdd-682495b54b40"
       },
       {
         "atomic_num": 9,
@@ -471,7 +471,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "f190cb75-b67d-457c-aa6f-e2862e9ffc66"
+        "id": "e39919be-4e28-4d41-ae3e-b5cea6279bf0"
       },
       {
         "atomic_num": 8,
@@ -486,7 +486,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "556d04b7-16d0-42b7-9e2f-5e60ee963516"
+        "id": "7075a910-f092-429c-a3c1-4a2e4175a228"
       },
       {
         "atomic_num": 6,
@@ -501,7 +501,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "92173a29-bb59-41e4-83fb-5abfc2515a08"
+        "id": "915d33d6-23a0-435e-bbbd-33744cdcb998"
       },
       {
         "atomic_num": 8,
@@ -516,7 +516,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "f1231574-077e-48e1-a0b9-d58db2d6fdff"
+        "id": "a85daf7f-acc2-4826-baed-dc2dddee08af"
       }
     ],
     "adjacency": [
@@ -528,7 +528,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "8a1a6f18-b2a4-4a4e-af73-c657fdd8ce64",
+          "id": "1d27c522-3061-40ab-9bdd-682495b54b40",
           "key": 0
         }
       ],
@@ -540,7 +540,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "f190cb75-b67d-457c-aa6f-e2862e9ffc66",
+          "id": "e39919be-4e28-4d41-ae3e-b5cea6279bf0",
           "key": 0
         },
         {
@@ -550,7 +550,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "ddb9481e-50fc-4464-82e4-a797b3a588d1",
+          "id": "4b31553c-aaf4-49ae-b0d6-9344b4c8f065",
           "key": 0
         }
       ],
@@ -562,7 +562,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "8a1a6f18-b2a4-4a4e-af73-c657fdd8ce64",
+          "id": "1d27c522-3061-40ab-9bdd-682495b54b40",
           "key": 0
         }
       ],
@@ -574,7 +574,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "92173a29-bb59-41e4-83fb-5abfc2515a08",
+          "id": "915d33d6-23a0-435e-bbbd-33744cdcb998",
           "key": 0
         }
       ],
@@ -586,7 +586,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "f1231574-077e-48e1-a0b9-d58db2d6fdff",
+          "id": "a85daf7f-acc2-4826-baed-dc2dddee08af",
           "key": 0
         },
         {
@@ -596,7 +596,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "556d04b7-16d0-42b7-9e2f-5e60ee963516",
+          "id": "7075a910-f092-429c-a3c1-4a2e4175a228",
           "key": 0
         }
       ],
@@ -608,7 +608,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "92173a29-bb59-41e4-83fb-5abfc2515a08",
+          "id": "915d33d6-23a0-435e-bbbd-33744cdcb998",
           "key": 0
         }
       ]
@@ -632,7 +632,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "6896d050-ebdd-4b28-b89a-d414a46677c7"
+        "id": "b50c2868-5773-462a-a2f1-0aac7d1245aa"
       },
       {
         "atomic_num": 6,
@@ -647,7 +647,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "09b5e3c9-c1e1-4866-9a21-e7bcf1e1f46e"
+        "id": "b1f8a734-8357-4111-9c1f-ff85128f98b4"
       },
       {
         "atomic_num": 6,
@@ -662,7 +662,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "b743cc4e-6393-414d-bb98-4ecc93c0d30e"
+        "id": "e44886b1-4d7d-4a03-883c-2c3e3ab7e41c"
       },
       {
         "atomic_num": 6,
@@ -677,7 +677,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "d6ae33f4-8b39-4ac4-97cc-615f711a8463"
+        "id": "0f02d863-fc31-4f29-9733-a9e4f8836023"
       },
       {
         "atomic_num": 6,
@@ -692,7 +692,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "b86b7174-d26a-4d3d-b135-f516f43fae67"
+        "id": "2bf12dc2-9e5e-488f-8ac7-bc6e4eca46ff"
       },
       {
         "atomic_num": 6,
@@ -707,7 +707,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "0f872933-a9b6-4e22-8cbb-c18583957274"
+        "id": "506d581e-a0c2-461e-a551-8e475da32cd8"
       },
       {
         "atomic_num": 6,
@@ -722,7 +722,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "1c21056b-00b5-44e9-8aee-811f9261bbdb"
+        "id": "51d12838-baa5-42be-bd5a-cdf998295f30"
       },
       {
         "atomic_num": 6,
@@ -737,7 +737,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "d9ce7c8f-667c-4fb8-8792-1d4ef5b0eff3"
+        "id": "dfc76080-0e9f-412f-b178-38f0f2b8aa67"
       },
       {
         "atomic_num": 6,
@@ -752,7 +752,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "81a0ad4c-f9f6-4374-aded-b013c9881da3"
+        "id": "db6fca92-89d8-4a8c-a510-6599f8ea606e"
       },
       {
         "atomic_num": 6,
@@ -767,7 +767,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "3c058a5c-e8b6-42e5-8e36-19f4e818fd4a"
+        "id": "05059c35-cefb-4e1f-9f0d-44f93c334550"
       },
       {
         "atomic_num": 6,
@@ -782,7 +782,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "11132f7f-c3d8-4198-9820-473a1f568bc3"
+        "id": "5186a09d-4eeb-4ba4-9a1a-f0bff0d384df"
       },
       {
         "atomic_num": 6,
@@ -797,7 +797,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "0d57444b-b116-432b-8592-818f2ddbf13c"
+        "id": "c86623d0-407d-4ff4-b91d-07af4beca263"
       },
       {
         "atomic_num": 9,
@@ -812,7 +812,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "f8f72c02-3098-4f7c-9727-4594aeb1eec4"
+        "id": "2412e573-8a57-49aa-a814-d3f4cc09bffa"
       },
       {
         "atomic_num": 6,
@@ -827,7 +827,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "aaee8be0-31d1-4f86-ab2f-c339b6a346ce"
+        "id": "247d9752-8585-49e6-8dae-b8fbd3bfa84e"
       },
       {
         "atomic_num": 6,
@@ -842,7 +842,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "d9f74bf3-fa32-4d93-a1e2-ed5636a9415e"
+        "id": "e724a502-cca1-4ac1-bf27-b5aa5fd76921"
       },
       {
         "atomic_num": 9,
@@ -857,7 +857,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "951faa48-1171-4872-9498-7413e5e041c0"
+        "id": "40e7d248-a319-4e43-abb0-48f6935e213c"
       },
       {
         "atomic_num": 6,
@@ -872,7 +872,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "6e549ba4-a7d8-44d1-be26-805d28d265bf"
+        "id": "b7260796-f799-4772-81bd-db03d38aa41e"
       },
       {
         "atomic_num": 6,
@@ -887,7 +887,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "4fccb2f3-747e-46a2-b6f5-a4753b4b0f61"
+        "id": "a135df97-e1ee-4694-b846-37266fa42633"
       }
     ],
     "adjacency": [
@@ -899,7 +899,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "09b5e3c9-c1e1-4866-9a21-e7bcf1e1f46e",
+          "id": "b1f8a734-8357-4111-9c1f-ff85128f98b4",
           "key": 0
         }
       ],
@@ -911,7 +911,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "b743cc4e-6393-414d-bb98-4ecc93c0d30e",
+          "id": "e44886b1-4d7d-4a03-883c-2c3e3ab7e41c",
           "key": 0
         },
         {
@@ -921,7 +921,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "6896d050-ebdd-4b28-b89a-d414a46677c7",
+          "id": "b50c2868-5773-462a-a2f1-0aac7d1245aa",
           "key": 0
         }
       ],
@@ -933,7 +933,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "d6ae33f4-8b39-4ac4-97cc-615f711a8463",
+          "id": "0f02d863-fc31-4f29-9733-a9e4f8836023",
           "key": 0
         },
         {
@@ -943,7 +943,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "d9ce7c8f-667c-4fb8-8792-1d4ef5b0eff3",
+          "id": "dfc76080-0e9f-412f-b178-38f0f2b8aa67",
           "key": 0
         },
         {
@@ -953,7 +953,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "09b5e3c9-c1e1-4866-9a21-e7bcf1e1f46e",
+          "id": "b1f8a734-8357-4111-9c1f-ff85128f98b4",
           "key": 0
         }
       ],
@@ -965,7 +965,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "b86b7174-d26a-4d3d-b135-f516f43fae67",
+          "id": "2bf12dc2-9e5e-488f-8ac7-bc6e4eca46ff",
           "key": 0
         },
         {
@@ -975,7 +975,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "b743cc4e-6393-414d-bb98-4ecc93c0d30e",
+          "id": "e44886b1-4d7d-4a03-883c-2c3e3ab7e41c",
           "key": 0
         }
       ],
@@ -987,7 +987,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "0f872933-a9b6-4e22-8cbb-c18583957274",
+          "id": "506d581e-a0c2-461e-a551-8e475da32cd8",
           "key": 0
         },
         {
@@ -997,7 +997,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "d6ae33f4-8b39-4ac4-97cc-615f711a8463",
+          "id": "0f02d863-fc31-4f29-9733-a9e4f8836023",
           "key": 0
         }
       ],
@@ -1009,7 +1009,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "1c21056b-00b5-44e9-8aee-811f9261bbdb",
+          "id": "51d12838-baa5-42be-bd5a-cdf998295f30",
           "key": 0
         },
         {
@@ -1019,7 +1019,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "b86b7174-d26a-4d3d-b135-f516f43fae67",
+          "id": "2bf12dc2-9e5e-488f-8ac7-bc6e4eca46ff",
           "key": 0
         }
       ],
@@ -1031,7 +1031,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "d9ce7c8f-667c-4fb8-8792-1d4ef5b0eff3",
+          "id": "dfc76080-0e9f-412f-b178-38f0f2b8aa67",
           "key": 0
         },
         {
@@ -1041,7 +1041,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "0f872933-a9b6-4e22-8cbb-c18583957274",
+          "id": "506d581e-a0c2-461e-a551-8e475da32cd8",
           "key": 0
         }
       ],
@@ -1053,7 +1053,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "b743cc4e-6393-414d-bb98-4ecc93c0d30e",
+          "id": "e44886b1-4d7d-4a03-883c-2c3e3ab7e41c",
           "key": 0
         },
         {
@@ -1063,7 +1063,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "1c21056b-00b5-44e9-8aee-811f9261bbdb",
+          "id": "51d12838-baa5-42be-bd5a-cdf998295f30",
           "key": 0
         }
       ],
@@ -1075,7 +1075,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "3c058a5c-e8b6-42e5-8e36-19f4e818fd4a",
+          "id": "05059c35-cefb-4e1f-9f0d-44f93c334550",
           "key": 0
         }
       ],
@@ -1087,7 +1087,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "11132f7f-c3d8-4198-9820-473a1f568bc3",
+          "id": "5186a09d-4eeb-4ba4-9a1a-f0bff0d384df",
           "key": 0
         },
         {
@@ -1097,7 +1097,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "aromatic": false,
-          "id": "81a0ad4c-f9f6-4374-aded-b013c9881da3",
+          "id": "db6fca92-89d8-4a8c-a510-6599f8ea606e",
           "key": 0
         }
       ],
@@ -1109,7 +1109,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "0d57444b-b116-432b-8592-818f2ddbf13c",
+          "id": "c86623d0-407d-4ff4-b91d-07af4beca263",
           "key": 0
         },
         {
@@ -1119,7 +1119,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "4fccb2f3-747e-46a2-b6f5-a4753b4b0f61",
+          "id": "a135df97-e1ee-4694-b846-37266fa42633",
           "key": 0
         },
         {
@@ -1129,39 +1129,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "3c058a5c-e8b6-42e5-8e36-19f4e818fd4a",
-          "key": 0
-        }
-      ],
-      [
-        {
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "f8f72c02-3098-4f7c-9727-4594aeb1eec4",
-          "key": 0
-        },
-        {
-          "aromatic": true,
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "id": "aaee8be0-31d1-4f86-ab2f-c339b6a346ce",
-          "key": 0
-        },
-        {
-          "aromatic": true,
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "id": "11132f7f-c3d8-4198-9820-473a1f568bc3",
+          "id": "05059c35-cefb-4e1f-9f0d-44f93c334550",
           "key": 0
         }
       ],
@@ -1173,19 +1141,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "0d57444b-b116-432b-8592-818f2ddbf13c",
-          "key": 0
-        }
-      ],
-      [
-        {
-          "aromatic": true,
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "id": "d9f74bf3-fa32-4d93-a1e2-ed5636a9415e",
+          "id": "2412e573-8a57-49aa-a814-d3f4cc09bffa",
           "key": 0
         },
         {
@@ -1195,19 +1151,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "0d57444b-b116-432b-8592-818f2ddbf13c",
-          "key": 0
-        }
-      ],
-      [
-        {
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "951faa48-1171-4872-9498-7413e5e041c0",
+          "id": "247d9752-8585-49e6-8dae-b8fbd3bfa84e",
           "key": 0
         },
         {
@@ -1217,17 +1161,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "6e549ba4-a7d8-44d1-be26-805d28d265bf",
-          "key": 0
-        },
-        {
-          "aromatic": true,
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "id": "aaee8be0-31d1-4f86-ab2f-c339b6a346ce",
+          "id": "5186a09d-4eeb-4ba4-9a1a-f0bff0d384df",
           "key": 0
         }
       ],
@@ -1239,7 +1173,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "d9f74bf3-fa32-4d93-a1e2-ed5636a9415e",
+          "id": "c86623d0-407d-4ff4-b91d-07af4beca263",
           "key": 0
         }
       ],
@@ -1251,7 +1185,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "4fccb2f3-747e-46a2-b6f5-a4753b4b0f61",
+          "id": "e724a502-cca1-4ac1-bf27-b5aa5fd76921",
           "key": 0
         },
         {
@@ -1261,7 +1195,51 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "d9f74bf3-fa32-4d93-a1e2-ed5636a9415e",
+          "id": "c86623d0-407d-4ff4-b91d-07af4beca263",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "40e7d248-a319-4e43-abb0-48f6935e213c",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "b7260796-f799-4772-81bd-db03d38aa41e",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "247d9752-8585-49e6-8dae-b8fbd3bfa84e",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "e724a502-cca1-4ac1-bf27-b5aa5fd76921",
           "key": 0
         }
       ],
@@ -1273,7 +1251,7 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "11132f7f-c3d8-4198-9820-473a1f568bc3",
+          "id": "a135df97-e1ee-4694-b846-37266fa42633",
           "key": 0
         },
         {
@@ -1283,13 +1261,35 @@
           "termination_weight": 0,
           "transition_weight": 0,
           "bond_type": 1,
-          "id": "6e549ba4-a7d8-44d1-be26-805d28d265bf",
+          "id": "e724a502-cca1-4ac1-bf27-b5aa5fd76921",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "5186a09d-4eeb-4ba4-9a1a-f0bff0d384df",
+          "key": 0
+        },
+        {
+          "aromatic": true,
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "id": "b7260796-f799-4772-81bd-db03d38aa41e",
           "key": 0
         }
       ]
     ]
   },
-  "{[] [$]C[$] []}": {
+  "{[] [$]C[$] []}|gauss(100,10)|": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -1299,15 +1299,15 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, 100.0, 10.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": -1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "4f514dd2-47f9-4537-a5ae-d76cc896783b"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "4b60244f-aa1b-4fcd-9904-a612d81e8da6"
       }
     ],
     "adjacency": [
@@ -1319,7 +1319,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "4f514dd2-47f9-4537-a5ae-d76cc896783b",
+          "id": "4b60244f-aa1b-4fcd-9904-a612d81e8da6",
           "key": 0
         },
         {
@@ -1329,13 +1329,13 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "4f514dd2-47f9-4537-a5ae-d76cc896783b",
+          "id": "4b60244f-aa1b-4fcd-9904-a612d81e8da6",
           "key": 1
         }
       ]
     ]
   },
-  "{[] [<]CFN[>] []}": {
+  "{[] [<]CFN[>] []}|uniform(100,120)|": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -1345,45 +1345,45 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, -1.0, -1.0, 100.0, 120.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": 1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "39c8bda8-d040-4227-9d39-99ec7230f83e"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "e21e8798-5897-4f80-8b10-7707c9e8d5ae"
       },
       {
         "atomic_num": 9,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, -1.0, -1.0, 100.0, 120.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": -1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "0365344d-68a2-4a5e-85bf-529e0987c067"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "f3ab8a01-394e-417e-8fce-44ff3bbd32c6"
       },
       {
         "atomic_num": 7,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, -1.0, -1.0, 100.0, 120.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": 1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "b16e3ace-21c5-49e8-bc09-8bb2dc5bcdbd"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "f86786b7-d096-4b49-99ea-d0a4239a78bd"
       }
     ],
     "adjacency": [
@@ -1395,7 +1395,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "0365344d-68a2-4a5e-85bf-529e0987c067",
+          "id": "f3ab8a01-394e-417e-8fce-44ff3bbd32c6",
           "key": 0
         },
         {
@@ -1405,7 +1405,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "b16e3ace-21c5-49e8-bc09-8bb2dc5bcdbd",
+          "id": "f86786b7-d096-4b49-99ea-d0a4239a78bd",
           "key": 0
         }
       ],
@@ -1417,7 +1417,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "b16e3ace-21c5-49e8-bc09-8bb2dc5bcdbd",
+          "id": "f86786b7-d096-4b49-99ea-d0a4239a78bd",
           "key": 0
         },
         {
@@ -1427,7 +1427,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "39c8bda8-d040-4227-9d39-99ec7230f83e",
+          "id": "e21e8798-5897-4f80-8b10-7707c9e8d5ae",
           "key": 0
         }
       ],
@@ -1439,7 +1439,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "0365344d-68a2-4a5e-85bf-529e0987c067",
+          "id": "f3ab8a01-394e-417e-8fce-44ff3bbd32c6",
           "key": 0
         },
         {
@@ -1449,13 +1449,13 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "39c8bda8-d040-4227-9d39-99ec7230f83e",
+          "id": "e21e8798-5897-4f80-8b10-7707c9e8d5ae",
           "key": 0
         }
       ]
     ]
   },
-  "[H]{[<] [<]CFN[>] []}": {
+  "[H]{[<] [<]CFN[>] []}|log_normal(1000., 100.0)|": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -1473,52 +1473,52 @@
         "gen_weight": 1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "b7861cdc-e432-4d2a-9574-9b625182d3dc"
+        "id": "adf4e0a3-f754-4c08-a424-c74c0e9dbd6d"
       },
       {
         "atomic_num": 6,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1000.0, 100.0, -1.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": 1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "bf47e5ef-5885-442d-b242-1464d476cfca"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "f49bd637-74ef-49be-9a05-f7fbe4cd13d4"
       },
       {
         "atomic_num": 9,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1000.0, 100.0, -1.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": -1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "19eadb44-d0a1-4518-9bf1-7b12dd0f352b"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "0bde6804-bc59-4092-85d4-27fe8b7afbcb"
       },
       {
         "atomic_num": 7,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1000.0, 100.0, -1.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": 1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "10390982-dd07-4fb7-90d9-0686fd4084cd"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "f4971a5c-85ee-4377-a89a-5649dc24b865"
       }
     ],
     "adjacency": [
@@ -1530,7 +1530,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "10390982-dd07-4fb7-90d9-0686fd4084cd",
+          "id": "f4971a5c-85ee-4377-a89a-5649dc24b865",
           "key": 0
         }
       ],
@@ -1542,7 +1542,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "19eadb44-d0a1-4518-9bf1-7b12dd0f352b",
+          "id": "0bde6804-bc59-4092-85d4-27fe8b7afbcb",
           "key": 0
         },
         {
@@ -1552,7 +1552,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "10390982-dd07-4fb7-90d9-0686fd4084cd",
+          "id": "f4971a5c-85ee-4377-a89a-5649dc24b865",
           "key": 0
         }
       ],
@@ -1564,7 +1564,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "10390982-dd07-4fb7-90d9-0686fd4084cd",
+          "id": "f4971a5c-85ee-4377-a89a-5649dc24b865",
           "key": 0
         },
         {
@@ -1574,7 +1574,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "bf47e5ef-5885-442d-b242-1464d476cfca",
+          "id": "f49bd637-74ef-49be-9a05-f7fbe4cd13d4",
           "key": 0
         }
       ],
@@ -1586,7 +1586,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "19eadb44-d0a1-4518-9bf1-7b12dd0f352b",
+          "id": "0bde6804-bc59-4092-85d4-27fe8b7afbcb",
           "key": 0
         },
         {
@@ -1596,13 +1596,13 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "bf47e5ef-5885-442d-b242-1464d476cfca",
+          "id": "f49bd637-74ef-49be-9a05-f7fbe4cd13d4",
           "key": 0
         }
       ]
     ]
   },
-  "[H]{[<] [<]CFN[>] [>]}Br": {
+  "[H]{[<] [<]CFN[>] [>]}|poisson(100)|Br": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -1620,52 +1620,52 @@
         "gen_weight": 1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "c0222027-01df-40d7-a055-bbf62307306b"
+        "id": "ca9c0689-a62b-42b8-a188-7f4c14561445"
       },
       {
         "atomic_num": 6,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 100.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": 1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "2efb60b4-d4f5-491c-9862-97b8113ea50b"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "ac489af2-c547-45f3-a9e2-64f6e8b36c27"
       },
       {
         "atomic_num": 9,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 100.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": -1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "5c82f895-5305-4134-8560-50c9ee09f86f"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "2a1cc590-3076-4590-8b42-7101a72c547c"
       },
       {
         "atomic_num": 7,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 100.0
         ],
         "mol_molecular_weight": -1.0,
         "total_molecular_weight": -1.0,
         "init_weight": -1.0,
         "gen_weight": 1.0,
-        "stochastic_id": -1,
-        "parent_stochastic_id": -1,
-        "id": "07d7fa7a-1209-432d-a7b1-28321004b069"
+        "stochastic_id": 0,
+        "parent_stochastic_id": -2,
+        "id": "0222b6fd-b831-486a-8489-993076ef4b55"
       },
       {
         "atomic_num": 35,
@@ -1680,7 +1680,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "407173a2-ff59-4805-8d8f-cb1d25e84ce0"
+        "id": "ceff9d77-ee01-40b0-bc2f-82711840287e"
       }
     ],
     "adjacency": [
@@ -1692,7 +1692,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "07d7fa7a-1209-432d-a7b1-28321004b069",
+          "id": "0222b6fd-b831-486a-8489-993076ef4b55",
           "key": 0
         }
       ],
@@ -1704,7 +1704,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "5c82f895-5305-4134-8560-50c9ee09f86f",
+          "id": "2a1cc590-3076-4590-8b42-7101a72c547c",
           "key": 0
         },
         {
@@ -1714,7 +1714,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "07d7fa7a-1209-432d-a7b1-28321004b069",
+          "id": "0222b6fd-b831-486a-8489-993076ef4b55",
           "key": 0
         },
         {
@@ -1724,7 +1724,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "407173a2-ff59-4805-8d8f-cb1d25e84ce0",
+          "id": "ceff9d77-ee01-40b0-bc2f-82711840287e",
           "key": 0
         }
       ],
@@ -1736,7 +1736,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "07d7fa7a-1209-432d-a7b1-28321004b069",
+          "id": "0222b6fd-b831-486a-8489-993076ef4b55",
           "key": 0
         },
         {
@@ -1746,7 +1746,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "2efb60b4-d4f5-491c-9862-97b8113ea50b",
+          "id": "ac489af2-c547-45f3-a9e2-64f6e8b36c27",
           "key": 0
         }
       ],
@@ -1758,7 +1758,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "5c82f895-5305-4134-8560-50c9ee09f86f",
+          "id": "2a1cc590-3076-4590-8b42-7101a72c547c",
           "key": 0
         },
         {
@@ -1768,14 +1768,14 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "2efb60b4-d4f5-491c-9862-97b8113ea50b",
+          "id": "ac489af2-c547-45f3-a9e2-64f6e8b36c27",
           "key": 0
         }
       ],
       []
     ]
   },
-  "[H]{[<] [<]CFN[>] [>]}|flory_schulz(0.3)|Br.|28|": {
+  "[H]{[<] [<]CFN[>] [>]}|flory_schulz(.3)|Br.|28|": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -1793,7 +1793,7 @@
         "gen_weight": 1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "9c7cf46f-2cd4-4a35-9447-3ff2416e6c2f"
+        "id": "ef98d878-473a-463d-9cc3-7302f7539d93"
       },
       {
         "atomic_num": 6,
@@ -1808,7 +1808,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "eeb36122-ec11-40e2-970e-fa83f568218c"
+        "id": "6bdbd33b-d0b7-4afb-aa63-4819331f8834"
       },
       {
         "atomic_num": 9,
@@ -1823,7 +1823,7 @@
         "gen_weight": -1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "4bf4a17b-8f17-4627-863a-f7acfa3f8a54"
+        "id": "e2ee843c-b89d-4495-a255-54cb73850334"
       },
       {
         "atomic_num": 7,
@@ -1838,7 +1838,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "e5c6d5fb-3f51-4616-97d9-e1bea80f4734"
+        "id": "c4b285ad-e4b3-4752-ac28-781cdaf92a0e"
       },
       {
         "atomic_num": 35,
@@ -1853,7 +1853,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "841c3206-6f92-4a60-bf87-35adc53e220c"
+        "id": "bdde495a-c224-4800-a719-acc2f52f3360"
       }
     ],
     "adjacency": [
@@ -1865,7 +1865,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "e5c6d5fb-3f51-4616-97d9-e1bea80f4734",
+          "id": "c4b285ad-e4b3-4752-ac28-781cdaf92a0e",
           "key": 0
         }
       ],
@@ -1877,7 +1877,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "4bf4a17b-8f17-4627-863a-f7acfa3f8a54",
+          "id": "e2ee843c-b89d-4495-a255-54cb73850334",
           "key": 0
         },
         {
@@ -1887,7 +1887,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "e5c6d5fb-3f51-4616-97d9-e1bea80f4734",
+          "id": "c4b285ad-e4b3-4752-ac28-781cdaf92a0e",
           "key": 0
         },
         {
@@ -1897,7 +1897,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "841c3206-6f92-4a60-bf87-35adc53e220c",
+          "id": "bdde495a-c224-4800-a719-acc2f52f3360",
           "key": 0
         }
       ],
@@ -1909,7 +1909,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "e5c6d5fb-3f51-4616-97d9-e1bea80f4734",
+          "id": "c4b285ad-e4b3-4752-ac28-781cdaf92a0e",
           "key": 0
         },
         {
@@ -1919,7 +1919,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "eeb36122-ec11-40e2-970e-fa83f568218c",
+          "id": "6bdbd33b-d0b7-4afb-aa63-4819331f8834",
           "key": 0
         }
       ],
@@ -1931,7 +1931,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "4bf4a17b-8f17-4627-863a-f7acfa3f8a54",
+          "id": "e2ee843c-b89d-4495-a255-54cb73850334",
           "key": 0
         },
         {
@@ -1941,7 +1941,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "eeb36122-ec11-40e2-970e-fa83f568218c",
+          "id": "6bdbd33b-d0b7-4afb-aa63-4819331f8834",
           "key": 0
         }
       ],
@@ -1966,7 +1966,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "931f2de9-456f-4dee-b2ef-638a23dfe82a"
+        "id": "d2933e5f-3428-4f8c-a304-a009ac5456b8"
       },
       {
         "atomic_num": 9,
@@ -1981,7 +1981,7 @@
         "gen_weight": -1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "c5ad91ba-c205-4f4d-ab46-7c43e9557071"
+        "id": "45ebabfb-561a-4004-842d-32e6ec9f9727"
       },
       {
         "atomic_num": 7,
@@ -1996,7 +1996,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "91feca20-a49f-426e-acd2-7d893d74b707"
+        "id": "f39bf284-5f29-44ab-9392-825b499e54d0"
       },
       {
         "atomic_num": 1,
@@ -2011,7 +2011,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "10d92487-c661-4498-b369-62bb0aa3b561"
+        "id": "9f2d6641-2c77-4137-8177-7542604842bc"
       },
       {
         "atomic_num": 35,
@@ -2026,7 +2026,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "797b0938-960e-4111-be07-cda2826d31b4"
+        "id": "fb9aeb04-4679-46c6-b7c9-93f1086fb757"
       }
     ],
     "adjacency": [
@@ -2038,7 +2038,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "c5ad91ba-c205-4f4d-ab46-7c43e9557071",
+          "id": "45ebabfb-561a-4004-842d-32e6ec9f9727",
           "key": 0
         },
         {
@@ -2048,7 +2048,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "797b0938-960e-4111-be07-cda2826d31b4",
+          "id": "fb9aeb04-4679-46c6-b7c9-93f1086fb757",
           "key": 0
         },
         {
@@ -2058,7 +2058,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "91feca20-a49f-426e-acd2-7d893d74b707",
+          "id": "f39bf284-5f29-44ab-9392-825b499e54d0",
           "key": 0
         }
       ],
@@ -2070,7 +2070,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "91feca20-a49f-426e-acd2-7d893d74b707",
+          "id": "f39bf284-5f29-44ab-9392-825b499e54d0",
           "key": 0
         },
         {
@@ -2080,7 +2080,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "931f2de9-456f-4dee-b2ef-638a23dfe82a",
+          "id": "d2933e5f-3428-4f8c-a304-a009ac5456b8",
           "key": 0
         }
       ],
@@ -2092,7 +2092,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "c5ad91ba-c205-4f4d-ab46-7c43e9557071",
+          "id": "45ebabfb-561a-4004-842d-32e6ec9f9727",
           "key": 0
         },
         {
@@ -2102,7 +2102,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "10d92487-c661-4498-b369-62bb0aa3b561",
+          "id": "9f2d6641-2c77-4137-8177-7542604842bc",
           "key": 0
         },
         {
@@ -2112,7 +2112,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "931f2de9-456f-4dee-b2ef-638a23dfe82a",
+          "id": "d2933e5f-3428-4f8c-a304-a009ac5456b8",
           "key": 0
         }
       ],
@@ -2124,7 +2124,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "91feca20-a49f-426e-acd2-7d893d74b707",
+          "id": "f39bf284-5f29-44ab-9392-825b499e54d0",
           "key": 0
         }
       ],
@@ -2136,7 +2136,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "931f2de9-456f-4dee-b2ef-638a23dfe82a",
+          "id": "d2933e5f-3428-4f8c-a304-a009ac5456b8",
           "key": 0
         }
       ]
@@ -2160,7 +2160,7 @@
         "gen_weight": 1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "a01d2bb3-ceab-4b4f-bcf0-6e62341fd781"
+        "id": "a9f41d27-ac22-4ecd-9c6d-abc923715e29"
       },
       {
         "atomic_num": 6,
@@ -2175,7 +2175,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "b6c62e77-7330-43d1-b92b-1a4c5eaa7a49"
+        "id": "4cfdd25e-1bd0-4c86-b222-f4f06783a407"
       },
       {
         "atomic_num": 9,
@@ -2190,7 +2190,7 @@
         "gen_weight": -1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "2b0d3d2e-df52-4ecd-bc45-ce3557e4777c"
+        "id": "da4b44a3-8d25-456d-8947-d4e9c8d6689a"
       },
       {
         "atomic_num": 7,
@@ -2205,7 +2205,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "026fcd48-7703-49fd-b976-b8b7a5b6bd9e"
+        "id": "037793b0-9777-4a5a-bbe1-b5b77db1cf36"
       },
       {
         "atomic_num": 8,
@@ -2220,7 +2220,7 @@
         "gen_weight": 1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "2696f69b-b23b-4082-bde5-143edfd8e1df"
+        "id": "857b7936-1ef7-4683-8a4f-134f2ede1377"
       },
       {
         "atomic_num": 6,
@@ -2235,7 +2235,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "8c234858-745a-43b9-abcd-07204643453c"
+        "id": "284f319b-0a2f-46fd-b205-c435607c0b52"
       },
       {
         "atomic_num": 8,
@@ -2250,7 +2250,7 @@
         "gen_weight": -1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "067f2406-e9a1-45cb-afe0-b137865506d3"
+        "id": "46ff5f5a-6ec7-4560-b078-4da2967f758c"
       },
       {
         "atomic_num": 7,
@@ -2265,7 +2265,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "c842e04a-bc6c-471c-9b7c-81f4998d0c13"
+        "id": "fa3ab392-26fd-4f5c-8908-0e552d00ae32"
       },
       {
         "atomic_num": 35,
@@ -2280,7 +2280,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "a1a4bf55-116d-4a16-a98e-aa958a081c09"
+        "id": "4a8c9223-257e-4492-99a4-ea99cd53b5fa"
       }
     ],
     "adjacency": [
@@ -2292,7 +2292,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "026fcd48-7703-49fd-b976-b8b7a5b6bd9e",
+          "id": "037793b0-9777-4a5a-bbe1-b5b77db1cf36",
           "key": 0
         }
       ],
@@ -2304,7 +2304,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "2b0d3d2e-df52-4ecd-bc45-ce3557e4777c",
+          "id": "da4b44a3-8d25-456d-8947-d4e9c8d6689a",
           "key": 0
         },
         {
@@ -2314,7 +2314,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "026fcd48-7703-49fd-b976-b8b7a5b6bd9e",
+          "id": "037793b0-9777-4a5a-bbe1-b5b77db1cf36",
           "key": 0
         },
         {
@@ -2324,7 +2324,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "2696f69b-b23b-4082-bde5-143edfd8e1df",
+          "id": "857b7936-1ef7-4683-8a4f-134f2ede1377",
           "key": 0
         }
       ],
@@ -2336,7 +2336,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "026fcd48-7703-49fd-b976-b8b7a5b6bd9e",
+          "id": "037793b0-9777-4a5a-bbe1-b5b77db1cf36",
           "key": 0
         },
         {
@@ -2346,7 +2346,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "b6c62e77-7330-43d1-b92b-1a4c5eaa7a49",
+          "id": "4cfdd25e-1bd0-4c86-b222-f4f06783a407",
           "key": 0
         }
       ],
@@ -2358,7 +2358,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "2b0d3d2e-df52-4ecd-bc45-ce3557e4777c",
+          "id": "da4b44a3-8d25-456d-8947-d4e9c8d6689a",
           "key": 0
         },
         {
@@ -2368,7 +2368,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "b6c62e77-7330-43d1-b92b-1a4c5eaa7a49",
+          "id": "4cfdd25e-1bd0-4c86-b222-f4f06783a407",
           "key": 0
         }
       ],
@@ -2380,7 +2380,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "c842e04a-bc6c-471c-9b7c-81f4998d0c13",
+          "id": "fa3ab392-26fd-4f5c-8908-0e552d00ae32",
           "key": 0
         }
       ],
@@ -2392,7 +2392,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "067f2406-e9a1-45cb-afe0-b137865506d3",
+          "id": "46ff5f5a-6ec7-4560-b078-4da2967f758c",
           "key": 0
         },
         {
@@ -2402,7 +2402,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "a1a4bf55-116d-4a16-a98e-aa958a081c09",
+          "id": "4a8c9223-257e-4492-99a4-ea99cd53b5fa",
           "key": 0
         },
         {
@@ -2412,7 +2412,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "c842e04a-bc6c-471c-9b7c-81f4998d0c13",
+          "id": "fa3ab392-26fd-4f5c-8908-0e552d00ae32",
           "key": 0
         }
       ],
@@ -2424,7 +2424,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "c842e04a-bc6c-471c-9b7c-81f4998d0c13",
+          "id": "fa3ab392-26fd-4f5c-8908-0e552d00ae32",
           "key": 0
         },
         {
@@ -2434,7 +2434,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "8c234858-745a-43b9-abcd-07204643453c",
+          "id": "284f319b-0a2f-46fd-b205-c435607c0b52",
           "key": 0
         }
       ],
@@ -2446,7 +2446,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "067f2406-e9a1-45cb-afe0-b137865506d3",
+          "id": "46ff5f5a-6ec7-4560-b078-4da2967f758c",
           "key": 0
         },
         {
@@ -2456,14 +2456,14 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "8c234858-745a-43b9-abcd-07204643453c",
+          "id": "284f319b-0a2f-46fd-b205-c435607c0b52",
           "key": 0
         }
       ],
       []
     ]
   },
-  "NN{[<] [<]CCC[>], [>]P{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|P[<] [>]}|flory_schulz(0.3)|Br.|100|": {
+  "NN{[<] [<]CCC[>], [>]P{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|P[<] [>]}|flory_schulz(0.9)|Br.|100|": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -2481,7 +2481,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "020648ad-3af7-455f-b1fa-d85a32b57d19"
+        "id": "1c13efcd-b594-467e-ac78-2bd00b93ad40"
       },
       {
         "atomic_num": 7,
@@ -2496,14 +2496,14 @@
         "gen_weight": 1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "5e1e3990-bf1e-4b34-8169-034671c9cea3"
+        "id": "497c9a32-7529-4a62-b09a-4a37d614a293"
       },
       {
         "atomic_num": 6,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2511,14 +2511,14 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "682808c8-9612-43d1-b394-d3c1d58042ee"
+        "id": "ee982354-2b8f-4069-a6bf-7b3eb2ae30a7"
       },
       {
         "atomic_num": 6,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2526,14 +2526,14 @@
         "gen_weight": -1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "c5d216f1-31c8-494e-b92d-271cba907bf6"
+        "id": "a3d31839-2400-44ab-94c5-0ec47b238a1b"
       },
       {
         "atomic_num": 6,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2541,14 +2541,14 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "6513ebdb-d4aa-49c9-8412-731e8bab189a"
+        "id": "a39cc60d-6e1d-4ec5-a0cd-e1f592ea2961"
       },
       {
         "atomic_num": 15,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2556,7 +2556,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "5e141b8f-1db6-4cdf-a02e-998f0290b1f7"
+        "id": "6503ccd1-4da0-47e1-84e5-9a551feda9a0"
       },
       {
         "atomic_num": 8,
@@ -2571,7 +2571,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": 0,
-        "id": "21316a96-d312-4e55-94c7-88373e4702d0"
+        "id": "3d3f532d-839d-4d09-b7fe-024d2e9c51b5"
       },
       {
         "atomic_num": 8,
@@ -2586,14 +2586,14 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": 0,
-        "id": "1490ea74-ec85-43de-a3d3-4e5720c9bf01"
+        "id": "00471ba6-85c3-4464-af15-46e4ac837acc"
       },
       {
         "atomic_num": 15,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2601,7 +2601,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "febd9c2b-c2ef-4ad4-938c-bba7b141b2be"
+        "id": "a40acd99-a710-496f-82b7-c3370072afad"
       },
       {
         "atomic_num": 35,
@@ -2616,7 +2616,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "49f65c8e-884f-4a14-bcb4-ef6b95e2a2a9"
+        "id": "ffc0422b-2193-4f89-9f60-d0e419ad4d6f"
       }
     ],
     "adjacency": [
@@ -2628,7 +2628,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "5e1e3990-bf1e-4b34-8169-034671c9cea3",
+          "id": "497c9a32-7529-4a62-b09a-4a37d614a293",
           "key": 0
         }
       ],
@@ -2640,7 +2640,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "020648ad-3af7-455f-b1fa-d85a32b57d19",
+          "id": "1c13efcd-b594-467e-ac78-2bd00b93ad40",
           "key": 0
         },
         {
@@ -2650,7 +2650,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "5e141b8f-1db6-4cdf-a02e-998f0290b1f7",
+          "id": "6503ccd1-4da0-47e1-84e5-9a551feda9a0",
           "key": 0
         },
         {
@@ -2660,7 +2660,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "6513ebdb-d4aa-49c9-8412-731e8bab189a",
+          "id": "a39cc60d-6e1d-4ec5-a0cd-e1f592ea2961",
           "key": 0
         }
       ],
@@ -2672,7 +2672,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "c5d216f1-31c8-494e-b92d-271cba907bf6",
+          "id": "a3d31839-2400-44ab-94c5-0ec47b238a1b",
           "key": 0
         },
         {
@@ -2682,17 +2682,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "5e141b8f-1db6-4cdf-a02e-998f0290b1f7",
-          "key": 0
-        },
-        {
-          "stochastic_weight": 0.5,
-          "static": false,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "6513ebdb-d4aa-49c9-8412-731e8bab189a",
+          "id": "6503ccd1-4da0-47e1-84e5-9a551feda9a0",
           "key": 0
         },
         {
@@ -2702,7 +2692,17 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "49f65c8e-884f-4a14-bcb4-ef6b95e2a2a9",
+          "id": "ffc0422b-2193-4f89-9f60-d0e419ad4d6f",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a39cc60d-6e1d-4ec5-a0cd-e1f592ea2961",
           "key": 0
         }
       ],
@@ -2714,7 +2714,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "6513ebdb-d4aa-49c9-8412-731e8bab189a",
+          "id": "a39cc60d-6e1d-4ec5-a0cd-e1f592ea2961",
           "key": 0
         },
         {
@@ -2724,7 +2724,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "682808c8-9612-43d1-b394-d3c1d58042ee",
+          "id": "ee982354-2b8f-4069-a6bf-7b3eb2ae30a7",
           "key": 0
         }
       ],
@@ -2736,7 +2736,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "c5d216f1-31c8-494e-b92d-271cba907bf6",
+          "id": "a3d31839-2400-44ab-94c5-0ec47b238a1b",
           "key": 0
         },
         {
@@ -2746,7 +2746,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "febd9c2b-c2ef-4ad4-938c-bba7b141b2be",
+          "id": "a40acd99-a710-496f-82b7-c3370072afad",
           "key": 0
         },
         {
@@ -2756,29 +2756,19 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "682808c8-9612-43d1-b394-d3c1d58042ee",
+          "id": "ee982354-2b8f-4069-a6bf-7b3eb2ae30a7",
           "key": 0
         }
       ],
       [
         {
-          "stochastic_weight": 0.5,
+          "transition_weight": 0.5,
           "static": false,
+          "stochastic_weight": 0,
           "termination_weight": 0,
-          "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "febd9c2b-c2ef-4ad4-938c-bba7b141b2be",
-          "key": 0
-        },
-        {
-          "stochastic_weight": 0.5,
-          "static": false,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "682808c8-9612-43d1-b394-d3c1d58042ee",
+          "id": "00471ba6-85c3-4464-af15-46e4ac837acc",
           "key": 0
         },
         {
@@ -2788,17 +2778,27 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "21316a96-d312-4e55-94c7-88373e4702d0",
+          "id": "3d3f532d-839d-4d09-b7fe-024d2e9c51b5",
           "key": 0
         },
         {
-          "transition_weight": 0.5,
+          "stochastic_weight": 0.5,
           "static": false,
-          "stochastic_weight": 0,
           "termination_weight": 0,
+          "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "1490ea74-ec85-43de-a3d3-4e5720c9bf01",
+          "id": "a40acd99-a710-496f-82b7-c3370072afad",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "ee982354-2b8f-4069-a6bf-7b3eb2ae30a7",
           "key": 0
         }
       ],
@@ -2810,7 +2810,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "1490ea74-ec85-43de-a3d3-4e5720c9bf01",
+          "id": "00471ba6-85c3-4464-af15-46e4ac837acc",
           "key": 0
         },
         {
@@ -2820,7 +2820,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "1490ea74-ec85-43de-a3d3-4e5720c9bf01",
+          "id": "00471ba6-85c3-4464-af15-46e4ac837acc",
           "key": 1
         },
         {
@@ -2830,7 +2830,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "febd9c2b-c2ef-4ad4-938c-bba7b141b2be",
+          "id": "a40acd99-a710-496f-82b7-c3370072afad",
           "key": 0
         },
         {
@@ -2840,7 +2840,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "21316a96-d312-4e55-94c7-88373e4702d0",
+          "id": "3d3f532d-839d-4d09-b7fe-024d2e9c51b5",
           "key": 0
         }
       ],
@@ -2852,7 +2852,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "21316a96-d312-4e55-94c7-88373e4702d0",
+          "id": "3d3f532d-839d-4d09-b7fe-024d2e9c51b5",
           "key": 0
         },
         {
@@ -2862,7 +2862,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "21316a96-d312-4e55-94c7-88373e4702d0",
+          "id": "3d3f532d-839d-4d09-b7fe-024d2e9c51b5",
           "key": 1
         },
         {
@@ -2872,7 +2872,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "febd9c2b-c2ef-4ad4-938c-bba7b141b2be",
+          "id": "a40acd99-a710-496f-82b7-c3370072afad",
           "key": 0
         },
         {
@@ -2882,7 +2882,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "1490ea74-ec85-43de-a3d3-4e5720c9bf01",
+          "id": "00471ba6-85c3-4464-af15-46e4ac837acc",
           "key": 0
         }
       ],
@@ -2894,17 +2894,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "5e141b8f-1db6-4cdf-a02e-998f0290b1f7",
-          "key": 0
-        },
-        {
-          "stochastic_weight": 0.5,
-          "static": false,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "6513ebdb-d4aa-49c9-8412-731e8bab189a",
+          "id": "6503ccd1-4da0-47e1-84e5-9a551feda9a0",
           "key": 0
         },
         {
@@ -2914,14 +2904,24 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "49f65c8e-884f-4a14-bcb4-ef6b95e2a2a9",
+          "id": "ffc0422b-2193-4f89-9f60-d0e419ad4d6f",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a39cc60d-6e1d-4ec5-a0cd-e1f592ea2961",
           "key": 0
         }
       ],
       []
     ]
   },
-  "NN{[<] [<]CCC[>], [>]{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|[<] [>]}|flory_schulz(0.3)|Br.|100|": {
+  "NN{[<] [<]CCC[>], [>]{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|[<] [>]}|flory_schulz(0.9)|Br.|100|": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -2939,7 +2939,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "c2614878-8be4-423f-8072-f827393f6f02"
+        "id": "7d8e42d8-13a5-4237-89b8-bfb2538b6844"
       },
       {
         "atomic_num": 7,
@@ -2954,14 +2954,14 @@
         "gen_weight": 1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "13cea35a-2e4f-4ba5-adae-b39933e7b236"
+        "id": "ff151c8f-cd66-4415-a669-056b938c1a6d"
       },
       {
         "atomic_num": 6,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2969,14 +2969,14 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "57355bc1-202e-4ccf-b5ca-fd3bacc3277a"
+        "id": "0e7812ba-cb8d-410c-ae79-5232348446d5"
       },
       {
         "atomic_num": 6,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2984,14 +2984,14 @@
         "gen_weight": -1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "18cbbbc7-83f7-4292-badd-ff4d7aa9e138"
+        "id": "4f1b7cda-d57e-4a98-98e0-69be6c766e5c"
       },
       {
         "atomic_num": 6,
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2999,7 +2999,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "e6e18847-15d9-4cf4-9334-a76a6d60cf6a"
+        "id": "91c66b3e-f64b-4fbe-b367-9324875e58e1"
       },
       {
         "atomic_num": 8,
@@ -3014,7 +3014,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": 0,
-        "id": "32774313-01a9-42b9-ada0-579edead5ec6"
+        "id": "f91c4800-5f57-470d-aa76-15be2306e1e8"
       },
       {
         "atomic_num": 8,
@@ -3029,7 +3029,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": 0,
-        "id": "18e7d088-890b-497a-8b96-a8b28cc9c9ba"
+        "id": "03625615-e8bd-4246-8088-c5acf18c7e58"
       },
       {
         "atomic_num": 35,
@@ -3044,7 +3044,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "9ee8b922-5f0f-4748-8a3d-bb416c858103"
+        "id": "90415a9d-b1ce-446e-9129-de184a8a63aa"
       }
     ],
     "adjacency": [
@@ -3056,7 +3056,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "13cea35a-2e4f-4ba5-adae-b39933e7b236",
+          "id": "ff151c8f-cd66-4415-a669-056b938c1a6d",
           "key": 0
         }
       ],
@@ -3068,7 +3068,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "c2614878-8be4-423f-8072-f827393f6f02",
+          "id": "7d8e42d8-13a5-4237-89b8-bfb2538b6844",
           "key": 0
         },
         {
@@ -3078,17 +3078,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "18e7d088-890b-497a-8b96-a8b28cc9c9ba",
-          "key": 0
-        },
-        {
-          "transition_weight": 0.25,
-          "static": false,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "32774313-01a9-42b9-ada0-579edead5ec6",
+          "id": "f91c4800-5f57-470d-aa76-15be2306e1e8",
           "key": 0
         },
         {
@@ -3098,7 +3088,17 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "e6e18847-15d9-4cf4-9334-a76a6d60cf6a",
+          "id": "91c66b3e-f64b-4fbe-b367-9324875e58e1",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.25,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "03625615-e8bd-4246-8088-c5acf18c7e58",
           "key": 0
         }
       ],
@@ -3110,7 +3110,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "18cbbbc7-83f7-4292-badd-ff4d7aa9e138",
+          "id": "4f1b7cda-d57e-4a98-98e0-69be6c766e5c",
           "key": 0
         },
         {
@@ -3120,27 +3120,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "18e7d088-890b-497a-8b96-a8b28cc9c9ba",
-          "key": 0
-        },
-        {
-          "transition_weight": 0.25,
-          "static": false,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "32774313-01a9-42b9-ada0-579edead5ec6",
-          "key": 0
-        },
-        {
-          "stochastic_weight": 0.5,
-          "static": false,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "e6e18847-15d9-4cf4-9334-a76a6d60cf6a",
+          "id": "f91c4800-5f57-470d-aa76-15be2306e1e8",
           "key": 0
         },
         {
@@ -3150,41 +3130,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "9ee8b922-5f0f-4748-8a3d-bb416c858103",
-          "key": 0
-        }
-      ],
-      [
-        {
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "e6e18847-15d9-4cf4-9334-a76a6d60cf6a",
-          "key": 0
-        },
-        {
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "57355bc1-202e-4ccf-b5ca-fd3bacc3277a",
-          "key": 0
-        }
-      ],
-      [
-        {
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "18cbbbc7-83f7-4292-badd-ff4d7aa9e138",
+          "id": "90415a9d-b1ce-446e-9129-de184a8a63aa",
           "key": 0
         },
         {
@@ -3194,7 +3140,17 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "57355bc1-202e-4ccf-b5ca-fd3bacc3277a",
+          "id": "91c66b3e-f64b-4fbe-b367-9324875e58e1",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.25,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "03625615-e8bd-4246-8088-c5acf18c7e58",
           "key": 0
         }
       ],
@@ -3206,7 +3162,29 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "18e7d088-890b-497a-8b96-a8b28cc9c9ba",
+          "id": "91c66b3e-f64b-4fbe-b367-9324875e58e1",
+          "key": 0
+        },
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0e7812ba-cb8d-410c-ae79-5232348446d5",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "4f1b7cda-d57e-4a98-98e0-69be6c766e5c",
           "key": 0
         },
         {
@@ -3216,7 +3194,29 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "18e7d088-890b-497a-8b96-a8b28cc9c9ba",
+          "id": "0e7812ba-cb8d-410c-ae79-5232348446d5",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "03625615-e8bd-4246-8088-c5acf18c7e58",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "03625615-e8bd-4246-8088-c5acf18c7e58",
           "key": 1
         },
         {
@@ -3226,7 +3226,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "18e7d088-890b-497a-8b96-a8b28cc9c9ba",
+          "id": "03625615-e8bd-4246-8088-c5acf18c7e58",
           "key": 2
         },
         {
@@ -3236,7 +3236,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "9ee8b922-5f0f-4748-8a3d-bb416c858103",
+          "id": "90415a9d-b1ce-446e-9129-de184a8a63aa",
           "key": 0
         },
         {
@@ -3246,7 +3246,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "e6e18847-15d9-4cf4-9334-a76a6d60cf6a",
+          "id": "91c66b3e-f64b-4fbe-b367-9324875e58e1",
           "key": 0
         },
         {
@@ -3256,7 +3256,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "32774313-01a9-42b9-ada0-579edead5ec6",
+          "id": "f91c4800-5f57-470d-aa76-15be2306e1e8",
           "key": 0
         }
       ],
@@ -3268,7 +3268,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "32774313-01a9-42b9-ada0-579edead5ec6",
+          "id": "f91c4800-5f57-470d-aa76-15be2306e1e8",
           "key": 0
         },
         {
@@ -3278,7 +3278,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "32774313-01a9-42b9-ada0-579edead5ec6",
+          "id": "f91c4800-5f57-470d-aa76-15be2306e1e8",
           "key": 1
         },
         {
@@ -3288,7 +3288,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "32774313-01a9-42b9-ada0-579edead5ec6",
+          "id": "f91c4800-5f57-470d-aa76-15be2306e1e8",
           "key": 2
         },
         {
@@ -3298,7 +3298,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "9ee8b922-5f0f-4748-8a3d-bb416c858103",
+          "id": "91c66b3e-f64b-4fbe-b367-9324875e58e1",
           "key": 0
         },
         {
@@ -3308,7 +3308,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "e6e18847-15d9-4cf4-9334-a76a6d60cf6a",
+          "id": "90415a9d-b1ce-446e-9129-de184a8a63aa",
           "key": 0
         },
         {
@@ -3318,7 +3318,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "18e7d088-890b-497a-8b96-a8b28cc9c9ba",
+          "id": "03625615-e8bd-4246-8088-c5acf18c7e58",
           "key": 0
         }
       ],
@@ -3343,7 +3343,7 @@
         "gen_weight": 1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "2996d376-1531-4c9d-bf59-140f5f9a9cc0"
+        "id": "fabe62b5-63f8-4726-a7b0-9f60b8a3da65"
       },
       {
         "atomic_num": 6,
@@ -3358,7 +3358,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "8b4c2b2d-8751-4226-9015-274c77936fc6"
+        "id": "ea2f1688-4adb-405a-bf6a-0638a0f79314"
       },
       {
         "atomic_num": 6,
@@ -3373,7 +3373,7 @@
         "gen_weight": -1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "52beadad-4871-4bbf-ae4f-291407c2eb8f"
+        "id": "936acb4e-60af-449d-81b7-85d02c365050"
       },
       {
         "atomic_num": 6,
@@ -3388,7 +3388,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "eb912d54-56f9-42d1-a1a3-d4dae62ade96"
+        "id": "3a8ae88b-6be1-4c0c-851b-c827b2f69e0b"
       },
       {
         "atomic_num": 7,
@@ -3403,7 +3403,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "de9f4c19-9b09-4d5e-8f81-c6673e9dae35"
+        "id": "a35b8eb6-c7d7-4d42-b80c-fdad6e8d841e"
       },
       {
         "atomic_num": 7,
@@ -3418,7 +3418,7 @@
         "gen_weight": -1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "15a131f6-f2e6-4304-baa9-d5fb1b686ba2"
+        "id": "4d008574-0861-4b41-9878-21f35dcef1c8"
       },
       {
         "atomic_num": 7,
@@ -3433,7 +3433,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "de55b814-c1c6-4d94-a2d8-d4eb376cea78"
+        "id": "620e4810-f6ba-4b48-a242-6a7f8a142c30"
       },
       {
         "atomic_num": 35,
@@ -3448,7 +3448,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "4f7271c4-7273-4db0-b9de-6f58b43b4258"
+        "id": "152a0115-19d0-45a3-bfb9-b36a17820628"
       }
     ],
     "adjacency": [
@@ -3460,7 +3460,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "8b4c2b2d-8751-4226-9015-274c77936fc6",
+          "id": "ea2f1688-4adb-405a-bf6a-0638a0f79314",
           "key": 0
         }
       ],
@@ -3472,7 +3472,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "52beadad-4871-4bbf-ae4f-291407c2eb8f",
+          "id": "936acb4e-60af-449d-81b7-85d02c365050",
           "key": 0
         },
         {
@@ -3482,7 +3482,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "eb912d54-56f9-42d1-a1a3-d4dae62ade96",
+          "id": "3a8ae88b-6be1-4c0c-851b-c827b2f69e0b",
           "key": 0
         }
       ],
@@ -3494,7 +3494,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "eb912d54-56f9-42d1-a1a3-d4dae62ade96",
+          "id": "3a8ae88b-6be1-4c0c-851b-c827b2f69e0b",
           "key": 0
         },
         {
@@ -3504,7 +3504,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "8b4c2b2d-8751-4226-9015-274c77936fc6",
+          "id": "ea2f1688-4adb-405a-bf6a-0638a0f79314",
           "key": 0
         }
       ],
@@ -3516,7 +3516,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "52beadad-4871-4bbf-ae4f-291407c2eb8f",
+          "id": "936acb4e-60af-449d-81b7-85d02c365050",
           "key": 0
         },
         {
@@ -3526,7 +3526,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "8b4c2b2d-8751-4226-9015-274c77936fc6",
+          "id": "ea2f1688-4adb-405a-bf6a-0638a0f79314",
           "key": 0
         },
         {
@@ -3536,7 +3536,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "de9f4c19-9b09-4d5e-8f81-c6673e9dae35",
+          "id": "a35b8eb6-c7d7-4d42-b80c-fdad6e8d841e",
           "key": 0
         }
       ],
@@ -3548,7 +3548,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "15a131f6-f2e6-4304-baa9-d5fb1b686ba2",
+          "id": "4d008574-0861-4b41-9878-21f35dcef1c8",
           "key": 0
         },
         {
@@ -3558,7 +3558,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "de55b814-c1c6-4d94-a2d8-d4eb376cea78",
+          "id": "620e4810-f6ba-4b48-a242-6a7f8a142c30",
           "key": 0
         }
       ],
@@ -3570,7 +3570,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "de55b814-c1c6-4d94-a2d8-d4eb376cea78",
+          "id": "620e4810-f6ba-4b48-a242-6a7f8a142c30",
           "key": 0
         },
         {
@@ -3580,7 +3580,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "de9f4c19-9b09-4d5e-8f81-c6673e9dae35",
+          "id": "a35b8eb6-c7d7-4d42-b80c-fdad6e8d841e",
           "key": 0
         }
       ],
@@ -3592,17 +3592,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "15a131f6-f2e6-4304-baa9-d5fb1b686ba2",
-          "key": 0
-        },
-        {
-          "stochastic_weight": 1.0,
-          "static": false,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "de9f4c19-9b09-4d5e-8f81-c6673e9dae35",
+          "id": "4d008574-0861-4b41-9878-21f35dcef1c8",
           "key": 0
         },
         {
@@ -3612,7 +3602,17 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "4f7271c4-7273-4db0-b9de-6f58b43b4258",
+          "id": "152a0115-19d0-45a3-bfb9-b36a17820628",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 1.0,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "a35b8eb6-c7d7-4d42-b80c-fdad6e8d841e",
           "key": 0
         }
       ],
@@ -3637,7 +3637,7 @@
         "gen_weight": 1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "8c82c0ab-1faf-4aa5-b06f-28bcfbd07631"
+        "id": "a30ac62a-bbde-443a-ac7a-349f7a8893dc"
       },
       {
         "atomic_num": 6,
@@ -3652,7 +3652,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "2713ea38-92d6-4f94-a415-2e0f86627ac4"
+        "id": "42db51ff-04b0-4d51-b600-2f792721cfc9"
       },
       {
         "atomic_num": 6,
@@ -3667,7 +3667,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "f2eb4c0f-29ed-4ede-b6ae-015bf6b00a5f"
+        "id": "900a0eed-2632-470b-a77a-8a27655af311"
       },
       {
         "atomic_num": 9,
@@ -3682,7 +3682,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "ea0bb610-b56e-4ce9-9dbe-97235121e5c2"
+        "id": "1b7f0db0-c582-431c-9a31-64267ef208f2"
       },
       {
         "atomic_num": 9,
@@ -3697,7 +3697,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 0,
         "parent_stochastic_id": -2,
-        "id": "fb551810-6a3e-4fd9-80f5-8f4fb6a6b565"
+        "id": "626ade3d-47a3-44a4-8cdc-e578eb71b124"
       },
       {
         "atomic_num": 8,
@@ -3712,7 +3712,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "f938aa79-b44a-458c-b5ac-e4af7c9ca719"
+        "id": "911a356e-4c45-4457-8993-5bcd5e863e37"
       },
       {
         "atomic_num": 8,
@@ -3727,7 +3727,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "559100d4-ef5d-4d2d-9bf8-95104ba4e217"
+        "id": "c971b39c-95cf-4e5f-8355-4171debdd44d"
       },
       {
         "atomic_num": 15,
@@ -3742,7 +3742,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "4c948a0a-3b15-4ca2-95e6-2b43251fa41f"
+        "id": "d9001314-1182-4c11-a615-e02fafa41535"
       },
       {
         "atomic_num": 15,
@@ -3757,7 +3757,7 @@
         "gen_weight": 1.0,
         "stochastic_id": 1,
         "parent_stochastic_id": -2,
-        "id": "9da0fe03-b73c-46fc-957a-f0da7c6771ad"
+        "id": "0c65c208-c6ae-4d98-8ffc-c2f499f24a29"
       },
       {
         "atomic_num": 35,
@@ -3772,7 +3772,7 @@
         "gen_weight": -1.0,
         "stochastic_id": -1,
         "parent_stochastic_id": -1,
-        "id": "d787b760-52a2-4179-8ef0-a93b0a19a097"
+        "id": "910bcfb6-58a7-4f3f-b7b7-1d25570234c2"
       }
     ],
     "adjacency": [
@@ -3784,7 +3784,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "f2eb4c0f-29ed-4ede-b6ae-015bf6b00a5f",
+          "id": "626ade3d-47a3-44a4-8cdc-e578eb71b124",
           "key": 0
         },
         {
@@ -3794,7 +3794,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "fb551810-6a3e-4fd9-80f5-8f4fb6a6b565",
+          "id": "900a0eed-2632-470b-a77a-8a27655af311",
           "key": 0
         }
       ],
@@ -3806,7 +3806,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "f2eb4c0f-29ed-4ede-b6ae-015bf6b00a5f",
+          "id": "900a0eed-2632-470b-a77a-8a27655af311",
           "key": 0
         },
         {
@@ -3816,7 +3816,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "f2eb4c0f-29ed-4ede-b6ae-015bf6b00a5f",
+          "id": "900a0eed-2632-470b-a77a-8a27655af311",
           "key": 1
         },
         {
@@ -3826,17 +3826,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "559100d4-ef5d-4d2d-9bf8-95104ba4e217",
-          "key": 0
-        },
-        {
-          "transition_weight": 0.5,
-          "static": false,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "9da0fe03-b73c-46fc-957a-f0da7c6771ad",
+          "id": "c971b39c-95cf-4e5f-8355-4171debdd44d",
           "key": 0
         },
         {
@@ -3846,7 +3836,17 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "fb551810-6a3e-4fd9-80f5-8f4fb6a6b565",
+          "id": "626ade3d-47a3-44a4-8cdc-e578eb71b124",
+          "key": 0
+        },
+        {
+          "transition_weight": 0.5,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0c65c208-c6ae-4d98-8ffc-c2f499f24a29",
           "key": 0
         }
       ],
@@ -3858,7 +3858,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "2713ea38-92d6-4f94-a415-2e0f86627ac4",
+          "id": "42db51ff-04b0-4d51-b600-2f792721cfc9",
           "key": 0
         },
         {
@@ -3868,7 +3868,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "2713ea38-92d6-4f94-a415-2e0f86627ac4",
+          "id": "42db51ff-04b0-4d51-b600-2f792721cfc9",
           "key": 1
         },
         {
@@ -3878,7 +3878,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "ea0bb610-b56e-4ce9-9dbe-97235121e5c2",
+          "id": "1b7f0db0-c582-431c-9a31-64267ef208f2",
           "key": 0
         }
       ],
@@ -3890,7 +3890,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "fb551810-6a3e-4fd9-80f5-8f4fb6a6b565",
+          "id": "626ade3d-47a3-44a4-8cdc-e578eb71b124",
           "key": 0
         },
         {
@@ -3900,7 +3900,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "fb551810-6a3e-4fd9-80f5-8f4fb6a6b565",
+          "id": "626ade3d-47a3-44a4-8cdc-e578eb71b124",
           "key": 1
         },
         {
@@ -3910,7 +3910,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "559100d4-ef5d-4d2d-9bf8-95104ba4e217",
+          "id": "c971b39c-95cf-4e5f-8355-4171debdd44d",
           "key": 0
         },
         {
@@ -3920,7 +3920,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "f2eb4c0f-29ed-4ede-b6ae-015bf6b00a5f",
+          "id": "900a0eed-2632-470b-a77a-8a27655af311",
           "key": 0
         },
         {
@@ -3930,7 +3930,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "9da0fe03-b73c-46fc-957a-f0da7c6771ad",
+          "id": "0c65c208-c6ae-4d98-8ffc-c2f499f24a29",
           "key": 0
         }
       ],
@@ -3942,7 +3942,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "ea0bb610-b56e-4ce9-9dbe-97235121e5c2",
+          "id": "1b7f0db0-c582-431c-9a31-64267ef208f2",
           "key": 0
         },
         {
@@ -3952,7 +3952,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "ea0bb610-b56e-4ce9-9dbe-97235121e5c2",
+          "id": "1b7f0db0-c582-431c-9a31-64267ef208f2",
           "key": 1
         },
         {
@@ -3962,7 +3962,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "2713ea38-92d6-4f94-a415-2e0f86627ac4",
+          "id": "42db51ff-04b0-4d51-b600-2f792721cfc9",
           "key": 0
         }
       ],
@@ -3974,7 +3974,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "559100d4-ef5d-4d2d-9bf8-95104ba4e217",
+          "id": "c971b39c-95cf-4e5f-8355-4171debdd44d",
           "key": 0
         },
         {
@@ -3984,7 +3984,49 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "559100d4-ef5d-4d2d-9bf8-95104ba4e217",
+          "id": "c971b39c-95cf-4e5f-8355-4171debdd44d",
+          "key": 1
+        },
+        {
+          "transition_weight": 1.0,
+          "static": false,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "910bcfb6-58a7-4f3f-b7b7-1d25570234c2",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0c65c208-c6ae-4d98-8ffc-c2f499f24a29",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "911a356e-4c45-4457-8993-5bcd5e863e37",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "911a356e-4c45-4457-8993-5bcd5e863e37",
           "key": 1
         },
         {
@@ -3994,7 +4036,39 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "9da0fe03-b73c-46fc-957a-f0da7c6771ad",
+          "id": "d9001314-1182-4c11-a615-e02fafa41535",
+          "key": 0
+        }
+      ],
+      [
+        {
+          "static": true,
+          "stochastic_weight": 0,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0c65c208-c6ae-4d98-8ffc-c2f499f24a29",
+          "key": 0
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "0c65c208-c6ae-4d98-8ffc-c2f499f24a29",
+          "key": 1
+        },
+        {
+          "stochastic_weight": 0.5,
+          "static": false,
+          "termination_weight": 0,
+          "transition_weight": 0,
+          "bond_type": 1,
+          "aromatic": false,
+          "id": "c971b39c-95cf-4e5f-8355-4171debdd44d",
           "key": 0
         },
         {
@@ -4004,7 +4078,7 @@
           "termination_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "d787b760-52a2-4179-8ef0-a93b0a19a097",
+          "id": "910bcfb6-58a7-4f3f-b7b7-1d25570234c2",
           "key": 0
         }
       ],
@@ -4016,7 +4090,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "f938aa79-b44a-458c-b5ac-e4af7c9ca719",
+          "id": "d9001314-1182-4c11-a615-e02fafa41535",
           "key": 0
         },
         {
@@ -4026,7 +4100,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "f938aa79-b44a-458c-b5ac-e4af7c9ca719",
+          "id": "d9001314-1182-4c11-a615-e02fafa41535",
           "key": 1
         },
         {
@@ -4036,81 +4110,7 @@
           "transition_weight": 0,
           "bond_type": 1,
           "aromatic": false,
-          "id": "4c948a0a-3b15-4ca2-95e6-2b43251fa41f",
-          "key": 0
-        }
-      ],
-      [
-        {
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "9da0fe03-b73c-46fc-957a-f0da7c6771ad",
-          "key": 0
-        },
-        {
-          "stochastic_weight": 0.5,
-          "static": false,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "9da0fe03-b73c-46fc-957a-f0da7c6771ad",
-          "key": 1
-        },
-        {
-          "stochastic_weight": 0.5,
-          "static": false,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "559100d4-ef5d-4d2d-9bf8-95104ba4e217",
-          "key": 0
-        },
-        {
-          "transition_weight": 1.0,
-          "static": false,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "d787b760-52a2-4179-8ef0-a93b0a19a097",
-          "key": 0
-        }
-      ],
-      [
-        {
-          "static": true,
-          "stochastic_weight": 0,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "4c948a0a-3b15-4ca2-95e6-2b43251fa41f",
-          "key": 0
-        },
-        {
-          "stochastic_weight": 0.5,
-          "static": false,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "4c948a0a-3b15-4ca2-95e6-2b43251fa41f",
-          "key": 1
-        },
-        {
-          "stochastic_weight": 0.5,
-          "static": false,
-          "termination_weight": 0,
-          "transition_weight": 0,
-          "bond_type": 1,
-          "aromatic": false,
-          "id": "f938aa79-b44a-458c-b5ac-e4af7c9ca719",
+          "id": "911a356e-4c45-4457-8993-5bcd5e863e37",
           "key": 0
         }
       ],

@@ -92,13 +92,21 @@ class DoubleBondSymbolDefinition(GenerationError):
         return f"{self.partial_graph}, {self.symbol}, {self.bond_attributes}"
 
 
-class TwoConsecutiveBondDescriptors(ParsingError):
+class UndefinedDistribution(GenerationError):
+    def __init__(self, stochastic_obj):
+        self.stochastic_obj = stochastic_obj
+
+    def __str__(self):
+        return f"The stochastic distribution of the stochastic object {self.stochastic_obj} is not defined. The creation of the generative graph requires that the distribution is defined for each stochastic object."
+
+
+class ConcatenatedBondDescriptors(ParsingError):
     def __init__(self, obj, stochastic_obj):
         self.obj = obj
         self.stochastic_obj = stochastic_obj
 
     def __str__(self):
-        return f"The object {self.obj} in stochastic object {self.stochastic_obj} has two consecutive bond descriptors which is forbidden by BigSmiles grammar."
+        return f"The object {self.obj} in stochastic object {self.stochastic_obj} has concatenated bond descriptors which is forbidden by G-BigSmiles grammar."
 
 
 class IncorrectNumberOfBondDescriptors(ParsingError):
