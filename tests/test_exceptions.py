@@ -155,14 +155,14 @@ def test_warn_too_many_bd_per_atom(smi):
         big_smi.get_generating_graph()
 
 
-no_defined_distribution = [
+undefined_distribution = [
     "{[] [$]CC[$]; [$]C []}",
     "{[] [$]CC([$2]{[$2] [$2]OO[$2]; [$2]Cl []})C[$]; [$]C []}|poisson(20)|",
 ]
 
 
-@pytest.mark.parametrize("smi", no_defined_distribution)
-def test_no_defined_distribution(smi):
+@pytest.mark.parametrize("smi", undefined_distribution)
+def test_undefined_distribution(smi):
     with pytest.raises(gbigsmiles.exception.UndefinedDistribution):
         obj = gbigsmiles.BigSmiles.make(smi)
         obj.get_generating_graph()
