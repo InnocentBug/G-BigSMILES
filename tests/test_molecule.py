@@ -9,9 +9,9 @@ import gbigsmiles
 
 test_args = [
     (
-        "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F [<]}CC{[>] [<]CC([>])c1ccccc1[<]}C(C)CC(c1ccccc1)c1ccccc1",
+        "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F [<]}|gauss(1000,100)|CC{[>] [<]CC([>])c1ccccc1[<]}|gauss(500,50)|C(C)CC(c1ccccc1)c1ccccc1",
         "[H]{[>] CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F [<]}CC{[>] [<]CC([>])c1ccccc1 [<]}C(C)CC(c1ccccc1)c1ccccc1",
-        "[H]{[>] CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F [<]}CC{[>] [<]CC([>])c1ccccc1 [<]}C(C)CC(c1ccccc1)c1ccccc1",
+        "[H]{[>] CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F [<]}|gauss(1000.0, 100.0)|CC{[>] [<]CC([>])c1ccccc1 [<]}|gauss(500.0, 50.0)|C(C)CC(c1ccccc1)c1ccccc1",
     ),
     (
         "{[] CC([$])=NCC[$]; [H][$][]}|schulz_zimm(1000, 900)|",
@@ -29,9 +29,9 @@ test_args = [
         "[H]{[>] CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F [<]}|schulz_zimm(1500.0, 1000.0)|CC{[>] [>]CC([<])c1ccccc1 [<]}|schulz_zimm(1500.0, 1000.0)|C(C)CC(c1ccccc1)c1ccccc1.|60000.0|",
     ),
     (
-        "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}CC{[>][<]CC([>])c1ccccc1[<]}|gauss(500, 10)|C(C)CC(c1ccccc1)c1ccccc1.|60000|",
+        "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}|gauss(1000,10)|CC{[>][<]CC([>])c1ccccc1[<]}|gauss(500, 10)|C(C)CC(c1ccccc1)c1ccccc1.|60000|",
         "[H]{[>] CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F [<]}CC{[>] [<]CC([>])c1ccccc1 [<]}C(C)CC(c1ccccc1)c1ccccc1.",
-        "[H]{[>] CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F [<]}CC{[>] [<]CC([>])c1ccccc1 [<]}|gauss(500.0, 10.0)|C(C)CC(c1ccccc1)c1ccccc1.|60000.0|",
+        "[H]{[>] CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F [<]}|gauss(1000.0, 10.0)|CC{[>] [<]CC([>])c1ccccc1 [<]}|gauss(500.0, 10.0)|C(C)CC(c1ccccc1)c1ccccc1.|60000.0|",
     ),
     (
         "[H]{[>]CC([>])(C[<])C(=O)OCC(O)CSc1c(F)c(F)c(F)c(F)c1F[<]}|schulz_zimm(1500, 1000)|CC{[>][<]CC([>])c1ccccc1[<]}|schulz_zimm(1500, 1000)|C(C)CC(c1ccccc1)c1ccccc1.|5000|",
