@@ -483,7 +483,7 @@ class GeneratingGraph:
         stochastic_name=_STOCHASTIC_NAME,
         termination_name=_TERMINATION_NAME,
         transition_name=_TRANSITION_NAME,
-        static_name=_STOCHASTIC_NAME,
+        static_name=_STATIC_NAME,
         aromatic_name=_AROMATIC_NAME,
         bond_type_name=_BOND_TYPE_NAME,
         smi_bond_mapping=smi_bond_mapping,
