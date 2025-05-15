@@ -4,6 +4,8 @@
 [![notebooks](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/notebook.yml/badge.svg)](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/notebook.yml)
 [![trunk](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/trunk.yml/badge.svg)](https://github.com/InnocentBug/G-BigSMILES/actions/workflows/trunk.yml)
 
+Tag [0.3.1](https://github.com/InnocentBug/G-BigSMILES/releases/tag/0.3.2) was the last one actively developed here. For **continued development and maintenance** of this project, please see this [fork](https://github.com/gervasiozaldivar/G-BigSMILES).
+
 This code provides a parser for an extended version of the original [bigSMILES notation](https://olsenlabmit.github.io/BigSMILES/docs/line_notation.html#the-bigsmiles-line-notation). The parsing process leverages an Extended Backus–Naur Form (EBNF) grammar implemented with LARK, followed by additional semantic validation.
 
 The key innovation of this extension is the inclusion of specific details within the line notation. These details enable the generative modeling of molecules from a defined ensemble. Notably, the standard bigSMILES notation can be recovered by simply removing any content enclosed between the `|` symbols (inclusive).
