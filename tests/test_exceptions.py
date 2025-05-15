@@ -47,7 +47,7 @@ def test_bond_descriptor_sequence(stochastic_smi):
             raise exc.__context__  # trunk-ignore(ruff/B904)
 
 
-valid_contactenated_bond_descriptors = [
+valid_concatenated_bond_descriptors = [
     "{[] [>]CC[>][<] []}",
     "{[] [<]N(CC[>][<])N[>], [>]CC[<]; [$][H], [<]Br []}",
     "{[<] [<]NN[>], [$]CC[$][$]; [$][H], [<]Br [>]}",
@@ -56,7 +56,7 @@ valid_contactenated_bond_descriptors = [
 ]
 
 
-@pytest.mark.parametrize("stochastic_smi", valid_contactenated_bond_descriptors)
+@pytest.mark.parametrize("stochastic_smi", valid_concatenated_bond_descriptors)
 def test_valid_concatenated_bond_descriptors(stochastic_smi):
     gbigsmiles.StochasticObject.make(stochastic_smi)
 
