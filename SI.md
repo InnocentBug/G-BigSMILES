@@ -987,3 +987,41 @@ This notation is longer as we have to repeat parts for both polymer species. But
 Here I made the molecular weight of the polymers containing nitrogen slightly higher.
 
 Additionally, we now control the mixture ratio directly over the mixture ratio of the two species with the `.` notation.
+
+
+## Nested stochastic objects
+
+Using one stochastic object inside another stochastic object can be a powerful tool.
+In this new version G-BigSMILES supports nested stochastic objects. This can be a very powerful tool, because you can control the distribution of interior stochastic objects. 
+
+### Bottle Brushes
+
+One application is bottle brushes, where we control the size of the arms via an explicit molecular weight distribution.
+
+```python
+generative_bigSMILES = "N#CC(C)(C){[<] N({[>][<]CCO[>] []}|gauss(250, 15)|)(C([<])C[>]) [>]}|gauss(1000, 10)|Br"
+draw_molecule(generative_bigSMILES)
+```
+
+This allows us to define the molecular weight distribution for the arms independent of the molecular weight distribution of the entire molecule.
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```
+
+### Stochastic Blocks
+
+Another application are stochastic blocks. If you have randomly distributed blocks of a certain type of monomer, that follows a specific molecular weight distribution, you can define those blocks as as nested stochastic objects:
+
+
+
+```python
+generative_bigSMILES = "CCOC(=O)C(C)(C){[>] [<]{[<] [<]CC([>])c1ccccc1 [>]}|gauss(600, 10)|[>], [<]{[<] [<]CC([>])C(=O)OC [>]}|gauss(540,10)|[>] [<]}|schulz_zimm(2500, 2400)|[Br].|5e5|"
+draw_molecule(generative_bigSMILES)
+```
+
+This is random PS-r-PMMA, but the blocks are not identically distributed, instead we have PS blocks Gaussian distributed with a mean of $600g/mol$ and PMMA blocks Gaussian distributed with a mean of $540 g/mol$.
+
+```python
+draw_generation_graph(generative_bigSMILES)
+```

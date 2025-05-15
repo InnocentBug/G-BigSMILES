@@ -154,6 +154,10 @@
     "Gervasio",
     "bigsmart",
     "quadruple",
-    "Unvalidated"
+    "Unvalidated",
+    "logpmf",
+    "EBNF",
+    "Naur",
+    "initiators"
   ]
 }

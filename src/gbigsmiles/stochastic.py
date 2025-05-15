@@ -85,7 +85,6 @@ class StochasticObject(BigSMILESbase, GenerationBase):
         self._stochastic_parent = parent
 
     def _post_parse_validation(self):
-
         try:
             for element in [self] + self._repeat_residues + self._termination_residues:
                 gen_graph = element.get_generating_graph()

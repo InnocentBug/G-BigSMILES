@@ -24,7 +24,6 @@ dependencies = [
   "pytest",
   "rdkit",
   "lark",
-  "pysmiles",
   "typing_extensions",
 ]
 dynamic = ["version"]

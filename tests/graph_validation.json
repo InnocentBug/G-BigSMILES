@@ -1775,7 +1775,7 @@
       []
     ]
   },
-  "[H]{[<] [<]CFN[>] [>]}|flory_schulz(3.)|Br.|28|": {
+  "[H]{[<] [<]CFN[>] [>]}|flory_schulz(.3)|Br.|28|": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -1800,7 +1800,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 28.0,
         "total_molecular_weight": 28.0,
@@ -1815,7 +1815,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 28.0,
         "total_molecular_weight": 28.0,
@@ -1830,7 +1830,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 28.0,
         "total_molecular_weight": 28.0,
@@ -2463,7 +2463,7 @@
       []
     ]
   },
-  "NN{[<] [<]CCC[>], [>]P{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|P[<] [>]}|flory_schulz(3000)|Br.|100|": {
+  "NN{[<] [<]CCC[>], [>]P{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|P[<] [>]}|flory_schulz(0.9)|Br.|100|": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -2503,7 +2503,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2518,7 +2518,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2533,7 +2533,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2548,7 +2548,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2593,7 +2593,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2921,7 +2921,7 @@
       []
     ]
   },
-  "NN{[<] [<]CCC[>], [>]{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|[<] [>]}|flory_schulz(3000)|Br.|100|": {
+  "NN{[<] [<]CCC[>], [>]{[$] [$]OO[$] [$]}|schulz_zimm(122,23)|[<] [>]}|flory_schulz(0.9)|Br.|100|": {
     "directed": true,
     "multigraph": true,
     "graph": [],
@@ -2961,7 +2961,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2976,7 +2976,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,
@@ -2991,7 +2991,7 @@
         "aromatic": false,
         "charge": 0,
         "stochastic_generation": [
-          3000.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
+          0.9, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0
         ],
         "mol_molecular_weight": 100.0,
         "total_molecular_weight": 100.0,

@@ -20,6 +20,13 @@ class Branch(BigSMILESbase, GenerationBase):
             elif isinstance(child, BigSMILESbase):
                 self._elements.append(child)
 
+    def _set_stochastic_parent(self, parent):
+        for child in self._children:
+            try:
+                child._set_stochastic_parent(parent)
+            except AttributeError:
+                pass
+
     @property
     def bond_symbol(self):
         return self._bond_symbol

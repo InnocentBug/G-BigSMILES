@@ -69,7 +69,6 @@ invalid_monomer_stochastic = [
     "{[<] [>]CC, [<]C([$])C[>]; [$]Br [>]}",
 ]
 
-
 @pytest.mark.parametrize("stochastic_smi", invalid_monomer_stochastic)
 def test_invalid_monomer_stochastic(stochastic_smi):
     with pytest.raises(gbigsmiles.exception.MonomerHasTwoOrMoreBondDescriptors):
